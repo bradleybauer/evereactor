@@ -1,0 +1,181 @@
+check outhttps://github.com/flutter/flutter/pull/93463 
+  final lightScheme = ColorScheme.fromSeed(seedColor: Colors.green);
+  final darkScheme = ColorScheme.fromSeed(seedColor: Colors.green, brightness: Brightness.dark);
+
+msix_config for startmenu stuff google 'how to create msix_config windows'
+
+Yes I probably will do industry in structures without bonuses to the industry im doing.
+So I should have a rig list. Where user can add rigs that are involved in the build?
+
+Setup CI? so that people can be sure that exe hosted on github releases has been built by the code
+Desktop version should just be main content window
+  overlay windows should be popup windows (no system window/border.. that'd be dope)
+Have a browse button with search icon to left of build summary
+Have optimize button with cpu icon
+
+it is neccessary to allow setting ME/TE on t2 BP's
+unfortunately I cannot set me/te for individual blueprints of a single type because the 
+
+have custom, per item/category, display formats
+    Categories
+        categories in eve can be very verbose. users do not need a divided list to break down
+        the large/medium/small types of trig ammo.
+        it is much better if I just combine those categories.
+
+        I need to make this compatible with future versions of the SDE!!!
+        It sort of needs to be a soft transformation of the category tree.
+        so. if the large/medium/small categories exist under advanced exotic plasma charges then collapse them
+
+        actually, no only need to show 'Blueprints & Reactions' category tree right!!!!
+        ACTUALLY no. that category does not have ALL the blueprints (faction titan for example)
+
+    Custom build ammounts in the Browse window
+        idk maybe there is a better way to automatically choose build ammounts to calculate
+        an approximate profit percent.
+        BUT, if there really is not then I can customize things :/
+        BUT, i'd prefer not to though, if some new item comes to the market, then what do i do?
+
+All data tables are categorized tables
+  probably will have to do that myself
+
+Browse
+  fuzzy search
+   scroll view of categorized data table
+    breadcrumb category divider rows/headers
+  (icon, name, cost?, profit%, Add, whether in inventory)
+Optimize - desktop
+  optimization stats
+    percent reduction from approximation 1-sol/ub
+    is running
+    running time
+    number solutions found
+    solution status [infeasible, feasible, optimal, unknown]
+  optimizer controls
+    start
+    stop
+    discard optimization
+Targets
+  Things the user has 'added' to the build (x, icon, name, runs, profit, cost, %, build ppu(average per unit build price), sell ppu(average per unit sale price), me, te, total time?(hover hint that it's not actual time???))
+  me, te, max num bps for t2 only
+  me, te, max num bps for components and t1 items is set globally in Options
+
+  this is an annoying detail
+  if t2maxnumbps is set then (t2maxnumbps = min(t2_maxNumBps, global Options t2_maxNumBps)) else (t2maxnumbps = globalOptionsMaxNumBps)
+Intermediates
+  Things that are actually built (based on schedule) 
+  (icon, name, value, build/buy)
+Inventory
+  (icon, name, remaining, value)
+
+
+
+
+
+it is possible to buy intermediates things that are in Target Items.
+If something is in target items then it is always built, but any amount of it used for building other items
+may be bought. Just like how inventory and everything works in the solver.
+
+don't forget you wrote code for multiple multibuys
+    lol i did forget. would be nice to have a 'better' evepraisal that takes into consideration volume and gives best buy/sell hubs with (multimultibuy)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOTE BRADLEY: u can use corporation orders. maybe it's like corp reactions
+NOTE BRADLEY: this scheduler does not work with different time/material efficiencies when for the same job type!
+     so all that means is no loading of me/te from a user's blueprints
+
+I want to avoid setting me/te for each blueprint though
+    i will have a global me/te value... same as eve cookbook
+I still want to specifiy rigs.
+make look good... layout, colors, fonts, better loader (loader kinda sucks, it's aliased)
+i think min system cost index is .001 (that is .1%)
+go ahead and make a load prices from esi button. its worth the wait.
+have a donate button / bitcoin wallet address?? maybe. only if i make it really good
+have blueprints in inventory (and missing in multiby)? just for calculating how many blueprints are needed to do the job.
+
+TODO shit:
+    an item is a prereq if there is some other item in the build that it is a descendant of
+
+    if an item is a prereq then it has no close 'x' button on its row and has a build/buy box on the right
+    if an item is not a prereq then it has been added to the plan by the user and should have a close 'x' and no build/buy boxes
+        
+    whether or not an item is a prereq its number of runs can be changed (so long as 'build' is checked if it is a prereq)
+
+    if an item is a prereq and its number of runs has been changed then an undo button appears where the 'x' would be to allow you to reset num runs to the min required by its ancestors???
+        
+    an item is removed from the plan if all its ancestors are removed and it is set to buy
+    an item is removed from the plan if all its ancestors are removed and its num runs has not been changed?
+
+    for prereqs when no extra num runs are requested by the user
+        only show num runs and buildbuyvalue
+
+    settings
+        choose trade hub available from markets??
+        would have to show a list of selectable systems ordered by volume in the system
+        choose buy/sell methods... NO? the idea was to calculate a worst case. also how would u calc PPU build cost then?
+
+    shopping list - multiple multibuy's??? meh
+        isk saved by using multiple multibuys
+        becomes more difficult if not a single station is used
+        would need to be a multiple multibuys foreach station
+
+    share build with url???
+        would need to share prices and other settings through url.
+        could use an assumed order to minimize url length
+        but url would probably still be long...
+
+
+
+
+------------------------- NOTES ---------------------------------------------
+
+-------------------------- STRUCTURE/SKILL BONUSES ---------------------------
+// compute material bonus
+def m(r, b):
+    return round(.5 + r * b * (1 - .022))
+
+// The following comments are WRONG! but only by a little bit.
+//// t2s converts a time to seconds
+//// t computes the bonused time with proper rounding
+//// so, the total amount of time is independent of how many lines the runs are spread across
+//// t2s(t(r,basetime)) == sum_over_any_partition_p_of(r): t2s(t(p,basetime))
+//// except, that's not true, its an approximation, not equality
+def t(r, b):
+    s = r * b * (1 - .2) * (1 - .22)
+    d = int(s / (3600 * 24))
+    s -= d * 3600 * 24
+    h = int(s / 3600)
+    s -= h * 3600
+    m = int(s / 60)
+    s -= m * 60
+    return d, h, m, round(s)
+
+-------------------------- LINE ALLOCATION ---------------------------
+if we have N runs and want to spread them across M lines
+then put N / M runs on each line and spread the remainder
+r = N % M across as many lines as possible (r lines get N/M + 1 instead of N/M)
+
+---------------------------- ADDITIONAL PROFIT ----------------------------
+*show 'additional profit' to guide build/buy toggle for each item in the build
+*additional profit can be negative. in the case where it is not profitable to build but there
+is not enough decent sell orders on market. (still build cost < buy cost)
+*additional profit = total profit for building X - sum(total profit of component Y if we build Y)?????
+*additional profit is the amount we make by building X instead of building all Y's and selling them
+on market. The total profit of the root is equal to the sum of the additional profits
+of each node we build. The amount we could sell a Y for depends on what that Y is.
+In theory everything could be sold at min sell. But things like processed moon mats have low volume
+at market and so the only feasible way (er the only way i want to try) to liquidate is
+to sell to buy orders.

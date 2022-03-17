@@ -1,0 +1,21 @@
+class Constants {
+  static const ADVANCED_MOON_MATERIAL_MARKET_GROUP_ID = 499;
+  static const PROCESSED_MOON_MATERIAL_MARKET_GROUP_ID = 500;
+  static const RAW_MOON_MATERIAL_MARKET_GROUP_ID = 501;
+  static const FUEL_BLOCK_MARKET_GROUP_ID = 1870;
+  static const TEST_REACTION_BP_TYPE_ID = 45732;
+  static const THE_FORGE_REGION_ID = 10000002;
+  static const DOMAIN_REGION_ID = 10000043;
+  static const SINQ_LAISON_REGION_ID = 10000032;
+  static const METROPOLIS_REGION_ID = 10000042;
+  static const HEIMATAR_REGION_ID = 10000030;
+  static const AMARR_SYSTEM_ID = 30002187;
+  static const ASHAB_SYSTEM_ID = 30003491;
+  static const JITA_SYSTEM_ID = 30000142;
+  static const PERIMETER_SYSTEM_ID = 30000144;
+  static const DODIXIE_SYSTEM_ID = 30002659;
+  static const BOTANE_SYSTEM_ID = 30002661;
+  static const RENS_SYSTEM_ID = 30002510;
+  static const FRARN_SYSTEM_ID = 30002526;
+  static const HEK_SYSTEM_ID = 30002053;
+}
