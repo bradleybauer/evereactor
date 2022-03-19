@@ -9,12 +9,13 @@ import 'items_and_bps_cache.dart';
 void main() {
   loadSqlLib();
 
-  final db = sqlite3.open('C:/Users/Bradley/downloads/sqlite-latest.sqlite');
+  final db = sqlite3.open('C:\\Users\\Bradley\\Downloads\\sqlite-latest.sqlite');
   final sde = EveSDE(db);
 
   String code = """import 'item.dart';
 import 'blueprint.dart';
 const List<int> advancedMoonGooIds_ = [""";
+
   final advMoonMatIDs = sde.getAdvancedMoonMaterialsTypeIDs();
   for (var id in advMoonMatIDs) {
     code += id.toString() + ',';

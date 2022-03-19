@@ -1,83 +1,321 @@
-check outhttps://github.com/flutter/flutter/pull/93463 
+
+One thing I want to be true about this app is that the scenario where it gives the exact answer is very well defined and thought out ahead of time
+  I do mfg and rtns in wormhole space using 1 raitaru and 1 tatara.
+  All my toons have Reactions V, Indy V, Adv Indy IV, all Science IV
+  I have x number of mfg lines and y number of rtn lines
+  All my non (story, faction, t2) bp's have levels of (ME,TE) = (a,b)
+  My (story, faction, t2) all have certain (ME,TE) levels that are given and certian numRuns that is given
+  All my toons have the same beancounter industry 2% implant
+  All my market toons have acounting V
+  (mfg tax, rtn tax, cost indices) are all given
+  All market data has been fetched within the past half hour for the market hub I am buying from.
+
+  Given all this info, the app should calculate pretty gosh darn exact numbers
+
+
+------------------------------------------------------ RESTRICTIONS --------------------------------------------------
+ONLY FOR WORMHOLERS (assumes structure bonuses are always wh)
+holy fk, i forgot there is faction rigs (for mfg) that only give bonus to low sec'rs
+ok, i do not support that rig lol
+only going to support t1/t2 rigs with wh bonuses
+
+Not sure if i will do Structure+Rig
+Maybe will just ask for 1rtn and 1mfg structure and for a set of rigs (distinct in item type receiving bonus)
+Unfortunately I think it is common to have multiple mfg structures.
+Fuck it.
+It will work for me to have 1rtn 1mfg.
+I mean if i have multiplf rtn structures do I then have multiple rtn systems?
+I am not going into that much detail.
+
+*** It is practically impossible to get everything perfect ***
+
+Time Efficiency
+    Not possible to get perfect times unless you specifiy EVERYTHING which requires too much coding for me and too much configuration for the user.
+    And to get perfect timing would require having different bonuses PER LINE in the solver which is impossible with the solver as it is written now.
+    Honestly, any solver that optimizes makespan and which uses CP-SAT to do it would be too slow (probably) if coded to have different properties per line.
+    Think about it, the number of lines would likely be high, I will have at least 50 mfg lines, many people have much more than that.
+    Even if I group the lines according to skill/bonuses applied, there is still the worst case of having a lot of groups.
+    If I did group by skills/bonuses then I probably would have a lot more coding on my hands (in the GUI and in the solver/approximator)
+    In any case, taking ALL skills/bonuses into consideration means asking the user for skills for each toon, asking for blueprint TE levels, asking (potentially)
+    which toons can mfg/react at which structures, asking for each structure what the system cost index is or where it is located.
+    Then users would complain that they do not want to type in blueprint TE levels, and so I would code something that automatically fetches all the users blueprints and uses them.
+    Then some users would complain that they do not want to use a particular blueprint and that it should be excluded.
+    Then other users would want to manually specify TE levels of some blueprints and use those instead of the ones I automatically fetched for them.
+
+    Shit gets fucked if I try to cover every possible scenario.
+  the issue
+
+Material Efficiency
+    the above applies here too
+-----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+------------------------------------------------------OPTIMIZER----------------------------------------------------
+Optimize with batches contiguous but push batches back (after optimization) so that they start at the start
+  of the rtn batch they start concurrently with (or early as possible)
+-------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------MARKET DATA--------------------------------------------------
+Apparently indexeddb can hold a lot of data https://stackoverflow.com/questions/5692820/maximum-item-size-in-indexeddb
+
+Application X - Contact 'Dark808bb'
+
+Use concurrent fetch of market data is pretty quick! yay.
+So just load all cpp eve market data and cache it into drift
+That really is the best way
+
+Now pretty reasonable to add a market data age clock thingy
+------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+------------------------------------------------------- LOOKS ----------------------------------------------------
+Make look good... layout, colors, fonts, better loader (loader kinda sucks, it's aliased)
+
+I really like the gradient on the windows 11 calculator... is that the tabbed option for flutter_acrylic?
+
+check out https://github.com/flutter/flutter/pull/93463 
   final lightScheme = ColorScheme.fromSeed(seedColor: Colors.green);
   final darkScheme = ColorScheme.fromSeed(seedColor: Colors.green, brightness: Brightness.dark);
+--------------------------------------------------------------------------- ----- --------------------------------
 
+
+
+
+
+
+
+
+
+------------------------------------------------------DEVELOPMENT-------------------------------------------------
 msix_config for startmenu stuff google 'how to create msix_config windows'
-
-Yes I probably will do industry in structures without bonuses to the industry im doing.
-So I should have a rig list. Where user can add rigs that are involved in the build?
-
 Setup CI? so that people can be sure that exe hosted on github releases has been built by the code
-Desktop version should just be main content window
-  overlay windows should be popup windows (no system window/border.. that'd be dope)
-Have a browse button with search icon to left of build summary
-Have optimize button with cpu icon
+------------------------------------------------------------------------------------------------------------------
 
-it is neccessary to allow setting ME/TE on t2 BP's
-unfortunately I cannot set me/te for individual blueprints of a single type because the 
 
-have custom, per item/category, display formats
-    Categories
-        categories in eve can be very verbose. users do not need a divided list to break down
-        the large/medium/small types of trig ammo.
-        it is much better if I just combine those categories.
 
-        I need to make this compatible with future versions of the SDE!!!
-        It sort of needs to be a soft transformation of the category tree.
-        so. if the large/medium/small categories exist under advanced exotic plasma charges then collapse them
 
-        actually, no only need to show 'Blueprints & Reactions' category tree right!!!!
-        ACTUALLY no. that category does not have ALL the blueprints (faction titan for example)
 
-    Custom build ammounts in the Browse window
-        idk maybe there is a better way to automatically choose build ammounts to calculate
-        an approximate profit percent.
-        BUT, if there really is not then I can customize things :/
-        BUT, i'd prefer not to though, if some new item comes to the market, then what do i do?
 
-All data tables are categorized tables
-  probably will have to do that myself
 
-Browse
-  fuzzy search
-   scroll view of categorized data table
-    breadcrumb category divider rows/headers
-  (icon, name, cost?, profit%, Add, whether in inventory)
-Optimize - desktop
-  optimization stats
-    percent reduction from approximation 1-sol/ub
-    is running
-    running time
-    number solutions found
-    solution status [infeasible, feasible, optimal, unknown]
-  optimizer controls
+
+
+-------------------------------------------------------SDE-------------------------------------------------------------
+
+List of all buildable items
+	filter bad items
+  
+For each item need the skills that affects ME/TE of that item
+
+Check published column in invTypes
+  invCategories also has a published column
+
+Choose depth at which all times are combined into single category
+InvVolumes has volumes of thigns when packaged --- will need for ships
+Do not need industryActivitySkills invItems
+Each blueprint is associated with a metaGroupName
+
+Have custom (per item/category) display formats
+  Categories // LOW PRIORITY
+    Categories in eve can be very verbose. users do not need a divided list to break down the large/medium/small types of trig ammo.
+    It is much better if I just combine those categories.
+
+
+  Custom build amounts for heuristic profit% calculations in the Browse window
+    Idk maybe there is a way to automatically choose build amounts to calculate an approximate profit percent.
+    But, if there really is not then I can customize things :/
+    But, I'd prefer not to though, if some new item comes to the market, then what do I do?
+
+
+Filter bad items
+  There are bp's where the output item is in the input list (Silo bp). i think this only happens for disabled items.
+  If a BP has a circular dependency tree then delete the BP
+
+  Will need to do some data exploration to make sure that I am including only the items I want my tool to be able to build
+------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+----------------------------------------------------------- FEATURES ---------------------------------------------------------
+Outputs should all be tables that are pastable into EXCEL
+
+Have a donate button / bitcoin wallet address.
+
+Have blueprints in inventory (and missing in multiby)? just for calculating how many blueprints are needed to do the job.
+
+Multiple Multibuys???
+    isk saved by using multiple multibuys
+    becomes more difficult if not a single station is used
+    would need to be a multiple multibuys foreach station
+
+Add hints to different UI elements to help explain things a bit.
+Have a QA section?
+------------------------------------------------------------------------------- ------------- -------------------------------------
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------- BUILD CUSTOMIZATIONS -------------------------------------------------------------
+I cannot make this program so flexible that it does every calculation perfect for every possible industry scenario.
+
+Instead my strategy is to optimize for the simple case (hopefully common case, I will setup my indy like this).
+  ME/TE levels for BPO are set globally by the user (or take a sensible default)
+  ME/TE levels for non researchable bpc's are set globally by the user (or take a sensible default?)
+  Skills are set globally by the user
+    science (one option), production (one option for each with mat/time bonuses), the reactions skill
+  Number of lines for mfg and for rtns are set globally
+  Rtn & Mfg system cost indices are set globally.
+  There is only one rig for each bonus but more than three rigs can be applied to a build.
+    This simulates multiple structures (to a degree). Maybe I do all my equipment mfg in one structure and all my ship mfg in another.
+    To make sure the build IRL works exactly as the solver describes it is my responsibility to do (among other things) the correct production in the correct facility.
+
+  Maybe I will allow ME/TE levels to be set at the ITEM level. (solver can accomodate this atm, I think)
+    It would be nice to allow high end bpo's to be set to ME/TE lvl 4 while low end bpo's are set to me/te lvl 5.
+
+Yes I probably will do industry in structures without bonuses to the bp's im using. So I will have a rig list in the options window.
+
+It is possible to buy intermediates things that are in Target Items.
+  If something is in target items then it is always built, but any amount of it used for building other items
+  may be bought. Just like how inventory and everything works in the solver.
+
+Never build rams or fuel blocks as intermediates
+Never build rams as target items
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+----------------------------------------------------------- GUI -----------------------------------------------------------
+All data tables are categorized tables using breadcrumb navigation
+
+Options ### see BUILD CUSTOMIZATIONS section above for more details about options
+
+  Structures (basic dropdown lists)
+    1mfg
+    1rtn 
+    Rigs - size based on structures above.
+      any number but not more than 1 for each item type... (u no what i mean bb)
+
+    KISS
+      many people will probably only have 1mfg & 1rtn
+
+  //Structures // LOW PRIORITY lol
+  //  A structure can have 3 rigs, will not simulate rigging calibration.
+  //  Cannot allow multiple rigs that give a bonus to the same item type to be on different structures.
+  //  Basically for each item type there must be only one structure that has rigs that give bonuses to it.
+  //  Rigs (Whether M-set, L-set or XL-set is implied)
+  //    Raitaru 
+  //      Adv Component ME I      (going to have to give full names)
+  //      Adv Component TE I
+  //      Ammunition ME I
+  //    Azbel
+  //      Adv Component I
+  //      Equipment I
+  //    Sotiyo
+  //      Ship II
+  //      Equipment and Consumables II
+  //  Only supports raitaru/azbel/sotiyo/athanor/tatara
+  //  Then before computing a schedule I have to go through each job and assign that job a ME and TE based on skills
+  //  and the bonuses of the best structure for that job to be ran on.
+
+  Implants // LOW PRIORITY
+    bx-801,2,4
+
+  Reaction & Manufacturing lines
+  Skills (indy, adv indy, reactions, science)
+  Global ME/TE
+  System Cost Indices for Rtn & Mfg
+    Minimum system cost index is .001 (that is .1%)
+  Tax (sales, mfg, rtn)
+  Extra costs
+
+Search/Browse // HIGH PRIORITY
+  Fuzzy search
+  Scroll view of categorized data table
+  (Add, icon, name, cost?, profit%, category breadcrumb snippet)
+  Heuristic list // MEDIUM PRIORITY
+
+  Not doing profit % yet
+  Can tackle that later, like way later.
+
+Optimize - desktop // MEDIUM PRIORITY
+  Optimization stats
+    Percent reduction from approximation 1-sched/ub
+    Is running
+    Running time
+    Number solutions found
+    Solution status [infeasible, feasible, optimal, unknown]
+
+  Optimizer controls
     start
     stop
     discard optimization
-Targets
-  Things the user has 'added' to the build (x, icon, name, runs, profit, cost, %, build ppu(average per unit build price), sell ppu(average per unit sale price), me, te, total time?(hover hint that it's not actual time???))
-  me, te, max num bps for t2 only
-  me, te, max num bps for components and t1 items is set globally in Options
 
-  this is an annoying detail
-  if t2maxnumbps is set then (t2maxnumbps = min(t2_maxNumBps, global Options t2_maxNumBps)) else (t2maxnumbps = globalOptionsMaxNumBps)
+Targets // HIGH PRIORITY
+  Items the user has 'added' to the build
+    (x, icon, name, runs, cost, profit, %, build ppu(avg), sell ppu(avg), BpOptions(sorts by whether has options))
+
+  BpOptions
+    Story, faction, and t2 bp's can have blueprint options.
+    Everything else is set globally
+    ME, TE, maxBps & maxRunsPerBp
+
+    If maxBps & maxRunsPerBp are not set then those values are set to the global values?
+
 Intermediates
-  Things that are actually built (based on schedule) 
-  (icon, name, value, build/buy)
+  A list of all intermediate items to build before building Targets
+  (icon, name, value, build/buy, BpOptions (sorts by whether has options))
+
 Inventory
   (icon, name, remaining, value)
+---------------------------------------------------------------------------------------------------------------------------
 
 
 
 
 
-it is possible to buy intermediates things that are in Target Items.
-If something is in target items then it is always built, but any amount of it used for building other items
-may be bought. Just like how inventory and everything works in the solver.
 
-don't forget you wrote code for multiple multibuys
+
+
+-------------------------------------------------------- REMINDER -------------------------------------------------------
+Don't forget you wrote code for multiple multibuys
     lol i did forget. would be nice to have a 'better' evepraisal that takes into consideration volume and gives best buy/sell hubs with (multimultibuy)
 
+You can use corporation orders. maybe it's like corp reactions
+-------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -86,66 +324,8 @@ don't forget you wrote code for multiple multibuys
 
 
 
-
-
-
-
-
-
-
-NOTE BRADLEY: u can use corporation orders. maybe it's like corp reactions
-NOTE BRADLEY: this scheduler does not work with different time/material efficiencies when for the same job type!
-     so all that means is no loading of me/te from a user's blueprints
-
-I want to avoid setting me/te for each blueprint though
-    i will have a global me/te value... same as eve cookbook
-I still want to specifiy rigs.
-make look good... layout, colors, fonts, better loader (loader kinda sucks, it's aliased)
-i think min system cost index is .001 (that is .1%)
-go ahead and make a load prices from esi button. its worth the wait.
-have a donate button / bitcoin wallet address?? maybe. only if i make it really good
-have blueprints in inventory (and missing in multiby)? just for calculating how many blueprints are needed to do the job.
-
-TODO shit:
-    an item is a prereq if there is some other item in the build that it is a descendant of
-
-    if an item is a prereq then it has no close 'x' button on its row and has a build/buy box on the right
-    if an item is not a prereq then it has been added to the plan by the user and should have a close 'x' and no build/buy boxes
-        
-    whether or not an item is a prereq its number of runs can be changed (so long as 'build' is checked if it is a prereq)
-
-    if an item is a prereq and its number of runs has been changed then an undo button appears where the 'x' would be to allow you to reset num runs to the min required by its ancestors???
-        
-    an item is removed from the plan if all its ancestors are removed and it is set to buy
-    an item is removed from the plan if all its ancestors are removed and its num runs has not been changed?
-
-    for prereqs when no extra num runs are requested by the user
-        only show num runs and buildbuyvalue
-
-    settings
-        choose trade hub available from markets??
-        would have to show a list of selectable systems ordered by volume in the system
-        choose buy/sell methods... NO? the idea was to calculate a worst case. also how would u calc PPU build cost then?
-
-    shopping list - multiple multibuy's??? meh
-        isk saved by using multiple multibuys
-        becomes more difficult if not a single station is used
-        would need to be a multiple multibuys foreach station
-
-    share build with url???
-        would need to share prices and other settings through url.
-        could use an assumed order to minimize url length
-        but url would probably still be long...
-
-
-
-
-------------------------- NOTES ---------------------------------------------
-
--------------------------- STRUCTURE/SKILL BONUSES ---------------------------
-// compute material bonus
-def m(r, b):
-    return round(.5 + r * b * (1 - .022))
+---------------------------------------------- STRUCTURE/SKILL BONUSES -----------------------------------------------
+read this https://eve-industry.org/export/IndustryFormulas.pdf
 
 // The following comments are WRONG! but only by a little bit.
 //// t2s converts a time to seconds
@@ -163,13 +343,30 @@ def t(r, b):
     s -= m * 60
     return d, h, m, round(s)
 
--------------------------- LINE ALLOCATION ---------------------------
-if we have N runs and want to spread them across M lines
-then put N / M runs on each line and spread the remainder
-r = N % M across as many lines as possible (r lines get N/M + 1 instead of N/M)
 
----------------------------- ADDITIONAL PROFIT ----------------------------
-*show 'additional profit' to guide build/buy toggle for each item in the build
+
+
+
+
+
+
+
+
+
+------------------------------------------------ ADDITIONAL PROFIT ------------------------------------------------
+
+Additional profit helps you determine if you should build the absolution instead of just selling the intermediates for profit.
+If B is used to build A, and there is profit pB in building and selling B and profit pA in building and selling pA, then
+  the additional profit for building A is ap = pA - pB. If ap is negative then you loose money in building A. It would be more
+  profitable to build the B's and then sell those.
+There is 3 problems with additional profit:
+  1. There are more considerations than pure profit, such as volume reduction by building A and minimizing risk by selling A's and B's instead of just A's or B's.
+  2. Market volume for intermediate items is low, so having intermediates as primary items to sell is not a good idea because a low volume market is less reliable.
+     It is better to build primarily A's and maybe build a few B's on the side (depending on market volume of course)
+  3. It adds more complexity to the application which is already complex enough.
+
+So I am not going to implement additional profit calculations. But I will leave this section for future reference, lol.
+
 *additional profit can be negative. in the case where it is not profitable to build but there
 is not enough decent sell orders on market. (still build cost < buy cost)
 *additional profit = total profit for building X - sum(total profit of component Y if we build Y)?????

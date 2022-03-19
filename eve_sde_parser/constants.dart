@@ -49,8 +49,7 @@ class Constants {
 
   int _getMarketGroupID(String name) {
     name = "'" + name + "'";
-    return marketGroupsTable
-        .select(['marketGroupID'], 'marketGroupName=$name').last['marketGroupID'];
+    return marketGroupsTable.select(['marketGroupID'], 'marketGroupName=$name').last['marketGroupID'];
   }
 
   int _getRegionID(String region) {

@@ -110,7 +110,6 @@ class Header extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          SizedBox.expand(child: WindowTitleBarBox(child: MoveWindow())),
           Positioned(
               child: Padding(
                 padding: const EdgeInsets.all(32.0),
@@ -120,11 +119,13 @@ class Header extends StatelessWidget {
                   // color: Colors.grey[200],
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('EveReactor', style: TextStyle(fontSize: 32, color: Colors.grey[800])),
+                    child: Text('EveIndy', style: TextStyle(fontSize: 32, color: Colors.grey[800])),
+                    // child: Text('EVE Isk per Hour', style: TextStyle(fontSize: 32, color: Colors.grey[800])),
                   ),
                 ),
               ),
               left: 0),
+          SizedBox.expand(child: WindowTitleBarBox(child: MoveWindow())),
           Positioned(
               child: Padding(
                 padding: const EdgeInsets.all(32.0),

@@ -57,13 +57,11 @@ class EveSDE {
   }
 
   bool isFuelBlock(int typeID) {
-    return types.select(['marketGroupID'], 'typeID=$typeID').last['marketGroupID'] ==
-        constants.FUEL_BLOCK_MARKET_GROUP_ID;
+    return types.select(['marketGroupID'], 'typeID=$typeID').last['marketGroupID'] == constants.FUEL_BLOCK_MARKET_GROUP_ID;
   }
 
   List<int> getAdvancedMoonMaterialsTypeIDs() {
-    final query = types
-        .select(['typeID'], 'marketGroupID=${constants.ADVANCED_MOON_MATERIAL_MARKET_GROUP_ID}');
+    final query = types.select(['typeID'], 'marketGroupID=${constants.ADVANCED_MOON_MATERIAL_MARKET_GROUP_ID}');
     return query.map((e) => e['typeID'] as int).toList();
   }
 }

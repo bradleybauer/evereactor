@@ -29,6 +29,7 @@ Future<void> main() async {
   await Window.initialize();
   await Window.setEffect(
     effect: WindowEffect.acrylic,
+    // effect: WindowEffect.tabbed,
     // effect: WindowEffect.aero,
     color: Colors.white,
   );
@@ -108,31 +109,28 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// decoration: BoxDecoration(
+//   gradient: LinearGradient(
+//     begin: Alignment.topLeft,
+//     end: Alignment.bottomRight,
+//     // end: Alignment(0, 0),
+//     stops: [0.0, .5, 0.5, 1],
+//     colors: [
+//       // Colors.blue,
+//       // Colors.red,
+//       // Colors.blue,
+//       // Colors.red,
 
+//       // Colors.white,
+//       // Colors.grey,
+//       // Colors.white,
+//       // Colors.grey,
 
-            // decoration: BoxDecoration(
-            //   gradient: LinearGradient(
-            //     begin: Alignment.topLeft,
-            //     end: Alignment.bottomRight,
-            //     // end: Alignment(0, 0),
-            //     stops: [0.0, .5, 0.5, 1],
-            //     colors: [
-            //       // Colors.blue,
-            //       // Colors.red,
-            //       // Colors.blue,
-            //       // Colors.red,
-
-            //       // Colors.white,
-            //       // Colors.grey,
-            //       // Colors.white,
-            //       // Colors.grey,
-
-            //       Color(0x88ECEFF1),
-            //       Color(0x88ECEFF1),
-            //       Color(0xFFFAFAFA),
-            //       Color(0xFFFAFAFA),
-            //     ],
-            //     tileMode: TileMode.repeated,
-            //   ),
-            // ),
-
+//       Color(0x88ECEFF1),
+//       Color(0x88ECEFF1),
+//       Color(0xFFFAFAFA),
+//       Color(0xFFFAFAFA),
+//     ],
+//     tileMode: TileMode.repeated,
+//   ),
+// ),
