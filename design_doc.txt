@@ -1,4 +1,7 @@
+Buy dude at everef a coffee
 
+
+----------------------------------------------------- GOAL -----------------------------------------------------------
 One thing I want to be true about this app is that the scenario where it gives the exact answer is very well defined and thought out ahead of time
   I do mfg and rtns in wormhole space using 1 raitaru and 1 tatara.
   All my toons have Reactions V, Indy V, Adv Indy IV, all Science IV
@@ -11,20 +14,21 @@ One thing I want to be true about this app is that the scenario where it gives t
   All market data has been fetched within the past half hour for the market hub I am buying from.
 
   Given all this info, the app should calculate pretty gosh darn exact numbers
+----------------------------------------------------------------------------------------------------------------------
 
 
------------------------------------------------------- RESTRICTIONS --------------------------------------------------
-ONLY FOR WORMHOLERS (assumes structure bonuses are always wh)
-holy fk, i forgot there is faction rigs (for mfg) that only give bonus to low sec'rs
-ok, i do not support that rig lol
-only going to support t1/t2 rigs with wh bonuses
+-------------------------------------------------- RESTRICTIONS ------------------------------------------------------
+Assumes structures are located whereever the rigs gives the best bonuses. (LS for thukker rigs)
+
+Note - Large 'Sheriff' Shield Extender Blueprint can drop with 20% ME
+  https://cdn.discordapp.com/attachments/492765138760237056/932976232474222622/unknown.png
 
 Not sure if i will do Structure+Rig
 Maybe will just ask for 1rtn and 1mfg structure and for a set of rigs (distinct in item type receiving bonus)
 Unfortunately I think it is common to have multiple mfg structures.
 Fuck it.
 It will work for me to have 1rtn 1mfg.
-I mean if i have multiplf rtn structures do I then have multiple rtn systems?
+I mean if I have multiple rtn structures do I then have multiple rtn systems?
 I am not going into that much detail.
 
 *** It is practically impossible to get everything perfect ***
@@ -33,43 +37,27 @@ Time Efficiency
     Not possible to get perfect times unless you specifiy EVERYTHING which requires too much coding for me and too much configuration for the user.
     And to get perfect timing would require having different bonuses PER LINE in the solver which is impossible with the solver as it is written now.
     Honestly, any solver that optimizes makespan and which uses CP-SAT to do it would be too slow (probably) if coded to have different properties per line.
-    Think about it, the number of lines would likely be high, I will have at least 50 mfg lines, many people have much more than that.
+    Think about it, the number of lines would likely be high, I will have at least 50 mfg lines, many people have more than that.
     Even if I group the lines according to skill/bonuses applied, there is still the worst case of having a lot of groups.
     If I did group by skills/bonuses then I probably would have a lot more coding on my hands (in the GUI and in the solver/approximator)
-    In any case, taking ALL skills/bonuses into consideration means asking the user for skills for each toon, asking for blueprint TE levels, asking (potentially)
-    which toons can mfg/react at which structures, asking for each structure what the system cost index is or where it is located.
+    In any case, taking ALL skills/bonuses into consideration means asking the user for skills for each toon, asking for blueprint TE levels, asking 
+    (potentially) which toons can mfg/react at which structures, asking for each structure what the system cost index is or where it is located.
     Then users would complain that they do not want to type in blueprint TE levels, and so I would code something that automatically fetches all the users blueprints and uses them.
     Then some users would complain that they do not want to use a particular blueprint and that it should be excluded.
     Then other users would want to manually specify TE levels of some blueprints and use those instead of the ones I automatically fetched for them.
 
     Shit gets fucked if I try to cover every possible scenario.
-  the issue
 
 Material Efficiency
     the above applies here too
------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-------------------------------------------------------OPTIMIZER----------------------------------------------------
+----------------------------------------------------OPTIMIZER---------------------------------------------------------
 Optimize with batches contiguous but push batches back (after optimization) so that they start at the start
   of the rtn batch they start concurrently with (or early as possible)
--------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
------------------------------------------------------MARKET DATA--------------------------------------------------
+---------------------------------------------------MARKET DATA--------------------------------------------------------
 Apparently indexeddb can hold a lot of data https://stackoverflow.com/questions/5692820/maximum-item-size-in-indexeddb
 
 Application X - Contact 'Dark808bb'
@@ -79,17 +67,9 @@ So just load all cpp eve market data and cache it into drift
 That really is the best way
 
 Now pretty reasonable to add a market data age clock thingy
-------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-------------------------------------------------------- LOOKS ----------------------------------------------------
+---------------------------------------------------- LOOKS -----------------------------------------------------------
 Make look good... layout, colors, fonts, better loader (loader kinda sucks, it's aliased)
 
 I really like the gradient on the windows 11 calculator... is that the tabbed option for flutter_acrylic?
@@ -97,43 +77,94 @@ I really like the gradient on the windows 11 calculator... is that the tabbed op
 check out https://github.com/flutter/flutter/pull/93463 
   final lightScheme = ColorScheme.fromSeed(seedColor: Colors.green);
   final darkScheme = ColorScheme.fromSeed(seedColor: Colors.green, brightness: Brightness.dark);
---------------------------------------------------------------------------- ----- --------------------------------
+--------------------------------------------------------------------------- ----- ------------------------------------
 
-
-
-
-
-
-
-
-
-------------------------------------------------------DEVELOPMENT-------------------------------------------------
+---------------------------------------------------DEVELOPMENT--------------------------------------------------------
 msix_config for startmenu stuff google 'how to create msix_config windows'
 Setup CI? so that people can be sure that exe hosted on github releases has been built by the code
-------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
+-------------------------------------------------------SDE------------------------------------------------------------
+map : skill -> mfg/rtn -> me/te -> bonus
+A list of skills that affect manufacturing & reactions and the bonus that they give.
+  skills are in categoryID = 16
 
+  NEED FUNCTION IS_SUB_SKILL(A,B)
 
+  for each skill
+    find skill typeID in typeDogma.yaml
+      bonus amount per level is given in dgmTypeAttributes.valueFloat field
+      hard code whether to apply global or specific item
 
+  if an item is rtn
+    then it is affected by reactions skill
+  else
+    it has a number of science skills
+    it is potentially affected by adv indy
 
+  Rows with BP id in industryActivitySkills gives required skills
 
+map : structure -> mfg/rtn -> me/te -> bonus
+Structures are items with groupID=1404 for engineering complex or 1406 for refinerys
+  JUST HARDCODE BONUSES!!!
+  Match hoboleaks attributeID with attributeID in typeDogma
+    dont forget job isk bonus
+    Raitaru = 35825
+      1% material bonus
+      3% cost bonus
+      15% time bonus
+    Azbel = 35826
+      1% material bonus
+      4% cost bonus
+      20% time bonus
+    Sotiyo = 35827
+      1% material bonus
+      5% cost bonus
+      30% time bonus
+    Athanor = 35835
+      no bonuses to rtn
+    Tatara = 35836
+      25% time bonus
 
+map : rig -> mfg/rtn -> me/te -> bonus as python fraction
+A list of rigs that affect mfg&rtn and the bonus that they give when installed in wormholes.
+  Need hoboleaks expanded SDE data
+    Industry Modifier Sources
+    Industry Target Filters
+      With the rig typeID I can get rig bonus amount.
+      But I cannot get which items it is applied to, from the SDE.
+      That is what these maps are for: to map from rig to item.
 
+  Use location of rig that gives max bonus
 
--------------------------------------------------------SDE-------------------------------------------------------------
+map : implant -> mfg te bonus
+  27170 : BX-801  1% bonus to all mfg times
+  27167 : BX-802  2% bonus to all mfg times
+  27171 : BX-804  4% bonus to all mfg times
 
-List of all buildable items
-	filter bad items
-  
-For each item need the skills that affects ME/TE of that item
+map : tid -> blueprint
+List all buildable items
+  Filter unwanted items like
+    civilian after burner
+    test reaction blueprint
 
-Check published column in invTypes
-  invCategories also has a published column
+  Note blueprint type (mfg / rtn)
+  Note blueprint required skills
+
+  dont store blueprint name
+    store bool to decide if it is
+      produced item name + "Blueprint"
+      or 
+      produced item name + "Reaction Formula"
+
+map : tid -> item
+for each blueprint
+  add it's product id and material input to list
+  DISREGARD BLUEPRINT TID
+
+Note: do not cache name -> tid. that could be costly with having tons of items. Instead compute it.
 
 Choose depth at which all times are combined into single category
-InvVolumes has volumes of thigns when packaged --- will need for ships
-Do not need industryActivitySkills invItems
-Each blueprint is associated with a metaGroupName
 
 Have custom (per item/category) display formats
   Categories // LOW PRIORITY
@@ -152,16 +183,9 @@ Filter bad items
   If a BP has a circular dependency tree then delete the BP
 
   Will need to do some data exploration to make sure that I am including only the items I want my tool to be able to build
-------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
-
------------------------------------------------------------ FEATURES ---------------------------------------------------------
+---------------------------------------------------- FEATURES --------------------------------------------------------
 Outputs should all be tables that are pastable into EXCEL
 
 Have a donate button / bitcoin wallet address.
@@ -175,17 +199,9 @@ Multiple Multibuys???
 
 Add hints to different UI elements to help explain things a bit.
 Have a QA section?
-------------------------------------------------------------------------------- ------------- -------------------------------------
+------------------------------------------------------------------------------- ------------- ------------------------
 
-
-
-
-
-
-
-
-
------------------------------------------------------------ BUILD CUSTOMIZATIONS -------------------------------------------------------------
+----------------------------------------------- BUILD CUSTOMIZATIONS -------------------------------------------------
 I cannot make this program so flexible that it does every calculation perfect for every possible industry scenario.
 
 Instead my strategy is to optimize for the simple case (hopefully common case, I will setup my indy like this).
@@ -210,15 +226,19 @@ It is possible to buy intermediates things that are in Target Items.
 
 Never build rams or fuel blocks as intermediates
 Never build rams as target items
-------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
+---------------------------------------------------- GUI / UX --------------------------------------------------------
+Make input boxes simple.
+  For integer inputs just restrict input to integers and maximum number of characters
+  For percents just restrict max num chars maybe
+    Append % sign always ( i think flutter has support for this being always show.. like a 'virtual character')
 
+  When inputs are accepted (on editing done) replace the input with my interpretation of it.
+   So user understands that I understand what they input.
 
+  Red box on invalid input
 
-
-
-
------------------------------------------------------------ GUI -----------------------------------------------------------
 All data tables are categorized tables using breadcrumb navigation
 
 Options ### see BUILD CUSTOMIZATIONS section above for more details about options
@@ -259,6 +279,7 @@ Options ### see BUILD CUSTOMIZATIONS section above for more details about option
   Global ME/TE
   System Cost Indices for Rtn & Mfg
     Minimum system cost index is .001 (that is .1%)
+    Input as a percent, because that is how it is represented in game (i.e. 6.37% on hover in the industry window.)
   Tax (sales, mfg, rtn)
   Extra costs
 
@@ -301,28 +322,14 @@ Intermediates
 
 Inventory
   (icon, name, remaining, value)
----------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
-
--------------------------------------------------------- REMINDER -------------------------------------------------------
+----------------------------------------------------- REMINDER -------------------------------------------------------
 Don't forget you wrote code for multiple multibuys
     lol i did forget. would be nice to have a 'better' evepraisal that takes into consideration volume and gives best buy/sell hubs with (multimultibuy)
 
 You can use corporation orders. maybe it's like corp reactions
--------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
+----------------------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------- STRUCTURE/SKILL BONUSES -----------------------------------------------
 read this https://eve-industry.org/export/IndustryFormulas.pdf
@@ -342,19 +349,9 @@ def t(r, b):
     m = int(s / 60)
     s -= m * 60
     return d, h, m, round(s)
+----------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
------------------------------------------------- ADDITIONAL PROFIT ------------------------------------------------
-
+------------------------------------------------ ADDITIONAL PROFIT ---------------------------------------------------
 Additional profit helps you determine if you should build the absolution instead of just selling the intermediates for profit.
 If B is used to build A, and there is profit pB in building and selling B and profit pA in building and selling pA, then
   the additional profit for building A is ap = pA - pB. If ap is negative then you loose money in building A. It would be more
@@ -376,3 +373,4 @@ of each node we build. The amount we could sell a Y for depends on what that Y i
 In theory everything could be sold at min sell. But things like processed moon mats have low volume
 at market and so the only feasible way (er the only way i want to try) to liquidate is
 to sell to buy orders.
+----------------------------------------------------------------------------------------------------------------------
