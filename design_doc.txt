@@ -96,84 +96,28 @@ in that case I have to load from https://images.evetech.net/types/{itemID}/icon
 ----------------------------------------------------------------------------------------------------------------------
 
 -------------------------------------------------------SDE------------------------------------------------------------
+todo make these map descriptions correct
 map : skill -> mfg/rtn -> me/te -> bonus
-A list of skills that affect manufacturing & reactions and the bonus that they give.
-  NEED FUNCTION IS_SUB_SKILL(A,B)
-
-  for each skill
-    find skill typeID in typeDogma.yaml
-
-  if an item is rtn
-    then it is affected by reactions skill
-  else
-    it has a number of science skills
-    it is potentially affected by adv indy
-
-  Rows with BP id in industryActivitySkills gives required skills
-
 map : structure -> (activity type, bonusType -> value)
-Structures
-35836
-  Match hoboleaks attributeID with attributeID in typeDogma
-  dont forget job isk bonus
-
 map : rig -> (activity type, bonus domain, bonusType -> value )
-A list of rigs that affect mfg&rtn and the bonus that they give when installed in wormholes.
-  Need hoboleaks expanded SDE data
-    Industry Modifier Sources
-    Industry Target Filters
-      With the rig typeID I can get rig bonus amount.
-      But I cannot get which items it is applied to, from the SDE.
-      That is what these maps are for: to map from rig to item.
-
-  Use location of rig that gives max bonus
-
 map : implant -> mfg te bonus
-  27170 : BX-801  1% bonus to all mfg times
-  27167 : BX-802  2% bonus to all mfg times
-  27171 : BX-804  4% bonus to all mfg times
-
 map : tid -> blueprint
-List all buildable items
-  Filter unwanted items like
-    civilian after burner
-    test reaction blueprint
-
-  Note blueprint type (mfg / rtn)
-  Note blueprint required skills
-
-  dont store blueprint name
-    store bool to decide if it is
-      produced item name + "Blueprint"
-      or 
-      produced item name + "Reaction Formula"
-
 map : tid -> item
-for each blueprint
-  add it's product id and material input to list
-  DISREGARD BLUEPRINT TID
 
-Note: do not cache name -> tid. that could be costly with having tons of items. Instead compute it.
-
-Choose depth at which all times are combined into single category
+Note: Use item name instead of blueprint name everywhere.
+      There are only a few cases where the item name is not exactly contained in the blueprint name
 
 Have custom (per item/category) display formats
   Categories // LOW PRIORITY
     Categories in eve can be very verbose. users do not need a divided list to break down the large/medium/small types of trig ammo.
     It is much better if I just combine those categories.
 
+  Choose depth at which all times are combined into single category
 
-  Custom build amounts for heuristic profit% calculations in the Browse window
+  Custom build amounts for heuristic profit% calculations in the Browse window // LOW PRIOR
     Idk maybe there is a way to automatically choose build amounts to calculate an approximate profit percent.
     But, if there really is not then I can customize things :/
     But, I'd prefer not to though, if some new item comes to the market, then what do I do?
-
-
-Filter bad items
-  There are bp's where the output item is in the input list (Silo bp). i think this only happens for disabled items.
-  If a BP has a circular dependency tree then delete the BP
-
-  Will need to do some data exploration to make sure that I am including only the items I want my tool to be able to build
 ----------------------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------- FEATURES --------------------------------------------------------
@@ -230,7 +174,11 @@ Make input boxes simple.
 
   Red box on invalid input
 
-All data tables are categorized tables using breadcrumb navigation
+Not all data tables are categorized tables using breadcrumb navigation.
+  the browser window is. however the other tables merely have a category column
+  thus allowing the sorting by category but not enforcing it.
+  hmmm
+  possibly have category sorting be optional where the breadcrumb appears when that option is selected
 
 Options ### see BUILD CUSTOMIZATIONS section above for more details about options
 
@@ -280,6 +228,23 @@ Search/Browse // HIGH PRIORITY
   (Add, icon, name, cost?, profit%, category breadcrumb snippet)
   Heuristic list // MEDIUM PRIORITY
 
+  New idea:
+    put breadcrumb row at top of list, right under the search bar
+    have a cursor (highlighted row) within the list that can be moved by
+      cursor hover
+      keyboard
+      mouse wheel
+    this allows the simplification that the breadcrumb is in one spot and is at the top
+    while not introducing the ambiguity of what item the breadcrumb describes when the
+    viewing window is at the bottom of the list
+
+  The categorized sort is successive bucket sorting.
+  I mean, there is an easier way i guess.
+  Assign each category an integer where int(category 2) = int(last sub category of category 1) + 1
+  Each cateory has a coordinate in the category tree
+  coord = ?
+  idk yet ill figure it out.
+
   Not doing profit % yet
   Can tackle that later, like way later.
 
@@ -298,18 +263,15 @@ Optimize - desktop // MEDIUM PRIORITY
 
 Targets // HIGH PRIORITY
   Items the user has 'added' to the build
-    (x, icon, name, runs, cost, profit, %, build ppu(avg), sell ppu(avg), BpOptions(sorts by whether has options))
+    (x, icon, name, runs, cost, profit, %, build ppu(avg), sell ppu(avg), BpOptions)
 
   BpOptions
-    Story, faction, and t2 bp's can have blueprint options.
-    Everything else is set globally
     ME, TE, maxBps & maxRunsPerBp
-
     If maxBps & maxRunsPerBp are not set then those values are set to the global values?
 
 Intermediates
   A list of all intermediate items to build before building Targets
-  (icon, name, value, build/buy, BpOptions (sorts by whether has options))
+  (icon, name, value, build/buy, BpOptions)
 
 Inventory
   (icon, name, remaining, value)
