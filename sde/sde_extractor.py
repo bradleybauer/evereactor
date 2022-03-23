@@ -24,8 +24,10 @@ class SDE_Extractor:
         return parentGroup == group or self._getIfInMarketGroup(parentGroup, group)
 
     def getItems(self):
-        """Returns the relavent information of all published items."""
-        # name localizations, marketGroupId, volume or repackaged volume
+        """
+        Returns the relavent information of all published items.
+        typeID -> (name localizations, marketGroupId, volume or repackaged volume)
+        """
         items = {}
         for tid in self.sde.typeIDs:
             if not self._isPublished(tid):
@@ -69,7 +71,7 @@ class SDE_Extractor:
         return isPublished and hasActivities and isProductPublished and isNormalBp
 
     def getItem2Blueprint(self):
-        """Returns the typeIDs of all buildable items."""
+        """Returns the blueprint info for buildable items."""
         item2bp = {}
         for tid in self.sde.blueprints:
             if not self._filterBP(tid):
@@ -83,9 +85,9 @@ class SDE_Extractor:
                     for pair in bp['activities'][activity]['materials']:
                         item2bp[tid]['materials'][pair['typeID']] = pair['quantity']
                     assert (1 == len(bp['activities'][activity]['products']))
-                    item2bp[tid]['products'] = {
-                        bp['activities'][activity]['products'][0]['typeID']: bp['activities'][activity]['products'][0]['quantity']
-                    }
+                    productID = bp['activities'][activity]['products'][0]['typeID']
+                    productQuantity = bp['activities'][activity]['products'][0]['quantity']
+                    item2bp[tid]['products'] = {productID: productQuantity}
                     item2bp[tid]['time'] = bp['activities'][activity]['time']
                     if 'skills' in bp['activities'][activity]:
                         item2bp[tid]['skills'] = set()
