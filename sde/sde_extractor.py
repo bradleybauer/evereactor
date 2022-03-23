@@ -4,7 +4,6 @@ class SDE_Extractor:
     def __init__(self, sde):
         self.sde = sde
         self.possibleActivities = {'manufacturing', 'reaction'}
-        self.bonusTypes = {'material', 'cost', 'time'}
 
     def _isPublished(self, tid):
         """Returns whether the type is published."""
