@@ -84,17 +84,24 @@ msix_config for startmenu stuff google 'how to create msix_config windows'
 Setup CI? so that people can be sure that exe hosted on github releases has been built by the code
 ----------------------------------------------------------------------------------------------------------------------
 
+-------------------------------------------------------ICONS------------------------------------------------------------
+Use
+  https://images.evetech.net/types/10/render?size=512
+or
+  https://images.evetech.net/types/10/icon
+to get images for items
+
+for some items https://images.evetech.net/types/{itemID}/render?size={power of 2 size} does not return anything
+in that case I have to load from https://images.evetech.net/types/{itemID}/icon
+----------------------------------------------------------------------------------------------------------------------
+
 -------------------------------------------------------SDE------------------------------------------------------------
 map : skill -> mfg/rtn -> me/te -> bonus
 A list of skills that affect manufacturing & reactions and the bonus that they give.
-  skills are in categoryID = 16
-
   NEED FUNCTION IS_SUB_SKILL(A,B)
 
   for each skill
     find skill typeID in typeDogma.yaml
-      bonus amount per level is given in dgmTypeAttributes.valueFloat field
-      hard code whether to apply global or specific item
 
   if an item is rtn
     then it is affected by reactions skill
@@ -104,29 +111,13 @@ A list of skills that affect manufacturing & reactions and the bonus that they g
 
   Rows with BP id in industryActivitySkills gives required skills
 
-map : structure -> mfg/rtn -> me/te -> bonus
-Structures are items with groupID=1404 for engineering complex or 1406 for refinerys
-  JUST HARDCODE BONUSES!!!
+map : structure -> (activity type, bonusType -> value)
+Structures
+35836
   Match hoboleaks attributeID with attributeID in typeDogma
-    dont forget job isk bonus
-    Raitaru = 35825
-      1% material bonus
-      3% cost bonus
-      15% time bonus
-    Azbel = 35826
-      1% material bonus
-      4% cost bonus
-      20% time bonus
-    Sotiyo = 35827
-      1% material bonus
-      5% cost bonus
-      30% time bonus
-    Athanor = 35835
-      no bonuses to rtn
-    Tatara = 35836
-      25% time bonus
+  dont forget job isk bonus
 
-map : rig -> mfg/rtn -> me/te -> bonus as python fraction
+map : rig -> (activity type, bonus domain, bonusType -> value )
 A list of rigs that affect mfg&rtn and the bonus that they give when installed in wormholes.
   Need hoboleaks expanded SDE data
     Industry Modifier Sources
