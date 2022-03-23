@@ -55,33 +55,43 @@ class SDE_Extractor:
             items[tid] = item
         return items
 
-    def _filterBP(self, tid):
-        isPublished = self._isPublished(tid)
-        hasActivities = 0 < len(set(self.possibleActivities).intersection(set(self.sde.blueprints[tid]['activities'])))
+    def _filterBP(self, bid):
+        isPublished = self._isPublished(bid)
         isProductPublished = True
         hasMaterials = True
         hasProductAsAnInput = False
+        allMaterialsAreOnTheMarket = True
+        productIsOnTheMarket = True
+        hasActivities = 0 < len(set(self.possibleActivities).intersection(set(self.sde.blueprints[bid]['activities'])))
+
         for activity in self.possibleActivities:  # choose the activity
-            if activity in self.sde.blueprints[tid]['activities']:
-                assert (0 == len((self.possibleActivities - {activity}).intersection(self.sde.blueprints[tid]['activities'])))
-                if 'products' not in self.sde.blueprints[tid]['activities'][activity]:
+            if activity in self.sde.blueprints[bid]['activities']:
+                assert (0 == len((self.possibleActivities - {activity}).intersection(self.sde.blueprints[bid]['activities'])))
+                if 'products' not in self.sde.blueprints[bid]['activities'][activity]:
                     isProductPublished = False
                     break
-                products = self.sde.blueprints[tid]['activities'][activity]['products']
+                products = self.sde.blueprints[bid]['activities'][activity]['products']
                 assert (len(products) == 1)
                 productTID = products[0]['typeID']
                 if productTID not in self.sde.typeIDs or not self._isPublished(productTID):
                     isProductPublished = False
                     break
-                if 'materials' not in self.sde.blueprints[tid]['activities'][activity]:
+                if 'marketGroupID' not in self.sde.typeIDs[productTID]:
+                    productIsOnTheMarket = False
+                    break
+                if 'materials' not in self.sde.blueprints[bid]['activities'][activity]:
                     hasMaterials = False
                     break
-                for material in self.sde.blueprints[tid]['activities'][activity]['materials']:
-                    if material['typeID'] == productTID:
+                for material in self.sde.blueprints[bid]['activities'][activity]['materials']:
+                    materialID = material['typeID']
+                    if materialID == productTID:
                         hasProductAsAnInput = True
                         break
+                    if 'marketGroupID' not in self.sde.typeIDs[materialID]:
+                        allMaterialsAreOnTheMarket = False
+                        break
                 break
-        return isPublished and hasActivities and isProductPublished and hasMaterials and not hasProductAsAnInput
+        return isPublished and hasActivities and isProductPublished and hasMaterials and not hasProductAsAnInput and allMaterialsAreOnTheMarket and productIsOnTheMarket
 
     def _getNodesInTree(self, root, neighbors):
         ret = {root}
@@ -124,25 +134,25 @@ class SDE_Extractor:
         """Returns the blueprint info for buildable items."""
         skill2parents = extractor._getSkill2Parents()
         item2bp = {}
-        for tid in self.sde.blueprints:
-            if not self._filterBP(tid):
+        for bid in self.sde.blueprints:
+            if not self._filterBP(bid):
                 continue
-            item2bp[tid] = {}
-            bp = self.sde.blueprints[tid]
+            item2bp[bid] = {}
+            bp = self.sde.blueprints[bid]
             for activity in bp['activities']:
                 if activity in self.possibleActivities:
-                    item2bp[tid]['activity'] = activity
-                    item2bp[tid]['materials'] = {}
+                    item2bp[bid]['activity'] = activity
+                    item2bp[bid]['materials'] = {}
                     for pair in bp['activities'][activity]['materials']:
-                        item2bp[tid]['materials'][pair['typeID']] = pair['quantity']
+                        item2bp[bid]['materials'][pair['typeID']] = pair['quantity']
                     assert (1 == len(bp['activities'][activity]['products']))
                     productID = bp['activities'][activity]['products'][0]['typeID']
                     productQuantity = bp['activities'][activity]['products'][0]['quantity']
-                    item2bp[tid]['products'] = {productID: productQuantity}
-                    item2bp[tid]['time'] = bp['activities'][activity]['time']
+                    item2bp[bid]['products'] = {productID: productQuantity}
+                    item2bp[bid]['time'] = bp['activities'][activity]['time']
                     if 'skills' in bp['activities'][activity]:
                         skills = {pair['typeID'] for pair in bp['activities'][activity]['skills']}
-                        item2bp[tid]['skills'] = self._getBlueprintSkills(skills, skill2parents, skillsOfInterest)
+                        item2bp[bid]['skills'] = self._getBlueprintSkills(skills, skill2parents, skillsOfInterest)
                     break  # a bp can contain only one of the two possible activities
         return item2bp
 
