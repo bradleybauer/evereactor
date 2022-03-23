@@ -59,7 +59,8 @@ class SDE_Extractor:
         isPublished = self._isPublished(tid)
         hasActivities = 0 < len(set(self.possibleActivities).intersection(set(self.sde.blueprints[tid]['activities'])))
         isProductPublished = True
-        isNormalBp = True
+        hasMaterials = True
+        hasProductAsAnInput = False
         for activity in self.possibleActivities:  # choose the activity
             if activity in self.sde.blueprints[tid]['activities']:
                 assert (0 == len((self.possibleActivities - {activity}).intersection(self.sde.blueprints[tid]['activities'])))
@@ -73,14 +74,14 @@ class SDE_Extractor:
                     isProductPublished = False
                     break
                 if 'materials' not in self.sde.blueprints[tid]['activities'][activity]:
-                    isNormalBp = False
+                    hasMaterials = False
                     break
                 for material in self.sde.blueprints[tid]['activities'][activity]['materials']:
                     if material['typeID'] == productTID:
-                        isNormalBp = False
+                        hasProductAsAnInput = True
                         break
                 break
-        return isPublished and hasActivities and isProductPublished and isNormalBp
+        return isPublished and hasActivities and isProductPublished and hasMaterials and not hasProductAsAnInput
 
     def _getNodesInTree(self, root, neighbors):
         ret = {root}
