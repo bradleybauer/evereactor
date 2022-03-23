@@ -36,6 +36,8 @@ class SDE_Extractor:
             item['name'] = sde.typeIDs[tid]['name']
             if 'marketGroupID' in sde.typeIDs[tid]:
                 item['marketGroupID'] = sde.typeIDs[tid]['marketGroupID']
+            if 'groupID' in sde.typeIDs[tid]:
+                item['groupID'] = sde.typeIDs[tid]['groupID']
             if tid in sde.hoboleaksRepackagedVolumes:
                 item['volume'] = sde.hoboleaksRepackagedVolumes[tid]
             elif 'volume' in sde.typeIDs[tid]:
