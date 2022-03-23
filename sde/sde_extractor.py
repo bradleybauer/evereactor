@@ -99,8 +99,29 @@ class SDE_Extractor:
             ret |= self._getNodesInTree(skill, skill2parents)
         return ret.intersection(set(skillsOfInterest))
 
-    def getItem2Blueprint(self, skill2parents, skillsOfInterest):
+    def _getSkill2Parents(self):
+        """Returns a map from skill id to skill parents for all skills with parents."""
+        sde = self.sde
+        skills = {}
+        for tid in sde.typeIDs:
+            if not self._isPublished(tid):
+                continue
+            if 'marketGroupID' not in sde.typeIDs[tid]:
+                continue
+            requiredSkillsAttributes = {182, 183, 184, 1285, 1289}
+            parents = set()
+            if tid in sde.typeDogma:
+                for pair in sde.typeDogma[tid]['dogmaAttributes']:
+                    attributeID = pair['attributeID']
+                    if attributeID in requiredSkillsAttributes:
+                        parents.add(int(pair['value']))
+            if len(parents) > 0:
+                skills[tid] = parents
+        return skills
+
+    def getItem2Blueprint(self, skillsOfInterest):
         """Returns the blueprint info for buildable items."""
+        skill2parents = extractor._getSkill2Parents()
         item2bp = {}
         for tid in self.sde.blueprints:
             if not self._filterBP(tid):
@@ -123,26 +144,6 @@ class SDE_Extractor:
                         item2bp[tid]['skills'] = self._getBlueprintSkills(skills, skill2parents, skillsOfInterest)
                     break  # a bp can contain only one of the two possible activities
         return item2bp
-
-    def getSkill2Parents(self):
-        """Returns a map from skill id to skill parents for all skills with parents."""
-        sde = self.sde
-        skills = {}
-        for tid in sde.typeIDs:
-            if not self._isPublished(tid):
-                continue
-            if 'marketGroupID' not in sde.typeIDs[tid]:
-                continue
-            requiredSkillsAttributes = {182, 183, 184, 1285, 1289}
-            parents = set()
-            if tid in sde.typeDogma:
-                for pair in sde.typeDogma[tid]['dogmaAttributes']:
-                    attributeID = pair['attributeID']
-                    if attributeID in requiredSkillsAttributes:
-                        parents.add(int(pair['value']))
-            if len(parents) > 0:
-                skills[tid] = parents
-        return skills
 
     def getProductionSkills(self):
         """
@@ -199,7 +200,7 @@ class SDE_Extractor:
             if not (isScienceMfg or isProductionMfg or isResourceProcessingRtn):
                 continue
 
-            skill = {'activity': activity, 'bonus': bonus}
+            skill = {'name': sde.typeIDs[tid]['name'], 'activity': activity, 'bonus': bonus}
             # print(tid, sde.typeIDs[tid]['name']['en'], ' ' * (42 - len(str(tid) + sde.typeIDs[tid]['name']['en'])), skill)
             # skill['activity'] = 'manufacturing' if 'manufacturing' in sde.hoboleaksModifierSources[tid] else 'reaction'
 
@@ -224,6 +225,7 @@ class SDE_Extractor:
 
             # athanor has no bonuses and so is not in hoboleaksModifierSources
             if tid not in sde.hoboleaksModifierSources:
+                structure['name'] = sde.typeIDs[tid]['name']
                 structure['activity'] = 'reaction'
                 structures[tid] = structure
                 continue
@@ -245,6 +247,7 @@ class SDE_Extractor:
                     if abs(bonus) > 0.00001:
                         structure[bonusType] = bonus
 
+            structure['name'] = sde.typeIDs[tid]['name']
             structures[tid] = structure
         return structures
 
@@ -337,6 +340,7 @@ class SDE_Extractor:
                         for gid in sde.hoboleaksTargetFilters[filterID]['groupIDs']:
                             rig['domain']['groupIDs'].add(gid)
 
+            rig['name'] = sde.typeIDs[tid]['name']
             rigs[tid] = rig
             # print(sde.typeIDs[tid]['name']['en'], rig)
             # print(rig)
@@ -361,7 +365,7 @@ class SDE_Extractor:
                 if attributeID == mfgBonusAttrib:
                     bonus = attrib['value']
                     break
-            implants[tid] = {'activity': 'manufacturing', 'bonus': bonus}
+            implants[tid] = {'name': sde.typeIDs[tid]['name'], 'activity': 'manufacturing', 'bonus': bonus}
         return implants
 
 
@@ -378,10 +382,6 @@ if __name__ == "__main__":
     for k, v in extractor.getIndustryRigsAndBonuses().items():
         print(k, v)
 
-    print("\n\nSkillsParents")
-    skill2parents = extractor.getSkill2Parents()
-    print(skill2parents)
-
     print("\n\nProductionSkills")
     productionSkills = extractor.getProductionSkills()
     for k, v in productionSkills.items():
@@ -392,7 +392,7 @@ if __name__ == "__main__":
         print(k, v)
 
     print("\n\nBlueprints")
-    bps = extractor.getItem2Blueprint(skill2parents, productionSkills.keys())
+    bps = extractor.getItem2Blueprint(productionSkills.keys())
     for k, v in bps.items():
         print(k, v)
     print('Number of blueprints accepted:', len(bps))
