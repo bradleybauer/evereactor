@@ -1,4 +1,5 @@
 import pickle as pkl
+import json
 
 
 def _openFile(file):
@@ -23,3 +24,23 @@ class CCP_SDE:
         self.groupIDs = _openFile('groupIDs')
         self.categoryIDs = _openFile('categoryIDs')
         self.marketGroups = _openFile('marketGroups')
+
+        self.hoboleaksModifierSources = None
+        self.hoboleaksTargetFilters = None
+        self.hoboleaksRepackagedVolumes = None
+
+        with open('./hoboleaks/industrymodifiersources.json', 'r') as f:
+            d = json.loads(f.read())
+            self.hoboleaksModifierSources = {}
+            for k, v in d.items():
+                self.hoboleaksModifierSources[int(k)] = v
+        with open('./hoboleaks/industrytargetfilters.json', 'r') as f:
+            d = json.loads(f.read())
+            self.hoboleaksTargetFilters = {}
+            for k, v in d.items():
+                self.hoboleaksTargetFilters[int(k)] = v
+        with open('./hoboleaks/repackagedvolumes.json', 'r') as f:
+            d = json.loads(f.read())
+            self.hoboleaksRepackagedVolumes = {}
+            for k, v in d.items():
+                self.hoboleaksRepackagedVolumes[int(k)] = v
