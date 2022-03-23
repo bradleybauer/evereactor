@@ -22,14 +22,25 @@ class SDE_Extractor:
             return False
         return parentGroup == group or self._getIfInMarketGroup(parentGroup, group)
 
-    def getItems(self):
+    def _getAllMaterialsAndProducts(self, blueprints):
+        ids = set()
+        for bpID in blueprints:
+            bp = blueprints[bpID]
+            ids = ids.union(set(bp['materials']))
+            ids = ids.union(set(bp['products']))
+        return ids
+
+    def getIndustryItems(self, blueprints):
         """
-        Returns the relavent information of all published items.
+        Returns the relavent information of all items involved in production.
         typeID -> (name localizations, marketGroupId, volume or repackaged volume)
         """
+        ids: set = self._getAllMaterialsAndProducts(blueprints)
         items = {}
         for tid in self.sde.typeIDs:
             if not self._isPublished(tid):
+                continue
+            if tid not in ids:
                 continue
             item = {}
             item['name'] = sde.typeIDs[tid]['name']
@@ -343,12 +354,16 @@ if __name__ == "__main__":
     sde = CCP_SDE()
     extractor = SDE_Extractor(sde)
 
-    print(len(extractor.getItems()))
-
     print("\n\nBlueprints")
-    for k, v in extractor.getItem2Blueprint().items():
+    bps = extractor.getItem2Blueprint()
+    for k, v in bps.items():
         print(k, v)
     print('Number of blueprints accepted:', len(extractor.getItem2Blueprint()))
+
+    print('\n\nIndustry Items')
+    for k, v in extractor.getIndustryItems(bps).items():
+        print(k, v)
+    print(len(extractor.getIndustryItems(bps)))
 
     print("\n\nStructures")
     for k, v in extractor.getStructuresAndBonuses().items():
