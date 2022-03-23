@@ -28,7 +28,7 @@ class SDE_Extractor:
         # name localizations, marketGroupId, volume or repackaged volume
         items = {}
         for tid in self.sde.typeIDs:
-            if not self.sde.typeIDs[tid]['published']:
+            if not self._isPublished(tid):
                 continue
             item = {}
             item['name'] = sde.typeIDs[tid]['name']
@@ -42,7 +42,7 @@ class SDE_Extractor:
         return items
 
     def _filterBP(self, tid):
-        isPublished = self.sde.typeIDs[tid]['published']
+        isPublished = self._isPublished(tid)
         hasActivities = 0 < len(set(self.possibleActivities).intersection(set(self.sde.blueprints[tid]['activities'])))
         isProductPublished = True
         isNormalBp = True
@@ -55,7 +55,7 @@ class SDE_Extractor:
                 products = self.sde.blueprints[tid]['activities'][activity]['products']
                 assert (len(products) == 1)
                 productTID = products[0]['typeID']
-                if productTID not in self.sde.typeIDs or not self.sde.typeIDs[productTID]['published']:
+                if productTID not in self.sde.typeIDs or not self._isPublished(productTID):
                     isProductPublished = False
                     break
                 if 'materials' not in self.sde.blueprints[tid]['activities'][activity]:
@@ -99,7 +99,7 @@ class SDE_Extractor:
         sde = self.sde
         skills = {}
         for tid in sde.typeIDs:
-            if not sde.typeIDs[tid]['published']:
+            if not self._isPublished(tid):
                 continue
             if 'marketGroupID' not in sde.typeIDs[tid]:
                 continue
@@ -122,7 +122,7 @@ class SDE_Extractor:
         sde = self.sde
         skills = {}
         for tid in sde.typeIDs:
-            if not sde.typeIDs[tid]['published']:
+            if not self._isPublished(tid):
                 continue
             if 'marketGroupID' not in sde.typeIDs[tid]:
                 continue
@@ -181,7 +181,7 @@ class SDE_Extractor:
         sde = self.sde
         structures = {}
         for tid in sde.typeIDs:
-            if not sde.typeIDs[tid]['published']:
+            if not self._isPublished(tid):
                 continue
             if 'marketGroupID' not in sde.typeIDs[tid]:
                 continue
@@ -226,7 +226,7 @@ class SDE_Extractor:
         sde = self.sde
         rigs = {}
         for tid in sde.typeIDs:
-            if not sde.typeIDs[tid]['published']:
+            if not self._isPublished(tid):
                 continue
             if 'marketGroupID' not in sde.typeIDs[tid]:
                 continue
@@ -317,7 +317,7 @@ class SDE_Extractor:
         """Returns all industry implants and their bonuses."""
         implants = {}
         for tid in sde.typeIDs:
-            if not sde.typeIDs[tid]['published']:
+            if not self._isPublished(tid):
                 continue
             if 'marketGroupID' not in sde.typeIDs[tid]:
                 continue
