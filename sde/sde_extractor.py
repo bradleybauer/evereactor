@@ -82,7 +82,24 @@ class SDE_Extractor:
                 break
         return isPublished and hasActivities and isProductPublished and isNormalBp
 
-    def getItem2Blueprint(self):
+    def _getNodesInTree(self, root, neighbors):
+        ret = {root}
+        if root in neighbors:
+            for neighbor in neighbors[root]:
+                ret |= self._getNodesInTree(neighbor, neighbors)
+        return ret
+
+    def _getBlueprintSkills(self, skills, skill2parents, skillsOfInterest):
+        """
+        Find the intersection between all skills (that are in the skill forest where roots are skills in skills and edges are in skill2parents)
+        and skills in skillsOfInterest.
+        """
+        ret = set()
+        for skill in skills:
+            ret |= self._getNodesInTree(skill, skill2parents)
+        return ret.intersection(set(skillsOfInterest))
+
+    def getItem2Blueprint(self, skill2parents, skillsOfInterest):
         """Returns the blueprint info for buildable items."""
         item2bp = {}
         for tid in self.sde.blueprints:
@@ -102,9 +119,8 @@ class SDE_Extractor:
                     item2bp[tid]['products'] = {productID: productQuantity}
                     item2bp[tid]['time'] = bp['activities'][activity]['time']
                     if 'skills' in bp['activities'][activity]:
-                        item2bp[tid]['skills'] = set()
-                        for pair in bp['activities'][activity]['skills']:
-                            item2bp[tid]['skills'].add(pair['typeID'])
+                        skills = {pair['typeID'] for pair in bp['activities'][activity]['skills']}
+                        item2bp[tid]['skills'] = self._getBlueprintSkills(skills, skill2parents, skillsOfInterest)
                     break  # a bp can contain only one of the two possible activities
         return item2bp
 
@@ -354,17 +370,6 @@ if __name__ == "__main__":
     sde = CCP_SDE()
     extractor = SDE_Extractor(sde)
 
-    print("\n\nBlueprints")
-    bps = extractor.getItem2Blueprint()
-    for k, v in bps.items():
-        print(k, v)
-    print('Number of blueprints accepted:', len(extractor.getItem2Blueprint()))
-
-    print('\n\nIndustry Items')
-    for k, v in extractor.getIndustryItems(bps).items():
-        print(k, v)
-    print(len(extractor.getIndustryItems(bps)))
-
     print("\n\nStructures")
     for k, v in extractor.getStructuresAndBonuses().items():
         print(k, v)
@@ -374,12 +379,25 @@ if __name__ == "__main__":
         print(k, v)
 
     print("\n\nSkillsParents")
-    print(extractor.getSkill2Parents())
+    skill2parents = extractor.getSkill2Parents()
+    print(skill2parents)
 
     print("\n\nProductionSkills")
-    for k, v in extractor.getProductionSkills().items():
+    productionSkills = extractor.getProductionSkills()
+    for k, v in productionSkills.items():
         print(k, v)
 
     print("\n\nImplants")
     for k, v in extractor.getImplants().items():
         print(k, v)
+
+    print("\n\nBlueprints")
+    bps = extractor.getItem2Blueprint(skill2parents, productionSkills.keys())
+    for k, v in bps.items():
+        print(k, v)
+    print('Number of blueprints accepted:', len(bps))
+
+    print('\n\nIndustry Items')
+    for k, v in extractor.getIndustryItems(bps).items():
+        print(k, v)
+    print(len(extractor.getIndustryItems(bps)))
