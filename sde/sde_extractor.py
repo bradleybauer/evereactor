@@ -226,8 +226,8 @@ class SDE_Extractor:
 
             # athanor has no bonuses and so is not in hoboleaksModifierSources
             if tid not in sde.hoboleaksModifierSources:
-                structure['name'] = sde.typeIDs[tid]['name']
                 structure['activity'] = 'reaction'
+                structure['name'] = sde.typeIDs[tid]['name']
                 structures[tid] = structure
                 continue
 
@@ -246,7 +246,9 @@ class SDE_Extractor:
                     bonusAttrib = bonusDict['dogmaAttributeID']
                     bonus = attributes[bonusAttrib]
                     if abs(bonus) > 0.00001:
-                        structure[bonusType] = bonus
+                        if 'bonuses' not in structure:
+                            structure['bonuses'] = {}
+                        structure['bonuses'][bonusType] = bonus
 
             structure['name'] = sde.typeIDs[tid]['name']
             structures[tid] = structure
