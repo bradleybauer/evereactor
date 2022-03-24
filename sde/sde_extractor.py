@@ -455,7 +455,7 @@ class SDE_Extractor:
         region2system = {theForgeID: [jitaID, perimeterID], domainID: [amarrID, ashabID]}
         system2name = {}
 
-        # get localizations for laungauges
+        # get localizations for system names
         def getUrl(i, l):
             return "https://esi.evetech.net/latest/universe/systems/{}/?datasource=tranquility&language={}".format(i, l)
 
