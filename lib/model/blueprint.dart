@@ -1,44 +1,31 @@
+import 'industry_type.dart';
+
 class Blueprint {
-  final int typeID;
-  final String typeName;
+  final IndustryType industryType;
   final int productTypeID;
-  final int iconID;
   final int numProducedPerRun;
-  final List<int> inputTypeIDs;
-  final List<int> inputQuantities;
-  final int baseTimePerRunSeconds;
+  final Map<int, int> input2quantity;
+  final int timePerRun;
+  final List<int> skills;
 
   const Blueprint(
-    this.typeID,
-    this.typeName,
+    this.industryType,
     this.productTypeID,
-    this.iconID,
     this.numProducedPerRun,
-    this.inputTypeIDs,
-    this.inputQuantities,
-    this.baseTimePerRunSeconds,
+    this.input2quantity,
+    this.timePerRun,
+    this.skills,
   );
-
-  int getBaseNumChildNeeded(int childID) {
-    for (int i = 0; i < inputTypeIDs.length; i++) {
-      if (childID == inputTypeIDs[i]) {
-        return inputQuantities[i];
-      }
-    }
-    return 0;
-  }
 
   @override
   String toString() {
     return {
-      'typeID': typeID,
-      'typeName': typeName,
+      'industryType': industryType,
       'productTypeID': productTypeID,
-      'iconID': iconID,
       'quantity': numProducedPerRun,
-      'inputTypeIDs': inputTypeIDs,
-      'inputQuantities': inputQuantities,
-      'baseTimePerRunSeconds': baseTimePerRunSeconds
+      'input2quantity': input2quantity,
+      'timePerRun': timePerRun,
+      'skills': skills,
     }.toString();
   }
 }
