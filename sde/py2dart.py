@@ -170,7 +170,7 @@ class Py2Dart:
         code += self._dict2map('implants', 'int', 'Implant', implants, self._implant)
         code += self._dict2map('group2category', 'int', 'int', group2category, self._int)
         code += self._dict2map('regions', 'int', 'List<int>', regions, self._ints)
-        code += self._dict2map('systems', 'int', 'String', systems, self._str)
+        code += self._dict2map('systems', 'int', 'Map<String,String>', systems, self._str2str)
 
         # # Dart run the output to check for syntax errors
         # code += 'void main() {'
