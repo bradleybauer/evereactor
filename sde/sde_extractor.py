@@ -67,6 +67,7 @@ class SDE_Extractor:
         productIsOnTheMarket = True
         requiresSkills = True
         hasActivities = 0 < len(set(self.possibleActivities).intersection(set(self.sde.blueprints[bid]['activities'])))
+        isExpired = False
 
         bp = self.sde.blueprints[bid]
 
@@ -101,8 +102,11 @@ class SDE_Extractor:
                 if 'skills' not in bp['activities'][activity]:
                     requiresSkills = False
                     break
+                if 'Expired' in self.sde.typeIDs[productTID]['name']['en']:
+                    isExpired = True
+                    break
                 break
-        return isPublished and hasActivities and isProductPublished and hasMaterials and not hasProductAsAnInput and allMaterialsAreOnTheMarket and productIsOnTheMarket and requiresSkills
+        return isPublished and hasActivities and isProductPublished and hasMaterials and not hasProductAsAnInput and allMaterialsAreOnTheMarket and productIsOnTheMarket and requiresSkills and not isExpired
 
     def _getNodesInTree(self, root, neighbors):
         ret = {root}
