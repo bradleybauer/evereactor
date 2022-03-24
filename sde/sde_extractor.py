@@ -9,9 +9,6 @@ class SDE_Extractor:
         """Returns whether the type is published."""
         return self.sde.typeIDs[tid]['published'] == 1
 
-    def _getName(self, tid):
-        return self.sde.typeIDs[tid]['name']['en']
-
     def _getIfInMarketGroup(self, marketGroup, group):
         """Returns whether marketGroup is a subgroup of group."""
         if marketGroup == group:
