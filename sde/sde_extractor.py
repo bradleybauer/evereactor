@@ -35,6 +35,7 @@ class SDE_Extractor:
         Returns the relavent information of all items involved in production.
         typeID -> (name localizations, marketGroupId, volume or repackaged volume)
         """
+        sde = self.sde
         ids: set = self._getAllMaterialsAndProducts(blueprints)
         items = {}
         for tid in self.sde.typeIDs:
@@ -132,7 +133,7 @@ class SDE_Extractor:
 
     def getItem2Blueprint(self, skillsOfInterest):
         """Returns the blueprint info for buildable items."""
-        skill2parents = extractor._getSkill2Parents()
+        skill2parents = self._getSkill2Parents()
         item2bp = {}
         for bid in self.sde.blueprints:
             if not self._filterBP(bid):
@@ -212,8 +213,6 @@ class SDE_Extractor:
                 continue
 
             skill = {'name': sde.typeIDs[tid]['name'], 'activity': activity, 'bonus': bonus}
-            # print(tid, sde.typeIDs[tid]['name']['en'], ' ' * (42 - len(str(tid) + sde.typeIDs[tid]['name']['en'])), skill)
-            # skill['activity'] = 'manufacturing' if 'manufacturing' in sde.hoboleaksModifierSources[tid] else 'reaction'
 
             skills[tid] = skill
         return skills
@@ -286,9 +285,6 @@ class SDE_Extractor:
             rig = {}
             rig['activity'] = 'manufacturing' if 'manufacturing' in sde.hoboleaksModifierSources[tid] else 'reaction'
 
-            # output = str(tid) + ", " + self._getName(tid)
-            # output += "\n\tDogmaAttributes" + '\n'
-
             costBonusAttributes = {2595}
             materialBonusAttributes = {2594, 2653, 2714}
             timeBonusAttributes = {2593, 2713}
@@ -300,14 +296,6 @@ class SDE_Extractor:
 
             for pair in sde.typeDogma[tid]['dogmaAttributes']:
                 attributeID = pair['attributeID']
-                # if 'displayNameID' in sde.dogmaAttributes[attributeID]:
-                #     attribDisplay = sde.dogmaAttributes[attributeID]['displayNameID']['en']
-                # elif 'description' in sde.dogmaAttributes[attributeID]:
-                #     attribDisplay = sde.dogmaAttributes[attributeID]['description']
-                # else:
-                #     attribDisplay = attributeID
-                # if attributeID in costBonusAttributes or attributeID in materialBonusAttributes or attributeID in timeBonusAttributes or attributeID in securityMultiplierAttributes:
-                #     output += '\t\t' + str(attributeID) + ':' + str(attribDisplay) + ':' + str(pair['value']) + '\n'
                 attributeValue = pair['value']
                 attributes[attributeID] = attributeValue
                 if attributeID in securityMultiplierAttributes:
@@ -325,7 +313,6 @@ class SDE_Extractor:
                     bonusAttribs['material'] = attributeID
 
             # apply security effects
-            # output += "\tSecurity Updated Attribs\n"
             for securityEffectID in securityEffectIDs:
                 for effect in sde.typeDogma[tid]['dogmaEffects']:
                     if effect['effectID'] == securityEffectID:
@@ -333,7 +320,6 @@ class SDE_Extractor:
                             modified = modification['modifiedAttributeID']
                             if modified in attributes:
                                 attributes[modified] *= securityMultiplier
-                                # output += '\t\t' + str(modified) + " : " + str(attributes[modified]) + '\n'
                         break  # there is only one security effect
 
             rig['bonuses'] = {}
@@ -355,13 +341,11 @@ class SDE_Extractor:
 
             rig['name'] = sde.typeIDs[tid]['name']
             rigs[tid] = rig
-            # print(sde.typeIDs[tid]['name']['en'], rig)
-            # print(rig)
-            # print(output)
         return rigs
 
     def getImplants(self):
         """Returns all industry implants and their bonuses."""
+        sde = self.sde
         implants = {}
         for tid in sde.typeIDs:
             if not self._isPublished(tid):
@@ -381,18 +365,53 @@ class SDE_Extractor:
             implants[tid] = {'name': sde.typeIDs[tid]['name'], 'activity': 'manufacturing', 'bonus': bonus}
         return implants
 
+    def _addSegmentsOfPathToEdgeMap(self, node, edges, getParent):
+        """Adds all the edges on the path from node to the root to the edge map."""
+        if 'parentGroupID' in self.sde.marketGroups[node]:
+            parent = getParent(node)
+        else:
+            return
+        if parent not in edges:
+            edges[parent] = set()
+        edges[parent].add(node)
+        self._addSegmentsOfPathToEdgeMap(parent, edges, getParent)
 
-if __name__ == "__main__":
+    def getMarketGroupNames(self, marketGroupGraph):
+        """Return the market group graph reduced to contain only groups that are relavent to production."""
+        sde = self.sde
+
+        marketGroupNames = {}
+        for k, v in marketGroupGraph.items():
+            marketGroupNames[k] = sde.marketGroups[k]['nameID']
+            for kk in v:
+                marketGroupNames[kk] = sde.marketGroups[kk]['nameID']
+        return marketGroupNames
+
+    def getMarketGroupGraph(self, blueprints):
+        """Return the market group graph reduced to contain only groups that are relavent to production."""
+        sde = self.sde
+
+        marketGraph = {}
+        products = {list(bp['products'].keys())[0] for bp in blueprints.values()}
+        for product in products:
+            productMarketGroup = sde.typeIDs[product]['marketGroupID']
+            self._addSegmentsOfPathToEdgeMap(productMarketGroup, marketGraph, lambda k: sde.marketGroups[k]['parentGroupID'])
+        return marketGraph
+
+
+def __test():
     from ccp_sde import CCP_SDE
     sde = CCP_SDE()
     extractor = SDE_Extractor(sde)
 
     print("\n\nStructures")
-    for k, v in extractor.getStructuresAndBonuses().items():
+    structures = extractor.getStructuresAndBonuses()
+    for k, v in structures.items():
         print(k, v)
 
     print("\n\nRigs")
-    for k, v in extractor.getIndustryRigsAndBonuses().items():
+    rigs = extractor.getIndustryRigsAndBonuses()
+    for k, v in rigs.items():
         print(k, v)
 
     print("\n\nProductionSkills")
@@ -401,7 +420,8 @@ if __name__ == "__main__":
         print(k, v)
 
     print("\n\nImplants")
-    for k, v in extractor.getImplants().items():
+    implants = extractor.getImplants()
+    for k, v in implants.items():
         print(k, v)
 
     print("\n\nBlueprints")
@@ -411,6 +431,23 @@ if __name__ == "__main__":
     print('Number of blueprints accepted:', len(bps))
 
     print('\n\nIndustry Items')
-    for k, v in extractor.getIndustryItems(bps).items():
+    items = extractor.getIndustryItems(bps)
+    for k, v in items.items():
         print(k, v)
-    print(len(extractor.getIndustryItems(bps)))
+    print('Number of items:', len(extractor.getIndustryItems(bps)))
+
+    print('\n\nMarketGroups')
+    marketGroupGraph = extractor.getMarketGroupGraph(bps)
+    marketGroupNames = extractor.getMarketGroupNames(marketGroupGraph)
+    for k in sorted(marketGroupGraph, key=lambda x: marketGroupNames[x]['en']):
+        marketGroupName = marketGroupNames[k]['en']
+        print(marketGroupName + ' ' * (43 - len(marketGroupName)), end=': ')
+        for kk in marketGroupGraph[k]:
+            marketGroupName = marketGroupNames[kk]['en']
+            print(marketGroupName, end=', ')
+        print()
+    print('Number of market groups:', len(marketGroupNames))
+
+
+if __name__ == "__main__":
+    __test()
