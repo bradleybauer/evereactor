@@ -27,7 +27,7 @@ class SDE_Extractor:
         for bpID in blueprints:
             bp = blueprints[bpID]
             ids = ids.union(set(bp['materials']))
-            ids = ids.union(set(bp['products']))
+            ids.add(bp['productID'])
         return ids
 
     def getIndustryItems(self, blueprints):
@@ -149,7 +149,8 @@ class SDE_Extractor:
                     assert (1 == len(bp['activities'][activity]['products']))
                     productID = bp['activities'][activity]['products'][0]['typeID']
                     productQuantity = bp['activities'][activity]['products'][0]['quantity']
-                    item2bp[bid]['products'] = {productID: productQuantity}
+                    item2bp[bid]['productID'] = productID
+                    item2bp[bid]['productQuantity'] = productQuantity
                     item2bp[bid]['time'] = bp['activities'][activity]['time']
                     if 'skills' in bp['activities'][activity]:
                         skills = {pair['typeID'] for pair in bp['activities'][activity]['skills']}
@@ -404,7 +405,7 @@ class SDE_Extractor:
         sde = self.sde
 
         marketGraph = {}
-        products = {list(bp['products'].keys())[0] for bp in blueprints.values()}
+        products = {bp['productID'] for bp in blueprints.values()}
         for product in products:
             productMarketGroup = sde.typeIDs[product]['marketGroupID']
             self._addSegmentsOfPathToEdgeMap(productMarketGroup, marketGraph, lambda k: sde.marketGroups[k]['parentGroupID'])
@@ -418,7 +419,7 @@ class SDE_Extractor:
         """
         sde = self.sde
         group2category = {}
-        products = {list(bp['products'].keys())[0] for bp in blueprints.values()}
+        products = {bp['productID'] for bp in blueprints.values()}
         for product in products:
             groupID = sde.typeIDs[product]['groupID']
             group2category[groupID] = sde.groupIDs[groupID]['categoryID']
