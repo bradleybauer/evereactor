@@ -1,6 +1,5 @@
 Buy dude at everef a coffee
 
-
 ----------------------------------------------------- GOAL -----------------------------------------------------------
 One thing I want to be true about this app is that the scenario where it gives the exact answer is very well defined and thought out ahead of time
   I do mfg and rtns in wormhole space using 1 raitaru and 1 tatara.
@@ -16,9 +15,16 @@ One thing I want to be true about this app is that the scenario where it gives t
   Given all this info, the app should calculate pretty gosh darn exact numbers
 ----------------------------------------------------------------------------------------------------------------------
 
-
 -------------------------------------------------- RESTRICTIONS ------------------------------------------------------
 Assumes structures are located whereever the rigs gives the best bonuses. (LS for thukker rigs)
+
+I am not supporting arbitrary systems. Why?
+  1: Jita & Amarr are the two best high sec trade hubs.
+     If a person does high volume industry for profit then they probably are buy/selling in Amarr & Jita.
+     They are probably, at least, buying in Amarr & Jita.
+     Except possibly they are buying sellling in a large nullsec trade hub.
+
+  2: Supporting private trade hubs would require esi credentials which is something I do not want to deal with atm.
 
 Note - Large 'Sheriff' Shield Extender Blueprint can drop with 20% ME
   https://cdn.discordapp.com/attachments/492765138760237056/932976232474222622/unknown.png
@@ -97,8 +103,8 @@ in that case I have to load from https://images.evetech.net/types/{itemID}/icon
 
 -------------------------------------------------------SDE------------------------------------------------------------
 todo make these map descriptions correct
+map : structure -> (activity type, bonusType -> value, name)
 map : skill -> mfg/rtn -> me/te -> bonus
-map : structure -> (activity type, bonusType -> value)
 map : rig -> (activity type, bonus domain, bonusType -> value )
 map : implant -> mfg te bonus
 map : tid -> blueprint
@@ -149,6 +155,7 @@ Instead my strategy is to optimize for the simple case (hopefully common case, I
   There is only one rig for each bonus but more than three rigs can be applied to a build.
     This simulates multiple structures (to a degree). Maybe I do all my equipment mfg in one structure and all my ship mfg in another.
     To make sure the build IRL works exactly as the solver describes it is my responsibility to do (among other things) the correct production in the correct facility.
+    If two rigs give the same bonus to the same item, then the best bonus is applied? It's just easier this way.
 
   Maybe I will allow ME/TE levels to be set at the ITEM level. (solver can accomodate this atm, I think)
     It would be nice to allow high end bpo's to be set to ME/TE lvl 4 while low end bpo's are set to me/te lvl 5.
