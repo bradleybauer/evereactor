@@ -1,7 +1,12 @@
+from ccp_sde import CCP_SDE
+from my_requests import ParallelRequest
+import json
+
+
 class SDE_Extractor:
     """This class extracts and filters information from the SDE."""
 
-    def __init__(self, sde):
+    def __init__(self, sde: CCP_SDE):
         self.sde = sde
         self.possibleActivities = {'manufacturing', 'reaction'}
 
@@ -443,16 +448,33 @@ class SDE_Extractor:
         theForgeID = sde.theForgeData['regionID']
         domainID = sde.domainData['regionID']
 
-        regions = {theForgeID: [jitaID, perimeterID], domainID: [amarrID, ashabID]}
-        systems = {jitaID: 'Jita', perimeterID: 'Perimeter', amarrID: 'Amarr', ashabID: 'Ashab'}
+        region2system = {theForgeID: [jitaID, perimeterID], domainID: [amarrID, ashabID]}
+        system2name = {}
 
-        return regions, systems
+        # get localizations for laungauges
+        def getUrl(i, l):
+            return "https://esi.evetech.net/latest/universe/systems/{}/?datasource=tranquility&language={}".format(i, l)
+
+        languages = {'en', 'en-us', 'de', 'fr', 'ru', 'ja', 'zh', 'ko', 'es'}
+        urls = []
+        for language in languages:
+            for system in [jitaID, perimeterID, amarrID, ashabID]:
+                urls.append(getUrl(system, language))
+        req = ParallelRequest(urls)
+        for result in req.go():
+            language = result.headers['content-language']
+            dic = json.loads(result.content)
+            name = dic['name']
+            systemID = dic['system_id']
+            if systemID not in system2name:
+                system2name[systemID] = {}
+            system2name[systemID][language] = name
+
+        return region2system, system2name
 
 
 def __test():
-    from ccp_sde import CCP_SDE
-    sde = CCP_SDE()
-    extractor = SDE_Extractor(sde)
+    extractor = SDE_Extractor(CCP_SDE())
 
     print("\n\nStructures")
     structures = extractor.getStructuresAndBonuses()
@@ -503,8 +525,8 @@ def __test():
     print(group2category)
 
     print('\n\nTrade hubs')
-    regions, systems = extractor.getTradeHubs()
-    print(regions, systems)
+    region2systems, system2name = extractor.getTradeHubs()
+    print(region2systems, system2name)
 
 
 if __name__ == "__main__":
