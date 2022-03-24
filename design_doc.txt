@@ -102,13 +102,7 @@ in that case I have to load from https://images.evetech.net/types/{itemID}/icon
 ----------------------------------------------------------------------------------------------------------------------
 
 -------------------------------------------------------SDE------------------------------------------------------------
-todo make these map descriptions correct
-map : structure -> (activity type, bonusType -> value, name)
-map : skill -> mfg/rtn -> me/te -> bonus
-map : rig -> (activity type, bonus domain, bonusType -> value )
-map : implant -> mfg te bonus
-map : tid -> blueprint
-map : tid -> item
+I may have to fetch solar system localizations from the esi.
 
 Note: Use item name instead of blueprint name everywhere.
       There are only a few cases where the item name is not exactly contained in the blueprint name
