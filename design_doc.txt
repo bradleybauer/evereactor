@@ -210,11 +210,8 @@ Options ### see BUILD CUSTOMIZATIONS section above for more details about option
   //  Then before computing a schedule I have to go through each job and assign that job a ME and TE based on skills
   //  and the bonuses of the best structure for that job to be ran on.
 
-  Implants // LOW PRIORITY
-    bx-801,2,4
-
   Reaction & Manufacturing lines
-  Skills (indy, adv indy, reactions, science)
+  Skills (all skills can be set ? )
   Global ME/TE
   System Cost Indices for Rtn & Mfg
     Minimum system cost index is .001 (that is .1%)
