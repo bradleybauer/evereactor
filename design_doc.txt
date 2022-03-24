@@ -20,11 +20,11 @@ Assumes structures are located whereever the rigs gives the best bonuses. (LS fo
 
 I am not supporting arbitrary systems. Why?
   1: Jita & Amarr are the two best high sec trade hubs.
-     If a person does high volume industry for profit then they probably are buy/selling in Amarr & Jita.
+     If a person does high volume industry for profit (purpose of my app) then they probably are trading in Amarr & Jita.
      They are probably, at least, buying in Amarr & Jita.
-     Except possibly they are buying sellling in a large nullsec trade hub.
+     Except possibly they are trading in a large nullsec trade hub.
 
-  2: Supporting private trade hubs would require esi credentials which is something I do not want to deal with atm.
+  2: Supporting private trade hubs would require esi credentials which is something I do not want to do atm.
 
 Note - Large 'Sheriff' Shield Extender Blueprint can drop with 20% ME
   https://cdn.discordapp.com/attachments/492765138760237056/932976232474222622/unknown.png
@@ -331,3 +331,4 @@ In theory everything could be sold at min sell. But things like processed moon m
 at market and so the only feasible way (er the only way i want to try) to liquidate is
 to sell to buy orders.
 ----------------------------------------------------------------------------------------------------------------------
+
