@@ -152,10 +152,8 @@ class SDE_Extractor:
                     for pair in bp['activities'][activity]['materials']:
                         item2bp[bid]['materials'][pair['typeID']] = pair['quantity']
                     assert (1 == len(bp['activities'][activity]['products']))
-                    productID = bp['activities'][activity]['products'][0]['typeID']
-                    productQuantity = bp['activities'][activity]['products'][0]['quantity']
-                    item2bp[bid]['productID'] = productID
-                    item2bp[bid]['productQuantity'] = productQuantity
+                    item2bp[bid]['productID'] = bp['activities'][activity]['products'][0]['typeID']
+                    item2bp[bid]['productQuantity'] = bp['activities'][activity]['products'][0]['quantity']
                     item2bp[bid]['time'] = bp['activities'][activity]['time']
                     if 'skills' in bp['activities'][activity]:
                         skills = {pair['typeID'] for pair in bp['activities'][activity]['skills']}
