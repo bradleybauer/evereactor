@@ -398,6 +398,19 @@ class SDE_Extractor:
             self._addSegmentsOfPathToEdgeMap(productMarketGroup, marketGraph, lambda k: sde.marketGroups[k]['parentGroupID'])
         return marketGraph
 
+    def getGroup2Category(self, blueprints):
+        """
+        Return the map of inventory group nodes to their parents.
+        At the moment, I use this only for calculating which manufacturing/reaction rigs affect which items.
+        """
+        sde = self.sde
+        group2category = {}
+        products = {list(bp['products'].keys())[0] for bp in blueprints.values()}
+        for product in products:
+            groupID = sde.typeIDs[product]['groupID']
+            group2category[groupID] = sde.groupIDs[groupID]['categoryID']
+        return group2category
+
 
 def __test():
     from ccp_sde import CCP_SDE
@@ -447,6 +460,10 @@ def __test():
             print(marketGroupName, end=', ')
         print()
     print('Number of market groups:', len(marketGroupNames))
+
+    print('\n\nGroup2Category')
+    group2category = extractor.getGroup2Category(bps)
+    print(group2category)
 
 
 if __name__ == "__main__":
