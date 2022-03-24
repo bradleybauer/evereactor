@@ -2,16 +2,16 @@ from ccp_sde import CCP_SDE
 from sde_extractor import SDE_Extractor
 
 # Bonus Type
-DART_TIME = 'TIME'
-DART_MATERIAL = 'MATERIAL'
-DART_COST = 'COST'
+DART_TIME = 'B.TIME'
+DART_MATERIAL = 'B.MATERIAL'
+DART_COST = 'B.COST'
 PY_TIME = 'time'
 PY_MATERIAL = 'material'
 PY_COST = 'cost'
 
 # Industry Type
-DART_MANUFACTURING = 'MANUFACTURING'
-DART_REACTION = 'REACTION'
+DART_MANUFACTURING = 'I.MANUFACTURING'
+DART_REACTION = 'I.REACTION'
 PY_REACTION = 'reaction'
 PY_MANUFACTURING = 'manufacturing'
 
@@ -59,16 +59,16 @@ class Py2Dart:
 
     def _structure(self, obj) -> str:
         code = 'Structure('
-        code += 'I.' + (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
+        code += (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
         code += '{'
         if 'bonuses' in obj:
             for bonusType in obj['bonuses']:
                 if bonusType == PY_TIME:
-                    code += 'B.' + DART_TIME + ':' + str(obj['bonuses'][PY_TIME]) + ','
+                    code += DART_TIME + ':' + str(obj['bonuses'][PY_TIME]) + ','
                 elif bonusType == PY_COST:
-                    code += 'B.' + DART_COST + ':' + str(obj['bonuses'][PY_COST]) + ','
+                    code += DART_COST + ':' + str(obj['bonuses'][PY_COST]) + ','
                 elif bonusType == PY_MATERIAL:
-                    code += 'B.' + DART_MATERIAL + ':' + str(obj['bonuses'][PY_MATERIAL]) + ','
+                    code += DART_MATERIAL + ':' + str(obj['bonuses'][PY_MATERIAL]) + ','
             if 0 < len(obj['bonuses']):
                 code = code[:-1]
         code += '},'
@@ -77,16 +77,16 @@ class Py2Dart:
 
     def _rig(self, obj) -> str:
         code = 'Rig('
-        code += 'I.' + (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
+        code += (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
         code += '{'
         if 'bonuses' in obj:
             for bonusType in obj['bonuses']:
                 if bonusType == PY_TIME:
-                    code += 'B.' + DART_TIME + ':' + str(obj['bonuses'][PY_TIME]) + ','
+                    code += DART_TIME + ':' + str(obj['bonuses'][PY_TIME]) + ','
                 elif bonusType == PY_COST:
-                    code += 'B.' + DART_COST + ':' + str(obj['bonuses'][PY_COST]) + ','
+                    code += DART_COST + ':' + str(obj['bonuses'][PY_COST]) + ','
                 elif bonusType == PY_MATERIAL:
-                    code += 'B.' + DART_MATERIAL + ':' + str(obj['bonuses'][PY_MATERIAL]) + ','
+                    code += DART_MATERIAL + ':' + str(obj['bonuses'][PY_MATERIAL]) + ','
             if 0 < len(obj['bonuses']):
                 code = code[:-1]
         code += '},'
@@ -97,7 +97,7 @@ class Py2Dart:
 
     def _skill(self, obj) -> str:
         code = 'Skill('
-        code += 'I.' + (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
+        code += (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
         code += str(obj['bonus']) + ','
         code += self._str2str(obj['name'])
         return code + ')'
@@ -110,7 +110,7 @@ class Py2Dart:
 
     def _blueprint(self, obj) -> str:
         code = 'Blueprint('
-        code += 'I.' + (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
+        code += (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
         code += str(obj['productID']) + ','
         code += str(obj['productQuantity']) + ','
         code += self._int2int(obj['materials']) + ','
@@ -172,7 +172,7 @@ class Py2Dart:
         code += self._dict2map('regions', 'int', 'List<int>', regions, self._ints)
         code += self._dict2map('systems', 'int', 'String', systems, self._str)
 
-        # Dart run the output to check for syntax errors
+        # # Dart run the output to check for syntax errors
         # code += 'void main() {'
         # code += '   print(items.length);'
         # code += '   print(blueprints.length);'
@@ -186,7 +186,7 @@ class Py2Dart:
         # code += '   print(regions.length);'
         # code += '   print(systems.length);'
         # code += '}'
-        # with open('hi.dart', 'w', encoding='utf-8') as handle
+        # with open('hi.dart', 'w', encoding='utf-8') as handle:
         #     handle.write(code)
 
         return code
