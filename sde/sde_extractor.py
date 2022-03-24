@@ -33,7 +33,7 @@ class SDE_Extractor:
     def getIndustryItems(self, blueprints):
         """
         Returns the relavent information of all items involved in production.
-        typeID -> (name localizations, marketGroupId, volume or repackaged volume)
+        id -> (name, marketGroupID, groupID, volume)
         """
         sde = self.sde
         ids: set = self._getAllMaterialsAndProducts(blueprints)
@@ -160,7 +160,7 @@ class SDE_Extractor:
     def getProductionSkills(self):
         """
         Returns all skills that have some bonus to some kind of production.
-        skill -> (activity, bonus)
+        id -> (activity, bonus, name)
         """
         sde = self.sde
         skills = {}
@@ -218,7 +218,10 @@ class SDE_Extractor:
         return skills
 
     def getStructuresAndBonuses(self):
-        """Returns all structures and structure bonuses."""
+        """
+        Returns all structures and structure bonuses.
+        id -> (activity, bonuses (bonusType -> bonus), name)
+        """
         sde = self.sde
         structures = {}
         for tid in sde.typeIDs:
@@ -266,7 +269,7 @@ class SDE_Extractor:
     def getIndustryRigsAndBonuses(self):
         """
         Returns all industry rigs with their bonuses and item domains.
-        rigId -> (activity type, bonusType -> value, bonus domain)
+        id -> (activity, bonuses (bonusType -> bonus), bonus domain, name)
         """
         sde = self.sde
         rigs = {}
@@ -344,7 +347,10 @@ class SDE_Extractor:
         return rigs
 
     def getImplants(self):
-        """Returns all industry implants and their bonuses."""
+        """
+        Returns all industry implants and their bonuses.
+        id -> (name, activity, bonus)
+        """
         sde = self.sde
         implants = {}
         for tid in sde.typeIDs:
@@ -377,7 +383,10 @@ class SDE_Extractor:
         self._addSegmentsOfPathToEdgeMap(parent, edges, getParent)
 
     def getMarketGroupNames(self, marketGroupGraph):
-        """Return the market group graph reduced to contain only groups that are relavent to production."""
+        """
+        Return the market group graph reduced to contain only groups that are relavent to production.
+        id -> name
+        """
         sde = self.sde
 
         marketGroupNames = {}
@@ -388,7 +397,10 @@ class SDE_Extractor:
         return marketGroupNames
 
     def getMarketGroupGraph(self, blueprints):
-        """Return the market group graph reduced to contain only groups that are relavent to production."""
+        """
+        Return the market group graph reduced to contain only groups that are relavent to production.
+        id -> childrenGroupIDs
+        """
         sde = self.sde
 
         marketGraph = {}
@@ -402,6 +414,7 @@ class SDE_Extractor:
         """
         Return the map of inventory group nodes to their parents.
         At the moment, I use this only for calculating which manufacturing/reaction rigs affect which items.
+        id -> categoryID
         """
         sde = self.sde
         group2category = {}
@@ -412,7 +425,11 @@ class SDE_Extractor:
         return group2category
 
     def getTradeHubs(self):
-        """Get region and system ids for major trade hubs."""
+        """
+        Get region and system ids for major trade hubs.
+        regions: id -> solarSystemIDs
+        systems: id -> solarSystemName
+        """
         sde = self.sde
         jitaID = sde.jitaData['solarSystemID']
         perimeterID = sde.perimeterData['solarSystemID']
