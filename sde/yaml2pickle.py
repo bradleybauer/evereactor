@@ -1,33 +1,12 @@
 # Converts all the yaml files into pickled dicts.
-
-import unicodedata
 import yaml
 import pickle as pkl
 import os
 
+from unicode_normalizer import normalizeStringsInMap
+
 sde = "sde/fsd/"
 sdePkl = "pickled/"
-
-
-def normalizeStringsInMap(obj):
-    if type(obj) is dict:
-        ret = {}
-        for k, v in obj.items():
-            v = normalizeStringsInMap(v)
-            if type(k) is str:
-                k = unicodedata.normalize("NFKD", k)
-            ret[k] = v
-        return ret
-    elif type(obj) is list:
-        ret = []
-        for v in obj:
-            ret.append(normalizeStringsInMap(v))
-        return ret
-    elif type(obj) is str:
-        return unicodedata.normalize("NFKD", obj)
-
-    return obj
-
 
 for fileName in os.listdir(sde):
     loadPath = os.path.join(sde, fileName)
@@ -43,7 +22,7 @@ for fileName in os.listdir(sde):
             fileContent = normalizeStringsInMap(fileContent)
 
             # # I found a string in the SDE that has a \xa0 char in it.
-            # # This can be used to verify that my recursive function above works.
+            # # This can be used to verify that my recursive function 'normalizeStringsInMap' works.
             # if 'ancestries' in loadPath:
             #     fun = fileContent[18]['descriptionID']['fr']
             #     print(fun)

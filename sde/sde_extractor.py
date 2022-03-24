@@ -411,6 +411,22 @@ class SDE_Extractor:
             group2category[groupID] = sde.groupIDs[groupID]['categoryID']
         return group2category
 
+    def getTradeHubs(self):
+        """Get region and system ids for major trade hubs."""
+        sde = self.sde
+        jitaID = sde.jitaData['solarSystemID']
+        perimeterID = sde.perimeterData['solarSystemID']
+        amarrID = sde.amarrData['solarSystemID']
+        ashabID = sde.ashabData['solarSystemID']
+
+        theForgeID = sde.theForgeData['regionID']
+        domainID = sde.domainData['regionID']
+
+        regions = {theForgeID: [jitaID, perimeterID], domainID: [amarrID, ashabID]}
+        systems = {jitaID: 'Jita', perimeterID: 'Perimeter', amarrID: 'Amarr', ashabID: 'Ashab'}
+
+        return regions, systems
+
 
 def __test():
     from ccp_sde import CCP_SDE
@@ -464,6 +480,10 @@ def __test():
     print('\n\nGroup2Category')
     group2category = extractor.getGroup2Category(bps)
     print(group2category)
+
+    print('\n\nTrade hubs')
+    regions, systems = extractor.getTradeHubs()
+    print(regions, systems)
 
 
 if __name__ == "__main__":
