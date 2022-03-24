@@ -20,7 +20,6 @@ class CCP_SDE:
         self.blueprints = _openFile('blueprints')
 
         self.typeDogma = _openFile('typeDogma')
-        self.typeMaterials = _openFile('typeMaterials')
         self.dogmaEffects = _openFile('dogmaEffects')
         self.dogmaAttributes = _openFile('dogmaAttributes')
 
@@ -40,20 +39,20 @@ class CCP_SDE:
         self.theForgeData = None
         self.domainData = None
 
-        with open('./hoboleaks/industrymodifiersources.json', 'r') as f:
-            d = json.loads(f.read())
+        with open('./hoboleaks/industrymodifiersources.json', 'r') as handle:
+            dic = json.loads(handle.read())
             self.hoboleaksModifierSources = {}
-            for k, v in d.items():
+            for k, v in dic.items():
                 self.hoboleaksModifierSources[int(k)] = v
-        with open('./hoboleaks/industrytargetfilters.json', 'r') as f:
-            d = json.loads(f.read())
+        with open('./hoboleaks/industrytargetfilters.json', 'r') as handle:
+            dic = json.loads(handle.read())
             self.hoboleaksTargetFilters = {}
-            for k, v in d.items():
+            for k, v in dic.items():
                 self.hoboleaksTargetFilters[int(k)] = v
-        with open('./hoboleaks/repackagedvolumes.json', 'r') as f:
-            d = json.loads(f.read())
+        with open('./hoboleaks/repackagedvolumes.json', 'r') as handle:
+            dic = json.loads(handle.read())
             self.hoboleaksRepackagedVolumes = {}
-            for k, v in d.items():
+            for k, v in dic.items():
                 self.hoboleaksRepackagedVolumes[int(k)] = v
 
         # Jita/Perimeter

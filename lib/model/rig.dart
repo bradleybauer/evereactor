@@ -9,7 +9,6 @@ class Rig {
   final Map<String, String> nameLocalizations;
 
   const Rig(
-    this.typeID,
     this.industryType,
     this.bonuses,
     this.domainCategoryIDs,

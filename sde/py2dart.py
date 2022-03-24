@@ -1,6 +1,20 @@
 from ccp_sde import CCP_SDE
 from sde_extractor import SDE_Extractor
 
+# Bonus Type
+DART_TIME = 'TIME'
+DART_MATERIAL = 'MATERIAL'
+DART_COST = 'COST'
+PY_TIME = 'time'
+PY_MATERIAL = 'material'
+PY_COST = 'cost'
+
+# Industry Type
+DART_MANUFACTURING = 'MANUFACTURING'
+DART_REACTION = 'REACTION'
+PY_REACTION = 'reaction'
+PY_MANUFACTURING = 'manufacturing'
+
 
 class Py2Dart:
     """
@@ -11,48 +25,113 @@ class Py2Dart:
         self.extractor = extractor
 
     def _str(self, obj) -> str:
-        return '"' + obj + '"'
+        if "'" in obj:
+            return '"' + obj + '"'
+        else:
+            return "'" + obj + "'"
+
+    def _str2str(self, obj) -> str:
+        code = '{'
+        for k in obj:
+            code += self._str(k) + ':' + self._str(obj[k]) + ','
+        if len(obj) > 0:
+            code = code[:-1]  # trim the final comma
+        return code + '}'
+
+    def _int2int(self, obj) -> str:
+        code = '{'
+        for k in obj:
+            code += self._int(k) + ':' + self._int(obj[k]) + ','
+        if len(obj) > 0:
+            code = code[:-1]  # trim the final comma
+        return code + '}'
 
     def _int(self, obj) -> str:
         return str(obj)
 
-    def _listInt(self, obj) -> str:
-        code = ''
-        return code
+    def _ints(self, obj) -> str:
+        code = '['
+        for x in obj:
+            code += str(x) + ','
+        if len(obj) > 0:
+            code = code[:-1]  # trim the final comma
+        return code + ']'
 
     def _structure(self, obj) -> str:
-        code = ''
-        return code
+        code = 'Structure('
+        code += 'I.' + (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
+        code += '{'
+        if 'bonuses' in obj:
+            for bonusType in obj['bonuses']:
+                if bonusType == PY_TIME:
+                    code += 'B.' + DART_TIME + ':' + str(obj['bonuses'][PY_TIME]) + ','
+                elif bonusType == PY_COST:
+                    code += 'B.' + DART_COST + ':' + str(obj['bonuses'][PY_COST]) + ','
+                elif bonusType == PY_MATERIAL:
+                    code += 'B.' + DART_MATERIAL + ':' + str(obj['bonuses'][PY_MATERIAL]) + ','
+            if 0 < len(obj['bonuses']):
+                code = code[:-1]
+        code += '},'
+        code += self._str2str(obj['name'])
+        return code + ')'
 
     def _rig(self, obj) -> str:
-        code = ''
-        return code
+        code = 'Rig('
+        code += 'I.' + (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
+        code += '{'
+        if 'bonuses' in obj:
+            for bonusType in obj['bonuses']:
+                if bonusType == PY_TIME:
+                    code += 'B.' + DART_TIME + ':' + str(obj['bonuses'][PY_TIME]) + ','
+                elif bonusType == PY_COST:
+                    code += 'B.' + DART_COST + ':' + str(obj['bonuses'][PY_COST]) + ','
+                elif bonusType == PY_MATERIAL:
+                    code += 'B.' + DART_MATERIAL + ':' + str(obj['bonuses'][PY_MATERIAL]) + ','
+            if 0 < len(obj['bonuses']):
+                code = code[:-1]
+        code += '},'
+        code += self._ints(obj['domain']['categoryIDs']) + ','
+        code += self._ints(obj['domain']['groupIDs']) + ','
+        code += self._str2str(obj['name'])
+        return code + ')'
 
     def _skill(self, obj) -> str:
-        code = ''
-        return code
+        code = 'Skill('
+        code += 'I.' + (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
+        code += str(obj['bonus']) + ','
+        code += self._str2str(obj['name'])
+        return code + ')'
 
     def _implant(self, obj) -> str:
-        code = ''
-        return code
+        code = 'Implant('
+        code += str(obj['bonus']) + ','
+        code += self._str2str(obj['name'])
+        return code + ')'
 
     def _blueprint(self, obj) -> str:
-        code = ''
-        return code
+        code = 'Blueprint('
+        code += 'I.' + (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
+        code += str(obj['productID']) + ','
+        code += str(obj['productQuantity']) + ','
+        code += self._int2int(obj['materials']) + ','
+        code += str(obj['time']) + ','
+        code += self._ints(obj['skills'])
+        return code + ')'
 
     def _item(self, obj) -> str:
-        code = ''
-        return code
-
-    def _marketGroupGraphNode(self, obj) -> str:
-        code = ''
-        return code
+        code = 'Item('
+        code += self._str2str(obj['name']) + ','
+        code += str(obj['marketGroupID']) + ','
+        code += str(obj['groupID']) + ','
+        code += str(obj['volume'])
+        return code + ')'
 
     def _dict2map(self, name, fromType, toType, dic, objMaker) -> str:
         code = 'const Map<' + fromType + ',' + toType + '>' + name + '={'
         for k in dic:
             code += str(k) + ':' + objMaker(dic[k]) + ','
-        code = code[:-1]  # trim the final comma
+        if len(dic) > 0:
+            code = code[:-1]  # trim the final comma
         return code + '};\n'
 
     def generate(self):
@@ -69,24 +148,46 @@ class Py2Dart:
         regions, systems = ex.getTradeHubs()
 
         code = ''
-        code += "import 'item.dart';"
-        code += "import 'blueprint.dart';"
-        code += "import 'structure.dart';"
-        code += "import 'implant.dart';"
-        code += "import 'rig.dart';"
-        code += "import 'skill.dart';"
+        code += "import '../lib/model/industry_type.dart';\n"
+        code += "import '../lib/model/bonus_type.dart';\n"
+        code += "import '../lib/model/item.dart';\n"
+        code += "import '../lib/model/blueprint.dart';\n"
+        code += "import '../lib/model/structure.dart';\n"
+        code += "import '../lib/model/implant.dart';\n"
+        code += "import '../lib/model/rig.dart';\n"
+        code += "import '../lib/model/skill.dart';\n"
 
-        code += self._dict2map('structures', 'int', 'Structure', structures, self._structure)
-        code += self._dict2map('rigs', 'int', 'Rig', rigs, self._rig)
-        code += self._dict2map('skills', 'int', 'Skill', productionSkills, self._skill)
-        code += self._dict2map('implants', 'int', 'Implant', implants, self._implant)
-        code += self._dict2map('blueprints', 'int', 'Implant', bps, self._blueprint)
+        code += 'typedef I=IndustryType;\n'
+        code += 'typedef B=BonusType;\n'
+
         code += self._dict2map('items', 'int', 'Item', items, self._item)
-        code += self._dict2map('marketGroups', 'int', 'List<int>', marketGroupGraph, self._listInt)
-        code += self._dict2map('marketGroupNames', 'int', 'String', marketGroupNames, self._str)
+        code += self._dict2map('blueprints', 'int', 'Blueprint', bps, self._blueprint)
+        code += self._dict2map('marketGroupNames', 'int', 'Map<String,String>', marketGroupNames, self._str2str)
+        code += self._dict2map('rigs', 'int', 'Rig', rigs, self._rig)
+        code += self._dict2map('marketGroupGraph', 'int', 'List<int>', marketGroupGraph, self._ints)
+        code += self._dict2map('skills', 'int', 'Skill', productionSkills, self._skill)
+        code += self._dict2map('structures', 'int', 'Structure', structures, self._structure)
+        code += self._dict2map('implants', 'int', 'Implant', implants, self._implant)
         code += self._dict2map('group2category', 'int', 'int', group2category, self._int)
-        code += self._dict2map('regions', 'int', 'List<int>', regions, self._listInt)
-        code += self._dict2map('systems', 'int', 'int', systems, self._int)
+        code += self._dict2map('regions', 'int', 'List<int>', regions, self._ints)
+        code += self._dict2map('systems', 'int', 'String', systems, self._str)
+
+        # Dart run the output to check for syntax errors
+        # code += 'void main() {'
+        # code += '   print(items.length);'
+        # code += '   print(blueprints.length);'
+        # code += '   print(marketGroupNames.length);'
+        # code += '   print(rigs.length);'
+        # code += '   print(marketGroupGraph.length);'
+        # code += '   print(skills.length);'
+        # code += '   print(structures.length);'
+        # code += '   print(implants.length);'
+        # code += '   print(group2category.length);'
+        # code += '   print(regions.length);'
+        # code += '   print(systems.length);'
+        # code += '}'
+        # with open('hi.dart', 'w', encoding='utf-8') as handle
+        #     handle.write(code)
 
         return code
 

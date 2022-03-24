@@ -6,7 +6,6 @@ class Skill {
   final Map<String, String> nameLocalizations;
 
   const Skill(
-    this.typeID,
     this.industryType,
     this.bonus,
     this.nameLocalizations,

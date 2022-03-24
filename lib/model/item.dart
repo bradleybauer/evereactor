@@ -4,7 +4,7 @@ class Item {
   final int groupID;
   final double volume;
 
-  const Item(this.typeID, this.nameLocalizations, this.marketGroupID, this.groupID, this.volume);
+  const Item(this.nameLocalizations, this.marketGroupID, this.groupID, this.volume);
 
   //@override
   //String toString() {

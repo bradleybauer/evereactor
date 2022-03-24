@@ -3,7 +3,6 @@ class Implant {
   final Map<String, String> nameLocalizations;
 
   const Implant(
-    this.typeID,
     this.bonus,
     this.nameLocalizations,
   );

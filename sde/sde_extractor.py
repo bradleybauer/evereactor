@@ -63,15 +63,20 @@ class SDE_Extractor:
         hasProductAsAnInput = False
         allMaterialsAreOnTheMarket = True
         productIsOnTheMarket = True
+        requiresSkills = True
         hasActivities = 0 < len(set(self.possibleActivities).intersection(set(self.sde.blueprints[bid]['activities'])))
 
-        for activity in self.possibleActivities:  # choose the activity
-            if activity in self.sde.blueprints[bid]['activities']:
-                assert (0 == len((self.possibleActivities - {activity}).intersection(self.sde.blueprints[bid]['activities'])))
-                if 'products' not in self.sde.blueprints[bid]['activities'][activity]:
+        bp = self.sde.blueprints[bid]
+
+        for activity in self.possibleActivities:
+            if activity in bp['activities']:
+                # The loop and if statment choose the activity (there is only one activity per bp in the SDE)
+
+                assert (0 == len((self.possibleActivities - {activity}).intersection(bp['activities'])))
+                if 'products' not in bp['activities'][activity]:
                     isProductPublished = False
                     break
-                products = self.sde.blueprints[bid]['activities'][activity]['products']
+                products = bp['activities'][activity]['products']
                 assert (len(products) == 1)
                 productTID = products[0]['typeID']
                 if productTID not in self.sde.typeIDs or not self._isPublished(productTID):
@@ -80,10 +85,10 @@ class SDE_Extractor:
                 if 'marketGroupID' not in self.sde.typeIDs[productTID]:
                     productIsOnTheMarket = False
                     break
-                if 'materials' not in self.sde.blueprints[bid]['activities'][activity]:
+                if 'materials' not in bp['activities'][activity]:
                     hasMaterials = False
                     break
-                for material in self.sde.blueprints[bid]['activities'][activity]['materials']:
+                for material in bp['activities'][activity]['materials']:
                     materialID = material['typeID']
                     if materialID == productTID:
                         hasProductAsAnInput = True
@@ -91,8 +96,11 @@ class SDE_Extractor:
                     if 'marketGroupID' not in self.sde.typeIDs[materialID]:
                         allMaterialsAreOnTheMarket = False
                         break
+                if 'skills' not in bp['activities'][activity]:
+                    requiresSkills = False
+                    break
                 break
-        return isPublished and hasActivities and isProductPublished and hasMaterials and not hasProductAsAnInput and allMaterialsAreOnTheMarket and productIsOnTheMarket
+        return isPublished and hasActivities and isProductPublished and hasMaterials and not hasProductAsAnInput and allMaterialsAreOnTheMarket and productIsOnTheMarket and requiresSkills
 
     def _getNodesInTree(self, root, neighbors):
         ret = {root}
