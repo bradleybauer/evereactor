@@ -1,6 +1,6 @@
 Buy dude at everef a coffee
 
------------------------------------------------------ GOAL -----------------------------------------------------------
+GOAL------------------------------------------------------------------------------------------------------------------
 One thing I want to be true about this app is that the scenario where it gives the exact answer is very well defined and thought out ahead of time
   I do mfg and rtns in wormhole space using 1 raitaru and 1 tatara.
   All my toons have Reactions V, Indy V, Adv Indy IV, all Science IV
@@ -15,7 +15,7 @@ One thing I want to be true about this app is that the scenario where it gives t
   Given all this info, the app should calculate pretty gosh darn exact numbers
 ----------------------------------------------------------------------------------------------------------------------
 
--------------------------------------------------- RESTRICTIONS ------------------------------------------------------
+RESTRICTIONS----------------------------------------------------------------------------------------------------------
 Assumes structures are located whereever the rigs gives the best bonuses. (LS for thukker rigs)
 
 I am not supporting arbitrary systems. Why?
@@ -58,12 +58,12 @@ Material Efficiency
     the above applies here too
 ----------------------------------------------------------------------------------------------------------------------
 
-----------------------------------------------------OPTIMIZER---------------------------------------------------------
+OPTIMIZER-------------------------------------------------------------------------------------------------------------
 Optimize with batches contiguous but push batches back (after optimization) so that they start at the start
   of the rtn batch they start concurrently with (or early as possible)
 ----------------------------------------------------------------------------------------------------------------------
 
----------------------------------------------------MARKET DATA--------------------------------------------------------
+MARKET DATA-----------------------------------------------------------------------------------------------------------
 Apparently indexeddb can hold a lot of data https://stackoverflow.com/questions/5692820/maximum-item-size-in-indexeddb
 
 Application X - Contact 'Dark808bb'
@@ -75,7 +75,7 @@ That really is the best way
 Now pretty reasonable to add a market data age clock thingy
 ----------------------------------------------------------------------------------------------------------------------
 
----------------------------------------------------- LOOKS -----------------------------------------------------------
+LOOKS-----------------------------------------------------------------------------------------------------------------
 Make look good... layout, colors, fonts, better loader (loader kinda sucks, it's aliased)
 
 I really like the gradient on the windows 11 calculator... is that the tabbed option for flutter_acrylic?
@@ -85,12 +85,12 @@ check out https://github.com/flutter/flutter/pull/93463
   final darkScheme = ColorScheme.fromSeed(seedColor: Colors.green, brightness: Brightness.dark);
 --------------------------------------------------------------------------- ----- ------------------------------------
 
----------------------------------------------------DEVELOPMENT--------------------------------------------------------
+DEVELOPMENT-----------------------------------------------------------------------------------------------------------
 msix_config for startmenu stuff google 'how to create msix_config windows'
 Setup CI? so that people can be sure that exe hosted on github releases has been built by the code
 ----------------------------------------------------------------------------------------------------------------------
 
--------------------------------------------------------ICONS------------------------------------------------------------
+ICONS-----------------------------------------------------------------------------------------------------------------
 Use
   https://images.evetech.net/types/10/render?size=512
 or
@@ -101,7 +101,7 @@ for some items https://images.evetech.net/types/{itemID}/render?size={power of 2
 in that case I have to load from https://images.evetech.net/types/{itemID}/icon
 ----------------------------------------------------------------------------------------------------------------------
 
--------------------------------------------------------SDE------------------------------------------------------------
+SDE-------------------------------------------------------------------------------------------------------------------
 I may have to fetch solar system localizations from the esi.
 
 Note: Use item name instead of blueprint name everywhere.
@@ -120,7 +120,7 @@ Have custom (per item/category) display formats
     But, I'd prefer not to though, if some new item comes to the market, then what do I do?
 ----------------------------------------------------------------------------------------------------------------------
 
----------------------------------------------------- FEATURES --------------------------------------------------------
+FEATURES--------------------------------------------------------------------------------------------------------------
 Outputs should all be tables that are pastable into EXCEL
 
 Have a donate button / bitcoin wallet address.
@@ -134,9 +134,9 @@ Multiple Multibuys???
 
 Add hints to different UI elements to help explain things a bit.
 Have a QA section?
-------------------------------------------------------------------------------- ------------- ------------------------
+----------------------------------------------------------------------------------------------------------------------
 
------------------------------------------------ BUILD CUSTOMIZATIONS -------------------------------------------------
+BUILD CUSTOMIZATIONS--------------------------------------------------------------------------------------------------
 I cannot make this program so flexible that it does every calculation perfect for every possible industry scenario.
 
 Instead my strategy is to optimize for the simple case (hopefully common case, I will setup my indy like this).
@@ -164,7 +164,7 @@ Never build rams or fuel blocks as intermediates
 Never build rams as target items
 ----------------------------------------------------------------------------------------------------------------------
 
----------------------------------------------------- GUI / UX --------------------------------------------------------
+GUI/UX----------------------------------------------------------------------------------------------------------------
 Make input boxes simple.
   For integer inputs just restrict input to integers and maximum number of characters
   For percents just restrict max num chars maybe
@@ -275,14 +275,14 @@ Inventory
   (icon, name, remaining, value)
 ----------------------------------------------------------------------------------------------------------------------
 
------------------------------------------------------ REMINDER -------------------------------------------------------
+REMINDER--------------------------------------------------------------------------------------------------------------
 Don't forget you wrote code for multiple multibuys
     lol i did forget. would be nice to have a 'better' evepraisal that takes into consideration volume and gives best buy/sell hubs with (multimultibuy)
 
 You can use corporation orders. maybe it's like corp reactions
 ----------------------------------------------------------------------------------------------------------------------
 
----------------------------------------------- STRUCTURE/SKILL BONUSES -----------------------------------------------
+STRUCTURE/SKILL BONUSES-----------------------------------------------------------------------------------------------
 read this https://eve-industry.org/export/IndustryFormulas.pdf
 
 // The following comments are WRONG! but only by a little bit.
@@ -302,7 +302,7 @@ def t(r, b):
     return d, h, m, round(s)
 ----------------------------------------------------------------------------------------------------------------------
 
------------------------------------------------- ADDITIONAL PROFIT ---------------------------------------------------
+ADDITIONAL PROFIT-----------------------------------------------------------------------------------------------------
 Additional profit helps you determine if you should build the absolution instead of just selling the intermediates for profit.
 If B is used to build A, and there is profit pB in building and selling B and profit pA in building and selling pA, then
   the additional profit for building A is ap = pA - pB. If ap is negative then you loose money in building A. It would be more
