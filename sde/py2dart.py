@@ -41,7 +41,7 @@ class Py2Dart:
     def _int2int(self, obj) -> str:
         code = '{'
         for k in obj:
-            code += self._int(k) + ':' + self._int(obj[k]) + ','
+            code += int(k) + ':' + int(obj[k]) + ','
         if len(obj) > 0:
             code = code[:-1]  # trim the final comma
         return code + '}'
@@ -145,7 +145,7 @@ class Py2Dart:
         marketGroupGraph = ex.getMarketGroupGraph(bps)
         marketGroupNames = ex.getMarketGroupNames(marketGroupGraph)
         group2category = ex.getGroup2Category(bps)
-        regions, systems = ex.getTradeHubs()
+        region2systems, system2name = ex.getTradeHubs()
 
         code = ''
         code += "import '../lib/model/industry_type.dart';\n"
@@ -169,8 +169,8 @@ class Py2Dart:
         code += self._dict2map('structures', 'int', 'Structure', structures, self._structure)
         code += self._dict2map('implants', 'int', 'Implant', implants, self._implant)
         code += self._dict2map('group2category', 'int', 'int', group2category, self._int)
-        code += self._dict2map('regions', 'int', 'List<int>', regions, self._ints)
-        code += self._dict2map('systems', 'int', 'Map<String,String>', systems, self._str2str)
+        code += self._dict2map('region2systems', 'int', 'List<int>', region2systems, self._ints)
+        code += self._dict2map('system2name', 'int', 'Map<String,String>', system2name, self._str2str)
 
         # # Dart run the output to check for syntax errors
         # code += 'void main() {'
@@ -191,11 +191,13 @@ class Py2Dart:
 
         return code
 
+
 def py2dart():
     py2dart = Py2Dart(SDE_Extractor(CCP_SDE()))
     code = py2dart.generate()
     with open('data_file.dart', 'w', encoding='utf-8') as handle:
         handle.write(code)
+
 
 if __name__ == '__main__':
     py2dart()

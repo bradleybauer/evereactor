@@ -452,7 +452,7 @@ class SDE_Extractor:
         theForgeID = sde.theForgeData['regionID']
         domainID = sde.domainData['regionID']
 
-        region2system = {theForgeID: [jitaID, perimeterID], domainID: [amarrID, ashabID]}
+        region2systems = {theForgeID: [jitaID, perimeterID], domainID: [amarrID, ashabID]}
         system2name = {}
 
         # get localizations for system names
@@ -474,7 +474,7 @@ class SDE_Extractor:
                 system2name[systemID] = {}
             system2name[systemID][language] = name
 
-        return region2system, system2name
+        return region2systems, system2name
 
 
 def __test():
