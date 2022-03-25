@@ -1,5 +1,5 @@
-name: app
-description: A reactions calculator for Eve Online.
+name: EveIndy
+description: An industry calculator for Eve Online.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -25,7 +25,6 @@ dependencies:
   flutter:
     sdk: flutter
   drift: ^1.5.0
-  file_picker: ^4.5.1
   http: ^0.13.4
   path: ^1.8.0
   path_provider: ^2.0.9
