@@ -51,4 +51,4 @@ sde/sde/*
 sde/pickled/*
 sde/hoboleaks/*
 lib/model/sde_data.dart
-
+lib/cache_database/*.g.dart
