@@ -1,12 +1,11 @@
-import 'dart:convert';
-
-import 'package:app/model/constants.dart';
-import 'package:http/http.dart' as http;
+import 'package:EveIndy/model/constants.dart';
 import 'dart:math';
 import 'context.dart';
-import 'package:tuple/tuple.dart';
-
 import 'market_order.dart';
+
+import 'package:tuple/tuple.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 // https://cdn1.eveonline.com/www/newssystem/media/66437/1/rounding.png
 int calcBonusedMaterialAmount(int numRunsParent, int baseNumInputChild, EveBuildContext context) {

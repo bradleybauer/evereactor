@@ -1,16 +1,15 @@
-import 'package:app/gui/adapters.dart';
-import 'package:app/model/build_tree.dart';
-import 'package:app/model/context.dart';
-import 'package:app/model/inventory.dart';
-import 'package:app/model/market.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import 'package:EveIndy/gui/adapters.dart';
+import 'package:EveIndy/model/build_tree.dart';
+import 'package:EveIndy/model/context.dart';
+import 'package:EveIndy/model/inventory.dart';
+import 'package:EveIndy/model/market.dart';
 import '../model/eve_static_data.dart';
 import '../model/util.dart';
 import 'form_fields.dart';
-
 import 'data_table.dart';
+
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RowHighlightNotifier extends ChangeNotifier {
   int currentRowId = -1;

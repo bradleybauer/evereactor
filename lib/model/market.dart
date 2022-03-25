@@ -1,9 +1,9 @@
-import 'package:app/model/util.dart';
-import 'package:tuple/tuple.dart';
-
+import 'package:EveIndy/model/util.dart';
 import 'eve_static_data.dart';
 import 'market_order.dart';
 import 'order_filter.dart';
+
+import 'package:tuple/tuple.dart';
 
 class BuysSells {
   List<Order> buys = [];
