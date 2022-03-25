@@ -1,11 +1,11 @@
-import 'package:app/gui/overlay_menu.dart';
-import 'package:app/model/order_filter.dart';
-import 'package:app/model/util.dart';
+import 'package:EveIndy/gui/overlay_menu.dart';
+import 'package:EveIndy/model/order_filter.dart';
+import 'package:EveIndy/model/util.dart';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:file_picker/file_picker.dart';
 
 import 'adapters.dart';
 import 'form_fields.dart';
@@ -137,23 +137,9 @@ class Header extends StatelessWidget {
                         OutlinedButton(
                             style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
                             onPressed: () {
-                              FilePicker.platform
-                                  .pickFiles(allowMultiple: true, allowedExtensions: ['txt'], type: FileType.custom, withData: true)
-                                  .then((result) {
-                                if (result == null) {
-                                  return;
-                                }
-                                Map<String, String> marketLogsName2Content = {};
-                                for (int i = 0; i < result.files.length; i++) {
-                                  if (result.files[i].bytes == null) {
-                                    continue;
-                                  }
-                                  marketLogsName2Content[result.files[i].name] = String.fromCharCodes(result.files[i].bytes!);
-                                }
-                                Provider.of<MarketAdapter>(context, listen: false).setMarketLogs(marketLogsName2Content);
-                              });
+                              print('TODO');
                             },
-                            child: const Text('Load Market Logs')),
+                            child: const Text('Sync Market Data')),
                         SizedBox(width: 14),
                         pasteOrClear,
                         SizedBox(width: 14),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:app/model/build.dart';
-import 'package:app/cache_database/cache_adapter.dart';
-import 'package:app/model/market.dart';
-import 'package:app/model/context.dart';
+import 'package:EveIndy/model/build.dart';
+import 'package:EveIndy/cache_database/cache_adapter.dart';
+import 'package:EveIndy/model/market.dart';
+import 'package:EveIndy/model/context.dart';
 import 'gui/main.dart';
 import 'gui/adapters.dart';
 import 'loader/loader_hook.dart';

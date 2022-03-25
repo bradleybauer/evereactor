@@ -1,11 +1,11 @@
-import 'package:app/model/market.dart';
-
+import 'package:EveIndy/model/market.dart';
 import 'eve_static_data.dart';
 import 'build_tree_node.dart';
 import 'context.dart';
 import 'inventory.dart';
 import 'line_allocator.dart';
 import 'util.dart';
+
 import 'package:tuple/tuple.dart';
 
 class BuildTree {

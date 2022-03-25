@@ -1,13 +1,13 @@
-import 'package:app/model/build.dart';
-import 'package:app/model/build_tree_node.dart';
-import 'package:app/cache_database/cache_adapter.dart';
-import 'package:app/model/eve_static_data.dart';
-import 'package:app/model/inventory.dart';
-import 'package:app/model/market.dart';
-import 'package:app/model/context.dart';
-import 'package:app/model/market_order.dart';
-import 'package:app/model/order_filter.dart';
-import 'package:app/model/util.dart';
+import 'package:EveIndy/model/build.dart';
+import 'package:EveIndy/model/build_tree_node.dart';
+import 'package:EveIndy/cache_database/cache_adapter.dart';
+import 'package:EveIndy/model/eve_static_data.dart';
+import 'package:EveIndy/model/inventory.dart';
+import 'package:EveIndy/model/market.dart';
+import 'package:EveIndy/model/context.dart';
+import 'package:EveIndy/model/market_order.dart';
+import 'package:EveIndy/model/order_filter.dart';
+import 'package:EveIndy/model/util.dart';
 import 'package:flutter/material.dart';
 
 class BuildAdapter extends ChangeNotifier {
