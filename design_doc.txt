@@ -165,6 +165,9 @@ Never build rams as target items
 ----------------------------------------------------------------------------------------------------------------------
 
 GUI/UX----------------------------------------------------------------------------------------------------------------
+Replace 'load market logs' button with 'load market data' button
+  There really is no reason to support loading market logs if the esi works just as well.
+
 Make input boxes simple.
   For integer inputs just restrict input to integers and maximum number of characters
   For percents just restrict max num chars maybe
