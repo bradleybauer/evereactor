@@ -50,5 +50,5 @@ app.*.map.json
 sde/sde/*
 sde/pickled/*
 sde/hoboleaks/*
-sde/data_file.dart
+lib/model/sde_data.dart
 

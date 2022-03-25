@@ -131,7 +131,7 @@ class Py2Dart:
             code += str(k) + ':' + objMaker(dic[k]) + ','
         if len(dic) > 0:
             code = code[:-1]  # trim the final comma
-        return code + '};\n'
+        return code + '};'
 
     def generate(self):
         ex = self.extractor
@@ -147,17 +147,17 @@ class Py2Dart:
         region2systems, system2name = ex.getTradeHubs()
 
         code = ''
-        code += "import '../lib/model/industry_type.dart';\n"
-        code += "import '../lib/model/bonus_type.dart';\n"
-        code += "import '../lib/model/item.dart';\n"
-        code += "import '../lib/model/blueprint.dart';\n"
-        code += "import '../lib/model/structure.dart';\n"
-        code += "import '../lib/model/implant.dart';\n"
-        code += "import '../lib/model/rig.dart';\n"
-        code += "import '../lib/model/skill.dart';\n"
+        code += "import 'industry_type.dart';"
+        code += "import 'bonus_type.dart';"
+        code += "import 'item.dart';"
+        code += "import 'blueprint.dart';"
+        code += "import 'structure.dart';"
+        code += "import 'implant.dart';"
+        code += "import 'rig.dart';"
+        code += "import 'skill.dart';"
 
-        code += 'typedef I=IndustryType;\n'
-        code += 'typedef B=BonusType;\n'
+        code += 'typedef I=IndustryType;'
+        code += 'typedef B=BonusType;'
 
         code += self._dict2map('items', 'int', 'Item', items, self._item)
         code += self._dict2map('blueprints', 'int', 'Blueprint', bps, self._blueprint)
@@ -194,7 +194,7 @@ class Py2Dart:
 def py2dart():
     py2dart = Py2Dart(SDE_Extractor(CCP_SDE()))
     code = py2dart.generate()
-    with open('data_file.dart', 'w', encoding='utf-8') as handle:
+    with open('../lib/model/sde_data.dart', 'w', encoding='utf-8', newline='\n') as handle:
         handle.write(code)
 
 
