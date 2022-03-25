@@ -191,7 +191,11 @@ class Py2Dart:
 
         return code
 
+def py2dart():
+    py2dart = Py2Dart(SDE_Extractor(CCP_SDE()))
+    code = py2dart.generate()
+    with open('data_file.dart', 'w', encoding='utf-8') as handle:
+        handle.write(code)
 
 if __name__ == '__main__':
-    py2dart = Py2Dart(SDE_Extractor(CCP_SDE()))
-    print(py2dart.generate())
+    py2dart()
