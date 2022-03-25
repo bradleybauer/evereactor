@@ -1,39 +1,15 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:app/model/build.dart';
 import 'package:app/cache_database/cache_adapter.dart';
 import 'package:app/model/market.dart';
 import 'package:app/model/context.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_acrylic/flutter_acrylic.dart';
-import 'package:provider/provider.dart';
-
-import 'package:bitsdojo_window/bitsdojo_window.dart';
-import 'loader/loader_hook.dart';
-
 import 'gui/main.dart';
 import 'gui/adapters.dart';
+import 'loader/loader_hook.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  doWhenWindowReady(() {
-    final win = appWindow;
-    win.alignment = Alignment.centerRight;
-    win.title = "EveReactor";
-    const sz = Size(945 + 16, 1006);
-    // win.maxSize = sz;
-    win.minSize = sz;
-    win.maxSize = Size(sz.width, 1000000.0);
-    win.size = sz;
-    win.show();
-  });
-
-  await Window.initialize();
-  await Window.setEffect(
-    effect: WindowEffect.acrylic,
-    // effect: WindowEffect.tabbed,
-    // effect: WindowEffect.aero,
-    color: Colors.white,
-  );
-
   final cacheDbAdapter = CacheDatabaseAdapter();
 
   // Make models
@@ -51,17 +27,6 @@ Future<void> main() async {
 
   final eveBuildContextAdapter = EveBuildContextAdapter(eveBuildContext, cacheDbAdapter);
   await eveBuildContextAdapter.loadFromCache(buildAdapter);
-
-  // Map<int, int> items = buildAdapter.buildForest.getProducedItems();
-  // var ids = items.keys.toList();
-  // await market.loadPricesFromESI(ids);
-  // for (var item in items.entries) {
-  //   print(EveStaticData.getName(item.key) +
-  //       ' ' +
-  //       item.value.toString() +
-  //       '\t' +
-  //       (market.getAvgMaxBuyForQuantity(item.key, item.value) * item.value / 1000000).toString());
-  // }
 
   LoaderHook.hook();
 
@@ -83,17 +48,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Eve Reactor',
+        title: 'EveIndy',
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
           primarySwatch: Colors.blue,
         ),
         home: const Scaffold(
