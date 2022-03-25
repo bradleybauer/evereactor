@@ -29,7 +29,7 @@ class SDE_Extractor:
         for bpID in blueprints:
             bp = blueprints[bpID]
             ids = ids.union(set(bp['materials']))
-            ids.add(bp['productID'])
+            ids.add(bpID)
         return ids
 
     def getIndustryItems(self, blueprints):
@@ -152,22 +152,23 @@ class SDE_Extractor:
         for bid in self.sde.blueprints:
             if not self._filterBP(bid):
                 continue
-            item2bp[bid] = {}
-            bp = self.sde.blueprints[bid]
-            for activity in bp['activities']:
+            bp = {}
+            sdeBP = self.sde.blueprints[bid]
+            for activity in sdeBP['activities']:
                 if activity in self.possibleActivities:
-                    item2bp[bid]['activity'] = activity
-                    item2bp[bid]['materials'] = {}
-                    for pair in bp['activities'][activity]['materials']:
-                        item2bp[bid]['materials'][pair['typeID']] = pair['quantity']
-                    assert (1 == len(bp['activities'][activity]['products']))
-                    item2bp[bid]['productID'] = bp['activities'][activity]['products'][0]['typeID']
-                    item2bp[bid]['productQuantity'] = bp['activities'][activity]['products'][0]['quantity']
-                    item2bp[bid]['time'] = bp['activities'][activity]['time']
-                    if 'skills' in bp['activities'][activity]:
-                        skills = {pair['typeID'] for pair in bp['activities'][activity]['skills']}
-                        item2bp[bid]['skills'] = self._getBlueprintSkills(skills, skill2parents, skillsOfInterest)
+                    bp['activity'] = activity
+                    bp['materials'] = {}
+                    for pair in sdeBP['activities'][activity]['materials']:
+                        bp['materials'][pair['typeID']] = pair['quantity']
+                    assert (1 == len(sdeBP['activities'][activity]['products']))
+                    bp['productQuantity'] = sdeBP['activities'][activity]['products'][0]['quantity']
+                    bp['time'] = sdeBP['activities'][activity]['time']
+                    if 'skills' in sdeBP['activities'][activity]:
+                        skills = {pair['typeID'] for pair in sdeBP['activities'][activity]['skills']}
+                        bp['skills'] = self._getBlueprintSkills(skills, skill2parents, skillsOfInterest)
                     break  # a bp can contain only one of the two possible activities
+            productID = sdeBP['activities'][activity]['products'][0]['typeID']
+            item2bp[productID] = bp
         return item2bp
 
     def getProductionSkills(self):
@@ -417,8 +418,7 @@ class SDE_Extractor:
         sde = self.sde
 
         marketGraph = {}
-        products = {bp['productID'] for bp in blueprints.values()}
-        for product in products:
+        for product in blueprints.keys():
             productMarketGroup = sde.typeIDs[product]['marketGroupID']
             self._addSegmentsOfPathToEdgeMap(productMarketGroup, marketGraph, lambda k: sde.marketGroups[k]['parentGroupID'])
         return marketGraph
@@ -431,8 +431,7 @@ class SDE_Extractor:
         """
         sde = self.sde
         group2category = {}
-        products = {bp['productID'] for bp in blueprints.values()}
-        for product in products:
+        for product in blueprints.keys():
             groupID = sde.typeIDs[product]['groupID']
             group2category[groupID] = sde.groupIDs[groupID]['categoryID']
         return group2category

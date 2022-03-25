@@ -2,7 +2,6 @@ import 'industry_type.dart';
 
 class Blueprint {
   final IndustryType industryType;
-  final int productTypeID;
   final int numProducedPerRun;
   final Map<int, int> input2quantity;
   final int timePerRun;
@@ -10,7 +9,6 @@ class Blueprint {
 
   const Blueprint(
     this.industryType,
-    this.productTypeID,
     this.numProducedPerRun,
     this.input2quantity,
     this.timePerRun,
@@ -21,7 +19,6 @@ class Blueprint {
   String toString() {
     return {
       'industryType': industryType,
-      'productTypeID': productTypeID,
       'quantity': numProducedPerRun,
       'input2quantity': input2quantity,
       'timePerRun': timePerRun,

@@ -41,7 +41,7 @@ class Py2Dart:
     def _int2int(self, obj) -> str:
         code = '{'
         for k in obj:
-            code += int(k) + ':' + int(obj[k]) + ','
+            code += str(k) + ':' + str(obj[k]) + ','
         if len(obj) > 0:
             code = code[:-1]  # trim the final comma
         return code + '}'
@@ -111,7 +111,6 @@ class Py2Dart:
     def _blueprint(self, obj) -> str:
         code = 'Blueprint('
         code += (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
-        code += str(obj['productID']) + ','
         code += str(obj['productQuantity']) + ','
         code += self._int2int(obj['materials']) + ','
         code += str(obj['time']) + ','
@@ -173,18 +172,18 @@ class Py2Dart:
         code += self._dict2map('system2name', 'int', 'Map<String,String>', system2name, self._str2str)
 
         # # Dart run the output to check for syntax errors
-        # code += 'void main() {'
-        # code += '   print(items.length);'
-        # code += '   print(blueprints.length);'
-        # code += '   print(marketGroupNames.length);'
-        # code += '   print(rigs.length);'
-        # code += '   print(marketGroupGraph.length);'
-        # code += '   print(skills.length);'
-        # code += '   print(structures.length);'
-        # code += '   print(implants.length);'
-        # code += '   print(group2category.length);'
-        # code += '   print(regions.length);'
-        # code += '   print(systems.length);'
+        # code += 'void main() {\n'
+        # code += '   print(items.length);\n'
+        # code += '   print(blueprints.length);\n'
+        # code += '   print(marketGroupNames.length);\n'
+        # code += '   print(rigs.length);\n'
+        # code += '   print(marketGroupGraph.length);\n'
+        # code += '   print(skills.length);\n'
+        # code += '   print(structures.length);\n'
+        # code += '   print(implants.length);\n'
+        # code += '   print(group2category.length);\n'
+        # code += '   print(region2systems.length);\n'
+        # code += '   print(system2name.length);\n'
         # code += '}'
         # with open('hi.dart', 'w', encoding='utf-8') as handle:
         #     handle.write(code)
