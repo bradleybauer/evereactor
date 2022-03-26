@@ -1,12 +1,9 @@
-Buy dude at everef a coffee
-
 GOAL------------------------------------------------------------------------------------------------------------------
 One thing I want to be true about this app is that the scenario where it gives the exact answer is very well defined and thought out ahead of time
   I do mfg and rtns in wormhole space using 1 raitaru and 1 tatara.
   All my toons have Reactions V, Indy V, Adv Indy IV, all Science IV
   I have x number of mfg lines and y number of rtn lines
-  All my non (story, faction, t2) bp's have levels of (ME,TE) = (a,b)
-  My (story, faction, t2) all have certain (ME,TE) levels that are given and certian numRuns that is given
+  All my bp's have certain ME/TE levels which I've set either directly per bp or by a global ME/TE option
   All my toons have the same beancounter industry 2% implant
   All my market toons have acounting V
   (mfg tax, rtn tax, cost indices) are all given
@@ -16,6 +13,9 @@ One thing I want to be true about this app is that the scenario where it gives t
 ----------------------------------------------------------------------------------------------------------------------
 
 RESTRICTIONS----------------------------------------------------------------------------------------------------------
+Never build any MFG item that is input to RTN item (fuel blocks)
+  Just learned that fuel blocks are basically always only used as input to reactions
+
 Assumes structures are located whereever the rigs gives the best bonuses. (LS for thukker rigs)
 
 I am not supporting arbitrary systems. Why?
@@ -58,11 +58,6 @@ Material Efficiency
     the above applies here too
 ----------------------------------------------------------------------------------------------------------------------
 
-OPTIMIZER-------------------------------------------------------------------------------------------------------------
-Optimize with batches contiguous but push batches back (after optimization) so that they start at the start
-  of the rtn batch they start concurrently with (or early as possible)
-----------------------------------------------------------------------------------------------------------------------
-
 MARKET DATA-----------------------------------------------------------------------------------------------------------
 Apparently indexeddb can hold a lot of data https://stackoverflow.com/questions/5692820/maximum-item-size-in-indexeddb
 
@@ -99,25 +94,15 @@ to get images for items
 
 for some items https://images.evetech.net/types/{itemID}/render?size={power of 2 size} does not return anything
 in that case I have to load from https://images.evetech.net/types/{itemID}/icon
+
+TODO may actually want to use blueprint image for blueprints because the item may not look good on a white background.
 ----------------------------------------------------------------------------------------------------------------------
 
 SDE-------------------------------------------------------------------------------------------------------------------
-I may have to fetch solar system localizations from the esi.
-
-Note: Use item name instead of blueprint name everywhere.
-      There are only a few cases where the item name is not exactly contained in the blueprint name
-
-Have custom (per item/category) display formats
-  Categories // LOW PRIORITY
-    Categories in eve can be very verbose. users do not need a divided list to break down the large/medium/small types of trig ammo.
-    It is much better if I just combine those categories.
-
-  Choose depth at which all times are combined into single category
-
-  Custom build amounts for heuristic profit% calculations in the Browse window // LOW PRIOR
-    Idk maybe there is a way to automatically choose build amounts to calculate an approximate profit percent.
-    But, if there really is not then I can customize things :/
-    But, I'd prefer not to though, if some new item comes to the market, then what do I do?
+Custom build amounts for heuristic profit% calculations in the Browse window // LOW PRIOR
+  Idk maybe there is a way to automatically choose build amounts to calculate an approximate profit percent.
+  But, if there really is not then I can customize things :/
+  But, I'd prefer not to though, if some new item comes to the market, then what do I do?
 ----------------------------------------------------------------------------------------------------------------------
 
 FEATURES--------------------------------------------------------------------------------------------------------------
@@ -126,6 +111,8 @@ Outputs should all be tables that are pastable into EXCEL
 Have a donate button / bitcoin wallet address.
 
 Have blueprints in inventory (and missing in multiby)? just for calculating how many blueprints are needed to do the job.
+  Interesting, if I did this then I'd want to have a blueprintID to itemID map.
+  I guess I would need friggin blueprint names as well...
 
 Multiple Multibuys???
     isk saved by using multiple multibuys
@@ -140,10 +127,10 @@ BUILD CUSTOMIZATIONS------------------------------------------------------------
 I cannot make this program so flexible that it does every calculation perfect for every possible industry scenario.
 
 Instead my strategy is to optimize for the simple case (hopefully common case, I will setup my indy like this).
-  ME/TE levels for BPO are set globally by the user (or take a sensible default)
-  ME/TE levels for non researchable bpc's are set globally by the user (or take a sensible default?)
+  ME/TE levels for BPO can be set globally by the user (or take a sensible default)
+  ME/TE can be set per bp type.
   Skills are set globally by the user
-    science (one option), production (one option for each with mat/time bonuses), the reactions skill
+    science (one option ?), production (one option for each with mat/time bonuses), the reactions skill
   Number of lines for mfg and for rtns are set globally
   Rtn & Mfg system cost indices are set globally.
   There is only one rig for each bonus but more than three rigs can be applied to a build.
@@ -151,23 +138,14 @@ Instead my strategy is to optimize for the simple case (hopefully common case, I
     To make sure the build IRL works exactly as the solver describes it is my responsibility to do (among other things) the correct production in the correct facility.
     If two rigs give the same bonus to the same item, then the best bonus is applied? It's just easier this way.
 
-  Maybe I will allow ME/TE levels to be set at the ITEM level. (solver can accomodate this atm, I think)
-    It would be nice to allow high end bpo's to be set to ME/TE lvl 4 while low end bpo's are set to me/te lvl 5.
-
-Yes I probably will do industry in structures without bonuses to the bp's im using. So I will have a rig list in the options window.
-
 It is possible to buy intermediates things that are in Target Items.
   If something is in target items then it is always built, but any amount of it used for building other items
   may be bought. Just like how inventory and everything works in the solver.
 
-Never build rams or fuel blocks as intermediates
-Never build rams as target items
+option to never build rams, fuel blocks, t1 ships, ...???
 ----------------------------------------------------------------------------------------------------------------------
 
 GUI/UX----------------------------------------------------------------------------------------------------------------
-Replace 'load market logs' button with 'load market data' button
-  There really is no reason to support loading market logs if the esi works just as well.
-
 Make input boxes simple.
   For integer inputs just restrict input to integers and maximum number of characters
   For percents just restrict max num chars maybe
@@ -179,12 +157,13 @@ Make input boxes simple.
   Red box on invalid input
 
 Not all data tables are categorized tables using breadcrumb navigation.
-  the browser window is. however the other tables merely have a category column
+  the browser window is. however the other tables merely have a category column?
   thus allowing the sorting by category but not enforcing it.
   hmmm
   possibly have category sorting be optional where the breadcrumb appears when that option is selected
 
 Options ### see BUILD CUSTOMIZATIONS section above for more details about options
+  maybe centered overview dialog box thing..
 
   Structures (basic dropdown lists)
     1mfg
@@ -196,26 +175,16 @@ Options ### see BUILD CUSTOMIZATIONS section above for more details about option
       many people will probably only have 1mfg & 1rtn
 
   //Structures // LOW PRIORITY lol
-  //  A structure can have 3 rigs, will not simulate rigging calibration.
-  //  Cannot allow multiple rigs that give a bonus to the same item type to be on different structures.
+  //  Cannot allow multiple rigs that give a bonus to the same item type to be on different structures.????
   //  Basically for each item type there must be only one structure that has rigs that give bonuses to it.
-  //  Rigs (Whether M-set, L-set or XL-set is implied)
-  //    Raitaru 
-  //      Adv Component ME I      (going to have to give full names)
-  //      Adv Component TE I
-  //      Ammunition ME I
-  //    Azbel
-  //      Adv Component I
-  //      Equipment I
-  //    Sotiyo
-  //      Ship II
-  //      Equipment and Consumables II
   //  Only supports raitaru/azbel/sotiyo/athanor/tatara
   //  Then before computing a schedule I have to go through each job and assign that job a ME and TE based on skills
   //  and the bonuses of the best structure for that job to be ran on.
 
   Reaction & Manufacturing lines
   Skills (all skills can be set ? )
+    group skills by category of some kind
+    if more than x skills in category then give option to set all to a single value
   Global ME/TE
   System Cost Indices for Rtn & Mfg
     Minimum system cost index is .001 (that is .1%)
@@ -226,7 +195,10 @@ Options ### see BUILD CUSTOMIZATIONS section above for more details about option
 Search/Browse // HIGH PRIORITY
   Fuzzy search
   Scroll view of categorized data table
-  (Add, icon, name, cost?, profit%, category breadcrumb snippet)
+  (add, icon, name, cost?, profit%)
+  maybe category sort on icon column sort?
+    category sort would be default but *should* allow some way to get back to category sort
+    dont want to add a special button.
   Heuristic list // MEDIUM PRIORITY
 
   New idea:
@@ -236,15 +208,12 @@ Search/Browse // HIGH PRIORITY
       keyboard
       mouse wheel
     this allows the simplification that the breadcrumb is in one spot and is at the top
-    while not introducing the ambiguity of what item the breadcrumb describes when the
-    viewing window is at the bottom of the list
+    while not introducing any ambiguity of what item the breadcrumb describes when the
 
   The categorized sort is successive bucket sorting.
   I mean, there is an easier way i guess.
-  Assign each category an integer where int(category 2) = int(last sub category of category 1) + 1
-  Each cateory has a coordinate in the category tree
-  coord = ?
-  idk yet ill figure it out.
+  i think it is just the order of depth first traversal where children are sorted in some way.
+
 
   Not doing profit % yet
   Can tackle that later, like way later.
@@ -256,6 +225,9 @@ Optimize - desktop // MEDIUM PRIORITY
     Running time
     Number solutions found
     Solution status [infeasible, feasible, optimal, unknown]
+
+  Optimizer log?
+    should be available
 
   Optimizer controls
     start
@@ -308,7 +280,7 @@ def t(r, b):
 ADDITIONAL PROFIT-----------------------------------------------------------------------------------------------------
 Additional profit helps you determine if you should build the absolution instead of just selling the intermediates for profit.
 If B is used to build A, and there is profit pB in building and selling B and profit pA in building and selling pA, then
-  the additional profit for building A is ap = pA - pB. If ap is negative then you loose money in building A. It would be more
+  the additional profit for using the B (that you built) to build A is ap = pA - pB. If ap is negative then you loose money in building A. It would be more
   profitable to build the B's and then sell those.
 There is 3 problems with additional profit:
   1. There are more considerations than pure profit, such as volume reduction by building A and minimizing risk by selling A's and B's instead of just A's or B's.
