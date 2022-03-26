@@ -396,9 +396,9 @@ class SDE_Extractor:
         edges[parent].add(node)
         self._addSegmentsOfPathToEdgeMap(parent, edges, getParent)
 
-    def getMarketGroupNames(self, marketGroupGraph):
+    def getMarketGroupNames(self, marketGroupGraph, skills):
         """
-        Return the market group graph reduced to contain only groups that are relavent to production.
+        Return the names of the groups in the market group graph and of the groups of the skills in the set of skills.
         id -> name
         """
         sde = self.sde
@@ -408,6 +408,11 @@ class SDE_Extractor:
             marketGroupNames[k] = sde.marketGroups[k]['nameID']
             for kk in v:
                 marketGroupNames[kk] = sde.marketGroups[kk]['nameID']
+
+        for skill in skills.values():
+            k = skill['marketGroupID']
+            marketGroupNames[k] = sde.marketGroups[k]['nameID']
+
         return marketGroupNames
 
     def getMarketGroupGraph(self, blueprints):
@@ -513,7 +518,7 @@ def __test():
 
     print('\n\nMarketGroups')
     marketGroupGraph = extractor.getMarketGroupGraph(bps)
-    marketGroupNames = extractor.getMarketGroupNames(marketGroupGraph)
+    marketGroupNames = extractor.getMarketGroupNames(marketGroupGraph, productionSkills)
     for k in sorted(marketGroupGraph, key=lambda x: marketGroupNames[x]['en']):
         marketGroupName = marketGroupNames[k]['en']
         print(marketGroupName + ' ' * (43 - len(marketGroupName)), end=': ')

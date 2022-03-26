@@ -143,7 +143,7 @@ class Py2Dart:
         bps = ex.getItem2Blueprint(productionSkills.keys())
         items = ex.getIndustryItems(bps)
         marketGroupGraph = ex.getMarketGroupGraph(bps)
-        marketGroupNames = ex.getMarketGroupNames(marketGroupGraph)
+        marketGroupNames = ex.getMarketGroupNames(marketGroupGraph, productionSkills)
         group2category = ex.getGroup2Category(bps)
         region2systems, system2name = ex.getTradeHubs()
 
