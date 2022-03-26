@@ -226,7 +226,7 @@ class SDE_Extractor:
             if not (isScienceMfg or isProductionMfg or isResourceProcessingRtn):
                 continue
 
-            skill = {'name': sde.typeIDs[tid]['name'], 'activity': activity, 'bonus': bonus}
+            skill = {'marketGroupID': sde.typeIDs[tid]['marketGroupID'], 'name': sde.typeIDs[tid]['name'], 'activity': activity, 'bonus': bonus}
 
             skills[tid] = skill
         return skills

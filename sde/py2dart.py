@@ -98,6 +98,7 @@ class Py2Dart:
     def _skill(self, obj) -> str:
         code = 'Skill('
         code += (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
+        code += str(obj['marketGroupID']) + ','
         code += str(obj['bonus']) + ','
         code += self._str2str(obj['name'])
         return code + ')'
