@@ -95,11 +95,11 @@ to get images for items
 for some items https://images.evetech.net/types/{itemID}/render?size={power of 2 size} does not return anything
 in that case I have to load from https://images.evetech.net/types/{itemID}/icon
 
-TODO may actually want to use blueprint image for blueprints because the item may not look good on a white background.
+no need for any blueprint images
 ----------------------------------------------------------------------------------------------------------------------
 
 SDE-------------------------------------------------------------------------------------------------------------------
-Custom build amounts for heuristic profit% calculations in the Browse window // LOW PRIOR
+Custom build amounts for heuristic profit% calculations in the Browse window // LOW LOW PRIOR
   Idk maybe there is a way to automatically choose build amounts to calculate an approximate profit percent.
   But, if there really is not then I can customize things :/
   But, I'd prefer not to though, if some new item comes to the market, then what do I do?
@@ -147,6 +147,11 @@ option to never build rams, fuel blocks, t1 ships, ...???
 
 GUI/UX----------------------------------------------------------------------------------------------------------------
 
+for any table that is categorized it does not make much sense to have the table be larger than the window
+since the breadcrumb could go out of view 
+
+QA can be a simple dialog popup.
+
 TOP APP BAR:
   LEFT: NAME
   RIGHT: load market data, paste inventory, MINIMIZE CLOSE
@@ -154,18 +159,19 @@ TOP APP BAR:
 content scrolls between top app and bottom app bars
 
 BOTTOM APP BAR? (at depth = min(content height, window height))
-  LEFT: (Options, Optimize, Search) mutually exclusive expand into area?
-  RIGHT: copy schedule, copy inputs, copy products
-
-
-Do i really want to show icons for items?
+  LEFT: (Search, Options) mutually exclusive expand into area?
+  RIGHT: copy schedule, copy multibuy, copy outputs (Optimize)
 
 Change Inventory to 'Inputs'.
-  rows are (icon, buy quantity, ppu, buy cost)
+  rows are (icon, quantity, ppu, cost)
 
-  really no need to show inventory.
+  really no need to show inventory (esp as a separate table).
 
-Having a schedule visualization would be super good.
+  if an item in the Inputs table is provided by the inventory then the amount that is provided is shown in
+    parens next to the quantity value in the quantity column
+    this is described in a tooltip on the column header
+
+Having a schedule visualization would be super good. // LOW LOW PRIORITY
 
 Change font, make font a bit smaller?
 Slim up the program header a bit
@@ -174,7 +180,7 @@ Make Inputs & Intermediates larger
 Swap position of Inputs & Intermediates
 
 Tooltips
-  Table names elipses if too long but show full name on hover with tooltip (if too long).
+  Table names elipses if too long but show full name on hover with tooltip.
   Sync Market Data : Loads market data from the esi.
   Value if Build : (Profit if Build) - (Profit if Buy)
   PPU : build price per unit
@@ -227,12 +233,18 @@ Options ### see BUILD CUSTOMIZATIONS section above for more details about option
 
 Search/Browse // HIGH PRIORITY
   Fuzzy search
-  Scroll view of categorized data table
+  categorized data table with scrolling content (headers fixed at top, breadcrumb fixed at bottom)
   (add, icon, name, profit %)
   maybe category sort on icon column sort?
     category sort would be default but *should* allow some way to get back to category sort
     No, instead just have triple sort go back to a default sorting.
   Heuristic list // MEDIUM PRIORITY
+
+  for any text input, a clickable 'x' needs to appear at the right hand side of the search box
+    to allow resetting the search bar input
+
+  search bar multifuncitons as a general bp filter.
+    just copy bp's / item's from in game and paste into the search box to restrict the item list
 
   New idea:
     put breadcrumb row at bottom? of list, right under the search bar
