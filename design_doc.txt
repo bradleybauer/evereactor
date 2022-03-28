@@ -92,6 +92,10 @@ or
   https://images.evetech.net/types/10/icon
 to get images for items
 
+TODO it would cost 4.6megs to download all raw images for all items in my app
+How well would that data compress? Can I host a gzip somewhere and download everything just once?
+https://images.evetech.net/types/35825/render?size=32
+
 for some items https://images.evetech.net/types/{itemID}/render?size={power of 2 size} does not return anything
 in that case I have to load from https://images.evetech.net/types/{itemID}/icon
 
