@@ -17,6 +17,11 @@ Never build any MFG item that is input to RTN item (fuel blocks)
   Just learned that fuel blocks are basically always only used as input to reactions
 
 Assumes structures are located whereever the rigs gives the best bonuses. (LS for thukker rigs)
+  ??? this one is annoying, i mean. it basically works for anyone doing everything in ns/wh
+  but,
+  for people in ls its wrong if they use rigs other than thukker.
+    :(
+  don't really wana work on it though.
 
 I am not supporting arbitrary systems. Why?
   1: Jita & Amarr are the two best high sec trade hubs.
@@ -86,6 +91,8 @@ Setup CI? so that people can be sure that exe hosted on github releases has been
 ----------------------------------------------------------------------------------------------------------------------
 
 ICONS-----------------------------------------------------------------------------------------------------------------
+I might not show icons in the app. a compact view may be more desirable than showing eye candy.
+
 Use
   https://images.evetech.net/types/10/render?size=512
 or
@@ -103,7 +110,7 @@ no need for any blueprint images
 ----------------------------------------------------------------------------------------------------------------------
 
 SDE-------------------------------------------------------------------------------------------------------------------
-Custom build amounts for heuristic profit% calculations in the Browse window // LOW LOW PRIOR
+Custom build amounts (set by me) for heuristic profit% calculations in the Browse window // LOW LOW PRIOR
   Idk maybe there is a way to automatically choose build amounts to calculate an approximate profit percent.
   But, if there really is not then I can customize things :/
   But, I'd prefer not to though, if some new item comes to the market, then what do I do?
@@ -118,10 +125,7 @@ Have blueprints in inventory (and missing in multiby)? just for calculating how 
   Interesting, if I did this then I'd want to have a blueprintID to itemID map.
   I guess I would need friggin blueprint names as well...
 
-Multiple Multibuys???
-    isk saved by using multiple multibuys
-    becomes more difficult if not a single station is used
-    would need to be a multiple multibuys foreach station
+Multiple Multibuys??? No, better to just link / mention different website that does this.
 
 Add hints to different UI elements to help explain things a bit.
 Have a QA section?
@@ -149,25 +153,30 @@ It is possible to buy intermediates things that are in Target Items.
 option to never build rams, fuel blocks, t1 ships, ...???
 ----------------------------------------------------------------------------------------------------------------------
 
+ERROR HANDLING--------------------------------------------------------------------------------------------------------
+mega sad face
+----------------------------------------------------------------------------------------------------------------------
+
 GUI/UX----------------------------------------------------------------------------------------------------------------
 
-for any table that is categorized it does not make much sense to have the table be larger than the window
-since the breadcrumb could go out of view 
+Max Table Heights
+  for any table that is categorized it does not make much sense to have the table be larger than the window
+  since the breadcrumb could go out of view
 
 QA can be a simple dialog popup.
 
 TOP APP BAR:
   LEFT: NAME
-  RIGHT: load market data, paste inventory, MINIMIZE CLOSE
+  RIGHT: sync market data, paste inventory, MINIMIZE CLOSE
 
 content scrolls between top app and bottom app bars
 
 BOTTOM APP BAR? (at depth = min(content height, window height))
-  LEFT: (Search, Options) mutually exclusive expand into area?
-  RIGHT: copy schedule, copy multibuy, copy outputs (Optimize)
+  LEFT: (Search, Options, Optimize) mutually exclusive expand into area
+  RIGHT: copy schedule, copy multibuy, copy outputs
 
 Change Inventory to 'Inputs'.
-  rows are (icon, quantity, ppu, cost)
+  rows are (icon, name, quantity, ppu, cost)
 
   really no need to show inventory (esp as a separate table).
 
@@ -209,13 +218,9 @@ Make input boxes simple.
 
   Red box on invalid input
 
-Not all data tables are categorized tables using breadcrumb navigation.
-  the browser window is. however the other tables merely have a category column?
-  maybe have category sort be the default state
+All data tables are categorized tables using breadcrumb navigation.
 
 Options ### see BUILD CUSTOMIZATIONS section above for more details about options
-  maybe centered overview dialog box thing..
-
   Structures (basic dropdown lists)
     1mfg
     1rtn 
@@ -224,34 +229,40 @@ Options ### see BUILD CUSTOMIZATIONS section above for more details about option
 
   Reaction & Manufacturing lines
   Skills (all skills can be set ? )
-    group skills by category of some kind
-    if more than x skills in category then give option to set all to a single value
-  Global ME/TE
+    group skills by skill group
+    if more than x skills in group then give option to set all to a single value
+  Global ME/TE for bps without BpOptions set
   System Cost Indices for Rtn & Mfg
     Minimum system cost index is .001 (that is .1%)
     Input as a percent, because that is how it is represented in game (i.e. 6.37% on hover in the industry window.)
   Tax (sales, mfg, rtn)
-  Trade systems
+  Trade systems (checkboxes)
     jita,perim,amarr,ashab
-  Extra costs
+  Extra costs - convenience for factoring in things like BPC cost (drug bpc's are expensive)
+    not factored in at the bp level, but it affects the total profit %
 
 Search/Browse // HIGH PRIORITY
   Fuzzy search
-  categorized data table with scrolling content (headers fixed at top, breadcrumb fixed at bottom)
+    use some kind of fuzzy search lib
+    exclude items where the entered character is not in the search candidate?
+    multiline input to the search bar where each line is like an OR filter?
+      search bar multifuncitons as a general bp filter.
+        just copy bp's / item's from in game and paste into the search box to restrict the item list
+    for any text input, a clickable 'x' needs to appear at the right hand side of the search box
+      to allow resetting the search bar input
+
+  headers fixed at top
+  breadcrumb fixed at bottom
+  content scrolls between
+  has a max height
+  header & breadcrumb expand to max height then content starts to scroll
   (add, icon, name, profit %)
-  maybe category sort on icon column sort?
-    category sort would be default but *should* allow some way to get back to category sort
-    No, instead just have triple sort go back to a default sorting.
-  Heuristic list // MEDIUM PRIORITY
+  triple sort go back to a default sorting.
+  heuristic list // MEDIUM PRIORITY
+    maybe % = profit on investment of max(250m, min item build cost)??
 
-  for any text input, a clickable 'x' needs to appear at the right hand side of the search box
-    to allow resetting the search bar input
-
-  search bar multifuncitons as a general bp filter.
-    just copy bp's / item's from in game and paste into the search box to restrict the item list
-
-  New idea:
-    put breadcrumb row at bottom? of list, right under the search bar
+  Categorized List Idea:
+    put breadcrumb row at bottom of list
     have a cursor (highlighted row) within the list that can be moved by
       cursor hover
       keyboard
@@ -259,11 +270,9 @@ Search/Browse // HIGH PRIORITY
     this allows the simplification that the breadcrumb is in one spot and is at the top
     while not introducing any ambiguity of what item the breadcrumb describes when the
 
-  The categorized sort is successive bucket sorting.
-  I mean, there is an easier way i guess.
-  i think it is just the order of depth first traversal where children are sorted in some way (according to max percent value?).
-
-  maybe % = profit on investment of max(250m, min item build cost)??
+    the categorized sort is successive bucket sorting.
+    i mean, there is an easier way i guess.
+    i think it is just the order of depth first traversal where children are sorted in some way (according to max percent value?).
 
 Optimize - desktop // MEDIUM PRIORITY
   Optimization stats
@@ -292,10 +301,10 @@ Targets // HIGH PRIORITY
 
 Intermediates
   A list of all intermediate items to build before building Targets
-  (icon, name, value, build/buy, BpOptions)
+  (icon, name, value, build/buy buttons, BpOptions)
 
-Inventory
-  (icon, name, remaining, value)
+Inputs
+  (icon, name, value (amount provided by inventory))
 ----------------------------------------------------------------------------------------------------------------------
 
 REMINDER--------------------------------------------------------------------------------------------------------------
