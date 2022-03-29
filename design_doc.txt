@@ -304,7 +304,7 @@ Intermediates
   (icon, name, value, build/buy buttons, BpOptions)
 
 Inputs
-  (icon, name, value (amount provided by inventory))
+  (icon, name, quantity (amount provided by inventory), value)
 ----------------------------------------------------------------------------------------------------------------------
 
 REMINDER--------------------------------------------------------------------------------------------------------------
