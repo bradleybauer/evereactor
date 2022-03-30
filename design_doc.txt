@@ -88,11 +88,18 @@ Now pretty reasonable to add a market data age clock thingy
 LOOKS-----------------------------------------------------------------------------------------------------------------
 Make look good... layout, colors, fonts, better loader (loader kinda sucks, it's aliased)
 
-I really like the gradient on the windows 11 calculator... is that the tabbed option for flutter_acrylic?
+Get some fonts here https://fonts.google.com/
 
-check out https://github.com/flutter/flutter/pull/93463 
+Use this to choose colors?
+https://material.io/resources/color/#!/?view.left=1&view.right=0&primary.color=F5F5F5&secondary.color=607D8B&primary.text.color=000000
+No? use Material Design 3. see here https://github.com/flutter/flutter/pull/93463 and here https://m3.material.io/styles/color/the-color-system/color-roles
   final lightScheme = ColorScheme.fromSeed(seedColor: Colors.green);
   final darkScheme = ColorScheme.fromSeed(seedColor: Colors.green, brightness: Brightness.dark);
+
+I really like the gradient on the windows 11 calculator... is that the tabbed option for flutter_acrylic?
+
+maybe use https://pub.dev/packages/adaptive_theme for changing light/dark mode
+
 --------------------------------------------------------------------------- ----- ------------------------------------
 
 DEVELOPMENT-----------------------------------------------------------------------------------------------------------

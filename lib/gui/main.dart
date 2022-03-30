@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:EveIndy/gui/theme/current_theme.dart';
-import 'package:EveIndy/gui/theme/my_theme.dart';
+import 'package:EveIndy/gui/my_theme.dart';
 import 'package:EveIndy/gui/widgets/home_page.dart';
 
 class MyApp extends StatefulWidget {
@@ -15,7 +14,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    currentTheme.addListener(() {
+    theme.addListener(() {
       setState(() {});
     });
   }
@@ -27,9 +26,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'EveIndy',
       home: const HomePage(),
-      theme: MyTheme.lightTheme,
-      darkTheme: MyTheme.darkTheme,
-      themeMode: currentTheme.currentTheme,
+      theme: theme.theme,
     );
   }
 }
