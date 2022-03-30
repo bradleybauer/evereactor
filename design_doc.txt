@@ -1,3 +1,6 @@
+What is build.yaml again? How does that work?
+Automate the "code generation" for drift.
+
 GOAL------------------------------------------------------------------------------------------------------------------
 One thing I want to be true about this app is that the scenario where it gives the exact answer is very well defined and thought out ahead of time
   I do mfg and rtns in wormhole space using 1 raitaru and 1 tatara.
