@@ -1,7 +1,8 @@
-import 'package:EveIndy/gui/theme/current_theme.dart';
 import 'package:flutter/material.dart';
 
+import 'package:EveIndy/gui/theme/current_theme.dart';
 import 'package:EveIndy/gui/theme/my_theme.dart';
+import 'package:EveIndy/gui/widgets/home_page.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -25,14 +26,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EveIndy',
+      home: const HomePage(),
       theme: MyTheme.lightTheme,
       darkTheme: MyTheme.darkTheme,
       themeMode: currentTheme.currentTheme,
-      home: const Scaffold(
-        body: Center(
-          child: Text("hai"),
-        ),
-      ),
     );
   }
 }

@@ -12,12 +12,11 @@ class MyTheme with ChangeNotifier {
   }
 
   static ThemeData get lightTheme {
-    //1
     return ThemeData(
-      //2
       primaryColor: MyColors.black,
       scaffoldBackgroundColor: Colors.white,
-      fontFamily: 'Montserrat', //3
+      fontFamily: 'SauceCodeProMono',
+      textTheme: ThemeData.light().textTheme,
     );
   }
 
@@ -25,7 +24,7 @@ class MyTheme with ChangeNotifier {
     return ThemeData(
       primaryColor: MyColors.black,
       scaffoldBackgroundColor: Colors.black,
-      fontFamily: 'Montserrat',
+      fontFamily: 'SauceCodeProMono',
       textTheme: ThemeData.dark().textTheme,
     );
   }
