@@ -2,6 +2,8 @@ from ccp_sde import CCP_SDE
 from my_requests import ParallelRequest
 import json
 
+# TODO handle ESI api call failures
+
 
 class SDE_Extractor:
     """This class extracts and filters information from the SDE."""
@@ -505,19 +507,19 @@ def __test():
         print(k, v)
 
     print("\n\nBlueprints")
-    bps = extractor.getItem2Blueprint(productionSkills.keys())
-    for k, v in bps.items():
+    itemID2bp = extractor.getItem2Blueprint(productionSkills.keys())
+    for k, v in itemID2bp.items():
         print(k, v)
-    print('Number of blueprints accepted:', len(bps))
+    print('Number of blueprints accepted:', len(itemID2bp))
 
     print('\n\nIndustry Items')
-    items = extractor.getIndustryItems(bps)
+    items = extractor.getIndustryItems(itemID2bp)
     for k, v in items.items():
         print(k, v)
-    print('Number of items:', len(extractor.getIndustryItems(bps)))
+    print('Number of items:', len(extractor.getIndustryItems(itemID2bp)))
 
     print('\n\nMarketGroups')
-    marketGroupGraph = extractor.getMarketGroupGraph(bps)
+    marketGroupGraph = extractor.getMarketGroupGraph(itemID2bp)
     marketGroupNames = extractor.getMarketGroupNames(marketGroupGraph, productionSkills)
     for k in sorted(marketGroupGraph, key=lambda x: marketGroupNames[x]['en']):
         marketGroupName = marketGroupNames[k]['en']
@@ -529,7 +531,7 @@ def __test():
     print('Number of market groups:', len(marketGroupNames))
 
     print('\n\nGroup2Category')
-    group2category = extractor.getGroup2Category(bps)
+    group2category = extractor.getGroup2Category(itemID2bp)
     print(group2category)
 
     print('\n\nTrade hubs')

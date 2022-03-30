@@ -140,11 +140,11 @@ class Py2Dart:
         rigs = ex.getIndustryRigsAndBonuses()
         productionSkills = ex.getProductionSkills()
         implants = ex.getImplants()
-        bps = ex.getItem2Blueprint(productionSkills.keys())
-        items = ex.getIndustryItems(bps)
-        marketGroupGraph = ex.getMarketGroupGraph(bps)
+        itemID2bp = ex.getItem2Blueprint(productionSkills.keys())
+        items = ex.getIndustryItems(itemID2bp)
+        marketGroupGraph = ex.getMarketGroupGraph(itemID2bp)
         marketGroupNames = ex.getMarketGroupNames(marketGroupGraph, productionSkills)
-        group2category = ex.getGroup2Category(bps)
+        group2category = ex.getGroup2Category(itemID2bp)
         region2systems, system2name = ex.getTradeHubs()
 
         code = ''
@@ -161,7 +161,7 @@ class Py2Dart:
         code += 'typedef B=BonusType;'
 
         code += self._dict2map('items', 'int', 'Item', items, self._item)
-        code += self._dict2map('blueprints', 'int', 'Blueprint', bps, self._blueprint)
+        code += self._dict2map('blueprints', 'int', 'Blueprint', itemID2bp, self._blueprint)
         code += self._dict2map('marketGroupNames', 'int', 'Map<String,String>', marketGroupNames, self._str2str)
         code += self._dict2map('rigs', 'int', 'Rig', rigs, self._rig)
         code += self._dict2map('marketGroupGraph', 'int', 'List<int>', marketGroupGraph, self._ints)
