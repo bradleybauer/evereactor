@@ -1,5 +1,5 @@
 import 'package:EveIndy/model/util.dart';
-import 'eve_static_data.dart';
+import 'eve_sde.dart';
 import 'market_order.dart';
 import 'order_filter.dart';
 
@@ -21,7 +21,8 @@ class Market {
 
   Map<int, double> adjustedPrices = {};
 
-  static List<int> restrictToTypeIDs = EveStaticData.items.keys.toList();
+  // static List<int> restrictToTypeIDs = EveStaticData.items.keys.toList();
+  static List<int> restrictToTypeIDs = [];
 
   Market() {
     for (int id in restrictToTypeIDs) {

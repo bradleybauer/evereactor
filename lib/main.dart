@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:EveIndy/model/build.dart';
 import 'package:EveIndy/cache_database/cache_adapter.dart';
 import 'package:EveIndy/model/market.dart';
 import 'package:EveIndy/model/context.dart';
-import 'gui/main.dart';
-import 'gui/adapters.dart';
 import 'loader/loader_hook.dart';
 
 Future<void> main() async {
@@ -19,25 +16,27 @@ Future<void> main() async {
 
   // Make adapters & load model data from cache through them
   // Info loaded from cache is market, orderfilter, context, lines&runs, inventory
-  final marketAdapter = MarketAdapter(market, cacheDbAdapter);
-  await marketAdapter.loadFromCache();
+  // final marketAdapter = MarketAdapter(market, cacheDbAdapter);
+  // await marketAdapter.loadFromCache();
 
-  final buildAdapter = BuildAdapter(Build(eveBuildContext), cacheDbAdapter);
-  await buildAdapter.loadFromCache();
+  // final buildAdapter = BuildAdapter(Build(eveBuildContext), cacheDbAdapter);
+  // await buildAdapter.loadFromCache();
 
-  final eveBuildContextAdapter = EveBuildContextAdapter(eveBuildContext, cacheDbAdapter);
-  await eveBuildContextAdapter.loadFromCache(buildAdapter);
+  // final eveBuildContextAdapter = EveBuildContextAdapter(eveBuildContext, cacheDbAdapter);
+  // await eveBuildContextAdapter.loadFromCache(buildAdapter);
 
   LoaderHook.hook();
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider.value(value: buildAdapter),
-      ChangeNotifierProvider.value(value: marketAdapter),
-      ChangeNotifierProvider.value(value: eveBuildContextAdapter),
-    ],
-    child: const MyApp(),
-  ));
+  runApp(MyApp()
+      //   MultiProvider(
+      //   providers: [
+      //     ChangeNotifierProvider.value(value: buildAdapter),
+      //     ChangeNotifierProvider.value(value: marketAdapter),
+      //     ChangeNotifierProvider.value(value: eveBuildContextAdapter),
+      //   ],
+      //   child: const MyApp(),
+      // )
+      );
 }
 
 class MyApp extends StatelessWidget {
@@ -60,7 +59,7 @@ class MyApp extends StatelessWidget {
           // backgroundColor: Color(0xFFF5F5F5),
           // backgroundColor: Color(0xFF212121),
           // backgroundColor: Colors.white,
-          body: MainPageContent(),
+          // body: MainPageContent(),
         ));
   }
 }

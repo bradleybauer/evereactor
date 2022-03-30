@@ -1,4 +1,3 @@
-import 'package:EveIndy/model/constants.dart';
 import 'dart:math';
 import 'context.dart';
 import 'market_order.dart';
@@ -191,10 +190,10 @@ Future<Map<int, double>> getAdjustedPricesESI(List<int> ids) async {
 Future<Map<int, List<Order>>> getOrdersFromESI(List<int> ids) async {
   print('Fetching orders');
   List<int> region_ids = [
-    Constants.THE_FORGE_REGION_ID,
-    Constants.DOMAIN_REGION_ID,
-    Constants.SINQ_LAISON_REGION_ID,
-    Constants.METROPOLIS_REGION_ID,
+    // Constants.THE_FORGE_REGION_ID,
+    // Constants.DOMAIN_REGION_ID,
+    // Constants.SINQ_LAISON_REGION_ID,
+    // Constants.METROPOLIS_REGION_ID,
   ];
   Map<int, List<Order>> ret = {};
   for (int id in ids) {

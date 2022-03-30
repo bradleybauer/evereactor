@@ -1,7 +1,7 @@
-import 'package:app/cache_database/cache_database.dart';
-import 'package:app/cache_database/platform.dart';
-import 'package:app/model/context.dart';
-import 'package:app/model/order_filter.dart';
+import 'package:EveIndy/cache_database/cache_database.dart';
+import 'package:EveIndy/cache_database/platform.dart';
+import 'package:EveIndy/model/context.dart';
+import 'package:EveIndy/model/order_filter.dart';
 import 'package:drift/drift.dart';
 import 'package:tuple/tuple.dart';
 

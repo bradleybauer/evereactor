@@ -1,14 +1,14 @@
-import 'constants.dart';
+// import 'constants.dart';
 import 'market_order.dart';
 
 class OrderFilter {
   static Map<int, String> possibleSystems = {
-    Constants.JITA_SYSTEM_ID: 'Jita',
-    Constants.PERIMETER_SYSTEM_ID: 'Perimeter',
-    Constants.AMARR_SYSTEM_ID: 'Amarr',
-    Constants.ASHAB_SYSTEM_ID: 'Ashab',
-    Constants.DODIXIE_SYSTEM_ID: 'Dodixie',
-    Constants.BOTANE_SYSTEM_ID: 'Botane',
+    // Constants.JITA_SYSTEM_ID: 'Jita',
+    // Constants.PERIMETER_SYSTEM_ID: 'Perimeter',
+    // Constants.AMARR_SYSTEM_ID: 'Amarr',
+    // Constants.ASHAB_SYSTEM_ID: 'Ashab',
+    // Constants.DODIXIE_SYSTEM_ID: 'Dodixie',
+    // Constants.BOTANE_SYSTEM_ID: 'Botane',
     // Constants.RENS_SYSTEM_ID: 'Rens',
     // Constants.HEK_SYSTEM_ID: 'Hek',
   };
