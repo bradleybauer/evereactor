@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MyTheme with ChangeNotifier {
+  static const darkThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
+  static const lightThemeSeedColor = Color.fromRGBO(18, 157, 195, 1);
+
   bool _inDarkMode = true;
   ThemeMode get mode => _inDarkMode ? ThemeMode.dark : ThemeMode.light;
 
@@ -9,16 +12,12 @@ class MyTheme with ChangeNotifier {
     notifyListeners();
   }
 
-  get _seedColor => _inDarkMode ? Color.fromARGB(255, 242, 255, 0) : Color.fromRGBO(18, 157, 195, 1);
+  get _seedColor => _inDarkMode ? darkThemeSeedColor : lightThemeSeedColor;
 
   // Return the Material Design 3 color scheme generated from [_seedColor].
-  ColorScheme get colors {
-    return ColorScheme.fromSeed(seedColor: _seedColor, brightness: _inDarkMode ? Brightness.dark : Brightness.light);
-  }
+  ColorScheme get colors => ColorScheme.fromSeed(seedColor: _seedColor, brightness: _inDarkMode ? Brightness.dark : Brightness.light);
 
-  ThemeData get theme {
-    return ThemeData.from(colorScheme: colors).copyWith(useMaterial3: true);
-  }
+  ThemeData get theme => ThemeData.from(colorScheme: colors).copyWith(useMaterial3: true);
 }
 
 MyTheme theme = MyTheme();
