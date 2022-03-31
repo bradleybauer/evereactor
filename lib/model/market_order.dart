@@ -10,13 +10,7 @@ class Order {
 
   @override
   String toString() {
-    return {
-      'typeID': typeID,
-      'systemID': systemID,
-      'regionID': regionID,
-      'isBuy': isBuy,
-      'price': price,
-      'volumeRemaining': volumeRemaining
-    }.toString();
+    return {'typeID': typeID, 'systemID': systemID, 'regionID': regionID, 'isBuy': isBuy, 'price': price, 'volumeRemaining': volumeRemaining}
+        .toString();
   }
 }

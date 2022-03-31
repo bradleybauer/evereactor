@@ -6,6 +6,6 @@ class EveBuildContext {
   final double systemCostIndex;
   final double salesTaxPercent;
   final double brokersFeePercent;
-  EveBuildContext(this.reactionSkillLevel, this.structureMaterialBonus, this.structureTimeBonus,
-      this.systemCostIndex, this.salesTaxPercent, this.brokersFeePercent);
+  EveBuildContext(this.reactionSkillLevel, this.structureMaterialBonus, this.structureTimeBonus, this.systemCostIndex, this.salesTaxPercent,
+      this.brokersFeePercent);
 }

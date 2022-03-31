@@ -1,3 +1,5 @@
+TODO use defaulttextstyle? or have a list of text style's in my_theme?
+
 TODO not sure about the EveIndy name...
 How about EveIndustry?
 Or EveProsperity... lol

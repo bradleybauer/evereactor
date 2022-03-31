@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+// https://m3.material.io/styles/color/the-color-system/key-colors-tones
 class MyTheme with ChangeNotifier {
+  static bool _inDarkMode = false;
   static const darkThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
-  static const lightThemeSeedColor = Color.fromRGBO(18, 157, 195, 1);
+  static const lightThemeSeedColor = Color.fromARGB(255, 18, 157, 195);
 
-  bool _inDarkMode = true;
   ThemeMode get mode => _inDarkMode ? ThemeMode.dark : ThemeMode.light;
 
   void toggleTheme() {
