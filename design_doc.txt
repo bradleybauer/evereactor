@@ -1,5 +1,3 @@
-TODO use defaulttextstyle? or have a list of text style's in my_theme?
-
 TODO not sure about the EveIndy name...
 How about EveIndustry?
 Or EveProsperity... lol
@@ -88,6 +86,30 @@ Now pretty reasonable to add a market data age clock thingy
 ----------------------------------------------------------------------------------------------------------------------
 
 LOOKS-----------------------------------------------------------------------------------------------------------------
+fluent_ui has this nice idea of a flyout
+    flyoutcontroller is a change notifier
+    var flyoutController = FlyoutController()
+    Flyout(
+        controller = flyoutController,
+        contentWidth:234,
+        vertical offset:13,
+        content: FlyoutContent(
+            child: stuff to show in pane
+        ),
+        child: widget(
+            onInteract: flyoutController.open = true;
+        ),
+    )
+    @override dispose() {
+        flyoutController.dispose()
+        super.dispose()
+    }
+
+
+I am using flutter master channel because according to a reddit post, material 3 components are only available on the master channel
+
+use defaulttextstyle? or have a list of text style's in my_theme?
+
 Make look good... layout, colors, fonts, better loader (loader kinda sucks, it's aliased)
 
 Get some fonts here https://fonts.google.com/

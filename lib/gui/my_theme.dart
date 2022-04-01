@@ -6,6 +6,8 @@ class MyTheme with ChangeNotifier {
   static const darkThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
   static const lightThemeSeedColor = Color.fromARGB(255, 18, 157, 195);
 
+  // static const TextStyle typo;
+
   ThemeMode get mode => _inDarkMode ? ThemeMode.dark : ThemeMode.light;
 
   void toggleTheme() {

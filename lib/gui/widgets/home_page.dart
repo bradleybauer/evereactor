@@ -17,6 +17,7 @@ class HomePage extends StatelessWidget {
         child: Container(
           constraints: bounds,
           color: theme.colors.secondaryContainer,
+          child: Center(child: Text('This is some small text 2134.4243', style: TextStyle(fontFamily: 'NotoSans', fontSize: 12))),
         ),
       ),
     );
