@@ -1,9 +1,10 @@
 import 'package:EveIndy/gui/widgets/content.dart';
 import 'package:flutter/material.dart';
 
-import 'package:EveIndy/gui/my_theme.dart';
-import 'package:EveIndy/gui/widgets/header.dart';
-import 'package:EveIndy/gui/widgets/footer.dart';
+import 'content.dart';
+import '../my_theme.dart';
+import 'header.dart';
+import 'footer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage(this.maxHeight, this.width, {Key? key}) : super(key: key);

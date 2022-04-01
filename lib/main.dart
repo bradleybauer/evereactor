@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:EveIndy/gui/main.dart';
-import 'package:EveIndy/gui/my_theme.dart';
-import 'package:EveIndy/cache_database/cache_adapter.dart';
-import 'package:EveIndy/model/market.dart';
-import 'package:EveIndy/model/context.dart';
+import 'gui/my_theme.dart';
+import 'cache_database/cache_adapter.dart';
+import 'model/market.dart';
+import 'model/context.dart';
 import 'loader/loader_hook.dart';
 
 Future<void> main() async {

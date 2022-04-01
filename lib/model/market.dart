@@ -1,4 +1,4 @@
-import 'package:EveIndy/model/util.dart';
+import 'util.dart';
 import 'eve_sde.dart';
 import 'market_order.dart';
 import 'order_filter.dart';

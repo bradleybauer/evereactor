@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:EveIndy/gui/my_theme.dart';
-import 'package:EveIndy/gui/widgets/home_page.dart';
+import 'my_theme.dart';
+import 'widgets/home_page.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);

@@ -1,13 +1,12 @@
-import 'package:EveIndy/cache_database/cache_database.dart';
-import 'package:EveIndy/cache_database/platform.dart';
-import 'package:EveIndy/model/context.dart';
-import 'package:EveIndy/model/order_filter.dart';
 import 'package:drift/drift.dart';
 import 'package:tuple/tuple.dart';
 
+import 'cache_database.dart';
+import 'platform.dart';
+import '../model/context.dart';
+import '../model/order_filter.dart';
 import '../model/market.dart';
 import '../model/market_order.dart';
-import 'cache_database.dart';
 
 class CacheDatabaseAdapter {
   final CacheDatabase cache = CacheDatabase(Platform.createDatabaseConnection('EveReactorCache'));
