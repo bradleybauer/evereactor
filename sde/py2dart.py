@@ -17,9 +17,7 @@ PY_MANUFACTURING = 'manufacturing'
 
 
 class Py2Dart:
-    """
-    Generate dart code from the sde extracted info.
-    """
+    """Generate dart code from the sde extracted info."""
 
     def __init__(self, extractor) -> None:
         self.extractor = extractor
