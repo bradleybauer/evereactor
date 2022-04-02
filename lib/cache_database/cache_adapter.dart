@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:tuple/tuple.dart';
 
 import 'cache_database.dart';
-import 'platform.dart';
+import '../platform_stub.dart' if (dart.library.io) '../platform_desktop.dart' if (dart.library.html) '../platform_web.dart';
 import '../model/context.dart';
 import '../model/order_filter.dart';
 import '../model/market.dart';

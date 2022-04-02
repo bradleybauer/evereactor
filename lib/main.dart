@@ -6,7 +6,7 @@ import 'gui/my_theme.dart';
 import 'cache_database/cache_adapter.dart';
 import 'model/market.dart';
 import 'model/context.dart';
-import 'loader/loader_hook.dart';
+import 'platform.dart';
 
 Future<void> main() async {
   // final cacheDbAdapter = CacheDatabaseAdapter();
@@ -27,7 +27,7 @@ Future<void> main() async {
   // final eveBuildContextAdapter = EveBuildContextAdapter(eveBuildContext, cacheDbAdapter);
   // await eveBuildContextAdapter.loadFromCache(buildAdapter);
 
-  LoaderHook.hook();
+  Platform.appReadyHook();
 
   runApp(MyApp()
       //   MultiProvider(

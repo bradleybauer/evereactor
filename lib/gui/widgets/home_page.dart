@@ -1,4 +1,3 @@
-import 'package:EveIndy/gui/widgets/content.dart';
 import 'package:flutter/material.dart';
 
 import 'content.dart';
@@ -12,13 +11,17 @@ class HomePage extends StatelessWidget {
   final double maxHeight;
   final double width;
 
+  static const double headerHeight = 60;
+  static const double footerHeight = 60;
+
   @override
   Widget build(BuildContext context) {
     return Material(
       color: theme.colors.background,
-      child: Center(
+      child: Align(
+        alignment: Alignment.center,
         child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
           clipBehavior: Clip.antiAlias,
           child: Container(
             color: theme.colors.primaryContainer,
@@ -26,15 +29,15 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Header(height: MyTheme.headerHeight, width: width),
+                Header(height: headerHeight, width: width),
                 ConstrainedBox(
-                  constraints: BoxConstraints(
-                      minHeight: 0, maxHeight: maxHeight - MyTheme.headerHeight - MyTheme.footerHeight, maxWidth: width, minWidth: width),
+                  constraints:
+                      BoxConstraints(minHeight: 0, maxHeight: maxHeight - headerHeight - footerHeight, maxWidth: width, minWidth: width),
                   child: SingleChildScrollView(
-                    child: Content(),
+                    child: Content(width: width),
                   ),
                 ),
-                Footer(height: MyTheme.footerHeight, width: width),
+                Footer(height: footerHeight, width: width),
               ],
             ),
           ),
