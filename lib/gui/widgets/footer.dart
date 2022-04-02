@@ -14,17 +14,7 @@ class Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: theme.colors.secondaryContainer,
-        boxShadow: [
-          // BoxShadow(
-          //   color: Colors.grey.withOpacity(0.5),
-          //   spreadRadius: 1,
-          //   blurRadius: 1,
-          //   offset: Offset(0, 1),
-          // ),
-        ],
-      ),
+      color: theme.colors.secondaryContainer,
       width: width,
       height: height,
     );
