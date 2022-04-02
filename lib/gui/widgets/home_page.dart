@@ -7,9 +7,9 @@ import 'footer.dart';
 import '../../platform.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage(this.maxHeight, this.width, {Key? key}) : super(key: key);
+  const HomePage(this.minHeight, this.width, {Key? key}) : super(key: key);
 
-  final double maxHeight;
+  final double minHeight;
   final double width;
 
   static const double headerHeight = 60;
@@ -37,9 +37,7 @@ class HomePage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Header(height: headerHeight, width: width),
-                  ConstrainedBox(
-                    constraints:
-                        BoxConstraints(minHeight: 0, maxHeight: maxHeight - headerHeight - footerHeight, maxWidth: width, minWidth: width),
+                  Expanded(
                     child: SingleChildScrollView(
                       child: Content(width: width),
                     ),
