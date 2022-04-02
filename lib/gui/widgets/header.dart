@@ -59,32 +59,31 @@ class Header extends StatelessWidget {
     }
 
     var stackWidgets = <Widget>[
-      Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: padding),
-          child: Container(
-            width: 180,
-            height: 34,
-            color: tmp,
-          ),
-        ),
-      ),
-      Align(
-        alignment: Alignment.centerRight,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: padding),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: rowButtons,
-          ),
-        ),
-      )
-    ];
-
-    if (!Platform.isWeb()) {
-      stackWidgets = [Platform.getWindowMoveWidget()] + stackWidgets;
-    }
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: padding),
+              child: Container(
+                width: 180,
+                height: 34,
+                color: tmp,
+              ),
+            ),
+          )
+        ] +
+        [Platform.getWindowMoveWidget()] +
+        [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: padding),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: rowButtons,
+              ),
+            ),
+          )
+        ];
 
     var header = Container(
       decoration: boxDecor,
