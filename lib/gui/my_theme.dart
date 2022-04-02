@@ -8,7 +8,7 @@ class MyTheme with ChangeNotifier {
 
   static const double appHeight = 1000;
   static const double appWidth = 800;
-  static const double appBarButtonHeight = 27;
+  static const double appBarTextButtonHeight = 27;
   static const double appBarPadding = 20;
 
   // static const TextStyle typo;

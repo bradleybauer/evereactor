@@ -30,13 +30,13 @@ class Header extends StatelessWidget {
     var rowButtons = [
       Container(
         width: 150,
-        height: MyTheme.appBarButtonHeight,
+        height: MyTheme.appBarTextButtonHeight,
         color: tmp,
       ),
       const SizedBox(width: MyTheme.appBarPadding),
       Container(
         width: 120,
-        height: MyTheme.appBarButtonHeight,
+        height: MyTheme.appBarTextButtonHeight,
         color: tmp,
       ),
     ];
