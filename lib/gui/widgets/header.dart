@@ -12,9 +12,6 @@ class Header extends StatelessWidget {
   final double? height;
   final double? width;
 
-  static const double padding = 20;
-  static const double buttonHeight = 27;
-
   final Color tmp = theme.colors.primary;
 
   @override
@@ -33,27 +30,31 @@ class Header extends StatelessWidget {
     var rowButtons = [
       Container(
         width: 150,
-        height: buttonHeight,
+        height: MyTheme.appBarButtonHeight,
         color: tmp,
       ),
-      const SizedBox(width: padding),
+      const SizedBox(width: MyTheme.appBarPadding),
       Container(
         width: 120,
-        height: buttonHeight,
+        height: MyTheme.appBarButtonHeight,
         color: tmp,
       ),
     ];
 
+    // TODO would like the color of the icon to change on hover to onPrimary
     // Add a close button on windows.
     if (!Platform.isWeb()) {
       rowButtons += [
-        const SizedBox(width: padding),
+        const SizedBox(width: MyTheme.appBarPadding),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 45),
           child: MaterialButton(
             onPressed: Platform.closeWindow,
             child: Icon(Icons.close, color: theme.colors.onSecondaryContainer),
-            hoverColor: tmp,
+            color: theme.colors.secondaryContainer,
+            hoverColor: theme.colors.primary,
+            elevation: 0,
+            hoverElevation: 0,
           ),
         ),
       ];
@@ -63,7 +64,7 @@ class Header extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: padding),
+              padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
               child: Container(
                 width: 180,
                 height: 34,
@@ -77,7 +78,7 @@ class Header extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: padding),
+              padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: rowButtons,
