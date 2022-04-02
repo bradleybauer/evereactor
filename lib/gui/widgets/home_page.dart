@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'content.dart';
+import 'body.dart';
 import '../my_theme.dart';
 import 'header.dart';
 import 'footer.dart';
@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
                 color: theme.colors.primaryContainer,
                 child: Stack(
                   children: [
-                    Content(width: width, verticalPadding: headerHeight),
+                    Body(width: width, verticalPadding: headerHeight),
                     Header(height: headerHeight, width: width),
                     Align(alignment: Alignment.bottomCenter, child: Footer(height: footerHeight, width: width)),
                   ],

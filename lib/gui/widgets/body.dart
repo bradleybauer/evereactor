@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../my_theme.dart';
 
-class Content extends StatelessWidget {
-  const Content({this.width, this.verticalPadding, Key? key}) : super(key: key);
+class Body extends StatelessWidget {
+  const Body({this.width, this.verticalPadding, Key? key}) : super(key: key);
 
   final double? verticalPadding;
 
