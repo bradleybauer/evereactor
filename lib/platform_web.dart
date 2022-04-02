@@ -5,15 +5,9 @@ import 'package:drift/drift.dart';
 import 'package:drift/remote.dart';
 import 'package:drift/web.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class Platform {
-  // static QueryExecutor createDatabaseConnection(String databaseName) {
-  //   return LazyDatabase(() async {
-  //     return WebDatabase(databaseName);
-  //   });
-  // }
-
   static QueryExecutor createDatabaseConnection(String databaseName) {
     return LazyDatabase(() async {
       return _connectToWorker(databaseName).executor;
