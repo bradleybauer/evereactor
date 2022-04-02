@@ -19,6 +19,7 @@ class Content extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Container(width: width, height: 35 + 2 * MyTheme.appBarPadding, color: theme.colors.primary),
                 Container(width: width, height: 200, color: theme.colors.background),
                 Container(width: width, height: 200, color: theme.colors.primary),
                 Container(width: width, height: 200, color: theme.colors.background),
@@ -28,6 +29,7 @@ class Content extends StatelessWidget {
           ),
         ),
         Align(
+          // Summary Box
           alignment: Alignment.topCenter,
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: MyTheme.appBarPadding + verticalPadding!),
