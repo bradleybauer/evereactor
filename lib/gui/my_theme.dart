@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 
 // https://m3.material.io/styles/color/the-color-system/key-colors-tones
 class MyTheme with ChangeNotifier {
-  static bool _inDarkMode = false;
-  // static const darkThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
-  // static const lightThemeSeedColor = Color.fromARGB(255, 18, 157, 195);
+  static bool _inDarkMode = true;
   static const lightThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
   static const darkThemeSeedColor = Color.fromARGB(255, 18, 157, 195);
 
   static const double appMinHeight = 400;
-  static const double appMaxHeight = 1000; // TODO set smartly
   static const double appWidth = 800;
   static const double appBarTextButtonHeight = 27;
   static const double appBarPadding = 20;
