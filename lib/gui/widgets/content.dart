@@ -12,7 +12,13 @@ class Content extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(width: width, height: 2000, color: theme.colors.background),
+        Container(width: width, height: 200, color: theme.colors.background),
+        Container(width: width, height: 200, color: theme.colors.primary),
+        Container(width: width, height: 200, color: theme.colors.background),
+        Container(width: width, height: 200, color: theme.colors.primary),
+        Container(width: width, height: 200, color: theme.colors.background),
+        Container(width: width, height: 200, color: theme.colors.primary),
+        Container(width: width, height: 200, color: theme.colors.background),
       ],
     );
   }

@@ -211,16 +211,6 @@ Max Table Heights
 
 QA can be a simple dialog popup.
 
-TOP APP BAR:
-  LEFT: NAME
-  RIGHT: sync market data, paste inventory, MINIMIZE CLOSE
-
-content scrolls between top app and bottom app bars
-
-BOTTOM APP BAR? (at depth = min(content height, window height))
-  LEFT: (Search, Options, Optimize) mutually exclusive expand into area
-  RIGHT: copy schedule, copy multibuy, copy outputs
-
 Change Inventory to 'Inputs'.
   rows are (icon, name, quantity, ppu, cost)
 

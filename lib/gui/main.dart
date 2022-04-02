@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EveIndy',
-      home: HomePage(MyTheme.appHeight, MyTheme.appWidth),
+      home: const HomePage(MyTheme.appMinHeight, MyTheme.appWidth),
       theme: theme.theme,
     );
   }
