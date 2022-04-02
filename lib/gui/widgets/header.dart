@@ -19,7 +19,7 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var boxDecor = BoxDecoration(
+    final boxDecor = BoxDecoration(
       color: theme.colors.secondaryContainer,
       boxShadow: [
         BoxShadow(
@@ -36,7 +36,7 @@ class Header extends StatelessWidget {
         height: buttonHeight,
         color: tmp,
       ),
-      SizedBox(width: padding),
+      const SizedBox(width: padding),
       Container(
         width: 120,
         height: buttonHeight,
@@ -44,11 +44,12 @@ class Header extends StatelessWidget {
       ),
     ];
 
+    // Add a close button on windows.
     if (!Platform.isWeb()) {
       rowButtons += [
-        SizedBox(width: padding),
+        const SizedBox(width: padding),
         ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 45),
+          constraints: const BoxConstraints(maxWidth: 45),
           child: MaterialButton(
             onPressed: Platform.closeWindow,
             child: Icon(Icons.close, color: theme.colors.onSecondaryContainer),
@@ -58,7 +59,7 @@ class Header extends StatelessWidget {
       ];
     }
 
-    var stackWidgets = <Widget>[
+    final stackWidgets = <Widget>[
           Align(
             alignment: Alignment.centerLeft,
             child: Padding(
@@ -85,15 +86,11 @@ class Header extends StatelessWidget {
           )
         ];
 
-    var header = Container(
+    return Container(
       decoration: boxDecor,
       width: width,
       height: height,
-      child: Stack(
-        children: stackWidgets,
-      ),
+      child: Stack(children: stackWidgets),
     );
-
-    return header;
   }
 }
