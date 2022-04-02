@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 // https://m3.material.io/styles/color/the-color-system/key-colors-tones
 class MyTheme with ChangeNotifier {
   static bool _inDarkMode = false;
-  static const darkThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
-  static const lightThemeSeedColor = Color.fromARGB(255, 18, 157, 195);
+  // static const darkThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
+  // static const lightThemeSeedColor = Color.fromARGB(255, 18, 157, 195);
+  static const lightThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
+  static const darkThemeSeedColor = Color.fromARGB(255, 18, 157, 195);
 
   static const double appHeight = 1000;
   static const double appWidth = 800;
