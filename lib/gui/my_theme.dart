@@ -8,8 +8,6 @@ class MyTheme with ChangeNotifier {
 
   static const double appHeight = 1000;
   static const double appWidth = 800;
-  static const double headerHeight = 80;
-  static const double footerHeight = 80;
 
   // static const TextStyle typo;
   //TextStyle(fontFamily: 'NotoSans', fontWeight: FontWeight.w600, color: theme.colors.onPrimary)
