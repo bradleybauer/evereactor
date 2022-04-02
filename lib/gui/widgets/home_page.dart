@@ -34,17 +34,11 @@ class HomePage extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: Container(
               color: theme.colors.primaryContainer,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              child: Stack(
                 children: [
+                  Content(width: width, verticalPadding: headerHeight),
                   Header(height: headerHeight, width: width),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Content(width: width),
-                    ),
-                  ),
-                  Footer(height: footerHeight, width: width),
+                  Align(alignment: Alignment.bottomCenter, child: Footer(height: footerHeight, width: width)),
                 ],
               ),
             ),

@@ -16,17 +16,6 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boxDecor = BoxDecoration(
-      color: theme.colors.secondaryContainer,
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.5),
-          spreadRadius: 1,
-          blurRadius: 1,
-        ),
-      ],
-    );
-
     var rowButtons = [
       Container(
         width: 150,
@@ -89,11 +78,16 @@ class Header extends StatelessWidget {
       )
     ];
 
-    return Container(
-      decoration: boxDecor,
-      width: width,
-      height: height,
-      child: Stack(children: stackWidgets),
+    return PhysicalModel(
+      color: theme.colors.secondaryContainer,
+      borderRadius: const BorderRadius.all(Radius.circular(0)),
+      clipBehavior: Clip.antiAlias,
+      elevation: 2,
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Stack(children: stackWidgets),
+      ),
     );
   }
 }
