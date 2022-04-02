@@ -18,8 +18,10 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var platformSpecificPadding = const EdgeInsets.all(0);
+    var clipRadius = const BorderRadius.all(Radius.circular(0));
     if (Platform.isWeb()) {
       platformSpecificPadding = const EdgeInsets.all(32);
+      clipRadius = const BorderRadius.all(Radius.circular(10));
     }
     return Material(
       color: theme.colors.background,
@@ -28,7 +30,7 @@ class HomePage extends StatelessWidget {
         child: Padding(
           padding: platformSpecificPadding,
           child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderRadius: clipRadius,
             clipBehavior: Clip.antiAlias,
             child: Container(
               color: theme.colors.primaryContainer,
