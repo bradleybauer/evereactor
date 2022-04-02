@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
         child: Padding(
           padding: platformSpecificPadding,
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: width, minWidth: width),
+            constraints: BoxConstraints.tightForFinite(width: width),
             child: ClipRRect(
               borderRadius: clipRadius,
               clipBehavior: Clip.antiAlias,
