@@ -31,11 +31,10 @@ class Platform {
       final win = appWindow;
       win.alignment = Alignment.centerRight;
       win.title = "EveIndy";
+      win.minSize = const Size(MyTheme.appWidth, MyTheme.appMinHeight);
       // I think + 8 is for the window border
-      const sz = Size(MyTheme.appWidth, MyTheme.appHeight + 8);
-      win.maxSize = sz;
-      win.minSize = sz;
-      win.size = sz;
+      win.maxSize = const Size(MyTheme.appWidth, 100000);
+      win.size = const Size(MyTheme.appWidth, MyTheme.appMinHeight + 300);
       win.show();
     });
 
