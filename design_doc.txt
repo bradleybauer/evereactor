@@ -91,25 +91,8 @@ Now pretty reasonable to add a market data age clock thingy
 ----------------------------------------------------------------------------------------------------------------------
 
 LOOKS-----------------------------------------------------------------------------------------------------------------
-fluent_ui has this nice idea of a flyout
-    flyoutcontroller is a change notifier
-    var flyoutController = FlyoutController()
-    Flyout(
-        controller = flyoutController,
-        contentWidth:234,
-        vertical offset:13,
-        content: FlyoutContent(
-            child: stuff to show in pane
-        ),
-        child: widget(
-            onInteract: flyoutController.open = true;
-        ),
-    )
-    @override dispose() {
-        flyoutController.dispose()
-        super.dispose()
-    }
 
+https://stackoverflow.com/questions/43550853/how-do-i-do-the-frosted-glass-effect-in-flutter
 
 I am using flutter master channel because according to a reddit post, material 3 components are only available on the master channel
 
@@ -204,6 +187,20 @@ mega sad face
 ----------------------------------------------------------------------------------------------------------------------
 
 GUI/UX----------------------------------------------------------------------------------------------------------------
+
+Flyouts:
+   footer:
+       Search
+
+       Q/A
+       Optimize
+       Copy
+       Settings
+   breadcrumbs
+   app title
+        chooses different app
+
+If I create more eve apps then could have the title bar be a flyout that navigates between them basically instantly
 
 Max Table Heights
   for any table that is categorized it does not make much sense to have the table be larger than the window
