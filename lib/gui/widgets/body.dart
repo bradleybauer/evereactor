@@ -19,7 +19,7 @@ class Body extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(width: width, height: 35 + 2 * MyTheme.appBarPadding, color: theme.colors.primary),
+                Container(width: width, height: 35 + 4 * MyTheme.appBarPadding, color: theme.colors.primary),
                 Container(width: width, height: 200, color: theme.colors.background),
                 Container(width: width, height: 200, color: theme.colors.primary),
                 Container(width: width, height: 200, color: theme.colors.background),
@@ -32,7 +32,7 @@ class Body extends StatelessWidget {
           // Summary Box
           alignment: Alignment.topCenter,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: MyTheme.appBarPadding + verticalPadding!),
+            padding: EdgeInsets.fromLTRB(0, MyTheme.appBarPadding * 2 + verticalPadding!, 0, 0),
             child: PhysicalModel(
               color: Colors.grey,
               elevation: 2,

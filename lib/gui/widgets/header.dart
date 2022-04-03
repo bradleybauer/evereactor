@@ -4,10 +4,7 @@ import '../my_theme.dart';
 import '../../platform.dart';
 
 class Header extends StatelessWidget {
-  Header({double? height, double? width, Key? key})
-      : height = height,
-        width = width,
-        super(key: key);
+  Header({this.height, this.width, Key? key}) : super(key: key);
 
   final double? height;
   final double? width;
@@ -18,15 +15,15 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     var rowButtons = [
       Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: tmp),
         width: 150,
-        height: MyTheme.appBarTextButtonHeight,
-        color: tmp,
+        height: MyTheme.appBarButtonHeight,
       ),
       const SizedBox(width: MyTheme.appBarPadding),
       Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: tmp),
         width: 120,
-        height: MyTheme.appBarTextButtonHeight,
-        color: tmp,
+        height: MyTheme.appBarButtonHeight,
       ),
     ];
 
@@ -37,13 +34,14 @@ class Header extends StatelessWidget {
         const SizedBox(width: MyTheme.appBarPadding),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 45),
-          child: MaterialButton(
-            onPressed: Platform.closeWindow,
-            child: Icon(Icons.close, color: theme.colors.onSecondaryContainer),
-            color: theme.colors.secondaryContainer,
-            hoverColor: theme.colors.primary,
-            elevation: 0,
-            hoverElevation: 0,
+          child: GestureDetector(
+            onTap: Platform.closeWindow,
+            child: Container(
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: theme.colors.primary),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
+                  child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: theme.colors.onPrimary),
+                )),
           ),
         ),
       ];
@@ -55,9 +53,9 @@ class Header extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
           child: Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: tmp),
             width: 180,
-            height: 34,
-            color: tmp,
+            height: MyTheme.appBarButtonHeight,
           ),
         ),
       )

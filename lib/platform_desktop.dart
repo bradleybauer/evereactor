@@ -31,10 +31,13 @@ class Platform {
       final win = appWindow;
       win.alignment = Alignment.centerRight;
       win.title = "EveIndy";
-      win.minSize = const Size(MyTheme.appWidth, MyTheme.appMinHeight);
-      // I think + 8 is for the window border
-      win.maxSize = const Size(MyTheme.appWidth, 100000);
-      win.size = const Size(MyTheme.appWidth, MyTheme.appMinHeight + 300);
+      // TODO(desktop) figure out why this is bugged.
+      // Not exactly sure why I have to add a fudge term here.
+      // If it is not added then the app (according to DevTools) has width < MyTheme.appWidth.
+      const int fudgeTerm = 8;
+      win.minSize = const Size(MyTheme.appWidth + fudgeTerm, MyTheme.appMinHeight);
+      win.maxSize = const Size(MyTheme.appWidth + fudgeTerm, 100000);
+      win.size = const Size(MyTheme.appWidth + fudgeTerm, MyTheme.appMinHeight + 300);
       win.show();
     });
 

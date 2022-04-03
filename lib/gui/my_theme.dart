@@ -10,8 +10,9 @@ class MyTheme with ChangeNotifier {
 
   static const double appMinHeight = 400;
   static const double appWidth = 800;
-  static const double appBarTextButtonHeight = 27;
-  static const double appBarPadding = 20;
+  static const double appBarButtonHeight = 28;
+  static const double appBarHeight = 48;
+  static const double appBarPadding = 10;
 
   // static const TextStyle typo;
   //TextStyle(fontFamily: 'NotoSans', fontWeight: FontWeight.w600, color: theme.colors.onPrimary)

@@ -7,13 +7,7 @@ import 'footer.dart';
 import '../../platform.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage(this.minHeight, this.width, {Key? key}) : super(key: key);
-
-  final double minHeight;
-  final double width;
-
-  static const double headerHeight = 60;
-  static const double footerHeight = 60;
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +24,7 @@ class HomePage extends StatelessWidget {
         child: Padding(
           padding: platformSpecificPadding,
           child: ConstrainedBox(
-            constraints: BoxConstraints.tightForFinite(width: width),
+            constraints: const BoxConstraints.tightForFinite(width: MyTheme.appWidth),
             child: ClipRRect(
               borderRadius: clipRadius,
               clipBehavior: Clip.antiAlias,
@@ -38,9 +32,9 @@ class HomePage extends StatelessWidget {
                 color: theme.colors.primaryContainer,
                 child: Stack(
                   children: [
-                    Body(width: width, verticalPadding: headerHeight),
-                    Header(height: headerHeight, width: width),
-                    Align(alignment: Alignment.bottomCenter, child: Footer(height: footerHeight, width: width)),
+                    const Body(width: MyTheme.appWidth, verticalPadding: MyTheme.appBarHeight),
+                    Header(height: MyTheme.appBarHeight, width: MyTheme.appWidth),
+                    const Align(alignment: Alignment.bottomCenter, child: Footer(height: MyTheme.appBarHeight, width: MyTheme.appWidth)),
                   ],
                 ),
               ),
