@@ -31,8 +31,7 @@ class Platform {
       final win = appWindow;
       win.alignment = Alignment.centerRight;
       win.title = "EveIndy";
-      // TODO(desktop) figure out why this is bugged.
-      // Not exactly sure why I have to add a fudge term here.
+      // TODO(desktop) I am pretty sure this has to do with resize handle sizes in bitsdojo_window.
       // If it is not added then the app (according to DevTools) has width < MyTheme.appWidth.
       const int fudgeTerm = 8;
       win.minSize = const Size(MyTheme.appWidth + fudgeTerm, MyTheme.appMinHeight);
