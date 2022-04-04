@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'hover_button.dart';
 import '../my_theme.dart';
 import '../../platform.dart';
 
@@ -27,22 +28,22 @@ class Header extends StatelessWidget {
       ),
     ];
 
-    // TODO would like the color of the icon to change on hover to onPrimary
     // Add a close button on windows.
     if (!Platform.isWeb()) {
       rowButtons += [
         const SizedBox(width: MyTheme.appBarPadding),
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 45),
-          child: GestureDetector(
-            onTap: Platform.closeWindow,
-            child: Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: theme.colors.primary),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
-                  child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: theme.colors.onPrimary),
-                )),
-          ),
+        HoverButton(
+          onTap: Platform.closeWindow,
+          color: theme.colors.primaryContainer,
+          hoveredColor: theme.colors.primary,
+          borderRadius: 4,
+          builder: (bool hovered) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
+              child: Icon(Icons.close,
+                  size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.colors.onPrimary : theme.colors.onPrimaryContainer),
+            );
+          },
         ),
       ];
     }
@@ -80,7 +81,7 @@ class Header extends StatelessWidget {
       color: theme.colors.secondaryContainer,
       borderRadius: const BorderRadius.all(Radius.circular(0)),
       clipBehavior: Clip.antiAlias,
-      elevation: 2,
+      elevation: 1.5,
       child: SizedBox(
         width: width,
         height: height,
