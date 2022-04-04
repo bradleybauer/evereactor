@@ -14,10 +14,12 @@ class MyTheme with ChangeNotifier {
   static const double appBarHeight = 48;
   static const double appBarPadding = 10;
 
+  static const Duration buttonFocusDuration = Duration(milliseconds: 200);
+
   // static const TextStyle typo;
   //TextStyle(fontFamily: 'NotoSans', fontWeight: FontWeight.w600, color: theme.colors.onPrimary)
 
-  ThemeMode get mode => _inDarkMode ? ThemeMode.dark : ThemeMode.light;
+  static ThemeMode get mode => _inDarkMode ? ThemeMode.dark : ThemeMode.light;
 
   void toggleTheme() {
     _inDarkMode = !_inDarkMode;
