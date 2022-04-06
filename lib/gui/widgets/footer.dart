@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'footer_flyout_group.dart';
 import '../my_theme.dart';
+import 'search_bar.dart';
 
 class Footer extends StatelessWidget {
   const Footer({this.height, this.width, Key? key}) : super(key: key);
@@ -22,12 +23,9 @@ class Footer extends StatelessWidget {
       Align(
         alignment: Alignment.centerLeft,
         child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
-            child: Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: theme.colors.primary),
-                width: 310,
-                height: MyTheme.appBarButtonHeight) // Search Bar
-            ), // Search Bar
+          padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
+          child: SearchBar(),
+        ),
       ),
     ];
 

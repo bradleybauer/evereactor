@@ -538,6 +538,13 @@ def __test():
     region2systems, system2name = extractor.getTradeHubs()
     print(region2systems, system2name)
 
+    # get item names for testing fuzzy search libraries.
+    names = []
+    for k in items:
+        names.append(items[k]['name']['en'] + '\n')
+    with open('names.txt','w') as f:
+        f.writelines(names)
+
 
 if __name__ == "__main__":
     __test()

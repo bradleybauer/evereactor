@@ -1,3 +1,5 @@
+TODO update the SDE data due to eve's new game update... need an automatic way to do this.
+
 "Sync Market Data" is a multi button...
     Once clicked it turns into a progress bar...
     After loading finishes it turns into a timer for esi cache timeout
@@ -189,13 +191,6 @@ mega sad face
 GUI/UX----------------------------------------------------------------------------------------------------------------
 
 Flyouts:
-   footer:
-       Search
-
-       Q/A
-       Optimize
-       Copy
-       Settings
    breadcrumbs
    app title
         chooses different app
@@ -205,8 +200,6 @@ If I create more eve apps then could have the title bar be a flyout that navigat
 Max Table Heights
   for any table that is categorized it does not make much sense to have the table be larger than the window
   since the breadcrumb could go out of view
-
-QA can be a simple dialog popup.
 
 Change Inventory to 'Inputs'.
   rows are (icon, name, quantity, ppu, cost)
@@ -325,11 +318,9 @@ Optimize - desktop // MEDIUM PRIORITY
 
 Targets // HIGH PRIORITY
   Items the user has 'added' to the build
-    (x, icon, name, runs, cost, profit, %, ppu, sale ppu, outm3, BpOptions)
+    (x, icon, name, runs, cost, profit, %, ppu, sale ppu, out m3, BpOptions?!?!(me, te, m#r, m#bps))
     NOTE % not Profit%
 
-  BpOptions
-    ME, TE, maxBps & maxRunsPerBp
     If maxBps & maxRunsPerBp are not set then those values are set to the global values?
 
 Intermediates
