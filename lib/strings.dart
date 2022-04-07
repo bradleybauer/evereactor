@@ -24,4 +24,9 @@ abstract class Strings {
     'en': 'Clear Inventory',
   };
   static String get clearInventory => _get(_clearInventory);
+
+  static const Map<String, String> _getMarketData = {
+    'en': 'Get Market Data',
+  };
+  static String get getMarketData => _get(_getMarketData);
 }
