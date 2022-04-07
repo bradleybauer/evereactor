@@ -1,7 +1,7 @@
-import 'package:EveIndy/gui/my_theme.dart';
-import 'package:EveIndy/gui/widgets/hover_button.dart';
 import 'package:flutter/material.dart';
 
+import '../my_theme.dart';
+import 'hover_button.dart';
 import '../../strings.dart';
 
 class PasteClearButton extends StatefulWidget {

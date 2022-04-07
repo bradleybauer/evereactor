@@ -1,11 +1,10 @@
-import 'package:EveIndy/gui/widgets/flyout_controller.dart';
-import 'package:EveIndy/gui/widgets/search_bar_flyout_content.dart';
 import 'package:flutter/material.dart';
 
+import 'flyout_controller.dart';
+import 'search_bar_flyout_content.dart';
 import '../../search.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
-import 'hover_button.dart';
 import 'search_bar_text_field.dart';
 
 // TODO sad :( not really sure how to organize stuff like this.

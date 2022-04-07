@@ -1,6 +1,6 @@
-import 'package:EveIndy/gui/widgets/paste_clear_button.dart';
 import 'package:flutter/material.dart';
 
+import 'paste_clear_button.dart';
 import 'get_market_data_button.dart';
 import 'hover_button.dart';
 import '../my_theme.dart';

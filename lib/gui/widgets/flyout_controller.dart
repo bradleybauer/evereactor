@@ -1,5 +1,5 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class FlyoutController extends ChangeNotifier {
   FlyoutController(this.closeTimeout);

@@ -1,6 +1,6 @@
-import 'package:EveIndy/gui/widgets/targets_table.dart';
 import 'package:flutter/material.dart';
 
+import 'targets_table.dart';
 import '../my_theme.dart';
 
 class Body extends StatelessWidget {
