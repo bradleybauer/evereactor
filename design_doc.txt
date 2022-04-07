@@ -1,3 +1,9 @@
+TODO make sure the SDE extractor is still good. i added marketGroup2Parent, that should be put into the py2dart file.
+
+TODO unicode normalize search strings in search bar
+
+TODO app name is in web/cacheDbWebWorker.dart and in lib\cache_database\cache_adapter.dart
+
 TODO update the SDE data due to eve's new game update... need an automatic way to do this.
 
 "Sync Market Data" is a multi button...
