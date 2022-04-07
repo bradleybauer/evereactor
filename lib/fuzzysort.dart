@@ -2,59 +2,62 @@ import 'dart:core';
 import 'package:collection/collection.dart';
 
 // This is a partial translation of the javascript library https://github.com/farzher/fuzzysort
-// I have change a lot though too. I changed the getBeginningIndexes function so that it, hopefully,
-// works for more languages than only english.
-// highlighting is turned off for now.
-// I deleted a bunch of async stuff.
+// I have changed a lot though too.
+// I changed the getBeginningIndexes function so that it, hopefully, works for more languages than only english.
+// Highlighting is turned off for now.
+// Custom scoring function is, atm, not supported.
+// Async is not supported.
 // I removed the data objects from the inputs.
-// Basically this just gives a permutation of the getTargets(int) function.
+// Basically, this just gives a permutation of the getTargets : int -> int function.
 
 const int infinity = 9007199254740991;
 
 class FuzzySortOptions {
   int limit = infinity;
   int threshold = -infinity;
-  // int? Function(List<FuzzyTarget>)? scoreFn;
+  // int? Function(List<FuzzyMatch>)? scoreFn;
 }
 
 class FuzzyResult {
-  int index = 0;
-  int score = 0;
+  final int index;
+  final int score;
   FuzzyResult({required this.index, required this.score});
 }
 
-class FuzzyTarget {
-  String target = "";
-  int targetIndex = 0;
-  int score = 0;
-  // List<int> indexes = [];
-  List<int> lowerCodes = [];
-  List<int> nextBeginningIndexes = [];
-  FuzzyTarget(
-      {required this.target,
-      required this.targetIndex,
-      this.score = 0,
-      // required this.indexes,
-      this.lowerCodes = const <int>[],
-      this.nextBeginningIndexes = const <int>[]});
+class FuzzyMatch {
+  final int score;
+  // final int targetIndex;     need this if allowing custom scoring function. otherwise which target had which score?
+  // final indexes = <int>[];   need this if doing highlighting
+  FuzzyMatch({this.score = 0});
 }
 
 class FuzzySort {
+  FuzzySort(this.options);
+  final FuzzySortOptions options;
+
   final matchesSimple = <int>[];
   final matchesStrict = <int>[];
 
+  // Holds the k=options.limit number of items with best score.
+  // We do this by giving the worst scoring item the highest priority in the queue.
+  // Then to check if we should add an item to our set of k best items we check if it has a better score
+  // than the worst in our set (check if it has a higher priority than the maximum priority item of the queue, which is fast).
   final q = PriorityQueue<FuzzyResult>((a, b) => a.score < b.score
       ? -1
-      : a.score > b.score
-          ? 1
-          : 0);
+      : a.score == b.score
+          ? 0
+          : 1);
 
-  FuzzySortOptions options;
-  FuzzySort(this.options);
+  // Memoize search/target match score in case different items share targets. (My data has a lot of these cases)
+  // Could be decided in FuzzySortOptions to use this or not.
+  final Map<String, FuzzyMatch> _algMemo = {};
 
-  final Map<String, FuzzyTarget> _algMemo = {};
-
-  List<FuzzyResult> go(final String search, final int numItems, List<String> Function(int) getTargets) {
+  // Search for [search] through [numItems] number of items.
+  // Each item has a set of matching targets provided by [getTargets].
+  // The comparison of [search] against each target is given a score.
+  // The overal score of an item is the max of the scores of all it's targets when compared with [search].
+  // The items are sorted in descending order based on this score.
+  List<FuzzyResult> go(final String search, final int numItems, Set<String> Function(int) getTargets) {
     if (search == '') {
       return [];
     }
@@ -65,9 +68,9 @@ class FuzzySort {
     final scoreFn = _defaultScoreFn;
     for (var i = numItems - 1; i >= 0; --i) {
       final targets = getTargets(i);
-      final objResults = <FuzzyTarget>[];
-      for (var ti = targets.length - 1; ti >= 0; --ti) {
-        FuzzyTarget? result = _algorithm(searchLowerCodes, _getSearchData(targets[ti], ti));
+      final objResults = <FuzzyMatch>[];
+      for (String target in targets) {
+        FuzzyMatch? result = _algorithm(searchLowerCodes, target);
         if (result != null) {
           objResults.add(result);
         }
@@ -137,22 +140,12 @@ class FuzzySort {
   }
   */
 
-  FuzzyTarget _getSearchData(String target, int targetIndex) {
-    return FuzzyTarget(
-      target: target,
-      targetIndex: targetIndex,
-      lowerCodes: target.toLowerCase().codeUnits.toList(),
-      score: -infinity,
-      nextBeginningIndexes: [],
-    );
-  }
-
-  FuzzyTarget? _algorithm(List<int> searchLowerCodes, FuzzyTarget target) {
-    if (_algMemo.containsKey(target.target)) {
-      return _algMemo[target.target];
+  FuzzyMatch? _algorithm(List<int> searchLowerCodes, String target) {
+    if (_algMemo.containsKey(target)) {
+      return _algMemo[target];
     }
     int searchLowerCode = searchLowerCodes[0];
-    final targetLowerCodes = target.lowerCodes;
+    final targetLowerCodes = target.toLowerCase().codeUnits.toList();
     int searchLen = searchLowerCodes.length;
     int targetLen = targetLowerCodes.length;
     int searchI = 0; // where we at
@@ -187,7 +180,7 @@ class FuzzySort {
           if (typoSimpleI == 0) {
             // we haven't tried to transpose yet
             --searchI;
-            var searchLowerCodeNew = searchLowerCodes[searchI];
+            int searchLowerCodeNew = searchLowerCodes[searchI];
             if (searchLowerCode == searchLowerCodeNew) continue; // doesn't make sense to transpose a repeat char
             typoSimpleI = searchI;
           } else {
@@ -195,7 +188,7 @@ class FuzzySort {
             --typoSimpleI;
             searchI = typoSimpleI;
             searchLowerCode = searchLowerCodes[searchI + 1];
-            var searchLowerCodeNew = searchLowerCodes[searchI];
+            int searchLowerCodeNew = searchLowerCodes[searchI];
             if (searchLowerCode == searchLowerCodeNew) continue; // doesn't make sense to transpose a repeat char
           }
           matchesSimpleLen = searchI;
@@ -210,10 +203,7 @@ class FuzzySort {
     bool successStrict = false;
     int matchesStrictLen = 0;
 
-    if (target.nextBeginningIndexes.isEmpty) {
-      target.nextBeginningIndexes = _prepareNextBeginningIndexes(target.target);
-    }
-    var nextBeginningIndexes = target.nextBeginningIndexes;
+    final List<int> nextBeginningIndexes = _prepareNextBeginningIndexes(target);
     int firstPossibleI = targetI = matchesSimple[0] == 0 ? 0 : nextBeginningIndexes[matchesSimple[0] - 1];
 
     // Our target string successfully matched all characters in sequence!
@@ -234,7 +224,7 @@ class FuzzySort {
           }
 
           --searchI;
-          var lastMatch = matchesStrict[--matchesStrictLen];
+          int lastMatch = matchesStrict[--matchesStrictLen];
           targetI = nextBeginningIndexes[lastMatch];
         } else {
           var isMatch = targetLowerCodes[targetI] ==
@@ -258,52 +248,47 @@ class FuzzySort {
       }
     }
 
-    {
-      // tally up the score & keep track of matches for highlighting later
-
-      var matchesBest = matchesSimple;
-      // var matchesBestLen = matchesSimpleLen;
-      if (successStrict) {
-        matchesBest = matchesStrict;
-        // matchesBestLen = matchesStrictLen;
-      }
-
-      var score = 0;
-      var lastTargetI = -1;
-      for (var i = 0; i < searchLen; ++i) {
-        int targetI = matchesBest[i];
-        // score only goes down if they're not consecutive
-        if (lastTargetI != targetI - 1) score -= targetI;
-        lastTargetI = targetI;
-      }
-      if (!successStrict) {
-        score *= 1000;
-        if (typoSimpleI != 0) score += -20; //typoPenalty
-      } else {
-        if (typoStrictI != 0) score += -20; //typoPenalty
-      }
-      score -= targetLen - searchLen;
-      target.score = score;
-      // target.indexes = List<int>.filled(matchesBestLen, -1);
-      // for (var i = matchesBestLen - 1; i >= 0; --i) {
-      //   target.indexes[i] = matchesBest[i];
-      // }
-
-      _algMemo[target.target] = target;
-      return target;
+    // Tally up the score & keep track of matches for highlighting later
+    List<int> matchesBest = matchesSimple;
+    // var matchesBestLen = matchesSimpleLen;
+    if (successStrict) {
+      matchesBest = matchesStrict;
+      // matchesBestLen = matchesStrictLen;
     }
+    var score = 0;
+    var lastTargetI = -1;
+    for (var i = 0; i < searchLen; ++i) {
+      int targetI = matchesBest[i];
+      // score only goes down if they're not consecutive
+      if (lastTargetI != targetI - 1) score -= targetI;
+      lastTargetI = targetI;
+    }
+    if (!successStrict) {
+      score *= 1000;
+      if (typoSimpleI != 0) score += -20; //typoPenalty
+    } else {
+      if (typoStrictI != 0) score += -20; //typoPenalty
+    }
+    score -= targetLen - searchLen;
+    // target.indexes = List<int>.filled(matchesBestLen, -1);
+    // for (var i = matchesBestLen - 1; i >= 0; --i) {
+    //   target.indexes[i] = matchesBest[i];
+    // }
+    final match = FuzzyMatch(score: score);
+    _algMemo[target] = match;
+    return match;
   }
 
   List<int> _prepareBeginningIndexes(String target) {
-    var beginningIndexes = <int>[];
+    List<int> beginningIndexes = <int>[];
     var beginningIndexesLen = 0;
     var wasUpper = false;
-    var targetLowerCodeUnits = target.toLowerCase().codeUnits.toList();
-    var targetCodeUnits = target.codeUnits.toList();
+    List<int> targetLowerCodeUnits = target.toLowerCase().codeUnits.toList();
+    List<int> targetCodeUnits = target.codeUnits.toList();
     for (var i = 0; i < target.length; ++i) {
-      var targetCode = targetCodeUnits[i];
-      var isUpper = targetCode != targetLowerCodeUnits[i];
-      var isBeginning = isUpper && !wasUpper;
+      final targetCode = targetCodeUnits[i];
+      final isUpper = targetCode != targetLowerCodeUnits[i];
+      final isBeginning = isUpper && !wasUpper;
       wasUpper = isUpper;
       if (isBeginning) {
         if (beginningIndexesLen == beginningIndexes.length) {
@@ -316,9 +301,9 @@ class FuzzySort {
   }
 
   List<int> _prepareNextBeginningIndexes(String target) {
-    var beginningIndexes = _prepareBeginningIndexes(target);
-    var nextBeginningIndexes = <int>[];
-    var lastIsBeginning = beginningIndexes[0];
+    List<int> beginningIndexes = _prepareBeginningIndexes(target);
+    List<int> nextBeginningIndexes = <int>[];
+    int lastIsBeginning = beginningIndexes[0];
     var lastIsBeginningI = 0;
     for (var i = 0; i < target.length; ++i) {
       if (lastIsBeginning > i) {
@@ -350,27 +335,13 @@ class FuzzySort {
     matchesStrict.clear();
   }
 
-  int? _defaultScoreFn(List<FuzzyTarget> a) {
+  int? _defaultScoreFn(List<FuzzyMatch> a) {
     var max = -infinity;
     for (var i = a.length - 1; i >= 0; --i) {
-      var result = a[i];
-      var score = result.score;
+      final int score = a[i].score;
       if (score > max) max = score;
     }
     if (max == -infinity) return null;
     return max;
   }
 }
-
-// import '../lib/gui/widgets/test_names.dart';
-// void main() {
-//   print('start');
-//   var options = FuzzySortOptions();
-//   options.threshold = -250;
-//   // options.limit = 50;
-//   var fuzzysort = FuzzySort(options);
-//   var res = fuzzysort.go('reaction', names);
-//   for (var r in res) {
-//     print(r.target + ' : ' + r.score.toString());
-//   }
-// }

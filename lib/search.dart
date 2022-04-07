@@ -13,7 +13,7 @@ class MyFilterSearch {
     print('--------------------------------------------------------');
     int i = 0;
     for (var r in res) {
-      print(names[r.index][0] + ' : ' + r.score.toString());
+      print(names[r.index].toString() + ' : ' + r.score.toString());
       i += 1;
       if (i >= 50) break;
     }

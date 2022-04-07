@@ -576,14 +576,14 @@ def __test():
     # print(region2systems, system2name)
 
     # # Get items and market groups for testing fuzzy search libraries.
-    # names = ['List<List<String>> names =[']
+    # names = ['List<Set<String>> names =[']
     # for k in itemID2bp:
     #     parentGroupNames = __getItemMarketGroups(k, items, marketGroup2Parent, marketGroupNames)
     #     things =[items[k]['name']['en']] + parentGroupNames
     #     string = ""
     #     for thing in things:
     #         string += '"' + thing + '",'
-    #     names.append('[' + string + '],\n')
+    #     names.append('{' + string + '},\n')
     #     pass
     # names.append('];')
     # with open('test_names.dart','w') as f:
