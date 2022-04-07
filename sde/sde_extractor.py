@@ -37,7 +37,7 @@ class SDE_Extractor:
     def getIndustryItems(self, blueprints):
         """
         Returns the relavent information of all items involved in production.
-        id -> (name, marketGroupID, groupID, volume)
+        typeID -> (name, marketGroupID, groupID, volume)
         """
         sde = self.sde
         ids: set = self._getAllMaterialsAndProducts(blueprints)
@@ -69,7 +69,7 @@ class SDE_Extractor:
         productIsOnTheMarket = True
         requiresSkills = True
         hasActivities = 0 < len(set(self.possibleActivities).intersection(set(self.sde.blueprints[bid]['activities'])))
-        isExpired = False
+        notInterestingItem = False
 
         bp = self.sde.blueprints[bid]
 
@@ -101,14 +101,18 @@ class SDE_Extractor:
                     if 'marketGroupID' not in self.sde.typeIDs[materialID]:
                         allMaterialsAreOnTheMarket = False
                         break
-                if 'skills' not in bp['activities'][activity]:
+                if 'skills' not in bp['activities'][activity]: # allowing items with skills does more harm than it does good
                     requiresSkills = False
+                    # print(self.sde.typeIDs[productTID]['name']['en'])
                     break
                 if 'Expired' in self.sde.typeIDs[productTID]['name']['en']:
-                    isExpired = True
+                    notInterestingItem = True
+                    break
+                if 'Civilian' in self.sde.typeIDs[productTID]['name']['en']:
+                    notInterestingItem = True
                     break
                 break
-        return isPublished and hasActivities and isProductPublished and hasMaterials and not hasProductAsAnInput and allMaterialsAreOnTheMarket and productIsOnTheMarket and requiresSkills and not isExpired
+        return isPublished and hasActivities and isProductPublished and hasMaterials and not hasProductAsAnInput and allMaterialsAreOnTheMarket and productIsOnTheMarket and requiresSkills and not notInterestingItem
 
     def _getNodesInTree(self, root, neighbors):
         ret = {root}
@@ -176,7 +180,7 @@ class SDE_Extractor:
     def getProductionSkills(self):
         """
         Returns all skills that have some bonus to some kind of production.
-        id -> (activity, bonus, name)
+        typeID -> (activity, bonus, name)
         """
         sde = self.sde
         skills = {}
@@ -236,7 +240,7 @@ class SDE_Extractor:
     def getStructuresAndBonuses(self):
         """
         Returns all structures and structure bonuses.
-        id -> (activity, bonuses (bonusType -> bonus), name)
+        typeID -> (activity, bonuses (bonusType -> bonus), name)
         """
         sde = self.sde
         structures = {}
@@ -285,7 +289,7 @@ class SDE_Extractor:
     def getIndustryRigsAndBonuses(self):
         """
         Returns all industry rigs with their bonuses and item domains.
-        id -> (activity, bonuses (bonusType -> bonus), bonus domain, name)
+        typeID -> (activity, bonuses (bonusType -> bonus), bonus domain, name)
         """
         sde = self.sde
         rigs = {}
@@ -365,7 +369,7 @@ class SDE_Extractor:
     def getImplants(self):
         """
         Returns all industry implants and their bonuses.
-        id -> (name, activity, bonus)
+        typeID -> (name, activity, bonus)
         """
         sde = self.sde
         implants = {}
@@ -401,7 +405,7 @@ class SDE_Extractor:
     def getMarketGroupNames(self, marketGroupGraph, skills):
         """
         Return the names of the groups in the market group graph and of the groups of the skills in the set of skills.
-        id -> name
+        marketGroupID -> name
         """
         sde = self.sde
 
@@ -420,7 +424,7 @@ class SDE_Extractor:
     def getMarketGroupGraph(self, blueprints):
         """
         Return the market group graph reduced to contain only groups that are relavent to production.
-        id -> childrenGroupIDs
+        marketGroupID -> childrenGroupIDs
         """
         sde = self.sde
 
@@ -430,11 +434,27 @@ class SDE_Extractor:
             self._addSegmentsOfPathToEdgeMap(productMarketGroup, marketGraph, lambda k: sde.marketGroups[k]['parentGroupID'])
         return marketGraph
 
+    def getMarketGroup2Parent(self, blueprints):
+        """
+        Return a map from market group to market group's parent, if it has a parent.
+        marketGroupID -> parentMarketGroupID
+        """
+        sde = self.sde
+
+        marketGroup2Parent = {}
+        for product in blueprints.keys():
+            productMarketGroup = sde.typeIDs[product]['marketGroupID']
+            marketGroupID = productMarketGroup
+            while 'parentGroupID' in sde.marketGroups[marketGroupID]:
+                marketGroup2Parent[marketGroupID] = sde.marketGroups[marketGroupID]['parentGroupID']
+                marketGroupID = sde.marketGroups[marketGroupID]['parentGroupID']
+        return marketGroup2Parent
+
     def getGroup2Category(self, blueprints):
         """
         Return the map of inventory group nodes to their parents.
         At the moment, I use this only for calculating which manufacturing/reaction rigs affect which items.
-        id -> categoryID
+        groupID -> categoryID
         """
         sde = self.sde
         group2category = {}
@@ -443,11 +463,14 @@ class SDE_Extractor:
             group2category[groupID] = sde.groupIDs[groupID]['categoryID']
         return group2category
 
+    # def getInventoryGroupNames(self, group2category):
+    #     pass
+
     def getTradeHubs(self):
         """
         Get region and system ids for major trade hubs.
-        regions: id -> solarSystemIDs
-        systems: id -> solarSystemName
+        regions: regionID -> solarSystemIDs
+        systems: systemID -> solarSystemName
         """
         sde = self.sde
         jitaID = sde.jitaData['solarSystemID']
@@ -482,68 +505,89 @@ class SDE_Extractor:
 
         return region2systems, system2name
 
+def __getItemMarketGroups(tid, items, marketGroup2Parent, marketGroupNames):
+    names = []
+    marketGroupID = items[tid]['marketGroupID']
+    while marketGroupID in marketGroup2Parent:
+        names.append(marketGroupNames[marketGroupID]['en'])
+        marketGroupID = marketGroup2Parent[marketGroupID]
+    names.append(marketGroupNames[marketGroupID]['en'])
+    return names[::-1]
 
 def __test():
     extractor = SDE_Extractor(CCP_SDE())
 
-    print("\n\nStructures")
+    # print("\n\nStructures")
     structures = extractor.getStructuresAndBonuses()
-    for k, v in structures.items():
-        print(k, v)
+    # for k, v in structures.items():
+    #     print(k, v)
 
-    print("\n\nRigs")
+    # print("\n\nRigs")
     rigs = extractor.getIndustryRigsAndBonuses()
-    for k, v in rigs.items():
-        print(k, v)
+    # for k, v in rigs.items():
+    #     print(k, v)
 
-    print("\n\nProductionSkills")
+    # print("\n\nProductionSkills")
     productionSkills = extractor.getProductionSkills()
-    for k, v in productionSkills.items():
-        print(k, v)
+    # for k, v in productionSkills.items():
+    #     print(k, v)
 
-    print("\n\nImplants")
+    # print("\n\nImplants")
     implants = extractor.getImplants()
-    for k, v in implants.items():
-        print(k, v)
+    # for k, v in implants.items():
+    #     print(k, v)
 
-    print("\n\nBlueprints")
+    # print("\n\nBlueprints")
     itemID2bp = extractor.getItem2Blueprint(productionSkills.keys())
-    for k, v in itemID2bp.items():
-        print(k, v)
-    print('Number of blueprints accepted:', len(itemID2bp))
+    # for k, v in itemID2bp.items():
+    #     print(k, v)
+    # print('Number of blueprints accepted:', len(itemID2bp))
 
-    print('\n\nIndustry Items')
+    # print('\n\nIndustry Items')
     items = extractor.getIndustryItems(itemID2bp)
-    for k, v in items.items():
-        print(k, v)
-    print('Number of items:', len(extractor.getIndustryItems(itemID2bp)))
+    # for k, v in items.items():
+    #     print(k, v)
+    # print('Number of items:', len(extractor.getIndustryItems(itemID2bp)))
 
-    print('\n\nMarketGroups')
+    # print('\n\nMarketGroups')
     marketGroupGraph = extractor.getMarketGroupGraph(itemID2bp)
     marketGroupNames = extractor.getMarketGroupNames(marketGroupGraph, productionSkills)
-    for k in sorted(marketGroupGraph, key=lambda x: marketGroupNames[x]['en']):
-        marketGroupName = marketGroupNames[k]['en']
-        print(marketGroupName + ' ' * (43 - len(marketGroupName)), end=': ')
-        for kk in marketGroupGraph[k]:
-            marketGroupName = marketGroupNames[kk]['en']
-            print(marketGroupName, end=', ')
-        print()
-    print('Number of market groups:', len(marketGroupNames))
+    # for k in sorted(marketGroupGraph, key=lambda x: marketGroupNames[x]['en']):
+    #     marketGroupName = marketGroupNames[k]['en']
+    #     print(marketGroupName + ' ' * (43 - len(marketGroupName)), end=': ')
+    #     for kk in marketGroupGraph[k]:
+    #         marketGroupName = marketGroupNames[kk]['en']
+    #         print(marketGroupName, end=', ')
+    #     print()
+    # print('Number of market groups:', len(marketGroupNames))
 
-    print('\n\nGroup2Category')
+    #print('\n\nGroup2Category')
     group2category = extractor.getGroup2Category(itemID2bp)
-    print(group2category)
+    #print(group2category)
 
-    print('\n\nTrade hubs')
+    # print('\n\nInventoryGroupNames')
+    # inventoryGroupNames = extractor.getInventoryGroupNames(group2category)
+    # print(inventoryGroupNames)
+
+    marketGroup2Parent = extractor.getMarketGroup2Parent(itemID2bp)
+
+    # print('\n\nTrade hubs')
     region2systems, system2name = extractor.getTradeHubs()
-    print(region2systems, system2name)
+    # print(region2systems, system2name)
 
-    # get item names for testing fuzzy search libraries.
-    names = []
-    for k in items:
-        names.append(items[k]['name']['en'] + '\n')
-    with open('names.txt','w') as f:
-        f.writelines(names)
+    # # Get items and market groups for testing fuzzy search libraries.
+    # names = ['List<List<String>> names =[']
+    # for k in itemID2bp:
+    #     parentGroupNames = __getItemMarketGroups(k, items, marketGroup2Parent, marketGroupNames)
+    #     things =[items[k]['name']['en']] + parentGroupNames
+    #     string = ""
+    #     for thing in things:
+    #         string += '"' + thing + '",'
+    #     names.append('[' + string + '],\n')
+    #     pass
+    # names.append('];')
+    # with open('test_names.dart','w') as f:
+    #     f.writelines(names)
 
 
 if __name__ == "__main__":
