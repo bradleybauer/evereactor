@@ -1,6 +1,7 @@
 import 'package:EveIndy/gui/widgets/paste_clear_button.dart';
 import 'package:flutter/material.dart';
 
+import 'get_market_data_button.dart';
 import 'hover_button.dart';
 import '../my_theme.dart';
 import '../../platform.dart';
@@ -16,11 +17,7 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var rowButtons = [
-      Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: tmp),
-        width: 120,
-        height: MyTheme.appBarButtonHeight,
-      ),
+      const GetMarketDataButton(),
       const SizedBox(width: MyTheme.appBarPadding),
       const PasteClearButton(),
     ];

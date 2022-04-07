@@ -228,7 +228,7 @@ Swap position of Inputs & Intermediates
 
 Tooltips
   Table names elipses if too long but show full name on hover with tooltip.
-  Sync Market Data : Loads market data from the esi.
+  Get Market Data : Loads market data from the ESI.
   Value if Build : (Profit if Build) - (Profit if Buy)
   PPU : build price per unit
   Sale PPU : sale price per unit

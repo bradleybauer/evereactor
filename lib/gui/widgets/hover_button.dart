@@ -45,12 +45,8 @@ class _HoverButtonState extends State<HoverButton> {
   Widget build(BuildContext context) {
     return MouseRegion(
         cursor: MouseCursor.uncontrolled,
-        onEnter: (e) {
-          onHover(true);
-        },
-        onExit: (e) {
-          onHover(false);
-        },
+        onEnter: (e) => onHover(true),
+        onExit: (e) => onHover(false),
         child: MyAnimatedContainer(
           child: widget.builder(_focused),
           color: _focused ? widget.hoveredColor : widget.color,
