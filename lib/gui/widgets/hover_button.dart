@@ -11,6 +11,7 @@ class HoverButton extends StatefulWidget {
     this.splashColor,
     this.shadowColor,
     this.borderColor,
+    this.hoveredBorderColor,
     this.borderRadius = 0,
     this.elevation = 0,
     this.hoveredElevation = 3,
@@ -24,6 +25,7 @@ class HoverButton extends StatefulWidget {
   final Color hoveredColor;
   final Color? splashColor;
   final Color? borderColor;
+  final Color? hoveredBorderColor;
   final Color? shadowColor;
   final double borderRadius;
   final double elevation;
@@ -52,7 +54,7 @@ class _HoverButtonState extends State<HoverButton> {
           color: _focused ? widget.hoveredColor : widget.color,
           elevation: _focused ? widget.hoveredElevation : widget.elevation,
           borderRadius: widget.borderRadius,
-          borderColor: widget.borderColor,
+          borderColor: _focused ? widget.hoveredBorderColor : widget.borderColor,
           shadowColor: widget.shadowColor,
           onTap: widget.onTap,
           splashColor: widget.splashColor,

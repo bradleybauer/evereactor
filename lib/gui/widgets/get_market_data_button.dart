@@ -50,7 +50,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
                         fontFamily: 'NotoSans', fontSize: 12, color: hovered ? theme.colors.onPrimary : theme.colors.onSurfaceVariant)),
               );
             },
-            borderColor: theme.colors.primary,
+            borderColor: theme.colors.outline,
             borderRadius: 4,
             color: theme.colors.surfaceVariant,
             hoveredColor: theme.colors.primary);
@@ -59,7 +59,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
       case _ButtonState.LOADING:
         widget = Container(
           decoration: BoxDecoration(
-            border: Border.all(color: theme.colors.primary),
+            border: Border.all(color: theme.colors.outline),
             borderRadius: BorderRadius.circular(4),
             color: theme.colors.surfaceVariant,
           ),
@@ -69,7 +69,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
       case _ButtonState.WAITING:
         widget = Container(
           decoration: BoxDecoration(
-            border: Border.all(color: theme.colors.primary),
+            border: Border.all(color: theme.colors.outline),
             borderRadius: BorderRadius.circular(4),
             color: theme.colors.surfaceVariant,
           ),

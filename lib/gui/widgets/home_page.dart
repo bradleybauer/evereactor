@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
               borderRadius: clipRadius,
               clipBehavior: Clip.antiAlias,
               child: Container(
-                color: theme.colors.primaryContainer,
+                color: theme.colors.background,
                 child: Stack(
                   children: [
                     const Body(width: MyTheme.appWidth, verticalPadding: MyTheme.appBarHeight),

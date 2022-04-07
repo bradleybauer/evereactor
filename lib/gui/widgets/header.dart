@@ -28,14 +28,13 @@ class Header extends StatelessWidget {
         const SizedBox(width: MyTheme.appBarPadding),
         HoverButton(
           onTap: Platform.closeWindow,
-          color: theme.colors.primaryContainer,
+          color: theme.colors.surface,
           hoveredColor: theme.colors.primary,
           borderRadius: 4,
           builder: (bool hovered) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
-              child: Icon(Icons.close,
-                  size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.colors.onPrimary : theme.colors.onPrimaryContainer),
+              child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.colors.onPrimary : theme.colors.onSurface),
             );
           },
         ),

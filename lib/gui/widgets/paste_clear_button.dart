@@ -40,7 +40,7 @@ class _PasteClearButtonState extends State<PasteClearButton> {
                             fontFamily: 'NotoSans', fontSize: 12, color: hovered ? theme.colors.onPrimary : theme.colors.onSurfaceVariant)),
                   );
                 },
-                borderColor: theme.colors.primary,
+                borderColor: theme.colors.outline,
                 borderRadius: 4,
                 color: theme.colors.surfaceVariant,
                 hoveredColor: theme.colors.primary)
