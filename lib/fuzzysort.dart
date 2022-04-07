@@ -15,6 +15,10 @@ import 'package:collection/collection.dart';
 // 'Ships .. Minmatar' be a matching target... Wait, that really doesn't mater does it because this searching lib
 // is very sensitive to incorrect spelling.... :(.
 
+// So this will not work exactly as expected for all languages
+// https://stackoverflow.com/questions/3797746/how-to-do-a-python-split-on-languages-like-chinese-that-dont-use-whitespace
+// fuck it.
+//
 // Scoring works as follows
 //   split search string into parts based on space delimeter
 //     for each part string
