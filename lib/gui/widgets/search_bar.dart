@@ -8,7 +8,7 @@ import 'hover_button.dart';
 
 // TODO sad :( not really sure how to organize stuff like this.
 const double SEARCHBARWIDTH = 275;
-const double SEARCHBARCONTENTWIDTH = 340;
+const Size CONTENTSIZE = Size(340, 200);
 
 class SearchBar extends StatefulWidget {
   const SearchBar({Key? key}) : super(key: key);
@@ -51,7 +51,7 @@ class _SearchBarState extends State<SearchBar> {
     return Flyout(
       align: FlyoutAlign.childTopLeft,
       content: const SearchBarFlyoutContent(),
-      contentSize: Size(SEARCHBARCONTENTWIDTH, 40),
+      contentSize: CONTENTSIZE,
       openMode: FlyoutOpenMode.custom,
       verticalOffset: MyTheme.appBarPadding * 2,
       windowPadding: MyTheme.appBarPadding,
@@ -73,11 +73,21 @@ class SearchBarFlyoutContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blueGrey,
-      width: 40,
-      height: 40,
-      child: const Center(child: Text('search results')),
+    return PhysicalModel(
+      color: Colors.transparent,
+      elevation: 4,
+      borderRadius: BorderRadius.circular(10),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      child: Container(
+        width: CONTENTSIZE.width,
+        height: CONTENTSIZE.height,
+        color: const Color.fromARGB(255, 198, 221, 240),
+        child: const Center(
+            child: Text(
+          'search results',
+          style: TextStyle(fontFamily: 'NotoSans', fontSize: 32),
+        )),
+      ),
     );
   }
 }
