@@ -55,7 +55,10 @@ class _SearchBarState extends State<SearchBar> {
       openMode: FlyoutOpenMode.custom,
       verticalOffset: MyTheme.appBarPadding * 2,
       windowPadding: MyTheme.appBarPadding,
-      child: SearchBarTextField(search: search, textEditController: textEditController, focusNode: focusNode),
+      child: MouseRegion(
+          onEnter: (event) => flyoutController.open(),
+          onExit: (event) => flyoutController.startCloseTimer(),
+          child: SearchBarTextField(search: search, textEditController: textEditController, focusNode: focusNode)),
       controller: flyoutController,
     );
   }

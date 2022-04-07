@@ -10,7 +10,7 @@ enum FlyoutOpenMode {
   custom, // Manage the controller directly.
 }
 
-enum FlyoutAlign { childTopCenter, appRight }
+enum FlyoutAlign { childTopLeft, appRight }
 
 class Flyout extends StatefulWidget {
   /// Provide [closeTimeout] or [controller] but not both.
@@ -90,7 +90,7 @@ class _FlyoutState extends State<Flyout> {
               (windowWidth - MyTheme.appWidth) / 2 + MyTheme.appWidth - widget.windowPadding * 2 - widget.contentSize.width - childPos.dx;
           return Offset(dx, dy);
         }
-      case FlyoutAlign.childTopCenter:
+      case FlyoutAlign.childTopLeft:
         return Offset(0.0, -widget.verticalOffset);
     }
   }
@@ -108,8 +108,8 @@ class _FlyoutState extends State<Flyout> {
             link: layerLink,
             showWhenUnlinked: false,
             offset: offset,
-            followerAnchor: FlyoutAlign.appRight == widget.align ? Alignment.topLeft : Alignment.bottomCenter,
-            targetAnchor: FlyoutAlign.appRight == widget.align ? Alignment.topLeft : Alignment.topCenter,
+            followerAnchor: FlyoutAlign.appRight == widget.align ? Alignment.topLeft : Alignment.bottomLeft,
+            targetAnchor: FlyoutAlign.appRight == widget.align ? Alignment.topLeft : Alignment.topLeft,
             child: MouseRegion(
               opaque: false,
               onEnter: (event) => controller.open(),
@@ -139,6 +139,7 @@ class _FlyoutState extends State<Flyout> {
   @override
   Widget build(BuildContext context) {
     Widget ret;
+
     switch (widget.openMode) {
       case FlyoutOpenMode.hover:
         ret = MouseRegion(
