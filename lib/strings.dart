@@ -19,4 +19,9 @@ abstract class Strings {
     'en': 'Paste Inventory',
   };
   static String get pasteInventory => _get(_pasteInventory);
+
+  static const Map<String, String> _clearInventory = {
+    'en': 'Clear Inventory',
+  };
+  static String get clearInventory => _get(_clearInventory);
 }

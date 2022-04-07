@@ -1,3 +1,4 @@
+import 'package:EveIndy/gui/widgets/paste_clear_button.dart';
 import 'package:flutter/material.dart';
 
 import 'hover_button.dart';
@@ -17,15 +18,11 @@ class Header extends StatelessWidget {
     var rowButtons = [
       Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: tmp),
-        width: 150,
-        height: MyTheme.appBarButtonHeight,
-      ),
-      const SizedBox(width: MyTheme.appBarPadding),
-      Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: tmp),
         width: 120,
         height: MyTheme.appBarButtonHeight,
       ),
+      const SizedBox(width: MyTheme.appBarPadding),
+      const PasteClearButton(),
     ];
 
     // Add a close button on windows.
