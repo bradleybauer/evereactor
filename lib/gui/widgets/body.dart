@@ -1,3 +1,4 @@
+import 'package:EveIndy/gui/widgets/targets_table.dart';
 import 'package:flutter/material.dart';
 
 import '../my_theme.dart';
@@ -19,9 +20,21 @@ class Body extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(width: width, height: 35 + 4 * MyTheme.appBarPadding, color: theme.colors.primary),
+                Container(
+                  width: width,
+                  height: 35 + 4 * MyTheme.appBarPadding,
+                  color: theme.colors.primary,
+                ),
                 Container(width: width, height: 200, color: theme.colors.background),
-                Container(width: width, height: 200, color: theme.colors.primary),
+                Container(
+                  width: width,
+                  height: 200,
+                  color: theme.colors.primary,
+                  child: const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: TargetsTable(),
+                  ),
+                ),
                 Container(width: width, height: 200, color: theme.colors.background),
                 Container(width: width, height: 200, color: theme.colors.primary),
               ],

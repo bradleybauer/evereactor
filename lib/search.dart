@@ -15,7 +15,7 @@ class MyFilterSearch {
     for (var r in res) {
       print(names[r.index].toString() + ' : ' + r.score.toString());
       i += 1;
-      if (i >= 50) break;
+      if (i >= 5) break;
     }
     print(res.length);
   }

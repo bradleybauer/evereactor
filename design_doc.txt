@@ -1,3 +1,11 @@
+In the interest of sanity and my time I am going to try and use the builtin data table (or my prehacked version) for my usecases.
+    This means possibly no evehelper.tk like highlighting...
+    If I really want this I can do it later I guess.
+
+TODO executable is not returning command to cmd when close button is closed? 
+
+Because search is so damn good I think I will not need to implement breadcrumb
+
 TODO make sure the SDE extractor is still good. i added marketGroup2Parent, that should be put into the py2dart file.
 
 TODO unicode normalize search strings in search bar
@@ -9,7 +17,6 @@ TODO update the SDE data due to eve's new game update... need an automatic way t
 "Sync Market Data" is a multi button...
     Once clicked it turns into a progress bar...
     After loading finishes it turns into a timer for esi cache timeout
-
 
 TODO not sure about the EveIndy name...
 How about EveIndustry?
@@ -197,15 +204,10 @@ mega sad face
 GUI/UX----------------------------------------------------------------------------------------------------------------
 
 Flyouts:
-   breadcrumbs
    app title
         chooses different app
 
 If I create more eve apps then could have the title bar be a flyout that navigates between them basically instantly
-
-Max Table Heights
-  for any table that is categorized it does not make much sense to have the table be larger than the window
-  since the breadcrumb could go out of view
 
 Change Inventory to 'Inputs'.
   rows are (icon, name, quantity, ppu, cost)
@@ -216,7 +218,7 @@ Change Inventory to 'Inputs'.
     parens next to the quantity value in the quantity column
     this is described in a tooltip on the column header
 
-Having a schedule visualization would be super good. // LOW LOW PRIORITY
+Having a schedule visualization would be super good. // NO PRIORITY
 
 Change font, make font a bit smaller?
 Slim up the program header a bit
@@ -250,8 +252,6 @@ Make input boxes simple.
 
   Red box on invalid input
 
-All data tables are categorized tables using breadcrumb navigation.
-
 Options ### see BUILD CUSTOMIZATIONS section above for more details about options
   Structures (basic dropdown lists)
     1mfg
@@ -274,37 +274,12 @@ Options ### see BUILD CUSTOMIZATIONS section above for more details about option
     not factored in at the bp level, but it affects the total profit %
 
 Search/Browse // HIGH PRIORITY
-  Fuzzy search
-    use some kind of fuzzy search lib
-    exclude items where the entered character is not in the search candidate?
-    multiline input to the search bar where each line is like an OR filter?
-      search bar multifuncitons as a general bp filter.
-        just copy bp's / item's from in game and paste into the search box to restrict the item list
-    for any text input, a clickable 'x' needs to appear at the right hand side of the search box
-      to allow resetting the search bar input
+  no categorized table
+    the search is so good I do not really need categorized table here
 
-  headers fixed at top
-  breadcrumb fixed at bottom
-  content scrolls between
-  has a max height
-  header & breadcrumb expand to max height then content starts to scroll
+  bp filter would be convenient, but.... idk really where to start. /// NO PRIORITY
+
   (add, icon, name, profit %)
-  triple sort go back to a default sorting.
-  heuristic list // MEDIUM PRIORITY
-    maybe % = profit on investment of max(250m, min item build cost)??
-
-  Categorized List Idea:
-    put breadcrumb row at bottom of list
-    have a cursor (highlighted row) within the list that can be moved by
-      cursor hover
-      keyboard
-      mouse wheel
-    this allows the simplification that the breadcrumb is in one spot and is at the top
-    while not introducing any ambiguity of what item the breadcrumb describes when the
-
-    the categorized sort is successive bucket sorting.
-    i mean, there is an easier way i guess.
-    i think it is just the order of depth first traversal where children are sorted in some way (according to max percent value?).
 
 Optimize - desktop // MEDIUM PRIORITY
   Optimization stats
