@@ -1,8 +1,14 @@
+import 'package:EveIndy/gui/widgets/flyout_controller.dart';
 import 'package:flutter/material.dart';
 
 import '../../search.dart';
 import '../my_theme.dart';
+import 'flyout.dart';
 import 'hover_button.dart';
+
+// TODO sad :( not really sure how to organize stuff like this.
+const double SEARCHBARWIDTH = 275;
+const double SEARCHBARCONTENTWIDTH = 340;
 
 class SearchBar extends StatefulWidget {
   const SearchBar({Key? key}) : super(key: key);
@@ -12,6 +18,7 @@ class SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBar> {
+  final flyoutController = FlyoutController(MyTheme.buttonFocusDuration);
   final focusNode = FocusNode();
   final textEditController = TextEditingController();
   late MyFilterSearch search;
@@ -24,13 +31,63 @@ class _SearchBarState extends State<SearchBar> {
     });
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
-        // show flyout
+        flyoutController.open();
       } else {
-        // hide flyout
+        flyoutController.close();
       }
     });
     super.initState();
   }
+
+  @override
+  void dispose() {
+    textEditController.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Flyout(
+      align: FlyoutAlign.childTopLeft,
+      content: const SearchBarFlyoutContent(),
+      contentSize: Size(SEARCHBARCONTENTWIDTH, 40),
+      openMode: FlyoutOpenMode.custom,
+      verticalOffset: MyTheme.appBarPadding * 2,
+      windowPadding: MyTheme.appBarPadding,
+      child: SearchBarTextField(search: search, textEditController: textEditController, focusNode: focusNode),
+      controller: flyoutController,
+    );
+  }
+}
+
+class SearchBarFlyoutContent extends StatelessWidget {
+  const SearchBarFlyoutContent({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blueGrey,
+      width: 40,
+      height: 40,
+      child: const Center(child: Text('search results')),
+    );
+  }
+}
+
+class SearchBarTextField extends StatelessWidget {
+  const SearchBarTextField({
+    Key? key,
+    required this.search,
+    required this.textEditController,
+    required this.focusNode,
+  }) : super(key: key);
+
+  final MyFilterSearch search;
+  final TextEditingController textEditController;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +120,7 @@ class _SearchBarState extends State<SearchBar> {
         ),
         fillColor: theme.colors.surfaceVariant,
         filled: true,
-        constraints: BoxConstraints.tight(const Size(275, MyTheme.appBarButtonHeight)),
+        constraints: BoxConstraints.tight(const Size(SEARCHBARWIDTH, MyTheme.appBarButtonHeight)),
         contentPadding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
       ),
       style: TextStyle(fontSize: 14, fontFamily: 'NotoSans', color: theme.colors.onSurfaceVariant),
