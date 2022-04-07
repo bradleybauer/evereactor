@@ -55,6 +55,8 @@ class _SearchBarState extends State<SearchBar> {
       openMode: FlyoutOpenMode.custom,
       verticalOffset: MyTheme.appBarPadding * 2,
       windowPadding: MyTheme.appBarPadding,
+      // TODO adding this MouseRegion widget made a bug appear in debug mode if I open the search flyout and hover the footer flyout group buttons.
+      // do not want to go through the effort of reporting it at flutter github.
       child: MouseRegion(
           onEnter: (event) => flyoutController.open(),
           onExit: (event) => flyoutController.startCloseTimer(),
