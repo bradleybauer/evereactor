@@ -21,6 +21,7 @@ class Flyout extends StatefulWidget {
     required this.child,
     required this.openMode,
     required this.align,
+    // Note this only pads the right side of the window atm.
     required this.windowPadding,
     this.closeTimeout,
     this.controller,

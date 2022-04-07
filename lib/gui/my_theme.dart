@@ -10,6 +10,7 @@ class MyTheme with ChangeNotifier {
 
   static const double appMinHeight = 400;
   static const double appWidth = 800;
+
   static const double appBarButtonHeight = 28;
   static const double appBarHeight = 48;
   static const double appBarPadding = 10;

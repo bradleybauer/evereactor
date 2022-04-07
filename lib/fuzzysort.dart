@@ -10,6 +10,10 @@ import 'package:collection/collection.dart';
 // I removed the data objects from the inputs.
 // Basically, this just gives a permutation of the getTargets : int -> int function.
 
+// One benefit of not putting 'all' the market groups into separate matching targets is that you could have
+// 'Ships .. Minmatar' be a matching target... Wait, that really doesn't mater does it because this searching lib
+// is very sensitive to incorrect spelling.... :(.
+
 const int infinity = 9007199254740991;
 
 class FuzzySortOptions {
