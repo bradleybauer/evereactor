@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:ui';
 import 'package:collection/collection.dart';
 
 // This is a partial translation of the javascript library https://github.com/farzher/fuzzysort
@@ -14,7 +15,18 @@ import 'package:collection/collection.dart';
 // 'Ships .. Minmatar' be a matching target... Wait, that really doesn't mater does it because this searching lib
 // is very sensitive to incorrect spelling.... :(.
 
+// Scoring works as follows
+//   split search string into parts based on space delimeter
+//     for each part string
+//       score part string against targets as normal (using the max over all targets as the score for the part)
+//     then score for the original search string is the sum of the scores for each part? ( plus the score for the max matching of the original string )
+//
+//   This way, searching
+//     amarr frigates will sort all amarr frigates earlier.
+//     large blaster will sort all large blasters earlier
+
 const int infinity = 9007199254740991;
+const int MaxNumSplits = 3; // TODO this needs to be bigger :(
 
 class FuzzySortOptions {
   int limit = infinity;
@@ -28,11 +40,26 @@ class FuzzyResult {
   FuzzyResult({required this.index, required this.score});
 }
 
+class _FuzzySearchPart {
+  final String lower;
+  final List<int> lowerCodes;
+  _FuzzySearchPart(this.lower, this.lowerCodes);
+}
+
 class FuzzyMatch {
   final int score;
   // final int targetIndex;     need this if allowing custom scoring function. otherwise which target had which score?
   // final indexes = <int>[];   need this if doing highlighting
   FuzzyMatch({this.score = 0});
+}
+
+class _Pair<A, B> {
+  A first;
+  B second;
+  _Pair({required this.first, required this.second});
+
+  @override
+  int get hashCode => hashValues(first, second);
 }
 
 class FuzzySort {
@@ -54,7 +81,7 @@ class FuzzySort {
 
   // Memoize search/target match score in case different items share targets. (My data has a lot of these cases)
   // Could be decided in FuzzySortOptions to use this or not.
-  final Map<String, FuzzyMatch> _algMemo = {};
+  final Map<_Pair<String, String>, FuzzyMatch> _algMemo = {};
 
   // Search for [search] through [numItems] number of items.
   // Each item has a set of matching targets provided by [getTargets].
@@ -62,24 +89,29 @@ class FuzzySort {
   // The overal score of an item is the max of the scores of all it's targets when compared with [search].
   // The items are sorted in descending order based on this score.
   List<FuzzyResult> go(final String search, final int numItems, Set<String> Function(int) getTargets) {
-    if (search == '') {
+    if (search.trim() == '') {
       return [];
     }
-    final searchLowerCodes = search.toLowerCase().codeUnits.toList();
+
+    final List<_FuzzySearchPart> parts = _splitSearch(search);
     int resultsLen = 0;
 
     // final scoreFn = options.scoreFn ?? _defaultScoreFn;
     final scoreFn = _defaultScoreFn;
-    for (var i = numItems - 1; i >= 0; --i) {
+    for (int i = 0; i < numItems; ++i) {
       final targets = getTargets(i);
-      final objResults = <FuzzyMatch>[];
-      for (String target in targets) {
-        FuzzyMatch? result = _algorithm(searchLowerCodes, target);
-        if (result != null) {
-          objResults.add(result);
+      final matches = <List<FuzzyMatch>>[];
+      for (final part in parts) {
+        final splitMatches = <FuzzyMatch>[];
+        for (String target in targets) {
+          FuzzyMatch? result = _algorithm(part.lowerCodes, part.lower, target);
+          if (result != null) {
+            splitMatches.add(result);
+          }
         }
+        matches.add(splitMatches);
       }
-      int? score = scoreFn(objResults);
+      int? score = scoreFn(matches);
       if (score == null) continue;
       if (score < options.threshold) continue;
       final result = FuzzyResult(index: i, score: score);
@@ -144,8 +176,9 @@ class FuzzySort {
   }
   */
 
-  FuzzyMatch? _algorithm(List<int> searchLowerCodes, String target) {
-    if (_algMemo.containsKey(target)) {
+  FuzzyMatch? _algorithm(List<int> searchLowerCodes, final String search, final String target) {
+    final memoKey = _Pair<String, String>(first: search, second: target);
+    if (_algMemo.containsKey(memoKey)) {
       return _algMemo[target];
     }
     int searchLowerCode = searchLowerCodes[0];
@@ -279,7 +312,7 @@ class FuzzySort {
     //   target.indexes[i] = matchesBest[i];
     // }
     final match = FuzzyMatch(score: score);
-    _algMemo[target] = match;
+    _algMemo[memoKey] = match;
     return match;
   }
 
@@ -339,13 +372,40 @@ class FuzzySort {
     matchesStrict.clear();
   }
 
-  int? _defaultScoreFn(List<FuzzyMatch> a) {
-    var max = -infinity;
-    for (var i = a.length - 1; i >= 0; --i) {
-      final int score = a[i].score;
-      if (score > max) max = score;
+  int? _defaultScoreFn(List<List<FuzzyMatch>> matches) {
+    var sum = 0;
+    for (final partMatches in matches) {
+      var max = -infinity;
+      for (final match in partMatches) {
+        if (match.score > max) {
+          max = match.score;
+        }
+      }
+      // Each part needs to match something
+      if (max == -infinity) {
+        return null;
+      } else {
+        sum += max;
+      }
     }
-    if (max == -infinity) return null;
-    return max;
+    return sum;
+  }
+
+  List<_FuzzySearchPart> _splitSearch(String search) {
+    var splitSearch = search.trim().split(' '); // + [search];
+    if (splitSearch.length > MaxNumSplits) {
+      // TODO Don't split for too many spaces?
+      splitSearch = [splitSearch.join(' ')];
+    }
+    final parts = <_FuzzySearchPart>[];
+    for (String split in splitSearch) {
+      split = split.trim();
+      if (split == '') {
+        continue;
+      }
+      final lower = split.toLowerCase();
+      parts.add(_FuzzySearchPart(lower, lower.codeUnits.toList()));
+    }
+    return parts;
   }
 }
