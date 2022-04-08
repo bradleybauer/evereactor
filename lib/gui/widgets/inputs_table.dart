@@ -16,26 +16,29 @@ class InputsTable extends StatelessWidget {
           color: theme.colors.background,
         ),
         child: DataTable(
-          dataTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.colors.onBackground),
+          dataTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.colors.onBackground),
           headingTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.colors.onBackground),
           showCheckboxColumn: false,
-          dataRowHeight: 32,
+          dividerThickness: .000001,
+          dataRowHeight: 24,
           columnSpacing: 8,
           headingRowHeight: 38,
-
-          //(icon, name, quantity (amount provided by inventory), value)
           columns: [
-            DataColumn(label: Text('Inputs                       '), onSort: (i, b) {}),
-            DataColumn(label: Text('Quantity'), onSort: (i, b) {}),
-            DataColumn(label: Text('Value')),
+            DataColumn(
+                label: Row(
+                  children: [Text('Inputs'), const SizedBox(width: 100)],
+                ),
+                onSort: (i, b) {}),
+            DataColumn(label: const Text('Quantity'), onSort: (i, b) {}),
+            DataColumn(label: const Text('Value'), onSort: (i, b) {}),
           ],
           rows: [
-            DataRow(cells: List<DataCell>.filled(3, DataCell(Text('11')))),
-            DataRow(cells: List<DataCell>.filled(3, DataCell(Text('21')))),
-            DataRow(cells: List<DataCell>.filled(3, DataCell(Text('21')))),
-            DataRow(cells: List<DataCell>.filled(3, DataCell(Text('21')))),
-            DataRow(cells: List<DataCell>.filled(3, DataCell(Text('21')))),
-            DataRow(cells: List<DataCell>.filled(3, DataCell(Text('21')))),
+            DataRow(cells: List<DataCell>.filled(3, const DataCell(Text('11')))),
+            DataRow(cells: List<DataCell>.filled(3, const DataCell(Text('21')))),
+            DataRow(cells: List<DataCell>.filled(3, const DataCell(const Text('21')))),
+            DataRow(cells: List<DataCell>.filled(3, const DataCell(const Text('21')))),
+            DataRow(cells: List<DataCell>.filled(3, const DataCell(Text('21')))),
+            DataRow(cells: List<DataCell>.filled(3, const DataCell(Text('21')))),
           ],
         ),
       ),

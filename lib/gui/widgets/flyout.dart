@@ -104,7 +104,7 @@ class _FlyoutState extends State<Flyout> {
 
         return Positioned(
           width: widget.contentSize.width,
-          height: widget.contentSize.height,
+          // height: widget.contentSize.height,
           child: CompositedTransformFollower(
             link: layerLink,
             showWhenUnlinked: false,
@@ -112,7 +112,7 @@ class _FlyoutState extends State<Flyout> {
             followerAnchor: FlyoutAlign.appRight == widget.align ? Alignment.topLeft : Alignment.bottomLeft,
             targetAnchor: FlyoutAlign.appRight == widget.align ? Alignment.topLeft : Alignment.topLeft,
             child: MouseRegion(
-              opaque: false,
+              opaque: true,
               onEnter: (event) => controller.open(),
               onExit: (event) => controller.startCloseTimer(),
               child: Material(
@@ -144,7 +144,7 @@ class _FlyoutState extends State<Flyout> {
     switch (widget.openMode) {
       case FlyoutOpenMode.hover:
         ret = MouseRegion(
-          opaque: false,
+          // opaque: false,
           onEnter: (event) => controller.open(),
           onExit: (event) => controller.startCloseTimer(),
           child: widget.child,

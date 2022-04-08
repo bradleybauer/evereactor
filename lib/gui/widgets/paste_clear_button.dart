@@ -43,6 +43,7 @@ class _PasteClearButtonState extends State<PasteClearButton> {
             borderColor: theme.colors.outline,
             borderRadius: 4,
             color: theme.colors.surfaceVariant,
+            splashColor: theme.colors.onPrimary.withOpacity(.25),
             hoveredColor: theme.colors.primary);
 
     return ConstrainedBox(constraints: const BoxConstraints.tightForFinite(width: 122, height: 28), child: pasteOrClear);

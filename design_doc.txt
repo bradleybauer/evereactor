@@ -1,3 +1,7 @@
+Buy me some toffee
+
+add a fuckin terry davis easter egg in here somewhere
+
 In the interest of sanity and my time I am going to try and use the builtin data table (or my prehacked version) for my usecases.
     This means possibly no evehelper.tk like highlighting...
     If I really want this I can do it later I guess.

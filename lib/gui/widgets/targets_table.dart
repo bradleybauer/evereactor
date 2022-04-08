@@ -16,14 +16,13 @@ class TargetsTable extends StatelessWidget {
           color: theme.colors.background,
         ),
         child: DataTable(
-          dataTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.colors.onBackground),
+          dataTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.colors.onBackground),
           headingTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.colors.onBackground),
+          dividerThickness: .000001,
           showCheckboxColumn: false,
-          dataRowHeight: 32,
+          dataRowHeight: 24,
           columnSpacing: 8,
           headingRowHeight: 38,
-
-          //(x, icon, name, runs, cost, profit, %, ppu, sale ppu, out m3, BpOptions?!?!(me, te, m#r, m#bps))
           columns: [
             DataColumn(label: Text('Targets                 '), onSort: (i, b) {}),
             DataColumn(label: Text('Runs'), onSort: (i, b) {}),

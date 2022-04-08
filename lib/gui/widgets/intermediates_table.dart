@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'build_buy_toggle_buttons.dart';
 import '../my_theme.dart';
 
 class IntermediatesTable extends StatelessWidget {
@@ -16,14 +17,13 @@ class IntermediatesTable extends StatelessWidget {
           color: theme.colors.background,
         ),
         child: DataTable(
-          dataTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.colors.onBackground),
+          dataTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.colors.onBackground),
           headingTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.colors.onBackground),
           showCheckboxColumn: false,
-          dataRowHeight: 32,
+          dividerThickness: .000001,
+          dataRowHeight: 24,
           columnSpacing: 8,
           headingRowHeight: 38,
-
-          //(icon, name, value, build/buy buttons, BpOptions)
           columns: [
             DataColumn(label: Text('Intermediates                         '), onSort: (i, b) {}),
             DataColumn(label: Text('Value'), onSort: (i, b) {}),
@@ -32,7 +32,7 @@ class IntermediatesTable extends StatelessWidget {
           ],
           rows: [
             DataRow(cells: List<DataCell>.filled(4, DataCell(Text('11')))),
-            DataRow(cells: List<DataCell>.filled(4, DataCell(Text('21')))),
+            DataRow(cells: [DataCell(Text('21')), DataCell(Text('21')), DataCell(BuildBuyToggleButtons()), DataCell(Text('21'))]),
             DataRow(cells: List<DataCell>.filled(4, DataCell(Text('21')))),
             DataRow(cells: List<DataCell>.filled(4, DataCell(Text('21')))),
             DataRow(cells: List<DataCell>.filled(4, DataCell(Text('21')))),

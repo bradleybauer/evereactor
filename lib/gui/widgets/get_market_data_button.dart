@@ -53,6 +53,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
             borderColor: theme.colors.outline,
             borderRadius: 4,
             color: theme.colors.surfaceVariant,
+            splashColor: theme.colors.onPrimary.withOpacity(.25),
             hoveredColor: theme.colors.primary);
         break;
 
@@ -63,7 +64,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
             borderRadius: BorderRadius.circular(4),
             color: theme.colors.surfaceVariant,
           ),
-          child: Center(child: const Text("loading", style: TextStyle(fontFamily: 'NotoSans', fontSize: 12))),
+          child: const Center(child: Text("loading", style: TextStyle(fontFamily: 'NotoSans', fontSize: 12))),
         );
         break;
       case _ButtonState.WAITING:
@@ -73,13 +74,13 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
             borderRadius: BorderRadius.circular(4),
             color: theme.colors.surfaceVariant,
           ),
-          child: Center(child: const Text("waiting", style: TextStyle(fontFamily: 'NotoSans', fontSize: 12))),
+          child: const Center(child: Text("waiting", style: TextStyle(fontFamily: 'NotoSans', fontSize: 12))),
         );
         break;
     }
 
     return ConstrainedBox(
-      constraints: BoxConstraints.tight(Size(150, MyTheme.appBarButtonHeight)),
+      constraints: BoxConstraints.tight(const Size(150, MyTheme.appBarButtonHeight)),
       child: widget,
     );
   }
