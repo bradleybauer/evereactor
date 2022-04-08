@@ -25,14 +25,14 @@ class TargetsTable extends StatelessWidget {
 
           //(x, icon, name, runs, cost, profit, %, ppu, sale ppu, out m3, BpOptions?!?!(me, te, m#r, m#bps))
           columns: [
-            DataColumn(label: Text('Targets'), onSort: (i, b) {}),
-            DataColumn(label: Text('Runs')),
-            DataColumn(label: Text('Cost')),
-            DataColumn(label: Text('Profit')),
-            DataColumn(label: Text('%')),
-            DataColumn(label: Text('Cost/u')),
-            DataColumn(label: Text('Sell/u')),
-            DataColumn(label: Text('Out m3')),
+            DataColumn(label: Text('Targets                 '), onSort: (i, b) {}),
+            DataColumn(label: Text('Runs'), onSort: (i, b) {}),
+            DataColumn(label: Text('Cost'), onSort: (i, b) {}),
+            DataColumn(label: Text('Profit'), onSort: (i, b) {}),
+            DataColumn(label: Text('%'), onSort: (i, b) {}),
+            DataColumn(label: Text('Cost/u'), onSort: (i, b) {}),
+            DataColumn(label: Text('Sell/u'), onSort: (i, b) {}),
+            DataColumn(label: Text('Out m3'), onSort: (i, b) {}),
             DataColumn(label: Text('BPs')),
           ],
           rows: [

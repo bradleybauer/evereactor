@@ -1,7 +1,8 @@
-import 'package:EveIndy/gui/widgets/summary_bar.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'intermediates_table.dart';
+import 'summary_bar.dart';
+import 'inputs_table.dart';
 import 'targets_table.dart';
 import '../my_theme.dart';
 
@@ -30,14 +31,23 @@ class Body extends StatelessWidget {
                 Container(
                   width: width,
                   color: theme.colors.surfaceVariant.withOpacity(.75),
-                  child: const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: TargetsTable(),
+                  padding: EdgeInsets.all(20),
+                  child: TargetsTable(),
+                ),
+                Container(
+                  width: width,
+                  color: theme.colors.surfaceVariant.withOpacity(.25),
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      IntermediatesTable(),
+                      SizedBox(width: MyTheme.appBarPadding * 2),
+                      // Expanded(child: Container()),
+                      InputsTable(),
+                    ],
                   ),
                 ),
-                Container(width: width, height: 200, color: theme.colors.surfaceVariant.withOpacity(.25)),
-                Container(width: width, height: 200, color: theme.colors.surfaceVariant.withOpacity(.75)),
-                Container(width: width, height: 200, color: theme.colors.surfaceVariant.withOpacity(.25)),
               ],
             ),
           ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../my_theme.dart';
 
 class SummaryBar extends StatelessWidget {
-  static const double SummaryBarWidth = 600;
+  static const double SummaryBarWidth = 650;
 
   const SummaryBar({Key? key}) : super(key: key);
 
