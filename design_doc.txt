@@ -1,3 +1,8 @@
+Performance:
+    Datatables and Search list are concerning.
+
+TODO either use paginated data table or use maximum number of targets. gotta keep performance in check...
+
 Buy me some toffee
 
 add a fuckin terry davis easter egg in here somewhere
