@@ -7,8 +7,10 @@ import '../my_theme.dart';
 import 'flyout.dart';
 import 'search_bar_text_field.dart';
 
-// TODO sad :( not really sure how to organize stuff like this.
+import 'test_names.dart';
+
 class SearchBar extends StatefulWidget {
+  // TODO sad :( not really sure how to organize stuff like this.
   static const double SEARCHBARWIDTH = 275;
 
   const SearchBar({Key? key}) : super(key: key);
@@ -21,13 +23,24 @@ class _SearchBarState extends State<SearchBar> {
   final flyoutController = FlyoutController(MyTheme.buttonFocusDuration);
   final focusNode = FocusNode();
   final textEditController = TextEditingController();
-  late MyFilterSearch search;
+  final search = MyFilterSearch();
+  final searchBarChangedNotifier = SearchBarChangeNotifier(allIndices);
+
+  static final allIndices = List<int>.generate(names.length, (index) => index);
+  final itemUniverse = names;
+  var sortIndices = allIndices;
 
   @override
   void initState() {
-    search = MyFilterSearch();
     textEditController.addListener(() {
-      setState(() {});
+      final text = textEditController.text.trim();
+      if (text != '') {
+        sortIndices = search.search(text);
+      } else {
+        sortIndices = allIndices;
+      }
+      searchBarChangedNotifier.set(sortIndices);
+      setState(() {}); // Need to rebuild so the text field clear button updates
     });
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
@@ -50,8 +63,8 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return Flyout(
       align: FlyoutAlign.childTopLeft,
-      content: const SearchBarFlyoutContent(),
-      contentSize: SearchBarFlyoutContent.CONTENTSIZE,
+      content: SearchBarFlyoutContent(itemUniverse: itemUniverse, searchBarChangeNotifier: searchBarChangedNotifier),
+      contentSize: SearchBarFlyoutContent.size,
       openMode: FlyoutOpenMode.custom,
       verticalOffset: MyTheme.appBarPadding * 2,
       windowPadding: MyTheme.appBarPadding,
@@ -60,8 +73,22 @@ class _SearchBarState extends State<SearchBar> {
       child: MouseRegion(
           onEnter: (event) => flyoutController.open(),
           onExit: (event) => flyoutController.startCloseTimer(),
-          child: SearchBarTextField(search: search, textEditController: textEditController, focusNode: focusNode)),
+          child: SearchBarTextField(
+            textEditController: textEditController,
+            focusNode: focusNode,
+          )),
       controller: flyoutController,
     );
   }
+}
+
+class SearchBarChangeNotifier extends ChangeNotifier {
+  SearchBarChangeNotifier(this._sortIndices);
+  List<int> _sortIndices;
+  void set(List<int> n) {
+    _sortIndices = n;
+    notifyListeners();
+  }
+
+  List<int> get() => _sortIndices;
 }

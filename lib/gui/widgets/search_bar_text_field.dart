@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../search.dart';
 import '../my_theme.dart';
 import 'hover_button.dart';
 import 'search_bar.dart';
@@ -8,23 +7,17 @@ import 'search_bar.dart';
 class SearchBarTextField extends StatelessWidget {
   const SearchBarTextField({
     Key? key,
-    required this.search,
     required this.textEditController,
     required this.focusNode,
   }) : super(key: key);
 
-  final MyFilterSearch search;
   final TextEditingController textEditController;
   final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (text) {
-        if (text != '') {
-          search.search(text);
-        }
-      },
+      onChanged: (v) {},
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
         suffixIcon: Container(
@@ -48,7 +41,7 @@ class SearchBarTextField extends StatelessWidget {
         ),
         fillColor: theme.colors.surfaceVariant,
         filled: true,
-        constraints: BoxConstraints.tight(Size(SearchBar.SEARCHBARWIDTH, MyTheme.appBarButtonHeight)),
+        constraints: BoxConstraints.tight(const Size(SearchBar.SEARCHBARWIDTH, MyTheme.appBarButtonHeight)),
         contentPadding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
       ),
       style: TextStyle(fontSize: 14, fontFamily: 'NotoSans', color: theme.colors.onSurfaceVariant),

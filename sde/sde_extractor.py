@@ -575,19 +575,19 @@ def __test():
     region2systems, system2name = extractor.getTradeHubs()
     # print(region2systems, system2name)
 
-    # # Get items and market groups for testing fuzzy search libraries.
-    # names = ['List<Set<String>> names =[']
-    # for k in itemID2bp:
-    #     parentGroupNames = __getItemMarketGroups(k, items, marketGroup2Parent, marketGroupNames)
-    #     things =[items[k]['name']['en']] + parentGroupNames
-    #     string = ""
-    #     for thing in things:
-    #         string += '"' + thing + '",'
-    #     names.append('{' + string + '},\n')
-    #     pass
-    # names.append('];')
-    # with open('test_names.dart','w') as f:
-    #     f.writelines(names)
+    # Get items and market groups for testing fuzzy search libraries.
+    names = ['const List<List<String>> names =[']
+    for k in itemID2bp:
+        parentGroupNames = __getItemMarketGroups(k, items, marketGroup2Parent, marketGroupNames)
+        things =[items[k]['name']['en']] + parentGroupNames
+        string = ""
+        for thing in things:
+            string += '"' + thing + '",'
+        names.append('[' + string + '],\n')
+        pass
+    names.append('];')
+    with open('test_names.dart','w') as f:
+        f.writelines(names)
 
 
 if __name__ == "__main__":
