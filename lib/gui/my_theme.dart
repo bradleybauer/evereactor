@@ -5,15 +5,15 @@ abstract class MyTheme {
   //with ChangeNotifier {
   static const bool _inDarkMode = false;
 
-  static const lightThemeSeedColor = Color.fromARGB(255, 255, 255, 255);
-  static const darkThemeSeedColor = Color.fromARGB(255, 0, 0, 0);
+  // static const lightThemeSeedColor = Color.fromARGB(255, 255, 255, 255);
+  // static const darkThemeSeedColor = Color.fromARGB(255, 0, 0, 0);
   // static const darkThemeSeedColor = Color.fromARGB(255, 255, 255, 255);
   // static const lightThemeSeedColor = Color.fromARGB(255, 0, 0, 0);
 
   // static const lightThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
   // static const darkThemeSeedColor = Color.fromARGB(255, 18, 157, 195);
-  // static const lightThemeSeedColor = Color.fromARGB(255, 184, 91, 91);
-  // static const darkThemeSeedColor = Color.fromARGB(255, 18, 157, 195);
+  static const lightThemeSeedColor = Color.fromARGB(255, 184, 91, 91);
+  static const darkThemeSeedColor = Color.fromARGB(255, 41, 195, 102);
 
   // static ThemeMode get  mode => _inDarkMode ? ThemeMode.dark : ThemeMode.light;
 
