@@ -15,8 +15,8 @@ class _BuildBuyToggleButtonsState extends State<BuildBuyToggleButtons> {
 
   bool left = false;
 
-  final selected = theme.colors.tertiary;
-  final onSelected = theme.colors.onTertiary;
+  final selected = theme.tertiary;
+  final onSelected = theme.onTertiary;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +33,10 @@ class _BuildBuyToggleButtonsState extends State<BuildBuyToggleButtons> {
                         fontFamily: 'NotoSans',
                         fontSize: 11,
                         color: hovered
-                            ? theme.colors.onPrimary
+                            ? theme.onPrimary
                             : left
                                 ? onSelected
-                                : theme.colors.onBackground),
+                                : theme.onBackground),
                   ));
             },
             borderRadius: 4,
@@ -46,9 +46,9 @@ class _BuildBuyToggleButtonsState extends State<BuildBuyToggleButtons> {
               });
             },
             hoveredElevation: 0,
-            color: left ? selected : theme.colors.background,
-            splashColor: theme.colors.onPrimary.withOpacity(.25),
-            hoveredColor: theme.colors.primary),
+            color: left ? selected : theme.background,
+            splashColor: theme.onPrimary.withOpacity(.25),
+            hoveredColor: theme.primary),
         const SizedBox(width: 5),
         HoverButton(
             builder: (hovered) {
@@ -60,10 +60,10 @@ class _BuildBuyToggleButtonsState extends State<BuildBuyToggleButtons> {
                         fontFamily: 'NotoSans',
                         fontSize: 11,
                         color: hovered
-                            ? theme.colors.onPrimary
+                            ? theme.onPrimary
                             : !left
                                 ? onSelected
-                                : theme.colors.onBackground),
+                                : theme.onBackground),
                   ));
             },
             borderRadius: 4,
@@ -73,9 +73,9 @@ class _BuildBuyToggleButtonsState extends State<BuildBuyToggleButtons> {
               });
             },
             hoveredElevation: 0,
-            splashColor: theme.colors.onPrimary.withOpacity(.25),
-            color: !left ? selected : theme.colors.background,
-            hoveredColor: theme.colors.primary)
+            splashColor: theme.onPrimary.withOpacity(.25),
+            color: !left ? selected : theme.background,
+            hoveredColor: theme.primary)
       ],
     );
   }

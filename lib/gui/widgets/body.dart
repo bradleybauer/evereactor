@@ -26,23 +26,23 @@ class Body extends StatelessWidget {
                 Container(
                   width: width,
                   height: 35 + 4 * MyTheme.appBarPadding,
-                  color: theme.colors.surfaceVariant.withOpacity(.25),
+                  color: theme.surfaceVariant.withOpacity(.25),
                 ),
                 Container(
                   width: width,
-                  color: theme.colors.surfaceVariant.withOpacity(.75),
-                  padding: EdgeInsets.all(20),
-                  child: TargetsTable(),
+                  color: theme.surfaceVariant.withOpacity(.75),
+                  padding: const EdgeInsets.all(20),
+                  child: const TargetsTable(),
                 ),
                 Container(
                   width: width,
-                  color: theme.colors.surfaceVariant.withOpacity(.25),
-                  padding: EdgeInsets.all(20),
+                  color: theme.surfaceVariant.withOpacity(.25),
+                  padding: const EdgeInsets.all(20),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
-                    children: [
+                    children: const [
                       IntermediatesTable(),
-                      SizedBox(width: MyTheme.appBarPadding * 2),
+                      SizedBox(width: theme.appBarPadding * 2),
                       // Expanded(child: Container()),
                       InputsTable(),
                     ],
@@ -56,7 +56,7 @@ class Body extends StatelessWidget {
           // Summary Box
           alignment: Alignment.topCenter,
           child: Padding(
-            padding: EdgeInsets.fromLTRB(0, MyTheme.appBarPadding * 2 + verticalPadding!, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, theme.appBarPadding * 2 + verticalPadding!, 0, 0),
             child: const SummaryBar(),
           ),
         ),

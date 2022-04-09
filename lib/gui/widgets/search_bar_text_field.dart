@@ -17,7 +17,6 @@ class SearchBarTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (v) {},
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
         suffixIcon: Container(
@@ -27,24 +26,24 @@ class SearchBarTextField extends StatelessWidget {
                   child: HoverButton(
                     onTap: textEditController.clear,
                     color: Colors.transparent,
-                    hoveredColor: theme.colors.primary,
+                    hoveredColor: theme.primary,
                     hoveredElevation: 0,
                     builder: (bool hovered) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
-                        child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.colors.onPrimary : null),
+                        child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.onPrimary : null),
                       );
                     },
                   ),
                 )
               : const Icon(Icons.search),
         ),
-        fillColor: theme.colors.surfaceVariant,
+        fillColor: theme.surfaceVariant,
         filled: true,
         constraints: BoxConstraints.tight(const Size(SearchBar.SEARCHBARWIDTH, MyTheme.appBarButtonHeight)),
         contentPadding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
       ),
-      style: TextStyle(fontSize: 14, fontFamily: 'NotoSans', color: theme.colors.onSurfaceVariant),
+      style: TextStyle(fontSize: 14, fontFamily: 'NotoSans', color: theme.onSurfaceVariant),
       focusNode: focusNode,
       controller: textEditController,
     );

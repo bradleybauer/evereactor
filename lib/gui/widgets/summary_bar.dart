@@ -10,11 +10,12 @@ class SummaryBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PhysicalModel(
-      color: Colors.grey,
+      color: Colors.transparent,
       elevation: 2,
+      shadowColor: theme.shadow,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Container(width: SummaryBarWidth, height: 35, color: theme.colors.primary),
+      child: Container(width: SummaryBarWidth, height: 35, color: theme.primary),
     );
   }
 }

@@ -41,7 +41,7 @@ class MyAnimatedContainer extends StatelessWidget {
       color: Colors.transparent,
       duration: MyTheme.buttonFocusDuration,
       elevation: elevation,
-      shadowColor: Colors.black,
+      shadowColor: theme.shadow,
       shape: BoxShape.rectangle,
       clipBehavior: Clip.antiAlias,
       borderRadius: BorderRadius.circular(borderRadius ?? 0),

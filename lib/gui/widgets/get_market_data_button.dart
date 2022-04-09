@@ -46,23 +46,22 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
             builder: (hovered) {
               return Center(
                 child: Text(Strings.getMarketData,
-                    style: TextStyle(
-                        fontFamily: 'NotoSans', fontSize: 12, color: hovered ? theme.colors.onPrimary : theme.colors.onSurfaceVariant)),
+                    style: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: hovered ? theme.onPrimary : theme.onSurfaceVariant)),
               );
             },
-            borderColor: theme.colors.outline,
+            borderColor: theme.outline,
             borderRadius: 4,
-            color: theme.colors.surfaceVariant,
-            splashColor: theme.colors.onPrimary.withOpacity(.25),
-            hoveredColor: theme.colors.primary);
+            color: theme.surfaceVariant,
+            splashColor: theme.onPrimary.withOpacity(.25),
+            hoveredColor: theme.primary);
         break;
 
       case _ButtonState.LOADING:
         widget = Container(
           decoration: BoxDecoration(
-            border: Border.all(color: theme.colors.outline),
+            border: Border.all(color: theme.outline),
             borderRadius: BorderRadius.circular(4),
-            color: theme.colors.surfaceVariant,
+            color: theme.surfaceVariant,
           ),
           child: const Center(child: Text("loading", style: TextStyle(fontFamily: 'NotoSans', fontSize: 12))),
         );
@@ -70,9 +69,9 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
       case _ButtonState.WAITING:
         widget = Container(
           decoration: BoxDecoration(
-            border: Border.all(color: theme.colors.outline),
+            border: Border.all(color: theme.outline),
             borderRadius: BorderRadius.circular(4),
-            color: theme.colors.surfaceVariant,
+            color: theme.surfaceVariant,
           ),
           child: const Center(child: Text("waiting", style: TextStyle(fontFamily: 'NotoSans', fontSize: 12))),
         );

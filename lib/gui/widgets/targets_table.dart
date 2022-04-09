@@ -11,12 +11,10 @@ class TargetsTable extends StatelessWidget {
     final button = [
       DataCell(TableAddDelButton(
         closeButton: true,
-        color: theme.colors.background,
-        hoveredColor: theme.colors.primary,
-        iconColor: theme.colors.onBackground,
-        iconHoveredColor: theme.colors.onPrimary,
+        color: theme.background,
+        hoveredColor: theme.primary,
         onTap: () {},
-        splashColor: theme.colors.onPrimary.withOpacity(.5),
+        splashColor: theme.onPrimary.withOpacity(.5),
       ))
     ];
     return ClipRRect(
@@ -24,14 +22,14 @@ class TargetsTable extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: theme.colors.outline, width: 1),
-          color: theme.colors.background,
+          border: Border.all(color: theme.outline, width: 1),
+          color: theme.background,
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
           child: DataTable(
-            dataTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.colors.onBackground),
-            headingTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.colors.onBackground),
+            dataTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
+            headingTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onBackground),
             dividerThickness: .000001,
             showCheckboxColumn: false,
             dataRowHeight: 24,

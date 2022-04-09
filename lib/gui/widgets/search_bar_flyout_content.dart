@@ -28,10 +28,11 @@ class SearchBarFlyoutContent extends StatelessWidget {
       child: PhysicalModel(
         color: Colors.transparent,
         elevation: 2,
+        shadowColor: theme.shadow,
         borderRadius: BorderRadius.circular(4),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Container(
-            color: theme.colors.tertiaryContainer,
+            color: theme.tertiaryContainer,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -47,7 +48,7 @@ class SearchBarFlyoutContent extends StatelessWidget {
                         return SizedBox(
                             width: size.width,
                             height: 20,
-                            child: Center(child: Text("¯\\_(ツ)_/¯", style: TextStyle(fontSize: 13, color: theme.colors.onTertiaryContainer))));
+                            child: Center(child: Text("¯\\_(ツ)_/¯", style: TextStyle(fontSize: 13, color: theme.onTertiaryContainer))));
                       }
                       return ListView.builder(
                           shrinkWrap: true,
@@ -78,8 +79,9 @@ class SearchListHeader extends StatelessWidget {
     return PhysicalModel(
       color: Colors.transparent,
       elevation: 1,
+      shadowColor: theme.shadow,
       child: Container(
-        color: theme.colors.tertiaryContainer,
+        color: theme.tertiaryContainer,
         child: Row(children: [
           SizedBox(
             width: SearchBarFlyoutContent.size.width * ratio,
@@ -88,7 +90,7 @@ class SearchListHeader extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 "Item",
-                style: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.colors.onTertiaryContainer),
+                style: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onTertiaryContainer),
               ),
             ),
           ),
@@ -103,8 +105,7 @@ class SearchListHeader extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "Profit %",
-                    style:
-                        TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.colors.onTertiaryContainer),
+                    style: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onTertiaryContainer),
                   ),
                 ),
               ),
@@ -138,11 +139,9 @@ class SearchListItem extends StatelessWidget {
               print("adding ${itemUniverse[index][0]}");
             },
             closeButton: false,
-            color: theme.colors.background,
-            hoveredColor: theme.colors.tertiary,
-            iconColor: theme.colors.onBackground,
-            iconHoveredColor: theme.colors.onTertiary,
-            splashColor: theme.colors.onTertiary.withOpacity(.35),
+            color: theme.background,
+            hoveredColor: theme.tertiary,
+            splashColor: theme.onTertiary.withOpacity(.35),
           ),
         ),
         Tooltip(
@@ -157,14 +156,14 @@ class SearchListItem extends StatelessWidget {
             child: Text(
               itemUniverse[index][0],
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.colors.onTertiaryContainer),
+              style: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
             ),
           ),
         ),
         const SizedBox(width: MyTheme.appBarPadding),
         Text(
           '32%',
-          style: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.colors.onTertiaryContainer),
+          style: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
         )
       ],
     );

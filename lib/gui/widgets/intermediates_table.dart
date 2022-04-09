@@ -14,14 +14,14 @@ class IntermediatesTable extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: theme.colors.outline, width: 1),
-          color: theme.colors.background,
+          border: Border.all(color: theme.outline, width: 1),
+          color: theme.background,
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
           child: DataTable(
-            dataTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.colors.onBackground),
-            headingTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.colors.onBackground),
+            dataTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
+            headingTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onBackground),
             showCheckboxColumn: false,
             dividerThickness: .000001,
             dataRowHeight: 24,
@@ -105,11 +105,9 @@ class _AddButton extends StatelessWidget {
     return TableAddDelButton(
       onTap: () {},
       closeButton: false,
-      color: theme.colors.background,
-      hoveredColor: theme.colors.primary,
-      iconColor: theme.colors.onBackground,
-      iconHoveredColor: theme.colors.onPrimary,
-      splashColor: theme.colors.onPrimary.withOpacity(.5),
+      color: theme.background,
+      hoveredColor: theme.primary,
+      splashColor: theme.onPrimary.withOpacity(.5),
     );
   }
 }

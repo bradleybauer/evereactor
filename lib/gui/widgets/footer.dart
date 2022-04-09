@@ -30,7 +30,7 @@ class Footer extends StatelessWidget {
     ];
 
     return Container(
-      color: theme.colors.secondaryContainer,
+      color: theme.secondaryContainer,
       width: width,
       height: height,
       child: Stack(children: stackWidgets),

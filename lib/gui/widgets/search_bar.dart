@@ -30,14 +30,20 @@ class _SearchBarState extends State<SearchBar> {
   final itemUniverse = names;
   var sortIndices = allIndices;
 
+  // Only search if the text changes.
+  String previousText = '';
+
   @override
   void initState() {
     textEditController.addListener(() {
       final text = textEditController.text.trim();
-      if (text != '') {
-        sortIndices = search.search(text);
-      } else {
-        sortIndices = allIndices;
+      if (text != previousText) {
+        if (text != '') {
+          sortIndices = search.search(text);
+        } else {
+          sortIndices = allIndices;
+        }
+        previousText = text;
       }
       searchBarChangedNotifier.set(sortIndices);
       setState(() {}); // Need to rebuild so the text field clear button updates

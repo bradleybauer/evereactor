@@ -1,5 +1,6 @@
-Performance:
-    Datatables and Search list are concerning.
+CHECK RECENT EVE MAIL BEFORE RETURNING TO EVE
+
+Change datatables to listview builders?
 
 TODO either use paginated data table or use maximum number of targets. gotta keep performance in check...
 

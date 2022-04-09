@@ -12,8 +12,6 @@ class Header extends StatelessWidget {
   final double? height;
   final double? width;
 
-  final Color tmp = theme.colors.primary;
-
   @override
   Widget build(BuildContext context) {
     var rowButtons = [
@@ -31,12 +29,12 @@ class Header extends StatelessWidget {
           builder: (bool hovered) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
-              child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.colors.onPrimary : theme.colors.onSurface),
+              child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.onPrimary : theme.onSurface),
             );
           },
-          color: theme.colors.surface,
-          splashColor: theme.colors.onPrimary.withOpacity(.25),
-          hoveredColor: theme.colors.primary,
+          color: theme.surface,
+          splashColor: theme.onPrimary.withOpacity(.25),
+          hoveredColor: theme.primary,
           borderRadius: 4,
         ),
       ];
@@ -48,7 +46,7 @@ class Header extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
           child: Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: tmp),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: theme.primary),
             width: 180,
             height: MyTheme.appBarButtonHeight,
           ),
@@ -72,10 +70,11 @@ class Header extends StatelessWidget {
     ];
 
     return PhysicalModel(
-      color: theme.colors.secondaryContainer,
+      color: theme.secondaryContainer,
       borderRadius: const BorderRadius.all(Radius.circular(0)),
       clipBehavior: Clip.antiAlias,
       elevation: 1.5,
+      shadowColor: theme.shadow,
       child: SizedBox(
         width: width,
         height: height,

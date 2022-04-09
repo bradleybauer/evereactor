@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
       clipRadius = const BorderRadius.all(Radius.circular(10));
     }
     return Material(
-      color: theme.colors.background,
+      color: theme.background,
       child: Align(
         alignment: Alignment.topCenter,
         child: Padding(
@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
               borderRadius: clipRadius,
               clipBehavior: Clip.antiAlias,
               child: Container(
-                color: theme.colors.background,
+                color: theme.background,
                 child: Stack(
                   children: [
                     const Body(width: MyTheme.appWidth, verticalPadding: MyTheme.appBarHeight),
