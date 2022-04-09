@@ -2,6 +2,8 @@ import 'dart:core';
 import 'dart:ui';
 import 'package:collection/collection.dart';
 
+import 'platform.dart';
+
 // This is a partial translation of the javascript library https://github.com/farzher/fuzzysort
 // I have changed a lot though too.
 // I changed the getBeginningIndexes function so that it, hopefully, works for more languages than only english.
@@ -30,12 +32,14 @@ import 'package:collection/collection.dart';
 //     large blaster will sort all large blasters earlier
 
 const int infinity = 9007199254740991;
-const int MaxNumSplits = 3; // TODO this needs to be bigger :(
+final int MaxNumSplits =
+    Platform.isWeb() ? 3 : 4; // TODO cannot make this too large https://github.com/farzher/fuzzysort/issues/80 ? it's just very slow.
 
 class FuzzySortOptions {
-  int limit = infinity;
-  int threshold = -infinity;
+  final int limit;
+  final int threshold;
   // int? Function(List<FuzzyMatch>)? scoreFn;
+  FuzzySortOptions({this.limit = infinity, this.threshold = -infinity});
 }
 
 class FuzzyResult {
@@ -92,7 +96,7 @@ class FuzzySort {
   // The comparison of [search] against each target is given a score.
   // The overal score of an item is the max of the scores of all it's targets when compared with [search].
   // The items are sorted in descending order based on this score.
-  List<FuzzyResult> go(final String search, final int numItems, Set<String> Function(int) getTargets) {
+  List<FuzzyResult> go(final String search, final int numItems, List<String> Function(int) getTargets) {
     if (search.trim() == '') {
       return [];
     }
@@ -134,12 +138,14 @@ class FuzzySort {
     }
 
     if (resultsLen == 0) {
+      _cleanup();
       return [];
     }
     final results = <FuzzyResult>[];
     while (q.isNotEmpty) {
       results.add(q.removeFirst());
     }
+    _cleanup();
     return results.reversed.toList();
   }
 
@@ -372,6 +378,8 @@ class FuzzySort {
   }
 
   void _cleanup() {
+    _algMemo.clear();
+    q.clear();
     matchesSimple.clear();
     matchesStrict.clear();
   }
@@ -396,19 +404,31 @@ class FuzzySort {
   }
 
   List<_FuzzySearchPart> _splitSearch(String search) {
-    var splitSearch = search.trim().split(' '); // + [search];
+    var splitSearch = search.trim().split(' ').map((e) => e.toLowerCase()); // + [search];
+    // Don't split into too many different search terms
     if (splitSearch.length > MaxNumSplits) {
-      // TODO Don't split for too many spaces?
       splitSearch = [splitSearch.join(' ')];
     }
-    final parts = <_FuzzySearchPart>[];
+    int numSmallTerms = 0;
     for (String split in splitSearch) {
+      // Short search terms are VERY slow
+      if (split.length < 3) {
+        numSmallTerms += 1;
+      }
+      if (numSmallTerms > 2) {
+        splitSearch = [splitSearch.join(' ')];
+        break;
+      }
+    }
+    // No need to search different search terms
+    var unique = splitSearch.toSet();
+    final parts = <_FuzzySearchPart>[];
+    for (String split in unique) {
       split = split.trim();
       if (split == '') {
         continue;
       }
-      final lower = split.toLowerCase();
-      parts.add(_FuzzySearchPart(lower, lower.codeUnits.toList()));
+      parts.add(_FuzzySearchPart(split, split.codeUnits.toList()));
     }
     return parts;
   }
