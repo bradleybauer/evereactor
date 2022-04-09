@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 // https://m3.material.io/styles/color/the-color-system/key-colors-tones
 abstract class MyTheme {
   //with ChangeNotifier {
-  // static bool _inDarkMode = true;
   static const bool _inDarkMode = false;
 
-  // static const lightThemeSeedColor = Color.fromARGB(255, 255, 255, 255);
-  // static const darkThemeSeedColor = Color.fromARGB(255, 0, 0, 0);
-  static const darkThemeSeedColor = Color.fromARGB(255, 255, 255, 255);
-  static const lightThemeSeedColor = Color.fromARGB(255, 0, 0, 0);
+  static const lightThemeSeedColor = Color.fromARGB(255, 255, 255, 255);
+  static const darkThemeSeedColor = Color.fromARGB(255, 0, 0, 0);
+  // static const darkThemeSeedColor = Color.fromARGB(255, 255, 255, 255);
+  // static const lightThemeSeedColor = Color.fromARGB(255, 0, 0, 0);
 
   // static const lightThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
   // static const darkThemeSeedColor = Color.fromARGB(255, 18, 157, 195);

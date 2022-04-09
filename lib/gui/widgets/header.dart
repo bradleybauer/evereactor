@@ -29,10 +29,10 @@ class Header extends StatelessWidget {
           builder: (bool hovered) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
-              child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.onPrimary : theme.onSurface),
+              child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.onPrimary : theme.onSecondaryContainer),
             );
           },
-          color: theme.surface,
+          color: theme.secondaryContainer,
           splashColor: theme.onPrimary.withOpacity(.25),
           hoveredColor: theme.primary,
           borderRadius: 4,
@@ -70,7 +70,7 @@ class Header extends StatelessWidget {
     ];
 
     return PhysicalModel(
-      color: theme.secondaryContainer,
+      color: theme.surface,
       borderRadius: const BorderRadius.all(Radius.circular(0)),
       clipBehavior: Clip.antiAlias,
       elevation: 1.5,

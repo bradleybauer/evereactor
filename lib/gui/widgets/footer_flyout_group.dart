@@ -47,11 +47,12 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
     for (int i = 0; i < NUMBUTTONS; ++i) {
       buttons.add(MouseRegion(
         child: MyAnimatedContainer(
-          color: controllers[i].isOpen ? theme.primary : theme.surface,
+          color: controllers[i].isOpen ? theme.primary : theme.secondaryContainer,
           elevation: controllers[i].isOpen ? 3 : 0,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: MyTheme.appBarButtonHeight * .1),
-            child: Icon(icons[i], size: MyTheme.appBarButtonHeight * .8, color: controllers[i].isOpen ? theme.onPrimary : theme.onSurface),
+            child: Icon(icons[i],
+                size: MyTheme.appBarButtonHeight * .8, color: controllers[i].isOpen ? theme.onPrimary : theme.onSecondaryContainer),
           ),
           borderRadius: 4,
         ),

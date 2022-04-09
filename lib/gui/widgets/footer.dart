@@ -20,17 +20,17 @@ class Footer extends StatelessWidget {
           child: FooterFlyoutGroup(),
         ),
       ),
-      Align(
+      const Align(
         alignment: Alignment.centerLeft,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
+          padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
           child: SearchBar(),
         ),
       ),
     ];
 
     return Container(
-      color: theme.secondaryContainer,
+      color: theme.surface,
       width: width,
       height: height,
       child: Stack(children: stackWidgets),
