@@ -14,9 +14,9 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    theme.addListener(() {
-      setState(() {});
-    });
+    // theme.addListener(() {
+    //   setState(() {});
+    // });
   }
 
   @override
@@ -26,6 +26,7 @@ class _MyAppState extends State<MyApp> {
       title: 'EveIndy',
       home: const HomePage(),
       theme: theme.theme,
+      themeMode: ThemeMode.light,
     );
   }
 }
