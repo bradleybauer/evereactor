@@ -49,7 +49,6 @@ class Body extends StatelessWidget {
                         child: IntermediatesTable(),
                       ),
                       SizedBox(width: theme.appBarPadding * 2),
-                      // Expanded(child: Container()),
                       Flexible(
                         flex: 5,
                         fit: FlexFit.tight,

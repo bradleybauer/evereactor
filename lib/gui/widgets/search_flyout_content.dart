@@ -68,7 +68,6 @@ class SearchListHeader extends StatelessWidget {
   }) : super(key: key);
 
   static const double height = 35;
-  static const double ratio = .8;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +113,9 @@ class SearchListItem extends StatelessWidget {
   final int itemIndex;
   final List<List<String>> itemUniverse;
 
+  // TODO If I use MyTableCell here and do not specify column widths, then the text does not wrap for long lines.
+  // Not really sure how to fix this atm. Going to leave it as-is since it could also be a performance issue to not
+  // set widths as static consts?
   @override
   Widget build(BuildContext context) {
     const buttonPadding = 8.0;
