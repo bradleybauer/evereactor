@@ -6,6 +6,7 @@ class TableContainer extends StatelessWidget {
   const TableContainer({
     required this.header,
     required this.listView,
+    required this.listTextStyle,
     this.maxHeight = double.infinity,
     this.color,
     this.borderColor,
@@ -23,6 +24,7 @@ class TableContainer extends StatelessWidget {
   final Color? borderColor;
   final double? borderRadius;
   final Clip clipBehavior;
+  final TextStyle listTextStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class TableContainer extends StatelessWidget {
             header,
             Flexible(
               // defaults to fit: FlexFit.loose
-              child: listView,
+              child: DefaultTextStyle(style: listTextStyle, child: listView),
             ),
           ],
         ),

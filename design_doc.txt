@@ -1,3 +1,7 @@
+TODO set different max height for tables
+
+what font is used on font awesome's website? looks nice.
+
 TODO don't forget about dart super parameters.
 
 CHECK RECENT EVE MAIL BEFORE RETURNING TO EVE

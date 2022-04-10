@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:EveIndy/gui/widgets/targets_table.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +30,7 @@ class SearchBarFlyoutContent extends StatelessWidget {
       elevation: 2,
       borderRadius: 4,
       header: const SearchListHeader(),
+      listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
       listView: ChangeNotifierProvider<SearchBarChangeNotifier>.value(
           value: searchBarChangeNotifier,
           builder: (_, __) => Consumer<SearchBarChangeNotifier>(
@@ -43,7 +41,9 @@ class SearchBarFlyoutContent extends StatelessWidget {
                   if (len == 0) {
                     return SizedBox(
                         height: SearchListItem.height,
-                        child: Center(child: Text("¯\\_(ツ)_/¯", style: TextStyle(fontSize: 13, color: theme.onTertiaryContainer))));
+                        child: Center(
+                          child: Text("¯\\_(ツ)_/¯", style: TextStyle(fontFamily: '', fontSize: 15, color: theme.onTertiaryContainer)),
+                        ));
                   }
                   // var s = ScrollController();
                   // s.offset > 0 ? animate header elevate up
@@ -78,20 +78,19 @@ class SearchListHeader extends StatelessWidget {
         flexs: const [125, 30],
         color: theme.tertiaryContainer,
         height: height,
+        textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onTertiaryContainer),
         items: [
           TableColumn(
             widget: Container(
               padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
-              child: Text('Items',
-                  style: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onTertiaryContainer)),
+              child: Text('Items'),
             ),
           ),
           TableColumn(
             widget: Container(
               padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
               alignment: Alignment.centerRight,
-              child: Text('Profit %',
-                  style: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onTertiaryContainer)),
+              child: Text('Profit %'),
             ),
             onTap: () {},
           ),
@@ -143,20 +142,13 @@ class SearchListItem extends StatelessWidget {
               child: Container(
                 width: SearchBarFlyoutContent.columnWidths[0] - TableAddDelButton.width - buttonPadding * 2 + columnWidthFudgeFactor,
                 padding: const EdgeInsets.symmetric(horizontal: buttonPadding),
-                child: Text(
-                  itemUniverse[itemIndex][0],
-                  // overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
-                ),
+                child: Text(itemUniverse[itemIndex][0]),
               ),
             ),
             Container(
               width: SearchBarFlyoutContent.columnWidths[1] - columnWidthFudgeFactor,
               alignment: Alignment.centerRight,
-              child: Text(
-                '${itemIndex}%',
-                style: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
-              ),
+              child: Text('${itemIndex}%'),
             )
           ],
         ),

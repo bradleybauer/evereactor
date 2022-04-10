@@ -11,6 +11,7 @@ class TableHeader extends StatelessWidget {
   const TableHeader({
     required this.items,
     required this.flexs,
+    this.textStyle,
     this.color,
     this.height,
     Key? key,
@@ -20,6 +21,7 @@ class TableHeader extends StatelessWidget {
   final double? height;
   final Color? color;
   final List<int> flexs;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class TableHeader extends StatelessWidget {
       if (items[i].onTap != null) {
         widget = Material(
             color: Colors.transparent,
+            textStyle: textStyle,
             child: InkWell(
               onTap: items[i].onTap,
               child: widget,
@@ -45,6 +48,12 @@ class TableHeader extends StatelessWidget {
       }
       widgets.add(Flexible(fit: FlexFit.tight, flex: flexs[i], child: widget));
     }
-    return Container(color: color, height: height, child: Row(children: widgets));
+    if (textStyle == null) {
+      return Container(color: color, height: height, child: Row(children: widgets));
+    }
+    return DefaultTextStyle(
+      style: textStyle!,
+      child: Container(color: color, height: height, child: Row(children: widgets)),
+    );
   }
 }

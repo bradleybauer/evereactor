@@ -41,7 +41,7 @@ class Body extends StatelessWidget {
                   color: theme.surfaceVariant.withOpacity(.25),
                   padding: const EdgeInsets.all(theme.appBarPadding * 2),
                   child: Row(
-                    // mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Flexible(
                         flex: 7,
