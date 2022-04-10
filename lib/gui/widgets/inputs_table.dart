@@ -19,7 +19,7 @@ class InputsTable extends StatelessWidget {
       borderColor: theme.outline,
       color: theme.background,
       header: const InputsTableHeader(),
-      listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
+      listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
       listView: ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
@@ -38,7 +38,7 @@ class InputsTableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return TableHeader(
       height: InputsTable.headerHeight,
-      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onTertiaryContainer),
+      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(InputsTable.colFlexs[0],
             child: Text('Inputs'), align: Alignment.centerLeft, padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0)),

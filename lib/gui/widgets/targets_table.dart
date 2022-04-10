@@ -20,7 +20,7 @@ class TargetsTable extends StatelessWidget {
       borderColor: theme.outline,
       color: theme.background,
       header: const TargetsTableHeader(),
-      listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
+      listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
       listView: ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
@@ -39,7 +39,7 @@ class TargetsTableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return TableHeader(
       height: TargetsTable.headerHeight,
-      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onTertiaryContainer),
+      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(TargetsTable.colFlexs[0],
             child: Text('Targets'),
