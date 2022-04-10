@@ -15,8 +15,8 @@ class _BuildBuyToggleButtonsState extends State<BuildBuyToggleButtons> {
 
   bool left = false;
 
-  final selected = theme.tertiary;
-  final onSelected = theme.onTertiary;
+  final selected = theme.tertiaryContainer;
+  final onSelected = theme.onTertiaryContainer;
 
   @override
   Widget build(BuildContext context) {

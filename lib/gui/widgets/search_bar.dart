@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'flyout_controller.dart';
-import 'search_bar_flyout_content.dart';
+import 'search_flyout_content.dart';
 import '../../search.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
-import 'search_bar_text_field.dart';
+import 'search_text_field.dart';
 
 import 'test_names.dart';
 
@@ -38,12 +38,12 @@ class _SearchBarState extends State<SearchBar> {
     textEditController.addListener(() {
       final text = textEditController.text.trim();
       if (text != previousText) {
+        previousText = text;
         if (text != '') {
           sortIndices = search.search(text);
         } else {
           sortIndices = allIndices;
         }
-        previousText = text;
       }
       searchBarChangedNotifier.set(sortIndices);
       setState(() {}); // Need to rebuild so the text field clear button updates

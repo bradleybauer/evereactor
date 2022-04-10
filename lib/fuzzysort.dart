@@ -1,6 +1,7 @@
 import 'dart:core';
-import 'dart:ui';
 import 'package:collection/collection.dart';
+
+import 'pair.dart';
 
 // This is a partial translation of the javascript library https://github.com/farzher/fuzzysort
 // I have changed a lot though too.
@@ -61,15 +62,6 @@ class FuzzyMatch {
   FuzzyMatch({this.score = 0});
 }
 
-class _Pair<A, B> {
-  A first;
-  B second;
-  _Pair({required this.first, required this.second});
-
-  @override
-  int get hashCode => hashValues(first, second);
-}
-
 class FuzzySort {
   FuzzySort(this.options);
   final FuzzySortOptions options;
@@ -89,7 +81,7 @@ class FuzzySort {
 
   // Memoize search/target match score in case different items share targets. (My data has a lot of these cases)
   // Could be decided in FuzzySortOptions to use this or not.
-  final Map<_Pair<String, String>, FuzzyMatch> _algMemo = {};
+  final Map<Pair<String, String>, FuzzyMatch> _algMemo = {};
 
   // Search for [search] through [numItems] number of items.
   // Each item has a set of matching targets provided by [getTargets].
@@ -187,7 +179,7 @@ class FuzzySort {
   */
 
   FuzzyMatch? _algorithm(List<int> searchLowerCodes, final String search, final String target) {
-    final memoKey = _Pair<String, String>(first: search, second: target);
+    final memoKey = Pair<String, String>(first: search, second: target);
     if (_algMemo.containsKey(memoKey)) {
       return _algMemo[target];
     }

@@ -12,27 +12,33 @@ class PasteClearButton extends StatefulWidget {
 }
 
 class _PasteClearButtonState extends State<PasteClearButton> {
-  bool hi = true;
+  bool paste = true;
   @override
   Widget build(BuildContext context) {
-    Widget pasteOrClear = hi
+    Widget pasteOrClear = paste
         ? TextField(
             // onChanged: (s) => Provider.of<BuildAdapter>(context, listen: false).setInventoryFromStr(s),
             onChanged: (s) {
-              setState(() => hi = false);
+              setState(() => paste = false);
             },
             maxLines: null,
             decoration: InputDecoration(
               fillColor: theme.surfaceVariant,
               filled: true,
-              labelText: Strings.pasteInventory,
-              labelStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.onSurfaceVariant),
+              label: Container(
+                child: Text(Strings.pasteInventory, style: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.onSurfaceVariant)),
+                padding: const EdgeInsets.fromLTRB(3, 3, 3, 0),
+                decoration: BoxDecoration(
+                  color: theme.colors.surfaceVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
               alignLabelWithHint: true,
               contentPadding: const EdgeInsets.fromLTRB(9, 0, 0, 0),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
             ))
         : HoverButton(
-            onTap: () => setState(() => hi = true),
+            onTap: () => setState(() => paste = true),
             builder: (hovered) {
               return Center(
                 child: Text(Strings.clearInventory,

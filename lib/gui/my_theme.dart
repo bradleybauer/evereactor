@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 // https://m3.material.io/styles/color/the-color-system/key-colors-tones
 abstract class MyTheme {
   //with ChangeNotifier {
-  static const bool _inDarkMode = false;
+  static const bool _inDarkMode = true;
 
   // static const lightThemeSeedColor = Color.fromARGB(255, 255, 255, 255);
   // static const darkThemeSeedColor = Color.fromARGB(255, 0, 0, 0);
-  // static const darkThemeSeedColor = Color.fromARGB(255, 255, 255, 255);
-  // static const lightThemeSeedColor = Color.fromARGB(255, 0, 0, 0);
 
   // static const lightThemeSeedColor = Color.fromARGB(255, 242, 255, 0);
   // static const darkThemeSeedColor = Color.fromARGB(255, 18, 157, 195);
+
   static const lightThemeSeedColor = Color.fromARGB(255, 184, 91, 91);
   static const darkThemeSeedColor = Color.fromARGB(255, 41, 195, 102);
 
@@ -33,7 +32,10 @@ abstract class MyTheme {
 
   static const Duration buttonFocusDuration = Duration(milliseconds: 200);
 
+  // Looks like NotoSans is using FontFeature.tabularNumbers by default. I am going to specify it anyway though
+  // because I have not tested for different languages yet.
   // static const TextStyle typo;
+  // TextStyle(fontFeatures: [FontFeature.tabularFigures(), FontFeature.alternative(0)]);
   //TextStyle(fontFamily: 'NotoSans', fontWeight: FontWeight.w600, color: theme.colors.onPrimary)
 
   static const double appMinHeight = 400;

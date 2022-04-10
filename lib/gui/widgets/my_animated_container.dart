@@ -38,20 +38,18 @@ class MyAnimatedContainer extends StatelessWidget {
       );
     }
     return AnimatedPhysicalModel(
-      color: Colors.transparent,
+      color: color,
       duration: MyTheme.buttonFocusDuration,
       elevation: elevation,
       shadowColor: theme.shadow,
       shape: BoxShape.rectangle,
       clipBehavior: Clip.antiAlias,
-      borderRadius: BorderRadius.circular(borderRadius ?? 0),
-      child: AnimatedContainer(
+      borderRadius: borderRadius == null ? BorderRadius.zero : BorderRadius.circular(borderRadius!),
+      child: Container(
         decoration: BoxDecoration(
-          border: borderColor == null ? null : Border.all(color: borderColor!, width: 1),
-          borderRadius: BorderRadius.circular(borderRadius ?? 0),
-          color: color,
+          border: borderColor == null ? null : Border.all(color: borderColor!),
+          borderRadius: borderRadius == null ? null : BorderRadius.circular(borderRadius!),
         ),
-        duration: MyTheme.buttonFocusDuration,
         child: widget,
       ),
     );

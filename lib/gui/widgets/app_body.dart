@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'intermediates_table.dart';
@@ -25,26 +27,34 @@ class Body extends StatelessWidget {
               children: [
                 Container(
                   width: width,
-                  height: 35 + 4 * MyTheme.appBarPadding,
+                  height: SummaryBar.height + 4 * MyTheme.appBarPadding,
                   color: theme.surfaceVariant.withOpacity(.25),
                 ),
                 Container(
                   width: width,
                   color: theme.surfaceVariant.withOpacity(.75),
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(theme.appBarPadding * 2),
                   child: const TargetsTable(),
                 ),
                 Container(
                   width: width,
                   color: theme.surfaceVariant.withOpacity(.25),
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(theme.appBarPadding * 2),
                   child: Row(
-                    mainAxisSize: MainAxisSize.max,
+                    // mainAxisSize: MainAxisSize.max,
                     children: const [
-                      IntermediatesTable(),
+                      Flexible(
+                        flex: 7,
+                        fit: FlexFit.tight,
+                        child: IntermediatesTable(),
+                      ),
                       SizedBox(width: theme.appBarPadding * 2),
                       // Expanded(child: Container()),
-                      InputsTable(),
+                      Flexible(
+                        flex: 5,
+                        fit: FlexFit.tight,
+                        child: InputsTable(),
+                      ),
                     ],
                   ),
                 ),

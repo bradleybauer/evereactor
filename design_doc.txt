@@ -1,6 +1,6 @@
-CHECK RECENT EVE MAIL BEFORE RETURNING TO EVE
+TODO don't forget about dart super parameters.
 
-Change datatables to listview builders?
+CHECK RECENT EVE MAIL BEFORE RETURNING TO EVE
 
 TODO either use paginated data table or use maximum number of targets. gotta keep performance in check...
 

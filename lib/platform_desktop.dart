@@ -33,10 +33,12 @@ class Platform {
       win.title = "EveIndy";
       // TODO(desktop) I am pretty sure this has to do with resize handle sizes in bitsdojo_window.
       // If it is not added then the app (according to DevTools) has width < MyTheme.appWidth.
-      const int fudgeTerm = 8;
+      // TODO(desktop) if display reduces during runtime then the widgets overflow. Has something
+      // to do with the border taking up app pixel space.
+      const int fudgeTerm = 8 * 2;
       win.minSize = const Size(MyTheme.appWidth + fudgeTerm, MyTheme.appMinHeight);
       win.maxSize = const Size(MyTheme.appWidth + fudgeTerm, 100000);
-      win.size = const Size(MyTheme.appWidth + fudgeTerm, MyTheme.appMinHeight + 300);
+      win.size = const Size(MyTheme.appWidth + fudgeTerm, MyTheme.appMinHeight + 350);
       win.show();
     });
 

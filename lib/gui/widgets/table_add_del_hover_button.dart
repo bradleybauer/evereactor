@@ -13,6 +13,10 @@ class TableAddDelButton extends StatelessWidget {
     required this.splashColor,
   }) : super(key: key);
 
+  static const double innerPadding = 2;
+  static const double iconSize = 11;
+  static const double width = innerPadding * 2 + iconSize;
+
   final bool closeButton;
   final Color color;
   final Color hoveredColor;
@@ -24,9 +28,10 @@ class TableAddDelButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return HoverButton(
       builder: (hovered) {
-        return Padding(
-            padding: const EdgeInsets.all(2),
-            child: Icon(closeButton ? Icons.close : Icons.add, size: 11, color: hovered ? theme.on(hoveredColor) : theme.on(color)));
+        return Container(
+            width: width,
+            padding: const EdgeInsets.all(innerPadding),
+            child: Icon(closeButton ? Icons.close : Icons.add, size: iconSize, color: hovered ? theme.on(hoveredColor) : theme.on(color)));
       },
       borderRadius: 4,
       hoveredElevation: 0,
