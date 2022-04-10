@@ -2,16 +2,16 @@ from ccp_sde import CCP_SDE
 from sde_extractor import SDE_Extractor
 
 # Bonus Type
-DART_TIME = 'B.TIME'
-DART_MATERIAL = 'B.MATERIAL'
-DART_COST = 'B.COST'
+DART_TIME = '_t'
+DART_MATERIAL = '_m'
+DART_COST = '_c'
 PY_TIME = 'time'
 PY_MATERIAL = 'material'
 PY_COST = 'cost'
 
 # Industry Type
-DART_MANUFACTURING = 'I.MANUFACTURING'
-DART_REACTION = 'I.REACTION'
+DART_MANUFACTURING = '_M'
+DART_REACTION = '_R'
 PY_REACTION = 'reaction'
 PY_MANUFACTURING = 'manufacturing'
 
@@ -155,8 +155,11 @@ class Py2Dart:
         code += "import 'rig.dart';"
         code += "import 'skill.dart';"
 
-        code += 'typedef I=IndustryType;'
-        code += 'typedef B=BonusType;'
+        code += 'const _m=BonusType.MATERIAL;'
+        code += 'const _t=BonusType.TIME;'
+        code += 'const _c=BonusType.COST;'
+        code += 'const _M=IndustryType.MANUFACTURING;'
+        code += 'const _R=IndustryType.REACTION;'
 
         code += self._dict2map('items', 'int', 'Item', items, self._item)
         code += self._dict2map('blueprints', 'int', 'Blueprint', itemID2bp, self._blueprint)
