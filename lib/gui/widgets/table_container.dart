@@ -58,10 +58,7 @@ class TableContainer extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             header,
-            Flexible(
-              // defaults to fit: FlexFit.loose
-              child: DefaultTextStyle(style: listTextStyle, child: listView),
-            ),
+            Flexible(child: DefaultTextStyle(style: listTextStyle, child: listView)),
           ],
         ),
       ),

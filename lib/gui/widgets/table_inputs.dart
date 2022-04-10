@@ -7,7 +7,7 @@ import 'table_container.dart';
 class InputsTable extends StatelessWidget {
   const InputsTable({Key? key}) : super(key: key);
 
-  static const colFlexs = [60, 15, 15];
+  static const colFlexs = [52, 17, 20];
   static const double headerHeight = 35;
   static const double itemHeight = 30;
   static const double padding = 8;
@@ -42,9 +42,10 @@ class InputsTableHeader extends StatelessWidget {
       items: [
         TableContainer.getCol(InputsTable.colFlexs[0],
             child: Text('Inputs'), align: Alignment.centerLeft, padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0)),
-        TableContainer.getCol(InputsTable.colFlexs[1], child: Text('Quantity'), onTap: () {}),
+        TableContainer.getCol(InputsTable.colFlexs[1],
+            child: Text('Cost'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: () {}),
         TableContainer.getCol(InputsTable.colFlexs[2],
-            child: Text('Value'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: () {}),
+            child: Text('Cost/u'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: () {}),
       ],
     );
   }

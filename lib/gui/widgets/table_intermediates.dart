@@ -48,9 +48,9 @@ class IntermediatesTableHeader extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
         ),
         TableContainer.getCol(IntermediatesTable.colFlexs[1], child: Text('Value'), onTap: () {}),
-        TableContainer.getCol(IntermediatesTable.colFlexs[2], child: Text('hai1')),
+        TableContainer.getCol(IntermediatesTable.colFlexs[2], child: Text('bul/buy')),
         TableContainer.getCol(IntermediatesTable.colFlexs[3],
-            padding: const EdgeInsets.fromLTRB(0, 0, IntermediatesTable.padding, 0), child: Text('hai2')),
+            padding: const EdgeInsets.fromLTRB(0, 0, IntermediatesTable.padding, 0), child: Text('bpops')),
       ],
     );
   }

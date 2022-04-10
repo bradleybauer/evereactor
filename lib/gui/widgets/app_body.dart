@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'intermediates_table.dart';
+import 'table_intermediates.dart';
 import 'summary_bar.dart';
-import 'inputs_table.dart';
-import 'targets_table.dart';
+import 'table_inputs.dart';
+import 'table_targets.dart';
 import '../my_theme.dart';
 
 class Body extends StatelessWidget {
