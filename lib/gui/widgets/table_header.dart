@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 class TableColumn {
   final Widget widget;
+  final int flex;
   final String? tooltipMessage;
   final void Function()? onTap;
-  const TableColumn({required this.widget, this.tooltipMessage, this.onTap});
+  const TableColumn({required this.widget, required this.flex, this.tooltipMessage, this.onTap});
 }
 
 class TableHeader extends StatelessWidget {
   const TableHeader({
     required this.items,
-    required this.flexs,
     this.textStyle,
     this.color,
     this.height,
@@ -20,7 +20,6 @@ class TableHeader extends StatelessWidget {
   final List<TableColumn> items;
   final double? height;
   final Color? color;
-  final List<int> flexs;
   final TextStyle? textStyle;
 
   @override
@@ -46,7 +45,7 @@ class TableHeader extends StatelessWidget {
               child: widget,
             ));
       }
-      widgets.add(Flexible(fit: FlexFit.tight, flex: flexs[i], child: widget));
+      widgets.add(Flexible(fit: FlexFit.tight, flex: items[i].flex, child: widget));
     }
     if (textStyle == null) {
       return Container(color: color, height: height, child: Row(children: widgets));

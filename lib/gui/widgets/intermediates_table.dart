@@ -24,7 +24,7 @@ class IntermediatesTable extends StatelessWidget {
       listView: ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
-        itemCount: 25,
+        itemCount: 2,
         itemExtent: itemHeight,
         itemBuilder: (_, index) => IntermediatesTableItem(index: index),
       ),
@@ -35,38 +35,22 @@ class IntermediatesTable extends StatelessWidget {
 class IntermediatesTableHeader extends StatelessWidget {
   const IntermediatesTableHeader({Key? key}) : super(key: key);
 
-  TableColumn getCol(String title, int index, void Function() onTap) {
-    return TableColumn(
-        onTap: onTap,
-        widget: Container(
-          alignment: Alignment.centerRight,
-          child: Text(title),
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
     return TableHeader(
-      flexs: IntermediatesTable.colFlexs,
       height: IntermediatesTable.headerHeight,
       textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
-        TableColumn(
-            widget: Container(
+        TableContainer.getCol(
+          IntermediatesTable.colFlexs[0],
+          child: Text('Intermediates'),
+          align: Alignment.centerLeft,
           padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
-          child: const Text('Intermediates'),
-        )),
-        getCol('Value', 1, () {}),
-        TableColumn(
-            widget: Container(
-          alignment: Alignment.centerRight,
-          color: theme.primary,
-        )),
-        TableColumn(
-            widget: Container(
-          alignment: Alignment.centerRight,
-          color: theme.primary,
-        )),
+        ),
+        TableContainer.getCol(IntermediatesTable.colFlexs[1], child: Text('Value'), onTap: () {}),
+        TableContainer.getCol(IntermediatesTable.colFlexs[2], child: Text('hai1')),
+        TableContainer.getCol(IntermediatesTable.colFlexs[3],
+            padding: const EdgeInsets.fromLTRB(0, 0, IntermediatesTable.padding, 0), child: Text('hai2')),
       ],
     );
   }

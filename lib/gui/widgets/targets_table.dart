@@ -24,7 +24,7 @@ class TargetsTable extends StatelessWidget {
       listView: ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
-        itemCount: 50,
+        itemCount: 4,
         itemExtent: itemHeight,
         itemBuilder: (_, index) => TargetsTableItem(index: index),
       ),
@@ -35,40 +35,28 @@ class TargetsTable extends StatelessWidget {
 class TargetsTableHeader extends StatelessWidget {
   const TargetsTableHeader({Key? key}) : super(key: key);
 
-  TableColumn getCol(String title, int index, void Function() onTap) {
-    return TableColumn(
-        onTap: onTap,
-        widget: Container(
-          alignment: Alignment.centerRight,
-          child: Text(title),
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
     return TableHeader(
-      flexs: TargetsTable.colFlexs,
       height: TargetsTable.headerHeight,
       textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onTertiaryContainer),
       items: [
-        TableColumn(
-            widget: Container(
-          padding: const EdgeInsets.fromLTRB(TargetsTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
-          child: Text('Targets'),
-        )),
-        getCol('Runs', 1, () {}),
-        getCol('Profit', 2, () {}),
-        getCol('Cost', 3, () {}),
-        getCol('%', 4, () {}),
-        getCol('Cost/u', 5, () {}),
-        getCol('Sell/u', 6, () {}),
-        getCol('Out m3', 7, () {}),
-        TableColumn(
-            widget: Container(
-          alignment: Alignment.centerRight,
+        TableContainer.getCol(TargetsTable.colFlexs[0],
+            child: Text('Targets'),
+            padding: const EdgeInsets.fromLTRB(TargetsTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
+            align: Alignment.centerLeft),
+        TableContainer.getCol(TargetsTable.colFlexs[1], child: Text('Runs'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[2], child: Text('Profit'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[3], child: Text('Cost'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[4], child: Text('%'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[5], child: Text('Cost/u'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[6], child: Text('Sell/u'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[7], child: Text('Out m3'), onTap: () {}),
+        TableContainer.getCol(
+          TargetsTable.colFlexs[8],
+          align: Alignment.centerRight,
           padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
-          color: theme.primary,
-        )),
+        ),
       ],
     );
   }

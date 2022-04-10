@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../my_theme.dart';
+import 'table_header.dart';
 
 class TableContainer extends StatelessWidget {
   const TableContainer({
@@ -25,6 +26,17 @@ class TableContainer extends StatelessWidget {
   final double? borderRadius;
   final Clip clipBehavior;
   final TextStyle listTextStyle;
+
+  static TableColumn getCol(int flex, {Widget? child, Alignment? align, EdgeInsets? padding, void Function()? onTap}) {
+    return TableColumn(
+        onTap: onTap,
+        flex: flex,
+        widget: Container(
+          alignment: align ?? Alignment.centerRight,
+          padding: padding,
+          child: child,
+        ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +64,33 @@ class TableContainer extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MyTableCell extends StatelessWidget {
+  const MyTableCell(
+    this.flex, {
+    this.align,
+    this.padding,
+    this.child,
+    Key? key,
+  }) : super(key: key);
+
+  final int flex;
+  final Alignment? align;
+  final EdgeInsets? padding;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      flex: flex,
+      child: Container(
+        padding: padding,
+        alignment: align ?? Alignment.centerRight,
+        child: child,
       ),
     );
   }

@@ -23,7 +23,7 @@ class InputsTable extends StatelessWidget {
       listView: ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
-        itemCount: 40,
+        itemCount: 4,
         itemExtent: itemHeight,
         itemBuilder: (_, index) => InputsTableItem(index: index),
       ),
@@ -34,30 +34,17 @@ class InputsTable extends StatelessWidget {
 class InputsTableHeader extends StatelessWidget {
   const InputsTableHeader({Key? key}) : super(key: key);
 
-  TableColumn getCol(String title, int index, void Function() onTap) {
-    return TableColumn(
-        onTap: onTap,
-        widget: Container(
-          alignment: Alignment.centerRight,
-          child: Text(title),
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
     return TableHeader(
-      flexs: InputsTable.colFlexs,
       height: InputsTable.headerHeight,
       textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onTertiaryContainer),
       items: [
-        TableColumn(
-            widget: Container(
-          padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0),
-          child: Text('Inputs'),
-        )),
-        getCol('Quantity', 1, () {}),
-        // TODO pad this
-        getCol('Value', 2, () {}),
+        TableContainer.getCol(InputsTable.colFlexs[0],
+            child: Text('Inputs'), align: Alignment.centerLeft, padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0)),
+        TableContainer.getCol(InputsTable.colFlexs[1], child: Text('Quantity'), onTap: () {}),
+        TableContainer.getCol(InputsTable.colFlexs[2],
+            child: Text('Value'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: () {}),
       ],
     );
   }
@@ -68,30 +55,19 @@ class InputsTableItem extends StatelessWidget {
 
   final int index;
 
-  Widget wrap(int n, {EdgeInsets? padding, Alignment? align, Widget? child}) {
-    return Flexible(
-      flex: InputsTable.colFlexs[n],
-      child: Container(
-        padding: padding,
-        alignment: align ?? Alignment.centerRight,
-        child: child,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        wrap(
-          0,
+        MyTableCell(
+          InputsTable.colFlexs[0],
           padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0),
           align: Alignment.centerLeft,
           child: Container(height: 30, color: theme.primary),
         ),
-        wrap(1, child: Container(color: theme.secondary)),
-        wrap(2, child: Container(color: theme.secondaryContainer)),
+        MyTableCell(InputsTable.colFlexs[1], child: Container(color: theme.secondary)),
+        MyTableCell(InputsTable.colFlexs[2], child: Container(color: theme.secondaryContainer)),
       ],
     );
   }

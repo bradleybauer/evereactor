@@ -11,6 +11,8 @@ class SearchBarFlyoutContent extends StatelessWidget {
   // static const maxNumEntries = 4000;
   static const Size size = Size(400, 600);
 
+  static const colFlexs = [125, 30];
+
   static const List<double> columnWidths = [320, 80];
 
   const SearchBarFlyoutContent({
@@ -75,23 +77,21 @@ class SearchListHeader extends StatelessWidget {
       elevation: 1,
       shadowColor: theme.shadow,
       child: TableHeader(
-        flexs: const [125, 30],
         color: theme.tertiaryContainer,
         height: height,
         textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onTertiaryContainer),
         items: [
-          TableColumn(
-            widget: Container(
-              padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
-              child: Text('Items'),
-            ),
+          TableContainer.getCol(
+            SearchBarFlyoutContent.colFlexs[0],
+            child: Text('Items'),
+            align: Alignment.centerLeft,
+            padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
           ),
-          TableColumn(
-            widget: Container(
-              padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
-              alignment: Alignment.centerRight,
-              child: Text('Profit %'),
-            ),
+          TableContainer.getCol(
+            SearchBarFlyoutContent.colFlexs[1],
+            padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
+            align: Alignment.centerRight,
+            child: Text('Profit %'),
             onTap: () {},
           ),
         ],
