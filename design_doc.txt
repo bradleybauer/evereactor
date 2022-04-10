@@ -1,24 +1,30 @@
-TODO set different max height for tables
+Model
+    BuildModel
+        target item ids & runs
+    BuildEnvironment
+        bp options
+        system indexes
+        ...
+    Market
+        selected markets
+        tax settings
+        prices
+        ...
+    AppSettings
+        colors
+        language
 
-what font is used on font awesome's website? looks nice.
+TODO cleanup this design doc
+
+TODO set different max height for tables
 
 TODO don't forget about dart super parameters.
 
 CHECK RECENT EVE MAIL BEFORE RETURNING TO EVE
 
-TODO either use paginated data table or use maximum number of targets. gotta keep performance in check...
-
 Buy me some toffee
 
 add a fuckin terry davis easter egg in here somewhere
-
-In the interest of sanity and my time I am going to try and use the builtin data table (or my prehacked version) for my usecases.
-    This means possibly no evehelper.tk like highlighting...
-    If I really want this I can do it later I guess.
-
-TODO executable is not returning command to cmd when close button is closed? 
-
-Because search is so damn good I think I will not need to implement breadcrumb
 
 TODO make sure the SDE extractor is still good. i added marketGroup2Parent, that should be put into the py2dart file.
 
@@ -27,10 +33,6 @@ TODO unicode normalize search strings in search bar
 TODO app name is in web/cacheDbWebWorker.dart and in lib\cache_database\cache_adapter.dart
 
 TODO update the SDE data due to eve's new game update... need an automatic way to do this.
-
-"Sync Market Data" is a multi button...
-    Once clicked it turns into a progress bar...
-    After loading finishes it turns into a timer for esi cache timeout
 
 TODO not sure about the EveIndy name...
 How about EveIndustry?
@@ -120,9 +122,6 @@ Now pretty reasonable to add a market data age clock thingy
 ----------------------------------------------------------------------------------------------------------------------
 
 LOOKS-----------------------------------------------------------------------------------------------------------------
-
-https://stackoverflow.com/questions/43550853/how-do-i-do-the-frosted-glass-effect-in-flutter
-
 I am using flutter master channel because according to a reddit post, material 3 components are only available on the master channel
 
 use defaulttextstyle? or have a list of text style's in my_theme?
@@ -130,17 +129,6 @@ use defaulttextstyle? or have a list of text style's in my_theme?
 Make look good... layout, colors, fonts, better loader (loader kinda sucks, it's aliased)
 
 Get some fonts here https://fonts.google.com/
-
-Use this to choose colors?
-https://material.io/resources/color/#!/?view.left=1&view.right=0&primary.color=F5F5F5&secondary.color=607D8B&primary.text.color=000000
-No? use Material Design 3. see here https://github.com/flutter/flutter/pull/93463 and here https://m3.material.io/styles/color/the-color-system/color-roles
-  final lightScheme = ColorScheme.fromSeed(seedColor: Colors.green);
-  final darkScheme = ColorScheme.fromSeed(seedColor: Colors.green, brightness: Brightness.dark);
-
-I really like the gradient on the windows 11 calculator... is that the tabbed option for flutter_acrylic?
-
-maybe use https://pub.dev/packages/adaptive_theme for changing light/dark mode
-
 --------------------------------------------------------------------------- ----- ------------------------------------
 
 DEVELOPMENT-----------------------------------------------------------------------------------------------------------
@@ -150,21 +138,6 @@ Setup CI? so that people can be sure that exe hosted on github releases has been
 
 ICONS-----------------------------------------------------------------------------------------------------------------
 I might not show icons in the app. a compact view may be more desirable than showing eye candy.
-
-Use
-  https://images.evetech.net/types/10/render?size=512
-or
-  https://images.evetech.net/types/10/icon
-to get images for items
-
-TODO it would cost 4.6megs to download all raw images for all items in my app
-How well would that data compress? Can I host a gzip somewhere and download everything just once?
-https://images.evetech.net/types/35825/render?size=32
-
-for some items https://images.evetech.net/types/{itemID}/render?size={power of 2 size} does not return anything
-in that case I have to load from https://images.evetech.net/types/{itemID}/icon
-
-no need for any blueprint images
 ----------------------------------------------------------------------------------------------------------------------
 
 SDE-------------------------------------------------------------------------------------------------------------------
@@ -220,41 +193,19 @@ GUI/UX--------------------------------------------------------------------------
 Flyouts:
    app title
         chooses different app
-
-If I create more eve apps then could have the title bar be a flyout that navigates between them basically instantly
-
-Change Inventory to 'Inputs'.
-  rows are (icon, name, quantity, ppu, cost)
-
-  really no need to show inventory (esp as a separate table).
-
-  if an item in the Inputs table is provided by the inventory then the amount that is provided is shown in
-    parens next to the quantity value in the quantity column
-    this is described in a tooltip on the column header
+        If I create more eve apps then could have the title bar be a flyout that navigates between them basically instantly
 
 Having a schedule visualization would be super good. // NO PRIORITY
-
-Change font, make font a bit smaller?
-Slim up the program header a bit
-Slim up the data rows a bit.
-Make Inputs & Intermediates larger
-Swap position of Inputs & Intermediates
 
 Tooltips
   Table names elipses if too long but show full name on hover with tooltip.
   Get Market Data : Loads market data from the ESI.
-  Value if Build : (Profit if Build) - (Profit if Buy)
-  PPU : build price per unit
-  Sale PPU : sale price per unit
-  % : ?
+  Value: Profit if built i.e. (Profit if Build) - (Profit if Buy)
+  Cost/u : build price per unit
+  Sell/u : sale price per unit
+  % : Profit percent
 
-TODO make value in the intermediates table just "Value if Build"
-  then it is clear how the user should interpret the column and what setting to set.
 TODO have a + sign for positive values in intermediates table so it is more clear that doing the build "Adds" value
-
-Margins on all table end and begin column content should be standard.
-  Atm, on eve reactor, advanced has nice margins on border content. but reactions and processed do not.
-  and they're all different. lol.
 
 Make input boxes simple.
   For integer inputs just restrict input to integers and maximum number of characters
@@ -288,12 +239,8 @@ Options ### see BUILD CUSTOMIZATIONS section above for more details about option
     not factored in at the bp level, but it affects the total profit %
 
 Search/Browse // HIGH PRIORITY
-  no categorized table
-    the search is so good I do not really need categorized table here
-
   bp filter would be convenient, but.... idk really where to start. /// NO PRIORITY
-
-  (add, icon, name, profit %)
+  (add, name, profit %)
 
 Optimize - desktop // MEDIUM PRIORITY
   Optimization stats
@@ -313,17 +260,17 @@ Optimize - desktop // MEDIUM PRIORITY
 
 Targets // HIGH PRIORITY
   Items the user has 'added' to the build
-    (x, icon, name, runs, cost, profit, %, ppu, sale ppu, out m3, BpOptions?!?!(me, te, m#r, m#bps))
+    (x, name, runs, profit, cost, %, cost/u, sell/u, out m3, BpOptions?!?!(me, te, m#r, m#bps))
     NOTE % not Profit%
 
     If maxBps & maxRunsPerBp are not set then those values are set to the global values?
 
 Intermediates
   A list of all intermediate items to build before building Targets
-  (icon, name, value, build/buy buttons, BpOptions)
+  (name, value, build/buy buttons, BpOptions)
 
 Inputs
-  (icon, name, quantity (amount provided by inventory), value)
+  (name, cost, cost/u)
 ----------------------------------------------------------------------------------------------------------------------
 
 REMINDER--------------------------------------------------------------------------------------------------------------
