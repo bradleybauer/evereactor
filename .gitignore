@@ -53,3 +53,4 @@ sde/hoboleaks/*
 lib/model/sde_data.dart
 lib/cache_database/*.g.dart
 lib/gui/widgets/test_names.dart
+lib/model/sde.dart

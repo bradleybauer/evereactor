@@ -125,7 +125,7 @@ class Py2Dart:
         return code + ')'
 
     def _dict2map(self, name, fromType, toType, dic, objMaker) -> str:
-        code = 'const Map<' + fromType + ',' + toType + '>' + name + '={'
+        code = 'static const Map<' + fromType + ',' + toType + '>' + name + '={'
         for k in dic:
             code += str(k) + ':' + objMaker(dic[k]) + ','
         if len(dic) > 0:
@@ -161,6 +161,7 @@ class Py2Dart:
         code += 'const _M=IndustryType.MANUFACTURING;'
         code += 'const _R=IndustryType.REACTION;'
 
+        code += 'abstract class SDE {';
         code += self._dict2map('items', 'int', 'Item', items, self._item)
         code += self._dict2map('blueprints', 'int', 'Blueprint', itemID2bp, self._blueprint)
         code += self._dict2map('marketGroupNames', 'int', 'Map<String,String>', marketGroupNames, self._str2str)
@@ -172,6 +173,7 @@ class Py2Dart:
         code += self._dict2map('group2category', 'int', 'int', group2category, self._int)
         code += self._dict2map('region2systems', 'int', 'List<int>', region2systems, self._ints)
         code += self._dict2map('system2name', 'int', 'Map<String,String>', system2name, self._str2str)
+        code += '}'
 
         # # Dart run the output to check for syntax errors
         # code += 'void main() {\n'
@@ -196,7 +198,7 @@ class Py2Dart:
 def py2dart():
     py2dart = Py2Dart(SDE_Extractor(CCP_SDE()))
     code = py2dart.generate()
-    with open('../lib/model/sde_data.dart', 'w', encoding='utf-8', newline='\n') as handle:
+    with open('../lib/model/sde.dart', 'w', encoding='utf-8', newline='\n') as handle:
         handle.write(code)
 
 

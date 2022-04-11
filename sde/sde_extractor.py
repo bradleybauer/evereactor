@@ -34,6 +34,13 @@ class SDE_Extractor:
             ids.add(bpID)
         return ids
 
+    # def _getAllMaterials(self, blueprints):
+    #     ids = set()
+    #     for bpID in blueprints:
+    #         bp = blueprints[bpID]
+    #         ids = ids.union(set(bp['materials']))
+    #     return ids
+
     def getIndustryItems(self, blueprints):
         """
         Returns the relavent information of all items involved in production.
@@ -505,6 +512,15 @@ class SDE_Extractor:
 
         return region2systems, system2name
 
+    # def getMat2Id(self, items, blueprints):
+    #     mat2id = {}
+    #     allMaterialsIDs = self._getAllMaterials(blueprints).intersection(set(blueprints))
+    #     for mid in allMaterialsIDs:
+    #         itemName= items[mid]['name']
+    #         for lang in itemName:
+    #             mat2id[itemName[lang]] = mid
+    #     return mat2id:
+
 def __getItemMarketGroups(tid, items, marketGroup2Parent, marketGroupNames):
     names = []
     marketGroupID = items[tid]['marketGroupID']
@@ -575,20 +591,37 @@ def __test():
     region2systems, system2name = extractor.getTradeHubs()
     # print(region2systems, system2name)
 
-    # Get items and market groups for testing fuzzy search libraries.
-    names = ['const List<List<String>> names =[']
-    for k in itemID2bp:
-        parentGroupNames = __getItemMarketGroups(k, items, marketGroup2Parent, marketGroupNames)
-        things =[items[k]['name']['en']] + parentGroupNames
-        string = ""
-        for thing in things:
-            string += '"' + thing + '",'
-        names.append('[' + string + '],\n')
-        pass
-    names.append('];')
-    with open('test_names.dart','w') as f:
-        f.writelines(names)
+    # # there are bad translations in the eve sde
+    # str2tid = {}
+    # for tid in items:
+    #     for lang in items[tid]['name']:
+    #         name = items[tid]['name'][lang]
+    #         if name in str2tid:
+    #             if (str2tid[name] != tid):
+    #                 print(name, ':', items[tid]['name'])
+    #                 print(name, ':', items[str2tid[name]]['name'])
+    #                 print()
+    #         str2tid[name] = tid
+    # print(len(str2tid))
+    # mat2id = {}
+    # allMaterialsIDs = extractor._getAllMaterials(itemID2bp)
+    # print(len(allMaterialsIDs))
+    # for k,v in mat2id.items():
+    #     print(k,v)
 
+    # # Get items and market groups for testing fuzzy search libraries.
+    # names = ['const List<List<String>> names =[']
+    # for k in itemID2bp:
+    #     parentGroupNames = __getItemMarketGroups(k, items, marketGroup2Parent, marketGroupNames)
+    #     things =[items[k]['name']['en']] + parentGroupNames
+    #     string = ""
+    #     for thing in things:
+    #         string += '"' + thing + '",'
+    #     names.append('[' + string + '],\n')
+    #     pass
+    # names.append('];')
+    # with open('test_names.dart','w') as f:
+    #     f.writelines(names)
 
 if __name__ == "__main__":
     __test()
