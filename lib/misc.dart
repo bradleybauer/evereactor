@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'build_env.dart';
-import 'market_order.dart';
+import 'model/build_env.dart';
+import 'model/market_order.dart';
 
 import 'package:tuple/tuple.dart';
 import 'dart:convert';
