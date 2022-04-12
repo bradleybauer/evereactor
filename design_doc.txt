@@ -30,7 +30,7 @@ TODO make sure the SDE extractor is still good. i added marketGroup2Parent, that
 
 TODO unicode normalize search strings in search bar
 
-TODO app name is in web/cacheDbWebWorker.dart and in lib\cache_database\cache_adapter.dart
+TODO app name is in web/persistenceWebWorker.dart and in lib\persistence\cache_adapter.dart
 
 TODO update the SDE data due to eve's new game update... need an automatic way to do this.
 
@@ -141,6 +141,8 @@ I might not show icons in the app. a compact view may be more desirable than sho
 ----------------------------------------------------------------------------------------------------------------------
 
 SDE-------------------------------------------------------------------------------------------------------------------
+Note there are name -> type conflicts in the SDE. I made a bug report about this on community.eveonline.com
+
 Custom build amounts (set by me) for heuristic profit% calculations in the Browse window // LOW LOW PRIOR
   Idk maybe there is a way to automatically choose build amounts to calculate an approximate profit percent.
   But, if there really is not then I can customize things :/

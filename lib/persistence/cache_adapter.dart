@@ -3,7 +3,7 @@ import 'package:tuple/tuple.dart';
 
 import 'cache_database.dart';
 import '../platform_stub.dart' if (dart.library.io) '../platform_desktop.dart' if (dart.library.html) '../platform_web.dart';
-import '../model/context.dart';
+import '../model/build_env.dart';
 import '../model/order_filter.dart';
 import '../model/market.dart';
 import '../model/market_order.dart';
@@ -61,7 +61,7 @@ class CacheDatabaseAdapter {
     }
   }
 
-  Future<void> setBuildContext(EveBuildContext ctx) async {
+  Future<void> setBuildContext(BuildEnv ctx) async {
     await _clearCache(cache.eveBuildContextCache);
     final companion = EveBuildContextCacheCompanion(
         reactionsSkillLevel: Value(ctx.reactionSkillLevel),
@@ -72,12 +72,12 @@ class CacheDatabaseAdapter {
     await cache.into(cache.eveBuildContextCache).insert(companion);
   }
 
-  Future<EveBuildContext?> getBuildContext() async {
+  Future<BuildEnv?> getBuildContext() async {
     final rows = await cache.select(cache.eveBuildContextCache).get();
     if (rows.isEmpty) {
       return null;
     }
-    return EveBuildContext(rows[0].reactionsSkillLevel, rows[0].structureMaterialBonus, rows[0].structureTimeBonus, rows[0].systemCostIndex,
+    return BuildEnv(rows[0].reactionsSkillLevel, rows[0].structureMaterialBonus, rows[0].structureTimeBonus, rows[0].systemCostIndex,
         rows[0].salesTaxPercent, 0);
   }
 
