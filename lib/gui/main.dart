@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'my_theme.dart';
-import 'widgets/home_page.dart';
+import 'widgets/main.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);

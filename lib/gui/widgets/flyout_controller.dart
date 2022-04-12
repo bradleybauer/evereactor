@@ -22,6 +22,12 @@ class FlyoutController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void startCloseTimer() {
+    _keepOpenVotes -= 1;
+    _closeTimer?.cancel();
+    _closeTimer = Timer(closeTimeout, _closeNoVote);
+  }
+
   void _closeNoVote() {
     if (_keepOpenVotes <= 0) {
       assert(_keepOpenVotes == 0);
@@ -38,9 +44,4 @@ class FlyoutController extends ChangeNotifier {
     _closeNoVote();
   }
 
-  void startCloseTimer() {
-    _keepOpenVotes -= 1;
-    _closeTimer?.cancel();
-    _closeTimer = Timer(closeTimeout, _closeNoVote);
-  }
 }

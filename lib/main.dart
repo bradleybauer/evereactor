@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 
 import 'package:EveIndy/gui/main.dart';
 import 'gui/my_theme.dart';
-import 'cache_database/cache_adapter.dart';
+import 'persistence/persistence.dart';
 import 'model/market.dart';
-import 'model/context.dart';
+import 'model/build_env.dart';
 import 'platform.dart';
 
 Future<void> main() async {
-  // final cacheDbAdapter = CacheDatabaseAdapter();
+  // final cacheDbAdapter = Persistence();
 
   // Make models
   // final eveBuildContext = EveBuildContext(5, .022, .22, 3 / 100, 3.6 / 100, 1.2);

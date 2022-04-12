@@ -12,7 +12,6 @@ class Body extends StatelessWidget {
   const Body({this.width, this.verticalPadding, Key? key}) : super(key: key);
 
   final double? verticalPadding;
-
   final double? width;
 
   @override

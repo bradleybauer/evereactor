@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'context.dart';
+import 'build_env.dart';
 import 'market_order.dart';
 
 import 'package:tuple/tuple.dart';
@@ -7,8 +7,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 // https://cdn1.eveonline.com/www/newssystem/media/66437/1/rounding.png
-int calcBonusedMaterialAmount(int numRunsParent, int baseNumInputChild, EveBuildContext context) {
-  return (numRunsParent * baseNumInputChild * (1.0 - context.structureMaterialBonus)).ceil();
+int calcBonusedMaterialAmount(int numRunsParent, int baseNumInputChild, BuildEnv env) {
+  return (numRunsParent * baseNumInputChild * (1.0 - env.structureMaterialBonus)).ceil();
 }
 
 Tuple4<int, int, int, int> secondsToDHMS(num s) {

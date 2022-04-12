@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../my_theme.dart';
-import 'table_header.dart';
-import 'table_container.dart';
+import 'table.dart';
 
 class InputsTable extends StatelessWidget {
   const InputsTable({Key? key}) : super(key: key);

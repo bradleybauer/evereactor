@@ -4,8 +4,7 @@ import 'package:provider/provider.dart';
 import 'search_bar.dart';
 import '../my_theme.dart';
 import 'table_add_del_hover_button.dart';
-import 'table_container.dart';
-import 'table_header.dart';
+import 'table.dart';
 
 class SearchBarFlyoutContent extends StatelessWidget {
   // static const maxNumEntries = 4000;

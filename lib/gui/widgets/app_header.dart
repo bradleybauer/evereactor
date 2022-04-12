@@ -7,7 +7,7 @@ import '../my_theme.dart';
 import '../../platform.dart';
 
 class Header extends StatelessWidget {
-  Header({this.height, this.width, Key? key}) : super(key: key);
+  const Header({this.height, this.width, Key? key}) : super(key: key);
 
   final double? height;
   final double? width;

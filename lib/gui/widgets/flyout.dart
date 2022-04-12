@@ -26,7 +26,8 @@ class Flyout extends StatefulWidget {
     this.closeTimeout,
     this.controller,
     Key? key,
-  })  : assert((closeTimeout != null && controller == null) || (closeTimeout == null && controller != null)),
+  })  : assert((closeTimeout != null && controller == null) ||
+            (closeTimeout == null && controller != null)),
         super(key: key);
 
   final double verticalOffset;
@@ -82,48 +83,24 @@ class _FlyoutState extends State<Flyout> {
       case FlyoutAlign.appRight:
         if (!Platform.isWeb()) {
           double dy = -widget.verticalOffset - widget.contentSize.height;
-          double dx = MyTheme.appWidth - widget.windowPadding * 2 - widget.contentSize.width - childPos.dx;
+          double dx = MyTheme.appWidth -
+              widget.windowPadding * 2 -
+              widget.contentSize.width -
+              childPos.dx;
           return Offset(dx, dy);
         } else {
           final windowWidth = MediaQuery.of(ctx).size.width;
           double dy = -widget.verticalOffset - widget.contentSize.height;
-          double dx =
-              (windowWidth - MyTheme.appWidth) / 2 + MyTheme.appWidth - widget.windowPadding * 2 - widget.contentSize.width - childPos.dx;
+          double dx = (windowWidth - MyTheme.appWidth) / 2 +
+              MyTheme.appWidth -
+              widget.windowPadding * 2 -
+              widget.contentSize.width -
+              childPos.dx;
           return Offset(dx, dy);
         }
       case FlyoutAlign.childTopLeft:
         return Offset(0.0, -widget.verticalOffset);
     }
-  }
-
-  OverlayEntry getOverlayEntry() {
-    return OverlayEntry(
-      builder: ((ctx) {
-        final childBox = context.findRenderObject() as RenderBox;
-        final offset = getEntryOffset(ctx, childBox);
-
-        return Positioned(
-          width: widget.contentSize.width,
-          // height: widget.contentSize.height,
-          child: CompositedTransformFollower(
-            link: layerLink,
-            showWhenUnlinked: false,
-            offset: offset,
-            followerAnchor: FlyoutAlign.appRight == widget.align ? Alignment.topLeft : Alignment.bottomLeft,
-            targetAnchor: FlyoutAlign.appRight == widget.align ? Alignment.topLeft : Alignment.topLeft,
-            child: MouseRegion(
-              opaque: true,
-              onEnter: (event) => controller.open(),
-              onExit: (event) => controller.startCloseTimer(),
-              child: Material(
-                color: Colors.transparent,
-                child: widget.content,
-              ),
-            ),
-          ),
-        );
-      }),
-    );
   }
 
   void _handleStateChange() {
@@ -163,5 +140,39 @@ class _FlyoutState extends State<Flyout> {
     }
 
     return CompositedTransformTarget(link: layerLink, child: ret);
+  }
+
+  OverlayEntry getOverlayEntry() {
+    return OverlayEntry(
+      builder: ((ctx) {
+        final childBox = context.findRenderObject() as RenderBox;
+        final offset = getEntryOffset(ctx, childBox);
+
+        return Positioned(
+          width: widget.contentSize.width,
+          // height: widget.contentSize.height,
+          child: CompositedTransformFollower(
+            link: layerLink,
+            showWhenUnlinked: false,
+            offset: offset,
+            followerAnchor: FlyoutAlign.appRight == widget.align
+                ? Alignment.topLeft
+                : Alignment.bottomLeft,
+            targetAnchor: FlyoutAlign.appRight == widget.align
+                ? Alignment.topLeft
+                : Alignment.topLeft,
+            child: MouseRegion(
+              opaque: true,
+              onEnter: (event) => controller.open(),
+              onExit: (event) => controller.startCloseTimer(),
+              child: Material(
+                color: Colors.transparent,
+                child: widget.content,
+              ),
+            ),
+          ),
+        );
+      }),
+    );
   }
 }

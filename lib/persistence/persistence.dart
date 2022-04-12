@@ -1,14 +1,14 @@
 import 'package:drift/drift.dart';
 import 'package:tuple/tuple.dart';
 
-import 'cache_database.dart';
+import 'database.dart';
 import '../platform_stub.dart' if (dart.library.io) '../platform_desktop.dart' if (dart.library.html) '../platform_web.dart';
 import '../model/build_env.dart';
 import '../model/order_filter.dart';
 import '../model/market.dart';
 import '../model/market_order.dart';
 
-class CacheDatabaseAdapter {
+class Persistence {
   final CacheDatabase cache = CacheDatabase(Platform.createDatabaseConnection('EveReactorCache'));
 
   Future<void> _clearCache(table) async {

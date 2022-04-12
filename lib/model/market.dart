@@ -1,5 +1,4 @@
-import 'util.dart';
-import 'eve_sde.dart';
+import 'misc.dart';
 import 'market_order.dart';
 import 'order_filter.dart';
 

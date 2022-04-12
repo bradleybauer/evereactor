@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 
 // assuming that your file is called filename.dart. This will give an error at first,
 // but it's needed for drift to know about the generated code
-part 'cache_database.g.dart';
+part 'database.g.dart';
 
 @DataClassName("ReactionsCacheEntry")
 class ReactionsCache extends Table {

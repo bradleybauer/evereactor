@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../my_theme.dart';
-import 'table_header.dart';
-import 'table_container.dart';
+import 'table.dart';
 import 'table_add_del_hover_button.dart';
 
 class IntermediatesTable extends StatelessWidget {
@@ -100,23 +99,6 @@ class IntermediatesTableItem extends StatelessWidget {
         wrap(2, child: Container(color: theme.primaryContainer)),
         wrap(3, padding: const EdgeInsets.fromLTRB(0, 0, IntermediatesTable.padding, 0), child: Container(color: theme.secondary)),
       ],
-    );
-  }
-}
-
-class _AddButton extends StatelessWidget {
-  const _AddButton({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TableAddDelButton(
-      onTap: () {},
-      closeButton: false,
-      color: theme.background,
-      hoveredColor: theme.tertiaryContainer,
-      splashColor: theme.onTertiaryContainer.withOpacity(.4),
     );
   }
 }
