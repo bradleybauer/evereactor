@@ -1,20 +1,32 @@
+How does inventory work?
+    inventory is always applied if it is available.
+    if there is inventory for an item that is set to build then the build of that item will be elided if possible.
+    if not possible then the item will still be built.
+
+    if there's inventory for an item that is set to buy then inventory will contribute as much as possible.
+    if all required amount of this item is provided by the inventory then nothing will be bought
+    otherwise what needs to be purchased will contribute to the cost of the build and will be present in the multibuy.
+
+    if an item is completely supplied by inventory then it does not have a build/buy decision available since, given
+    the above behavior, either selection would have no effect.
+
 What items go into the intermediates table? (build/buy table)
-    an intermediate is in the intermediates table if it needs a build / buy decision to be made.
+    An item is in the intermediates table if it is buildable (also if not a fuel block or t1 thing ... )
+    and (if not all of its parents (must have parents) are set to buy or if one of my parents is a target).
 
-    an item does not need a build/buy decision in two cases:
-        1: if none of the items parents are built.
-        2: if it is supplied by inventory (inventory takes priority over buy decision)
+    Also, if an item is completely supplied by inventory then build/buy makes no difference.
+    However, for UX consistency, it'd be better I think if it did not depend on the schedule.
 
-    both cases depend on having a schedule.
-    i can assume there is a cached schedule. (when underlying build changes then whole schedule is recomputed)
+    Performance
+        What is the 'Value'? 'Value' is difference between profit of current schedule with current build/buy and profit
+        of schedule with opposite build/buy.
+        I can assume there is a cached schedule. (when underlying build changes then whole schedule is recomputed)
 
-    so what is the 'Value' column value for items that are in the intermediates table?
-    difference between profit of current and profit of sched where this item is not built?
-    that would require computing a schedule where the item is not built.
-    ok then.
+        so on layout I have to compute schedules for each item...
+        might be slow depending on final imp of scheduler.
 
-    so on layout I have to compute schedules for each item...
-    might be slow depending on final imp of scheduler.
+    BpOps
+        an item has BpOps iff it is not also in the targets table
 
 Todo use package:animations to get nice fade in animation for flyout containers
 
@@ -57,7 +69,7 @@ TODO app name is in web/persistenceWebWorker.dart and in lib\persistence\cache_a
 TODO update the SDE data due to eve's new game update... need an automatic way to do this.
 
 TODO not sure about the EveIndy name...
-How about EveIndustry?
+How about EveIndustry? EveScheduler?
 Or EveProsperity... lol
 
 What is build.yaml again? How does that work?
