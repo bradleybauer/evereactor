@@ -60,17 +60,17 @@ def getBOMs(schedule, inventory, buildItems):
 
     # what fraction of the total number of mid does pid (parent) need?
     # mid -> (pid -> fraction)
-    mid2fraction = {}
+    mid2fractions = {}
     for mid in mid2numNeeded: # normalize the quantities
         sum = 0
         for pid,qty in mid2numNeeded[mid].items():
             sum += qty
         for pid in mid2numNeeded[mid]:
-            mid2fraction[mid] = mid2numNeeded[mid] / sum
+            mid2fractions[mid] = mid2numNeeded[mid] / sum
 
     indivBOMs = {}
     for mid,qty in getTotalBOM(schedule, inventory, buildItems):
-        for tid,share in getShare(mid, mid2fraction):
+        for tid,share in getShare(mid, mid2fractions):
             tid = abs(tid) # in case tid is both target and dependency then tid is negative for target branch
             if tid not in indivBOMs:
                 indivBOMs[tid] = {}
@@ -80,16 +80,16 @@ def getBOMs(schedule, inventory, buildItems):
 
 # tid -> percent
 # for each tid (target) what fraction of the total number of needed [mid] (material) is due to building tid?
-def getShare(mid, mid2fraction):
+def getShare(mid, mid2fractions):
     share = {}
     
     # if this item is a target
-    if mid not in mid2fraction:
+    if mid not in mid2fractions:
         return {mid:1.0}
     
     # share is a weighted combination of parent shares
-    for pid,frac in mid2fraction[mid].items():
-        for tid,subshare in getShare(pid,mid2fraction):
+    for pid,frac in mid2fractions[mid].items():
+        for tid,subshare in getShare(pid,mid2fractions):
             share[tid] = share.get(tid,0) + frac * subshare
 
     return share
