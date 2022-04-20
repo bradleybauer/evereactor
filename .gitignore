@@ -50,7 +50,7 @@ app.*.map.json
 sde/sde/*
 sde/pickled/*
 sde/hoboleaks/*
-lib/model/sde_data.dart
+lib/models/sde_data.dart
 lib/persistence/*.g.dart
 lib/gui/widgets/test_names.dart
 lib/sde.dart
