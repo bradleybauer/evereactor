@@ -2,11 +2,11 @@
 # this code basically 'disentangles' the individual bill of materials
 
 # get map tid -> quantity where quantity is the amount of tid that needs to be purchased in order to do the build.
-# schedule is a list of batches
+# [schedule] is a list of batches
 # batch is a map tid->(runs,lines)
 # [buildItems] is the item level build information
 # The BOM (Bill Of Materials) is whatever is required by produced that is not supplied by inventory
-def getTotalBOM(schedule, inventory, buildItems):
+def _getTotalBOM(schedule, inventory, buildItems):
     produced = {}
     # if required is not initialized like this, then the following can occur:
     #   if sylFib is set to buy but is also a target then, consider where sylFib is produced in batch 0 and
@@ -19,8 +19,12 @@ def getTotalBOM(schedule, inventory, buildItems):
             produced[tid] = produced.get(tid,0) + bps[tid].prodPerRun * runs
             for mid, qtyPerRun in bps[tid].mats:
                 required[mid] = required.get(mid,0) + getNumChildNeeded(qtyPerRun, runs, lines)
-    result = max(0,required - produced - inventory)
-    # remove items with zero required
+    result = {}
+    for mid in required:
+        num = max(0, required[mid] - produced.get(mid,0) - inventory.get(mid, 0))
+        if num == 0:
+            continue
+        result[mid] = num
     return result
 
 # Compute the individual BOM's for each item in the total BOM where individual BOM's share the cost of common materials.
@@ -68,9 +72,10 @@ def getBOMs(schedule, inventory, buildItems):
         for pid in mid2numNeeded[mid]:
             mid2fractions[mid] = mid2numNeeded[mid] / sum
 
+    totalBOM = _getTotalBOM(schedule, inventory, buildItems)
     indivBOMs = {}
-    for mid,qty in getTotalBOM(schedule, inventory, buildItems):
-        for tid,share in getShare(mid, mid2fractions):
+    for mid,qty in totalBOM:
+        for tid,share in _getShare(mid, mid2fractions):
             tid = abs(tid) # in case tid is both target and dependency then tid is negative for target branch
             if tid not in indivBOMs:
                 indivBOMs[tid] = {}
@@ -80,16 +85,16 @@ def getBOMs(schedule, inventory, buildItems):
 
 # tid -> percent
 # for each tid (target) what fraction of the total number of needed [mid] (material) is due to building tid?
-def getShare(mid, mid2fractions):
+def _getShare(mid, mid2fractions):
     share = {}
     
     # if this item is a target
     if mid not in mid2fractions:
         return {mid:1.0}
-    
+
     # share is a weighted combination of parent shares
     for pid,frac in mid2fractions[mid].items():
-        for tid,subshare in getShare(pid,mid2fractions):
+        for tid,subshare in _getShare(pid,mid2fractions):
             share[tid] = share.get(tid,0) + frac * subshare
 
     return share
