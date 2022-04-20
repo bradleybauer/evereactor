@@ -6,7 +6,7 @@
 # batch is a map tid->(runs,lines)
 # [buildItems] is the item level build information
 # The BOM (Bill Of Materials) is whatever is required by produced that is not supplied by inventory
-def _getTotalBOM(schedule, inventory, buildItems):
+def _getTotalBOM(schedule, inventory, buildItems, buildEnv):
     produced = {}
     # if required is not initialized like this, then the following can occur:
     #   if sylFib is set to buy but is also a target then, consider where sylFib is produced in batch 0 and
@@ -18,7 +18,7 @@ def _getTotalBOM(schedule, inventory, buildItems):
         for tid, (runs,lines) in batch.items():
             produced[tid] = produced.get(tid,0) + bps[tid].prodPerRun * runs
             for mid, qtyPerRun in bps[tid].mats:
-                required[mid] = required.get(mid,0) + getNumChildNeeded(qtyPerRun, runs, lines)
+                required[mid] = required.get(mid,0) + getBonusedNumChildNeeded(qtyPerRun, runs, lines, buildItems, buildEnv)
     result = {}
     for mid in required:
         num = max(0, required[mid] - produced.get(mid,0) - inventory.get(mid, 0))

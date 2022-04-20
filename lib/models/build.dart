@@ -7,7 +7,7 @@ class BuildItems {
   final Map<int, int> _tid2runs = {};
 
   // The blueprint options for all items involved in the build.
-  final Map<int, BPOptions> _tid2bpops = {};
+  final Map<int, BPOptions> _tid2bpOps = {};
 
   // Whether we should build the given type id.
   final Map<int, bool> _tid2shouldBuild = {};

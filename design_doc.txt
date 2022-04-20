@@ -18,11 +18,11 @@ What items go into the intermediates table? (build/buy table)
     However, for UX consistency, it'd be better I think if it did not depend on the schedule.
 
     Performance
-        What is the 'Value'? 'Value' is difference between profit of current schedule with current build/buy and profit
-        of schedule with opposite build/buy.
+        What is the 'Value'? 'Value' is difference between profit when built and profit when bought.
+        value = (profit if built) - (profit if bought)
         I can assume there is a cached schedule. (when underlying build changes then whole schedule is recomputed)
 
-        so on layout I have to compute schedules for each item...
+        so on layout I have to compute schedules for each item... (only opposite for each item right?)
         might be slow depending on final imp of scheduler.
 
     BpOps
@@ -54,12 +54,6 @@ TODO set different max height for tables
 
 TODO don't forget about dart super parameters.
 
-CHECK RECENT EVE MAIL BEFORE RETURNING TO EVE
-
-Buy me some toffee
-
-add a fuckin terry davis easter egg in here somewhere
-
 TODO make sure the SDE extractor is still good. i added marketGroup2Parent, that should be put into the py2dart file.
 
 TODO unicode normalize search strings in search bar
@@ -71,6 +65,8 @@ TODO update the SDE data due to eve's new game update... need an automatic way t
 TODO not sure about the EveIndy name...
 How about EveIndustry? EveScheduler?
 Or EveProsperity... lol
+
+add a fuckin terry davis easter egg in here somewhere
 
 What is build.yaml again? How does that work?
 Automate the "code generation" for drift.
