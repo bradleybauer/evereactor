@@ -1,50 +1,42 @@
+import 'package:EveIndy/models/build_options.dart';
 import 'package:flutter/material.dart';
 
-import '../adapters/market.dart';
-import '../models/build_item_options.dart';
+import '../models/build_items.dart';
+import '../models/inventory.dart';
 
-class BuildAdapter with ChangeNotifier{
-  BuildItemOptions buildItemOptions;
-  MarketAdapter marketAdapter;
+class Build with ChangeNotifier{
+  Inventory inventory;
+  BuildOptions buildOptions;
+  BuildItems buildItems;
 
-  BuildAdapter(this.buildItemOptions, this.marketAdapter) {
-    marketAdapter.addListener(_handleMarketChanged);
-  }
-
-  void _handleMarketChanged() {}
+  Build(this.inventory, this.buildOptions, this.buildItems);
 
   void add(int tid, int runs) {
-    buildItemOptions.add(tid, runs);
+    buildItems.add(tid, runs);
     notifyListeners();
   }
+
   void remove(int tid) {
-    buildItemOptions.remove(tid);
+    buildItems.remove(tid);
     notifyListeners();
   }
 }
 
 
-// build integrator
+// buildAdapter
 //   -inventoryAdapter
-//   -buildEnvAdapter
+//   -buildOptionsAdapter
 //   -buildItemsAdapter - runs/buildOrBuy/BpOps
-//   -marketAdapter
 //   get multi-buy
-//   get total cost
-//   get total profit
-//   get cost (tid)
-//   get profit (tid)
 //   get total build time
-//    ...
-//   "get schedule"
-//   "get output info"
-//   "get build string" // pass thru
-//   set/clear inv // pass thru
-//   add/remove items // pass thru
-//
-// build
 //   get total output volume
 //   get output volume (tid)
+//   get bom
+//   "get schedule"
+//   "get output info"
+//   "get build string"
+//   set/clear inv
+//   add/remove items (mutates builditems)
 //
 // targets table
 //  get rows

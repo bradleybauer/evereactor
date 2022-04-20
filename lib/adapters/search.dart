@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'build.dart';
 
 class SearchAdapter with ChangeNotifier {
-  final BuildAdapter buildAdapter;
+  final Build buildAdapter;
 
   SearchAdapter(this.buildAdapter);
 
@@ -14,8 +14,13 @@ class SearchAdapter with ChangeNotifier {
 
 // needs access to very basic profit calculation
 //  getProfit(tid)
-//    build env
-//      everything on one line
-//      try to use current build options?
-//      super basic dependency calculations
-//    accesses market
+//    SimpleBuild
+//       BuildOptions
+//         maybe uses this
+//       BuildItemOptions
+//         maybe uses this
+//       build env
+//         everything on one line
+//         try to use current build options?
+//         super basic dependency calculations
+//    Market
