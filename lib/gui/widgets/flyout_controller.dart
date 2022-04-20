@@ -6,6 +6,7 @@ class FlyoutController extends ChangeNotifier {
 
   final Duration closeTimeout;
 
+  // TODO this does not work always because onExit of MouseRegion is sometimes not called.
   // Allow open state of flyout to be controlled by multiple sources using boolean OR between each source.
   int _keepOpenVotes = 0;
 

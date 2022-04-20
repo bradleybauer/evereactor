@@ -1,3 +1,45 @@
+What items go into the intermediates table? (build/buy table)
+    an intermediate is in the intermediates table if it needs a build / buy decision to be made.
+
+    an item does not need a build/buy decision in two cases:
+        1: if none of the items parents are built.
+        2: if it is supplied by inventory (inventory takes priority over buy decision)
+
+    both cases depend on having a schedule.
+    i can assume there is a cached schedule. (when underlying build changes then whole schedule is recomputed)
+
+    so what is the 'Value' column value for items that are in the intermediates table?
+    difference between profit of current and profit of sched where this item is not built?
+    that would require computing a schedule where the item is not built.
+    ok then.
+
+    so on layout I have to compute schedules for each item...
+    might be slow depending on final imp of scheduler.
+
+There are two major things this app needs to do. One is easy. Other is harder.
+    Goal: Calculate total cost and profit of entire schedule.
+        given a function (tid,qty)->ppu and a BOM (func from tid -> qty) it is trivial to calculate cost.
+        to get profit, i then only need the buildItems obj to get the targets (the items intended to be built for sale)
+
+    Goal: Calculate cost and profit, given full schedule, for each individual target item.
+        it is hard to get the BOM for each individual item because all items are all scheduled together.
+        so can't read the individual item's BOM directly from the schedule.
+        what even is a BOM for an individual item?
+        well,
+        if i have target items T_i then i want BOM_i such that sum(BOM_i) = TotalBOM
+        and BOM_i is the individual BOM for target item T_i.
+        Then given this it is trivial again to calculate cost and profit for this target item.
+
+    if there is only one item built then both goals are trivial.
+    in other special cases both goals are trivial as well.
+    but in the general case, it is not completely trivial how to get boms because if two items depend on the same subitem
+    and if subitem has N runs then how are the N runs shared between the two items?
+    i mention how to do this below but it does not exactly lead to an algorithm?
+
+Todo use package:animations to get nice fade in animation for flyout containers
+
+Perfect is the enemy of the good
+
 Model
     BuildModel
         target item ids & runs
@@ -61,13 +103,14 @@ One thing I want to be true about this app is that the scenario where it gives t
 RESTRICTIONS----------------------------------------------------------------------------------------------------------
 Never build any MFG item that is input to RTN item (fuel blocks)
   Just learned that fuel blocks are basically always only used as input to reactions
+  There are not mfg items built by my app that take fuel blocks as inputs.
 
-Assumes structures are located whereever the rigs gives the best bonuses. (LS for thukker rigs)
+Assumes structures are located where the rigs give the best bonuses. (LS for thukker rigs)
   ??? this one is annoying, i mean. it basically works for anyone doing everything in ns/wh
   but,
-  for people in ls its wrong if they use rigs other than thukker.
+  for people in LS its wrong if they use rigs other than thukker.
     :(
-  don't really wana work on it though.
+  don't really want to work on it though.
 
 I am not supporting arbitrary systems. Why?
   1: Jita & Amarr are the two best high sec trade hubs.
@@ -150,11 +193,11 @@ Custom build amounts (set by me) for heuristic profit% calculations in the Brows
 ----------------------------------------------------------------------------------------------------------------------
 
 FEATURES--------------------------------------------------------------------------------------------------------------
-Outputs should all be tables that are pastable into EXCEL
+Outputs should all be tables that are paste-able into EXCEL
 
 Have a donate button / bitcoin wallet address.
 
-Have blueprints in inventory (and missing in multiby)? just for calculating how many blueprints are needed to do the job.
+Have blueprints in inventory (and missing in multibuy)? just for calculating how many blueprints are needed to do the job.
   Interesting, if I did this then I'd want to have a blueprintID to itemID map.
   I guess I would need friggin blueprint names as well...
 
@@ -200,7 +243,6 @@ Flyouts:
 Having a schedule visualization would be super good. // NO PRIORITY
 
 Tooltips
-  Table names elipses if too long but show full name on hover with tooltip.
   Get Market Data : Loads market data from the ESI.
   Value: Profit if built i.e. (Profit if Build) - (Profit if Buy)
   Cost/u : build price per unit
@@ -262,17 +304,16 @@ Optimize - desktop // MEDIUM PRIORITY
 
 Targets // HIGH PRIORITY
   Items the user has 'added' to the build
-    (x, name, runs, profit, cost, %, cost/u, sell/u, out m3, BpOptions?!?!(me, te, m#r, m#bps))
-    NOTE % not Profit%
+    (x, name, runs, profit, cost, %, cost/u, sell/u, out m3, BpOptions(me, te, m#r, m#bps))
+    If maxBps & maxRunsPerBp are not set then those values are set to the global values
 
-    If maxBps & maxRunsPerBp are not set then those values are set to the global values?
-
-Intermediates
+Intermediates (have build/buy column header be buttons that set all? that'd make sense, but NO since i dont need it)
   A list of all intermediate items to build before building Targets
-  (name, value, build/buy buttons, BpOptions)
+    (name, value, build/buy buttons, BpOptions)
 
 Inputs
-  (name, cost, cost/u)
+    raw/purchased materials (including fuel blocks)
+    (name, cost, cost/u)
 ----------------------------------------------------------------------------------------------------------------------
 
 REMINDER--------------------------------------------------------------------------------------------------------------
