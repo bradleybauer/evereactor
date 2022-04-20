@@ -5,7 +5,7 @@ import 'package:EveIndy/gui/main.dart';
 import 'gui/my_theme.dart';
 import 'persistence/persistence.dart';
 import 'models/market.dart';
-import 'models/build_env.dart';
+import 'models/build_options.dart';
 import 'platform.dart';
 
 Future<void> main() async {

@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 
-import 'market.dart';
-import '../models/build.dart';
+import '../adapters/market.dart';
+import '../models/build_item_options.dart';
 
 class BuildAdapter with ChangeNotifier{
-  BuildItems buildItems;
+  BuildItemOptions buildItemOptions;
   MarketAdapter marketAdapter;
 
-  BuildAdapter(this.buildItems, this.marketAdapter) {
+  BuildAdapter(this.buildItemOptions, this.marketAdapter) {
     marketAdapter.addListener(_handleMarketChanged);
   }
 
   void _handleMarketChanged() {}
 
   void add(int tid, int runs) {
-    buildItems.add(tid, runs);
+    buildItemOptions.add(tid, runs);
     notifyListeners();
   }
   void remove(int tid) {
-    buildItems.remove(tid);
+    buildItemOptions.remove(tid);
     notifyListeners();
   }
 }

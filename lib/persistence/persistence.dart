@@ -3,7 +3,7 @@ import 'package:tuple/tuple.dart';
 
 import 'database.dart';
 import '../platform_stub.dart' if (dart.library.io) '../platform_desktop.dart' if (dart.library.html) '../platform_web.dart';
-import '../models/build_env.dart';
+import '../models/build_options.dart';
 import '../models/order_filter.dart';
 import '../models/market.dart';
 import '../models/market_order.dart';
@@ -61,7 +61,7 @@ class Persistence {
     }
   }
 
-  Future<void> setBuildContext(BuildEnv ctx) async {
+  Future<void> setBuildContext(BuildOptions ctx) async {
     await _clearCache(cache.eveBuildContextCache);
     final companion = EveBuildContextCacheCompanion(
         reactionsSkillLevel: Value(ctx.reactionSkillLevel),
@@ -72,12 +72,12 @@ class Persistence {
     await cache.into(cache.eveBuildContextCache).insert(companion);
   }
 
-  Future<BuildEnv?> getBuildContext() async {
+  Future<BuildOptions?> getBuildContext() async {
     final rows = await cache.select(cache.eveBuildContextCache).get();
     if (rows.isEmpty) {
       return null;
     }
-    return BuildEnv(rows[0].reactionsSkillLevel, rows[0].structureMaterialBonus, rows[0].structureTimeBonus, rows[0].systemCostIndex,
+    return BuildOptions(rows[0].reactionsSkillLevel, rows[0].structureMaterialBonus, rows[0].structureTimeBonus, rows[0].systemCostIndex,
         rows[0].salesTaxPercent, 0);
   }
 

@@ -1,8 +1,8 @@
-import 'bp_options.dart';
+import 'blueprint_options.dart';
 
 // Stores per-item level information about the build
 // Computes the build dependency map using the sde.
-class BuildItems {
+class BuildItemOptions {
   // The 'targets' (primary items built) and how many runs to build.
   final Map<int, int> _tid2runs = {};
 
