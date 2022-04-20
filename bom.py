@@ -61,8 +61,7 @@ def getBOMs(schedule, inventory, buildItems):
     # what fraction of the total number of mid does pid (parent) need?
     # mid -> (pid -> fraction)
     mid2fraction = {}
-    # normalize the quantities
-    for mid in mid2numNeeded:
+    for mid in mid2numNeeded: # normalize the quantities
         sum = 0
         for pid,qty in mid2numNeeded[mid].items():
             sum += qty

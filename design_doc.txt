@@ -16,26 +16,6 @@ What items go into the intermediates table? (build/buy table)
     so on layout I have to compute schedules for each item...
     might be slow depending on final imp of scheduler.
 
-There are two major things this app needs to do. One is easy. Other is harder.
-    Goal: Calculate total cost and profit of entire schedule.
-        given a function (tid,qty)->ppu and a BOM (func from tid -> qty) it is trivial to calculate cost.
-        to get profit, i then only need the buildItems obj to get the targets (the items intended to be built for sale)
-
-    Goal: Calculate cost and profit, given full schedule, for each individual target item.
-        it is hard to get the BOM for each individual item because all items are all scheduled together.
-        so can't read the individual item's BOM directly from the schedule.
-        what even is a BOM for an individual item?
-        well,
-        if i have target items T_i then i want BOM_i such that sum(BOM_i) = TotalBOM
-        and BOM_i is the individual BOM for target item T_i.
-        Then given this it is trivial again to calculate cost and profit for this target item.
-
-    if there is only one item built then both goals are trivial.
-    in other special cases both goals are trivial as well.
-    but in the general case, it is not completely trivial how to get boms because if two items depend on the same subitem
-    and if subitem has N runs then how are the N runs shared between the two items?
-    i mention how to do this below but it does not exactly lead to an algorithm?
-
 Todo use package:animations to get nice fade in animation for flyout containers
 
 Perfect is the enemy of the good
