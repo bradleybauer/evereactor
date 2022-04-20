@@ -276,9 +276,9 @@ Search/Browse // HIGH PRIORITY
 
 Optimize - desktop // MEDIUM PRIORITY
   Optimization stats
-    Percent reduction from approximation 1-sched/ub
+    Percent reduction (of total build time) from approximation 1-sched/ub
     Is running
-    Running time
+    Optimizer running time (do a percent graph? low priority lol)
     Number solutions found
     Solution status [infeasible, feasible, optimal, unknown]
 
