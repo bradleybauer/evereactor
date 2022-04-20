@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:EveIndy/gui/main.dart';
 import 'gui/my_theme.dart';
 import 'persistence/persistence.dart';
-import 'model/market.dart';
-import 'model/build_env.dart';
+import 'models/market.dart';
+import 'models/build_env.dart';
 import 'platform.dart';
 
 Future<void> main() async {

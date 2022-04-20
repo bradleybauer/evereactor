@@ -3,10 +3,10 @@ import 'package:tuple/tuple.dart';
 
 import 'database.dart';
 import '../platform_stub.dart' if (dart.library.io) '../platform_desktop.dart' if (dart.library.html) '../platform_web.dart';
-import '../model/build_env.dart';
-import '../model/order_filter.dart';
-import '../model/market.dart';
-import '../model/market_order.dart';
+import '../models/build_env.dart';
+import '../models/order_filter.dart';
+import '../models/market.dart';
+import '../models/market_order.dart';
 
 class Persistence {
   final CacheDatabase cache = CacheDatabase(Platform.createDatabaseConnection('EveReactorCache'));
@@ -17,13 +17,13 @@ class Persistence {
 
   Future<Map<int, List<Order>>> getOrders() async {
     Map<int, List<Order>> orders = {};
-    for (int id in Market.restrictToTypeIDs) {
-      orders[id] = [];
-      final rows = await (cache.select(cache.marketOrdersCache)..where((r) => r.typeID.equals(id))).get();
-      for (MarketOrdersCacheEntry entry in rows) {
-        orders[id]!.add(Order(id, entry.systemID, entry.regionID, entry.isBuy, entry.price, entry.volumeRemaining));
-      }
-    }
+    // for (int id in Market.restrictToTypeIDs) {
+    //   orders[id] = [];
+    //   final rows = await (cache.select(cache.marketOrdersCache)..where((r) => r.typeID.equals(id))).get();
+    //   for (MarketOrdersCacheEntry entry in rows) {
+    //     orders[id]!.add(Order(id, entry.systemID, entry.regionID, entry.isBuy, entry.price, entry.volumeRemaining));
+    //   }
+    // }
     return orders;
   }
 

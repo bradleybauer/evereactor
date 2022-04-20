@@ -146,14 +146,14 @@ class Py2Dart:
         region2systems, system2name = ex.getTradeHubs()
 
         code = ''
-        code += "import 'industry_type.dart';"
-        code += "import 'bonus_type.dart';"
-        code += "import 'item.dart';"
-        code += "import 'blueprint.dart';"
-        code += "import 'structure.dart';"
-        code += "import 'implant.dart';"
-        code += "import 'rig.dart';"
-        code += "import 'skill.dart';"
+        code += "import 'models/industry_type.dart';"
+        code += "import 'models/bonus_type.dart';"
+        code += "import 'models/item.dart';"
+        code += "import 'models/blueprint.dart';"
+        code += "import 'models/structure.dart';"
+        code += "import 'models/implant.dart';"
+        code += "import 'models/rig.dart';"
+        code += "import 'models/skill.dart';"
 
         code += 'const _m=BonusType.MATERIAL;'
         code += 'const _t=BonusType.TIME;'
