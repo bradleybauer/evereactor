@@ -54,3 +54,6 @@ lib/models/sde_data.dart
 lib/persistence/*.g.dart
 lib/gui/widgets/test_names.dart
 lib/sde.dart
+
+*vpp.bak_*
+*vpp.lck
