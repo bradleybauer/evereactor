@@ -37,7 +37,8 @@ dependencies:
       path: bitsdojo_window
       ref: 6af085bd44d95824b326e8c673cc5821b65219b6 
 
-  flutter_acrylic: ^1.0.0+2
+#  flutter_acrylic: ^1.0.0+2
+#  animations: ^2.0.2
 
 dependency_overrides:
   bitsdojo_window_windows:
