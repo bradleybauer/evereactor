@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../adapters/search.dart';
 import 'flyout_controller.dart';
 import 'table_search.dart';
-import '../../search.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
 import 'search_text_field.dart';
-
-import 'test_names.dart';
 
 class SearchBar extends StatefulWidget {
   // TODO sad :( not really sure how to organize stuff like this.
@@ -23,12 +22,6 @@ class _SearchBarState extends State<SearchBar> {
   final flyoutController = FlyoutController(MyTheme.buttonFocusDuration);
   final focusNode = FocusNode();
   final textEditController = TextEditingController();
-  final search = MyFilterSearch();
-  final searchBarChangedNotifier = SearchBarChangeNotifier(allIndices);
-
-  static final allIndices = List<int>.generate(names.length, (index) => index);
-  final itemUniverse = names;
-  var sortIndices = allIndices;
 
   // Only search if the text changes.
   String previousText = '';
@@ -39,14 +32,9 @@ class _SearchBarState extends State<SearchBar> {
       final text = textEditController.text.trim();
       if (text != previousText) {
         previousText = text;
-        if (text != '') {
-          sortIndices = search.search(text);
-        } else {
-          sortIndices = allIndices;
-        }
+        Provider.of<SearchAdapter>(context, listen: false).setSearchText(text);
+        setState(() {}); // Need to rebuild so the text field clear button updates
       }
-      searchBarChangedNotifier.set(sortIndices);
-      setState(() {}); // Need to rebuild so the text field clear button updates
     });
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
@@ -69,7 +57,7 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return Flyout(
       align: FlyoutAlign.childTopLeft,
-      content: SearchBarFlyoutContent(itemUniverse: itemUniverse, searchBarChangeNotifier: searchBarChangedNotifier),
+      content: const SearchBarFlyoutContent(),
       contentSize: SearchBarFlyoutContent.size,
       openMode: FlyoutOpenMode.custom,
       verticalOffset: MyTheme.appBarPadding * 2,
@@ -86,15 +74,4 @@ class _SearchBarState extends State<SearchBar> {
       controller: flyoutController,
     );
   }
-}
-
-class SearchBarChangeNotifier extends ChangeNotifier {
-  SearchBarChangeNotifier(this._sortIndices);
-  List<int> _sortIndices;
-  void set(List<int> n) {
-    _sortIndices = n;
-    notifyListeners();
-  }
-
-  List<int> get() => _sortIndices;
 }

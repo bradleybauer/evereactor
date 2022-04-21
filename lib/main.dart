@@ -1,11 +1,8 @@
+import 'package:EveIndy/gui/main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:EveIndy/gui/main.dart';
-import 'gui/my_theme.dart';
-import 'persistence/persistence.dart';
-import 'models/market.dart';
-import 'models/build_options.dart';
+import 'adapters/search.dart';
 import 'platform.dart';
 
 Future<void> main() async {
@@ -27,20 +24,19 @@ Future<void> main() async {
   // final eveBuildContextAdapter = EveBuildContextAdapter(eveBuildContext, cacheDbAdapter);
   // await eveBuildContextAdapter.loadFromCache(buildAdapter);
 
+  final searchAdapter = SearchAdapter();
+
   Platform.appReadyHook();
 
-  runApp(MyApp()
-      //   MultiProvider(
-      //   providers: [
-      //     ChangeNotifierProvider.value(value: buildAdapter),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider.value(value: searchAdapter),
       //     ChangeNotifierProvider.value(value: marketAdapter),
       //     ChangeNotifierProvider.value(value: eveBuildContextAdapter),
-      //   ],
-      //   child: const MyApp(),
-      // )
-      );
+    ],
+    child: const MyApp(),
+  ));
 }
-
 
 // decoration: BoxDecoration(
 //   gradient: LinearGradient(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'flyout_button_group.dart';
 import '../my_theme.dart';
+import 'flyout_button_group.dart';
 import 'search_bar.dart';
 
 class Footer extends StatelessWidget {

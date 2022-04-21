@@ -1,30 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'search_bar.dart';
+import '../../adapters/search.dart';
 import '../my_theme.dart';
-import 'table_add_del_hover_button.dart';
 import 'table.dart';
+import 'table_add_del_hover_button.dart';
 
 class SearchBarFlyoutContent extends StatelessWidget {
   // static const maxNumEntries = 4000;
   static const Size size = Size(400, 600);
-
   static const colFlexs = [125, 30];
-
   static const List<double> columnWidths = [320, 80];
 
-  const SearchBarFlyoutContent({
-    required this.itemUniverse,
-    Key? key,
-    required this.searchBarChangeNotifier,
-  }) : super(key: key);
-
-  final SearchBarChangeNotifier searchBarChangeNotifier;
-  final List<List<String>> itemUniverse;
+  const SearchBarFlyoutContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final searchAdapter = Provider.of<SearchAdapter>(context);
+    final numSearchResults = searchAdapter.getNumberOfSearchResults();
+    Widget listContent;
+    if (numSearchResults == 0) {
+      listContent = SizedBox(
+          height: SearchListItem.height,
+          child: Center(
+            child: Text("¯\\_(ツ)_/¯", style: TextStyle(fontFamily: '', fontSize: 15, color: theme.onTertiaryContainer)),
+          ));
+    } else {
+      listContent = ListView.builder(
+        shrinkWrap: true,
+        itemExtent: SearchListItem.height, // vertical height of the items
+        // itemCount: min(sortIndices.length, maxNumEntries),
+        itemCount: numSearchResults,
+        itemBuilder: (_, index) => SearchListItem(
+          listIndex: index,
+          rowData: searchAdapter.getRowData(index),
+        ),
+      );
+    }
     return TableContainer(
       maxHeight: size.height,
       color: theme.tertiaryContainer,
@@ -32,31 +44,7 @@ class SearchBarFlyoutContent extends StatelessWidget {
       borderRadius: 4,
       header: const SearchListHeader(),
       listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
-      listView: ChangeNotifierProvider<SearchBarChangeNotifier>.value(
-          value: searchBarChangeNotifier,
-          builder: (_, __) => Consumer<SearchBarChangeNotifier>(
-                builder: (_, value, __) {
-                  final sortIndices = value.get();
-                  // final len = min(value.get().length, maxNumEntries);
-                  final len = sortIndices.length;
-                  if (len == 0) {
-                    return SizedBox(
-                        height: SearchListItem.height,
-                        child: Center(
-                          child: Text("¯\\_(ツ)_/¯", style: TextStyle(fontFamily: '', fontSize: 15, color: theme.onTertiaryContainer)),
-                        ));
-                  }
-                  // var s = ScrollController();
-                  // s.offset > 0 ? animate header elevate up
-                  return ListView.builder(
-                      // controller: ,
-                      shrinkWrap: true,
-                      itemExtent: SearchListItem.height, // vertical height of the items
-                      // itemCount: min(sortIndices.length, maxNumEntries),
-                      itemCount: sortIndices.length,
-                      itemBuilder: (_, index) => SearchListItem(itemUniverse: itemUniverse, index: index, itemIndex: sortIndices[index]));
-                },
-              )),
+      listView: listContent,
     );
   }
 }
@@ -77,7 +65,8 @@ class SearchListHeader extends StatelessWidget {
       child: TableHeader(
         color: theme.tertiaryContainer,
         height: height,
-        textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onTertiaryContainer),
+        textStyle: TextStyle(
+            fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onTertiaryContainer),
         items: [
           TableContainer.getCol(
             SearchBarFlyoutContent.colFlexs[0],
@@ -100,17 +89,15 @@ class SearchListHeader extends StatelessWidget {
 
 class SearchListItem extends StatelessWidget {
   const SearchListItem({
-    required this.index,
-    required this.itemIndex,
-    required this.itemUniverse,
+    required this.listIndex,
+    required this.rowData,
     Key? key,
   }) : super(key: key);
 
   static const double height = 30;
 
-  final int index;
-  final int itemIndex;
-  final List<List<String>> itemUniverse;
+  final int listIndex;
+  final RowData rowData;
 
   // TODO If I use MyTableCell here and do not specify column widths, then the text does not wrap for long lines.
   // Not really sure how to fix this atm. Going to leave it as-is since it could also be a performance issue to not
@@ -120,14 +107,14 @@ class SearchListItem extends StatelessWidget {
     const buttonPadding = 8.0;
     const columnWidthFudgeFactor = 30.0;
     return Container(
-      color: index % 2 == 1 ? null : theme.colors.tertiary.withOpacity(.1),
+      color: listIndex % 2 == 1 ? null : theme.colors.tertiary.withOpacity(.1),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: buttonPadding),
         child: Row(
           children: [
             TableAddDelButton(
               onTap: () {
-                print("adding ${itemUniverse[itemIndex][0]}");
+                print("adding ${rowData.name}");
               },
               closeButton: false,
               color: theme.background,
@@ -139,17 +126,20 @@ class SearchListItem extends StatelessWidget {
               verticalOffset: 13,
               preferBelow: false,
               waitDuration: const Duration(milliseconds: 600),
-              message: itemUniverse[itemIndex].sublist(1).join(' > '),
+              message: rowData.category,
               child: Container(
-                width: SearchBarFlyoutContent.columnWidths[0] - TableAddDelButton.width - buttonPadding * 2 + columnWidthFudgeFactor,
+                width: SearchBarFlyoutContent.columnWidths[0] -
+                    TableAddDelButton.width -
+                    buttonPadding * 2 +
+                    columnWidthFudgeFactor,
                 padding: const EdgeInsets.symmetric(horizontal: buttonPadding),
-                child: Text(itemUniverse[itemIndex][0]),
+                child: Text(rowData.name),
               ),
             ),
             Container(
               width: SearchBarFlyoutContent.columnWidths[1] - columnWidthFudgeFactor,
               alignment: Alignment.centerRight,
-              child: Text('${itemIndex}%'),
+              child: Text(rowData.percent + '%'),
             )
           ],
         ),
