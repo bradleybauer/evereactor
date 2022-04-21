@@ -138,12 +138,15 @@ class Py2Dart:
         rigs = ex.getIndustryRigsAndBonuses()
         productionSkills = ex.getProductionSkills()
         implants = ex.getImplants()
-        itemID2bp = ex.getItem2Blueprint(productionSkills.keys())
-        items = ex.getIndustryItems(itemID2bp)
-        marketGroupGraph = ex.getMarketGroupGraph(itemID2bp)
-        marketGroupNames = ex.getMarketGroupNames(marketGroupGraph, productionSkills)
-        group2category = ex.getGroup2Category(itemID2bp)
+        blueprints = ex.getBlueprints(productionSkills.keys())
+        items = ex.getIndustryItems(blueprints)
+        # marketGroupGraph = ex.getMarketGroupGraph(blueprints)
+        marketGroupNames = ex.getMarketGroupNames(blueprints, productionSkills)
+        group2category = ex.getGroup2Category(blueprints)
         region2systems, system2name = ex.getTradeHubs()
+        marketGroup2parent = ex.getMarketGroup2Parent(blueprints)
+        buildableItem2marketGroupAncestors = ex.getBuildableItem2marketGroupAncestors(items, blueprints)
+        # buildableItemIDs = ex.getBuildableItemIDs(blueprints)
 
         code = ''
         code += "import 'models/industry_type.dart';"
@@ -161,33 +164,26 @@ class Py2Dart:
         code += 'const _M=IndustryType.MANUFACTURING;'
         code += 'const _R=IndustryType.REACTION;'
 
-        code += 'abstract class SDE {';
+        code += 'abstract class SDE {'
         code += self._dict2map('items', 'int', 'Item', items, self._item)
-        code += self._dict2map('blueprints', 'int', 'Blueprint', itemID2bp, self._blueprint)
+        code += self._dict2map('blueprints', 'int', 'Blueprint', blueprints, self._blueprint)
         code += self._dict2map('marketGroupNames', 'int', 'Map<String,String>', marketGroupNames, self._str2str)
         code += self._dict2map('rigs', 'int', 'Rig', rigs, self._rig)
-        code += self._dict2map('marketGroupGraph', 'int', 'List<int>', marketGroupGraph, self._ints)
+        # code += self._dict2map('marketGroupGraph', 'int', 'List<int>', marketGroupGraph, self._ints)
+        code += self._dict2map('marketGroup2parent', 'int', 'int', marketGroup2parent, self._int)
         code += self._dict2map('skills', 'int', 'Skill', productionSkills, self._skill)
         code += self._dict2map('structures', 'int', 'Structure', structures, self._structure)
         code += self._dict2map('implants', 'int', 'Implant', implants, self._implant)
         code += self._dict2map('group2category', 'int', 'int', group2category, self._int)
         code += self._dict2map('region2systems', 'int', 'List<int>', region2systems, self._ints)
         code += self._dict2map('system2name', 'int', 'Map<String,String>', system2name, self._str2str)
+        code += self._dict2map('buildableItem2marketGroupAncestors', 'int', 'List<int>', buildableItem2marketGroupAncestors, self._ints)
         code += '}'
 
         # # Dart run the output to check for syntax errors
         # code += 'void main() {\n'
         # code += '   print(items.length);\n'
-        # code += '   print(blueprints.length);\n'
-        # code += '   print(marketGroupNames.length);\n'
-        # code += '   print(rigs.length);\n'
-        # code += '   print(marketGroupGraph.length);\n'
-        # code += '   print(skills.length);\n'
-        # code += '   print(structures.length);\n'
-        # code += '   print(implants.length);\n'
-        # code += '   print(group2category.length);\n'
-        # code += '   print(region2systems.length);\n'
-        # code += '   print(system2name.length);\n'
+        # ....
         # code += '}'
         # with open('hi.dart', 'w', encoding='utf-8') as handle:
         #     handle.write(code)

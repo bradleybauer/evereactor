@@ -43,7 +43,7 @@ class SDE_Extractor:
 
     def getIndustryItems(self, blueprints):
         """
-        Returns the relavent information of all items involved in production.
+        Returns the relevant information of all items involved in production.
         typeID -> (name, marketGroupID, groupID, volume)
         """
         sde = self.sde
@@ -82,8 +82,7 @@ class SDE_Extractor:
 
         for activity in self.possibleActivities:
             if activity in bp['activities']:
-                # The loop and if statment choose the activity (there is only one activity per bp in the SDE)
-
+                # The loop and if statement choose the activity (there is only one activity per bp in the SDE)
                 assert (0 == len((self.possibleActivities - {activity}).intersection(bp['activities'])))
                 if 'products' not in bp['activities'][activity]:
                     isProductPublished = False
@@ -116,6 +115,9 @@ class SDE_Extractor:
                     notInterestingItem = True
                     break
                 if 'Civilian' in self.sde.typeIDs[productTID]['name']['en']:
+                    notInterestingItem = True
+                    break
+                if 'Unrefined' in self.sde.typeIDs[productTID]['name']['en']:
                     notInterestingItem = True
                     break
                 break
@@ -158,10 +160,13 @@ class SDE_Extractor:
                 skills[tid] = parents
         return skills
 
-    def getItem2Blueprint(self, skillsOfInterest):
-        """Returns the blueprint info for buildable items."""
+    def getBlueprints(self, skillsOfInterest):
+        """
+        Returns the blueprint info for buildable items.
+        product type id -> blueprint info
+        """
         skill2parents = self._getSkill2Parents()
-        item2bp = {}
+        blueprints = {}
         for bid in self.sde.blueprints:
             if not self._filterBP(bid):
                 continue
@@ -176,13 +181,15 @@ class SDE_Extractor:
                     assert (1 == len(sdeBP['activities'][activity]['products']))
                     bp['productQuantity'] = sdeBP['activities'][activity]['products'][0]['quantity']
                     bp['time'] = sdeBP['activities'][activity]['time']
-                    if 'skills' in sdeBP['activities'][activity]:
-                        skills = {pair['typeID'] for pair in sdeBP['activities'][activity]['skills']}
-                        bp['skills'] = self._getBlueprintSkills(skills, skill2parents, skillsOfInterest)
+                    # bps without skills have been filtered out already since items not needing skills to build are probably
+                    # not the type of items I care to use my app with.
+                    assert('skills' in sdeBP['activities'][activity])
+                    skills = {pair['typeID'] for pair in sdeBP['activities'][activity]['skills']}
+                    bp['skills'] = self._getBlueprintSkills(skills, skill2parents, skillsOfInterest)
                     break  # a bp can contain only one of the two possible activities
             productID = sdeBP['activities'][activity]['products'][0]['typeID']
-            item2bp[productID] = bp
-        return item2bp
+            blueprints[productID] = bp
+        return blueprints
 
     def getProductionSkills(self):
         """
@@ -409,13 +416,14 @@ class SDE_Extractor:
         edges[parent].add(node)
         self._addSegmentsOfPathToEdgeMap(parent, edges, getParent)
 
-    def getMarketGroupNames(self, marketGroupGraph, skills):
+    def getMarketGroupNames(self, blueprints, skills):
         """
         Return the names of the groups in the market group graph and of the groups of the skills in the set of skills.
         marketGroupID -> name
         """
         sde = self.sde
 
+        marketGroupGraph = self.getMarketGroupGraph(blueprints)
         marketGroupNames = {}
         for k, v in marketGroupGraph.items():
             marketGroupNames[k] = sde.marketGroups[k]['nameID']
@@ -512,6 +520,9 @@ class SDE_Extractor:
 
         return region2systems, system2name
 
+    def getBuildableItemIDs(self, blueprints):
+        return list(blueprints.keys())
+
     # def getMat2Id(self, items, blueprints):
     #     mat2id = {}
     #     allMaterialsIDs = self._getAllMaterials(blueprints).intersection(set(blueprints))
@@ -521,14 +532,18 @@ class SDE_Extractor:
     #             mat2id[itemName[lang]] = mid
     #     return mat2id:
 
-def __getItemMarketGroups(tid, items, marketGroup2Parent, marketGroupNames):
-    names = []
-    marketGroupID = items[tid]['marketGroupID']
-    while marketGroupID in marketGroup2Parent:
-        names.append(marketGroupNames[marketGroupID]['en'])
-        marketGroupID = marketGroup2Parent[marketGroupID]
-    names.append(marketGroupNames[marketGroupID]['en'])
-    return names[::-1]
+    def getBuildableItem2marketGroupAncestors(self, items, blueprints):
+        marketGroup2Parent = self.getMarketGroup2Parent(blueprints)
+        buildableItem2marketGroupAncestors = {}
+        for tid in blueprints:
+            groups = []
+            marketGroupID = items[tid]['marketGroupID']
+            while marketGroupID in marketGroup2Parent:
+                groups.append(marketGroupID)
+                marketGroupID = marketGroup2Parent[marketGroupID]
+            groups.append(marketGroupID)
+            buildableItem2marketGroupAncestors[tid] = groups[::-1]
+        return buildableItem2marketGroupAncestors
 
 def __test():
     extractor = SDE_Extractor(CCP_SDE())
@@ -554,19 +569,19 @@ def __test():
     #     print(k, v)
 
     # print("\n\nBlueprints")
-    itemID2bp = extractor.getItem2Blueprint(productionSkills.keys())
-    # for k, v in itemID2bp.items():
+    blueprints = extractor.getBlueprints(productionSkills.keys())
+    # for k, v in blueprints.items():
     #     print(k, v)
-    # print('Number of blueprints accepted:', len(itemID2bp))
+    # print('Number of blueprints accepted:', len(blueprints))
 
     # print('\n\nIndustry Items')
-    items = extractor.getIndustryItems(itemID2bp)
+    items = extractor.getIndustryItems(blueprints)
     # for k, v in items.items():
     #     print(k, v)
-    # print('Number of items:', len(extractor.getIndustryItems(itemID2bp)))
+    # print('Number of items:', len(extractor.getIndustryItems(blueprints)))
 
     # print('\n\nMarketGroups')
-    marketGroupGraph = extractor.getMarketGroupGraph(itemID2bp)
+    marketGroupGraph = extractor.getMarketGroupGraph(blueprints)
     marketGroupNames = extractor.getMarketGroupNames(marketGroupGraph, productionSkills)
     # for k in sorted(marketGroupGraph, key=lambda x: marketGroupNames[x]['en']):
     #     marketGroupName = marketGroupNames[k]['en']
@@ -578,14 +593,14 @@ def __test():
     # print('Number of market groups:', len(marketGroupNames))
 
     #print('\n\nGroup2Category')
-    group2category = extractor.getGroup2Category(itemID2bp)
+    group2category = extractor.getGroup2Category(blueprints)
     #print(group2category)
 
     # print('\n\nInventoryGroupNames')
     # inventoryGroupNames = extractor.getInventoryGroupNames(group2category)
     # print(inventoryGroupNames)
 
-    marketGroup2Parent = extractor.getMarketGroup2Parent(itemID2bp)
+    marketGroup2Parent = extractor.getMarketGroup2Parent(blueprints)
 
     # print('\n\nTrade hubs')
     region2systems, system2name = extractor.getTradeHubs()
@@ -604,24 +619,10 @@ def __test():
     #         str2tid[name] = tid
     # print(len(str2tid))
     # mat2id = {}
-    # allMaterialsIDs = extractor._getAllMaterials(itemID2bp)
+    # allMaterialsIDs = extractor._getAllMaterials(blueprints)
     # print(len(allMaterialsIDs))
     # for k,v in mat2id.items():
     #     print(k,v)
-
-    # # Get items and market groups for testing fuzzy search libraries.
-    # names = ['const List<List<String>> names =[']
-    # for k in itemID2bp:
-    #     parentGroupNames = __getItemMarketGroups(k, items, marketGroup2Parent, marketGroupNames)
-    #     things =[items[k]['name']['en']] + parentGroupNames
-    #     string = ""
-    #     for thing in things:
-    #         string += '"' + thing + '",'
-    #     names.append('[' + string + '],\n')
-    #     pass
-    # names.append('];')
-    # with open('test_names.dart','w') as f:
-    #     f.writelines(names)
 
 if __name__ == "__main__":
     __test()
