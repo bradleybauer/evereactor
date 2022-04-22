@@ -26,12 +26,14 @@ class SearchBarTextField extends StatelessWidget {
                   child: HoverButton(
                     onTap: textEditController.clear,
                     color: Colors.transparent,
-                    hoveredColor: theme.primary,
+                    hoveredColor: focusNode.hasFocus ? theme.primary : theme.outline,
+                    // hoveredColor: theme.primary,
                     hoveredElevation: 0,
                     builder: (bool hovered) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
-                        child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.onPrimary : null),
+                        child: Icon(Icons.close,
+                            size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.onPrimary : null),
                       );
                     },
                   ),

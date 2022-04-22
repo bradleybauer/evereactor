@@ -43,6 +43,8 @@ class _SearchBarState extends State<SearchBar> {
       } else {
         flyoutController.close();
       }
+      // set state so that 'text clear' button changes color to primary with the text field border if it is focused while hovered
+      setState((){});
     });
     super.initState();
   }
