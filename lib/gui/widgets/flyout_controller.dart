@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
 class FlyoutController extends ChangeNotifier {
-  FlyoutController(this.closeTimeout);
+  FlyoutController(this.closeTimeout, {this.maxVotes = 2});
 
   final Duration closeTimeout;
 
-  // TODO this does not work always because onExit of MouseRegion is sometimes not called.
+  // This kind of fixes the issue where keepOpenVotes get unbalanced due to MouseRegion onExit/onEnter discontinuities.
+  final int maxVotes;
+
   // Allow open state of flyout to be controlled by multiple sources using boolean OR between each source.
   int _keepOpenVotes = 0;
 
@@ -17,7 +20,7 @@ class FlyoutController extends ChangeNotifier {
   bool get isOpen => _isOpen;
 
   void open() {
-    _keepOpenVotes += 1;
+    _keepOpenVotes = min(_keepOpenVotes + 1, maxVotes);
     _isOpen = true;
     _closeTimer?.cancel();
     _closeTimer = null;

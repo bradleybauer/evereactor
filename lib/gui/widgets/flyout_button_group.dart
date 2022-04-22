@@ -20,7 +20,7 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
   @override
   void initState() {
     for (int i = 0; i < NUMBUTTONS; ++i) {
-      final controller = FlyoutController(MyTheme.buttonFocusDuration);
+      final controller = FlyoutController(MyTheme.buttonFocusDuration, maxVotes: 1);
       controllers.add(controller);
       controller.addListener(() {
         setState(() {});

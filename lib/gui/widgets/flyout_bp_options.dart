@@ -23,17 +23,9 @@ class BpOptionsTableWidget extends StatelessWidget {
         contentSize: size,
         content: const BpOptionsFlyoutContent(),
         closeTimeout: const Duration(),
-        child: HoverButton(
-          hoveredElevation: 0,
-          borderRadius: 3,
-          builder: (hovered) => const Padding(padding: EdgeInsets.all(4.0), child: Icon(Icons.settings, size: 13)),
-          //factory_outlined, size:14)),
-          onTap: () {},
-          color: theme.background,
-          hoveredColor: theme.tertiaryContainer,
-          mouseCursor: MouseCursor.defer,
+        maxVotes: 1,
+        child: const Padding(padding: EdgeInsets.all(4.0), child: Icon(Icons.settings, size: 13)),
         ),
-      ),
     );
   }
 }
@@ -42,6 +34,7 @@ class BpOptionsFlyoutContent extends StatelessWidget {
   const BpOptionsFlyoutContent({Key? key}) : super(key: key);
 
   static const padding = 8.0;
+  static const toolTipOffset = 19.0;
 
   @override
   Widget build(BuildContext context) {
@@ -58,28 +51,28 @@ class BpOptionsFlyoutContent extends StatelessWidget {
           Tooltip(
             message: 'Material Efficiency',
             preferBelow: false,
-            verticalOffset: 15,
+            verticalOffset: toolTipOffset,
             child: TableTextField(onChanged: (text) {}, initialText: '', hintText: 'ME', width: 25, maxNumDigits: 2),
           ),
           const SizedBox(width: padding),
           Tooltip(
             message: 'Time Efficiency',
             preferBelow: false,
-            verticalOffset: 15,
+            verticalOffset: toolTipOffset,
             child: TableTextField(onChanged: (text) {}, initialText: '', hintText: 'TE', width: 25, maxNumDigits: 2),
           ),
           const SizedBox(width: padding),
           Tooltip(
             message: 'Max number of runs per blueprint',
             preferBelow: false,
-            verticalOffset: 15,
+            verticalOffset: toolTipOffset,
             child: TableTextField(onChanged: (text) {}, initialText: '', hintText: 'Runs', width: 47, maxNumDigits: 6),
           ),
           const SizedBox(width: padding),
           Tooltip(
             message: 'Max number of blueprints',
             preferBelow: false,
-            verticalOffset: 15,
+            verticalOffset: toolTipOffset,
             child: TableTextField(onChanged: (text) {}, initialText: '', hintText: 'BPs', width: 35, maxNumDigits: 3),
           ),
           const SizedBox(width: padding),

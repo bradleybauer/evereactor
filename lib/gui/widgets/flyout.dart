@@ -33,6 +33,7 @@ class Flyout extends StatefulWidget {
     this.windowPadding = 0,
     this.closeTimeout,
     this.controller,
+    this.maxVotes = 2,
     Key? key,
   })  : assert((closeTimeout != null && controller == null) || (closeTimeout == null && controller != null)),
         super(key: key);
@@ -46,6 +47,7 @@ class Flyout extends StatefulWidget {
   final FlyoutAlign align;
   final double windowPadding;
   final FlyoutController? controller;
+  final int maxVotes;
 
   @override
   State<Flyout> createState() => _FlyoutState();
@@ -59,7 +61,7 @@ class _FlyoutState extends State<Flyout> {
   @override
   void initState() {
     super.initState();
-    controller = widget.controller ?? FlyoutController(widget.closeTimeout!);
+    controller = widget.controller ?? FlyoutController(widget.closeTimeout!, maxVotes: widget.maxVotes);
     controller.addListener(_handleStateChange);
   }
 
@@ -174,7 +176,7 @@ class _FlyoutState extends State<Flyout> {
             break;
           case FlyoutAlign.childLeftCenter:
             followAnchor = Alignment.centerRight;
-            targetAnchor = Alignment.centerLeft;
+            targetAnchor = Alignment.centerRight;
             break;
         }
 
