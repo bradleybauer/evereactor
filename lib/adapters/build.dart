@@ -10,9 +10,9 @@ import 'build_options.dart';
 import 'inventory.dart';
 
 class Build with ChangeNotifier {
-  InventoryAdapter _inventory;
-  BuildOptionsAdapter _buildOptions;
-  BuildItemsAdapter _buildItems;
+  final InventoryAdapter _inventory;
+  final BuildOptionsAdapter _buildOptions;
+  final BuildItemsAdapter _buildItems;
 
   Schedule? _schedule;
 
@@ -33,10 +33,10 @@ class Build with ChangeNotifier {
   Problem _getOptimizationProblem() {
     final runsExcess = _buildItems.getTarget2Runs();
     final tids = _getAllTypeIds(runsExcess.keys);
-    final dependencies = _getDependencies(tids);
-    final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: 1, IndustryType.REACTION: 1};
-    final maxNumSlotsOfJob = tids.map((tid) => MapEntry(tid, 1));
-    final maxNumRunsPerSlotOfJob = tids.map((tid) => MapEntry(tid, 1));
+    final dependencies = _getBuildDependencies(tids);
+    final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: 100, IndustryType.REACTION: 150};
+    final maxNumSlotsOfJob = tids.map((tid) => MapEntry(tid, 25));
+    final maxNumRunsPerSlotOfJob = tids.map((tid) => MapEntry(tid, 100000));
     final jobMaterialBonus = tids.map((tid) => MapEntry(tid, 1.0 - 0.0));
     final jobTimeBonus = tids.map((tid) => MapEntry(tid, 1.0 - 0.0));
     return Problem(
@@ -80,15 +80,15 @@ class Build with ChangeNotifier {
     return SD.isBuildable(cid) && _buildItems.shouldBuild(cid) && !wrongIndyType;
   }
 
-  Map<int, Map<int, int>> _getDependencies(Iterable<int> tids) {
+  Map<int, Map<int, int>> _getBuildDependencies(Iterable<int> tids) {
     final deps = <int, Map<int, int>>{};
     for (int tid in tids) {
-      deps[tid] = _getItemDependencies(tid);
+      deps[tid] = _getBuildDependenciesForItem(tid);
     }
     return deps;
   }
 
-  Map<int, int> _getItemDependencies(int pid) {
+  Map<int, int> _getBuildDependenciesForItem(int pid) {
     return Map.fromEntries(SD.materials(pid).entries.where((e) => _shouldBuild(pid, e.key)));
   }
 }
