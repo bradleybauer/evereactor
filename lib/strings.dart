@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class Strings with ChangeNotifier {
+class Strings with ChangeNotifier {
   // TODO should have localized font sizes as well.
   // TODO super-mega-chad-ultracoder-ambition idea would be to have localized widget sizes as well
   //      (search bar is too wide when using chinese because chinese is more dense than english...
@@ -10,8 +10,10 @@ abstract class Strings with ChangeNotifier {
     'zh', // chinese
   };
   static String _lang = 'en';
-  static void setLang(String lang) {
+
+  void setLang(String lang) {
     _lang = lang;
+    notifyListeners();
   }
 
   static String get(final Map<String, String> map) {
