@@ -152,9 +152,7 @@ class TargetsTableItem extends StatelessWidget {
             wrap(5, child: Text(row.cost_per_unit)),
             wrap(6, child: Text(row.sell_per_unit)),
             wrap(7, child: Text(row.out_m3)),
-            wrap(8,
-                child: BpOptionsTableWidget(
-                    style: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground))),
+            wrap(8, child: BpOptionsTableWidget(adapter: targetsTableAdapter, index: index)),
           ],
         ),
       ),

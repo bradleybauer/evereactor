@@ -13,6 +13,7 @@ class TableTextField extends StatefulWidget {
     this.maxNumDigits = 5,
     this.hintText = '',
     this.textAlign = TextAlign.right,
+    this.allowEmptyString = false,
   }) : super(key: key);
 
   static const double height = TargetsTable.itemHeight * .7;
@@ -23,6 +24,7 @@ class TableTextField extends StatefulWidget {
   final String hintText;
   final TextAlign textAlign;
   final void Function(String) onChanged;
+  final bool allowEmptyString;
 
   @override
   State<TableTextField> createState() => _TableTextFieldState();
@@ -57,7 +59,8 @@ class _TableTextFieldState extends State<TableTextField> {
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: theme.primary)),
         enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: theme.outline.withOpacity(.2))),
+            borderRadius: BorderRadius.circular(3),
+            borderSide: BorderSide(width: 0.0, color: theme.outline.withOpacity(.2))),
         fillColor: theme.background,
         filled: true,
         constraints: BoxConstraints.tight(Size(widget.width, TableTextField.height)),
@@ -68,6 +71,9 @@ class _TableTextFieldState extends State<TableTextField> {
       inputFormatters: [
         FilteringTextInputFormatter.allow(RegExp(r"[0-9]")),
         TextInputFormatter.withFunction((oldValue, newValue) {
+          if (widget.allowEmptyString && newValue.text == '') {
+            return newValue;
+          }
           try {
             final text = newValue.text;
             if (text.startsWith('0')) {

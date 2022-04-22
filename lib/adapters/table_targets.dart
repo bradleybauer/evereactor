@@ -39,7 +39,7 @@ class TargetsTableAdapter with ChangeNotifier {
   TargetsTableRowData getRowData(int listIndex) {
     int id = _sortedIds[listIndex];
     String name = Strings.get(SDE.items[id]!.nameLocalizations);
-    int runs = _buildItems.getTargetRuns(id) ?? 0;
+    int runs = _buildItems.getTargetRuns(id);
     String profit = "0m";
     String cost = "0m";
     String percent = "0%";
@@ -54,6 +54,22 @@ class TargetsTableAdapter with ChangeNotifier {
   void remove(int listIndex) => _buildItems.remove(_sortedIds[listIndex]);
 
   void setRuns(int listIndex, int runs) => _buildItems.setRuns(_sortedIds[listIndex], runs);
+
+  void setME(int index, int? ME) => _buildItems.setME(_sortedIds[index], ME);
+
+  void setTE(int index, int? TE) => _buildItems.setTE(_sortedIds[index], TE);
+
+  void setMaxRuns(int index, int? maxRuns) => _buildItems.setMaxRuns(_sortedIds[index], maxRuns);
+
+  void setMaxBPs(int index, int? maxBPs) => _buildItems.setMaxBPs(_sortedIds[index], maxBPs);
+
+  int? getME(int index) => _buildItems.getME(_sortedIds[index]);
+
+  int? getTE(int index) => _buildItems.getTE(_sortedIds[index]);
+
+  int? getMaxRuns(int index) => _buildItems.getMaxRuns(_sortedIds[index]);
+
+  int? getMaxBPs(int index) => _buildItems.getMaxBPs(_sortedIds[index]);
 }
 
 class TargetsTableRowData {

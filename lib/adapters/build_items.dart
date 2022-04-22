@@ -19,7 +19,7 @@ class BuildItemsAdapter with ChangeNotifier {
 
   List<int> getTargetsIds() => _buildItems.getTargetsIds();
 
-  int? getTargetRuns(int id) => _buildItems.getTargetRuns(id);
+  int getTargetRuns(int id) => _buildItems.getTargetRuns(id);
 
   Map<int, int> getTarget2Runs() => _buildItems.getTarget2Runs();
 
@@ -29,4 +29,32 @@ class BuildItemsAdapter with ChangeNotifier {
     _buildItems.setRuns(tid, runs);
     notifyListeners();
   }
+
+  void setME(int tid, int? ME) {
+    _buildItems.setME(tid, ME);
+    notifyListeners();
+  }
+
+  void setTE(int tid, int? TE) {
+    _buildItems.setTE(tid, TE);
+    notifyListeners();
+  }
+
+  void setMaxRuns(int tid, int? maxRuns) {
+    _buildItems.setMaxRuns(tid, maxRuns);
+    notifyListeners();
+  }
+
+  void setMaxBPs(int tid, int? maxBPs) {
+    _buildItems.setMaxBPs(tid, maxBPs);
+    notifyListeners();
+  }
+
+  int? getME(int tid) => _buildItems.getME(tid);
+
+  int? getTE(int tid) => _buildItems.getTE(tid);
+
+  int? getMaxRuns(int tid) => _buildItems.getMaxRuns(tid);
+
+  int? getMaxBPs(int tid) => _buildItems.getMaxBPs(tid);
 }

@@ -26,7 +26,7 @@ class BuildItems {
 
   List<int> getTargetsIds() => _tid2runs.keys.toList(growable: false);
 
-  int? getTargetRuns(int id) => _tid2runs[id];
+  int getTargetRuns(int id) => _tid2runs[id]!;
 
   Map<int, int> getTarget2Runs() => _tid2runs;
 
@@ -35,4 +35,40 @@ class BuildItems {
   bool shouldBuild(int tid) => !_tid2shouldBuild.containsKey(tid) || _tid2shouldBuild[tid]!;
 
   void setRuns(int tid, int runs) => _tid2runs.update(tid, (value) => runs, ifAbsent: () => runs);
+
+  void setME(int tid, int? ME) {
+    if (!_tid2bpOps.containsKey(tid)) {
+      _tid2bpOps[tid] = BPOptions(ME: ME);
+    }
+    _tid2bpOps[tid] = _tid2bpOps[tid]!.copyWithME(ME);
+  }
+
+  void setTE(int tid, int? TE) {
+    if (!_tid2bpOps.containsKey(tid)) {
+      _tid2bpOps[tid] = BPOptions(TE: TE);
+    }
+    _tid2bpOps[tid] = _tid2bpOps[tid]!.copyWithTE(TE);
+  }
+
+  void setMaxRuns(int tid, int? maxRuns) {
+    if (!_tid2bpOps.containsKey(tid)) {
+      _tid2bpOps[tid] = BPOptions(maxNumRuns: maxRuns);
+    }
+    _tid2bpOps[tid] = _tid2bpOps[tid]!.copyWithRuns(maxRuns);
+  }
+
+  void setMaxBPs(int tid, int? maxBPs) {
+    if (!_tid2bpOps.containsKey(tid)) {
+      _tid2bpOps[tid] = BPOptions(maxNumBPs: maxBPs);
+    }
+    _tid2bpOps[tid] = _tid2bpOps[tid]!.copyWithBPs(maxBPs);
+  }
+
+  int? getME(int tid) => _tid2bpOps[tid]?.ME;
+
+  int? getTE(int tid) => _tid2bpOps[tid]?.TE;
+
+  int? getMaxRuns(int tid) => _tid2bpOps[tid]?.maxNumRuns;
+
+  int? getMaxBPs(int tid) => _tid2bpOps[tid]?.maxNumBPs;
 }

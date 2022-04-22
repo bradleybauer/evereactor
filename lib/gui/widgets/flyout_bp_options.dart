@@ -1,3 +1,4 @@
+import 'package:EveIndy/adapters/table_targets.dart';
 import 'package:EveIndy/gui/widgets/table_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -5,11 +6,12 @@ import '../my_theme.dart';
 import 'flyout.dart';
 
 class BpOptionsTableWidget extends StatelessWidget {
-  const BpOptionsTableWidget({required this.style, Key? key}) : super(key: key);
+  const BpOptionsTableWidget({required this.adapter, required this.index, Key? key}) : super(key: key);
 
   static const size = Size(172, 32);
 
-  final TextStyle style;
+  final TargetsTableAdapter adapter;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class BpOptionsTableWidget extends StatelessWidget {
         openMode: FlyoutOpenMode.hover,
         align: FlyoutAlign.childLeftCenter,
         contentSize: size,
-        content: const BpOptionsFlyoutContent(),
+        content: BpOptionsFlyoutContent(adapter: adapter, index: index),
         closeTimeout: const Duration(),
         maxVotes: 1,
         child: RotatedBox(
@@ -40,11 +42,14 @@ class BpOptionsTableWidget extends StatelessWidget {
 }
 
 class BpOptionsFlyoutContent extends StatelessWidget {
-  const BpOptionsFlyoutContent({Key? key}) : super(key: key);
+  const BpOptionsFlyoutContent({required this.adapter, required this.index, Key? key}) : super(key: key);
+
+  final TargetsTableAdapter adapter;
+  final int index;
 
   static const padding = 8.0;
   static const toolTipOffset = 19.0;
-  static const duration= Duration(milliseconds:500);
+  static const duration = Duration(milliseconds: 500);
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +65,13 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             preferBelow: false,
             verticalOffset: toolTipOffset,
             waitDuration: duration,
-            child: TableTextField(onChanged: (text) {}, initialText: '', hintText: 'ME', width: 25, maxNumDigits: 2),
+            child: TableTextField(
+                onChanged: (text) => adapter.setME(index, text != '' ? int.parse(text) : null),
+                initialText: adapter.getME(index) != null ? adapter.getME(index).toString() : '',
+                hintText: 'ME',
+                allowEmptyString: true,
+                width: 25,
+                maxNumDigits: 2),
           ),
           const SizedBox(width: padding),
           Tooltip(
@@ -68,7 +79,13 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             preferBelow: false,
             verticalOffset: toolTipOffset,
             waitDuration: duration,
-            child: TableTextField(onChanged: (text) {}, initialText: '', hintText: 'TE', width: 25, maxNumDigits: 2),
+            child: TableTextField(
+                onChanged: (text) => adapter.setTE(index, text != '' ? int.parse(text) : null),
+                initialText: adapter.getTE(index) != null ? adapter.getTE(index).toString() : '',
+                hintText: 'TE',
+                allowEmptyString: true,
+                width: 25,
+                maxNumDigits: 2),
           ),
           const SizedBox(width: padding),
           Tooltip(
@@ -76,7 +93,13 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             preferBelow: false,
             verticalOffset: toolTipOffset,
             waitDuration: duration,
-            child: TableTextField(onChanged: (text) {}, initialText: '', hintText: 'Runs', width: 47, maxNumDigits: 6),
+            child: TableTextField(
+                onChanged: (text) => adapter.setMaxRuns(index, text != '' ? int.parse(text) : null),
+                initialText: adapter.getMaxRuns(index) != null ? adapter.getMaxRuns(index).toString() : '',
+                hintText: 'Runs',
+                allowEmptyString: true,
+                width: 47,
+                maxNumDigits: 6),
           ),
           const SizedBox(width: padding),
           Tooltip(
@@ -84,7 +107,13 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             preferBelow: false,
             verticalOffset: toolTipOffset,
             waitDuration: duration,
-            child: TableTextField(onChanged: (text) {}, initialText: '', hintText: 'BPs', width: 35, maxNumDigits: 3),
+            child: TableTextField(
+                onChanged: (text) => adapter.setMaxBPs(index, text != '' ? int.parse(text) : null),
+                initialText: adapter.getMaxBPs(index) != null ? adapter.getMaxBPs(index).toString() : '',
+                hintText: 'BPs',
+                allowEmptyString: true,
+                width: 35,
+                maxNumDigits: 3),
           ),
           const SizedBox(width: padding),
         ],
