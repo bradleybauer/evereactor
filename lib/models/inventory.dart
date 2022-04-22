@@ -1,5 +1,3 @@
-import '../sde.dart';
-
 class Inventory {
   final Map<int, int> _quantities;
 
@@ -24,7 +22,9 @@ class Inventory {
   }
 
   Inventory.empty() : _quantities = {};
-  Inventory.cloneOf(Inventory other) : _quantities = other.getQuantities();
+
+  Inventory.cloneOf(Inventory other) : _quantities = {...other.getQuantities()};
+
   Inventory.fromMap(this._quantities);
 
   // subtracts quantity from _quantities[id] if id is a key in _quantities
@@ -43,7 +43,7 @@ class Inventory {
     return quantity;
   }
 
-  int getQuantity(int id, int quantity) {
+  int get(int id) {
     if (_quantities.containsKey(id)) {
       return _quantities[id]!;
     }
@@ -52,5 +52,9 @@ class Inventory {
 
   Map<int, int> getQuantities() {
     return Map.from(_quantities);
+  }
+
+  bool containsType(int tid) {
+    return _quantities.containsKey(tid);
   }
 }

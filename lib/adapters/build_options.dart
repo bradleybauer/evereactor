@@ -1,3 +1,7 @@
 import 'package:flutter/material.dart';
 
-class BuildOptionsAdapter with ChangeNotifier {}
+import '../models/build_options.dart';
+
+class BuildOptionsAdapter with ChangeNotifier {
+  // final BuildOptions _buildOptions;
+}

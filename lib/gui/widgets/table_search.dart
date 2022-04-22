@@ -1,3 +1,4 @@
+import 'package:EveIndy/gui/widgets/my_animated_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,10 +32,7 @@ class SearchBarFlyoutContent extends StatelessWidget {
         itemExtent: SearchListItem.height, // vertical height of the items
         // itemCount: min(sortIndices.length, maxNumEntries),
         itemCount: numSearchResults,
-        itemBuilder: (_, index) => SearchListItem(
-          listIndex: index,
-          rowData: searchAdapter.getRowData(index),
-        ),
+        itemBuilder: (_, index) => SearchListItem(listIndex:index, searchAdapter:searchAdapter),
       );
     }
     return TableContainer(
@@ -90,14 +88,14 @@ class SearchListHeader extends StatelessWidget {
 class SearchListItem extends StatelessWidget {
   const SearchListItem({
     required this.listIndex,
-    required this.rowData,
+    required this.searchAdapter,
     Key? key,
   }) : super(key: key);
 
   static const double height = 30;
 
+  final SearchAdapter searchAdapter;
   final int listIndex;
-  final RowData rowData;
 
   // TODO If I use MyTableCell here and do not specify column widths, then the text does not wrap for long lines.
   // Not really sure how to fix this atm. Going to leave it as-is since it could also be a performance issue to not
@@ -106,6 +104,8 @@ class SearchListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     const buttonPadding = 8.0;
     const columnWidthFudgeFactor = 30.0;
+
+    final SearchTableRowData rowData = searchAdapter.getRowData(listIndex);
     return Container(
       color: listIndex % 2 == 1 ? null : theme.colors.tertiary.withOpacity(.1),
       child: Padding(
@@ -113,9 +113,7 @@ class SearchListItem extends StatelessWidget {
         child: Row(
           children: [
             TableAddDelButton(
-              onTap: () {
-                print("adding ${rowData.name}");
-              },
+              onTap: () => searchAdapter.addToBuild(listIndex),
               closeButton: false,
               color: theme.background,
               hoveredColor: theme.tertiary,

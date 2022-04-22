@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../adapters/search.dart';
-import 'flyout_controller.dart';
-import 'table_search.dart';
 import '../my_theme.dart';
+import 'flyout_controller.dart';
 import 'flyout.dart';
+import 'table_search.dart';
 import 'search_text_field.dart';
 
 class SearchBar extends StatefulWidget {
@@ -31,9 +31,10 @@ class _SearchBarState extends State<SearchBar> {
     textEditController.addListener(() {
       final text = textEditController.text.trim();
       if (text != previousText) {
-        previousText = text;
         Provider.of<SearchAdapter>(context, listen: false).setSearchText(text);
-        setState(() {}); // Need to rebuild so the text field clear button updates
+        setState(() {
+          previousText = text;
+        });
       }
     });
     focusNode.addListener(() {

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../sde.dart';
 import '../search.dart';
 import '../strings.dart';
+import 'build_items.dart';
 
 class SearchAdapter with ChangeNotifier {
-  //final BuildItemsAdapter _buildItems; // for adding items to the build
+  final BuildItemsAdapter _buildItems; // for adding items to the build
   //final MarketAdapter market;
   //final BasicBuild // for calculating profit percentages fast
   //final CacheAdapter
@@ -15,8 +16,13 @@ class SearchAdapter with ChangeNotifier {
   List<int> _sortedIds = _ids;
   final List<List<String>> _searchCandidates = [];
 
-  SearchAdapter() {
+  SearchAdapter(this._buildItems, Strings strings) {
     _initSearchCandidates();
+
+    strings.addListener(() {
+      notifyListeners();
+      _initSearchCandidates();
+    });
   }
 
   void _initSearchCandidates() {
@@ -33,9 +39,7 @@ class SearchAdapter with ChangeNotifier {
     }).toList(growable: false);
   }
 
-  void addToBuild(int tid) {
-    // _buildItems.add(tid, 1);
-  }
+  void addToBuild(int listIndex) => _buildItems.add(_sortedIds[listIndex], 1);
 
   void setSearchText(String text) {
     if (text != '') {
@@ -46,27 +50,25 @@ class SearchAdapter with ChangeNotifier {
     notifyListeners();
   }
 
-  int getNumberOfSearchResults() {
-    return _sortedIds.length;
-  }
+  int getNumberOfSearchResults() => _sortedIds.length;
 
-  RowData getRowData(int listIndex) {
+  SearchTableRowData getRowData(int listIndex) {
     final id = _sortedIds[listIndex];
     final name = Strings.get(SDE.items[id]!.nameLocalizations);
     final percent = '';
     final percentPositive = true;
     final category = _getCategoryNames(id).join(' > ');
-    return RowData(name, percent, percentPositive, category);
+    return SearchTableRowData(name, percent, percentPositive, category);
   }
 }
 
-class RowData {
+class SearchTableRowData {
   final String name;
   final String percent;
   final bool percentPositive;
   final String category;
 
-  const RowData(this.name, this.percent, this.percentPositive, this.category);
+  const SearchTableRowData(this.name, this.percent, this.percentPositive, this.category);
 }
 
 // needs access to very basic profit calculation

@@ -1,31 +1,99 @@
+import 'package:EveIndy/models/industry_type.dart';
+import 'package:EveIndy/solver/solver.dart';
 import 'package:flutter/material.dart';
 
+import '../sde_extra.dart';
+import '../solver/problem.dart';
+import '../solver/schedule.dart';
 import 'build_items.dart';
 import 'build_options.dart';
 import 'inventory.dart';
 
 class Build with ChangeNotifier {
-  InventoryAdapter inventory;
-  BuildOptionsAdapter buildOptions;
-  BuildItemsAdapter buildItems;
+  InventoryAdapter _inventory;
+  BuildOptionsAdapter _buildOptions;
+  BuildItemsAdapter _buildItems;
 
-  Build(this.inventory, this.buildOptions, this.buildItems) {
-    buildItems.addListener(_handleBuildChanged);
-    buildOptions.addListener(_handleBuildChanged);
-    inventory.addListener(_handleBuildChanged);
+  Schedule? _schedule;
+
+  Build(this._inventory, this._buildOptions, this._buildItems) {
+    _buildItems.addListener(_handleBuildChanged);
+    _buildOptions.addListener(_handleBuildChanged);
+    _inventory.addListener(_handleBuildChanged);
+
+    _schedule = Approximator.get(_getOptimizationProblem());
   }
 
   void _handleBuildChanged() {
-    // update schedule
+    _schedule = Approximator.get(_getOptimizationProblem());
+    print(_schedule.toString());
     notifyListeners();
   }
 
-  void add(int tid, int runs) => buildItems.add(tid, runs);
+  Problem _getOptimizationProblem() {
+    final runsExcess = _buildItems.getTarget2Runs();
+    final tids = _getAllTypeIds(runsExcess.keys);
+    final dependencies = _getDependencies(tids);
+    final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: 100, IndustryType.REACTION: 150};
+    final maxNumSlotsOfJob = tids.map((tid) => MapEntry(tid, 25));
+    final maxNumRunsPerSlotOfJob = tids.map((tid) => MapEntry(tid, 100000));
+    final jobMaterialBonus = tids.map((tid) => MapEntry(tid, 1.0 - 0.0));
+    final jobTimeBonus = tids.map((tid) => MapEntry(tid, 1.0 - 0.0));
+    return Problem(
+      runsExcess: runsExcess,
+      tids: tids,
+      dependencies: dependencies,
+      inventory: _inventory.getInventoryCopy(),
+      maxNumSlotsOfMachine: maxNumSlotsOfMachine,
+      maxNumSlotsOfJob: Map.fromEntries(maxNumSlotsOfJob),
+      maxNumRunsPerSlotOfJob: Map.fromEntries(maxNumRunsPerSlotOfJob),
+      jobMaterialBonus: Map.fromEntries(jobMaterialBonus),
+      jobTimeBonus: Map.fromEntries(jobTimeBonus),
+    );
+  }
 
-  void remove(int tid) => buildItems.remove(tid);
+  // Get all the unique item ids that will be built by the scheduler.
+  Set<int> _getAllTypeIds(Iterable<int> targets) {
+    final res = <int>{};
+    for (int tid in targets) {
+      res.addAll(__getAllTypeIds(tid));
+    }
+    return res;
+  }
+
+  Set<int> __getAllTypeIds(int pid) {
+    final res = <int>{pid};
+    for (int cid in SD.materials(pid).keys) {
+      if (_shouldBuild(pid, cid)) {
+        res.addAll(__getAllTypeIds(cid));
+      }
+    }
+    return res;
+  }
+
+  // Given the parent and child, returns whether child should be built.
+  bool _shouldBuild(int pid, int cid) {
+    final wrongIndyType = SD.isBuildable(pid) &&
+        SD.isBuildable(cid) &&
+        SD.industryType(pid) == IndustryType.REACTION &&
+        SD.industryType(cid) == IndustryType.MANUFACTURING; // if pid is a reaction and cid is a fuel block
+    return SD.isBuildable(cid) && _buildItems.shouldBuild(cid) && !wrongIndyType;
+  }
+
+  Map<int, Map<int, int>> _getDependencies(Iterable<int> tids) {
+    final deps = <int, Map<int, int>>{};
+    for (int tid in tids) {
+      deps[tid] = _getItemDependencies(tid);
+    }
+    return deps;
+  }
+
+  Map<int, int> _getItemDependencies(int pid) {
+    return Map.fromEntries(SD.materials(pid).entries.where((e) => _shouldBuild(pid, e.key)));
+  }
 }
 
-// buildAdapter
+// build
 //   get multi-buy
 //   get total build time
 //   get total output volume
@@ -35,7 +103,7 @@ class Build with ChangeNotifier {
 //   "get build string"
 //   set/clear inv
 //
-// targets table
+// targets table adapter
 //  get rows
 
 /*

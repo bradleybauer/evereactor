@@ -31,7 +31,6 @@ class FlyoutController extends ChangeNotifier {
 
   void _closeNoVote() {
     if (_keepOpenVotes <= 0) {
-      assert(_keepOpenVotes == 0);
       _keepOpenVotes = 0;
       _isOpen = false;
       _closeTimer?.cancel();
@@ -44,5 +43,4 @@ class FlyoutController extends ChangeNotifier {
     _keepOpenVotes -= 1;
     _closeNoVote();
   }
-
 }

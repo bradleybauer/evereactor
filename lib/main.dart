@@ -1,9 +1,16 @@
+import 'package:EveIndy/adapters/build_items.dart';
+import 'package:EveIndy/adapters/build_options.dart';
+import 'package:EveIndy/adapters/market.dart';
+import 'package:EveIndy/adapters/table_targets.dart';
 import 'package:EveIndy/gui/main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'adapters/build.dart';
+import 'adapters/inventory.dart';
 import 'adapters/search.dart';
 import 'platform.dart';
+import 'strings.dart';
 
 Future<void> main() async {
   // final cacheDbAdapter = Persistence();
@@ -24,13 +31,27 @@ Future<void> main() async {
   // final eveBuildContextAdapter = EveBuildContextAdapter(eveBuildContext, cacheDbAdapter);
   // await eveBuildContextAdapter.loadFromCache(buildAdapter);
 
-  final searchAdapter = SearchAdapter();
+  // Some change notifiers and widgets want to be notified when the language changes
+  final Strings strings = Strings();
+
+  final inventoryAdapter = InventoryAdapter();
+  final buildOptionsAdapter = BuildOptionsAdapter();
+  final buildItemsAdapter = BuildItemsAdapter();
+  final build = Build(inventoryAdapter, buildOptionsAdapter, buildItemsAdapter);
+
+  final marketAdapter = MarketAdapter();
+
+  final searchAdapter = SearchAdapter(buildItemsAdapter, strings);
+  final targetsTableAdapter = TargetsTableAdapter(marketAdapter, build, buildItemsAdapter, strings);
 
   Platform.appReadyHook();
 
   runApp(MultiProvider(
     providers: [
+      ChangeNotifierProvider.value(value: strings),
+      ChangeNotifierProvider.value(value: build),
       ChangeNotifierProvider.value(value: searchAdapter),
+      ChangeNotifierProvider.value(value: targetsTableAdapter),
       //     ChangeNotifierProvider.value(value: marketAdapter),
       //     ChangeNotifierProvider.value(value: eveBuildContextAdapter),
     ],

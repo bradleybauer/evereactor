@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../adapters/table_targets.dart';
 import '../my_theme.dart';
 import 'table.dart';
 import 'table_add_del_hover_button.dart';
@@ -14,19 +16,36 @@ class TargetsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final targetsTableAdapter = Provider.of<TargetsTableAdapter>(context);
+    final int numItems = targetsTableAdapter.getNumberOfItems();
+    Widget list;
+    if (numItems == 0) {
+      list = Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
+        child: SizedBox(
+            height: itemHeight,
+            child: Center(
+              child: Text("Use the search bar to find and add items to the build.",
+                  style: TextStyle(fontFamily: '', fontSize: 15, color: theme.primary)),
+            )),
+      );
+    } else {
+      list = ListView.builder(
+        shrinkWrap: true,
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
+        itemCount: numItems,
+        itemExtent: itemHeight,
+        itemBuilder: (_, index) => TargetsTableItem(index: index, targetsTableAdapter: targetsTableAdapter),
+      );
+    }
     return TableContainer(
-      maxHeight: 500, // TODO want this to be function of the screen width
+      maxHeight: 500,
+      // TODO want this to be function of the screen height
       borderColor: theme.outline,
       color: theme.background,
       header: const TargetsTableHeader(),
       listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
-      listView: ListView.builder(
-        shrinkWrap: true,
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
-        itemCount: 4,
-        itemExtent: itemHeight,
-        itemBuilder: (_, index) => TargetsTableItem(index: index),
-      ),
+      listView: list,
     );
   }
 }
@@ -38,7 +57,8 @@ class TargetsTableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return TableHeader(
       height: TargetsTable.headerHeight,
-      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
+      textStyle:
+          TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(TargetsTable.colFlexs[0],
             child: Text('Targets'),
@@ -62,8 +82,9 @@ class TargetsTableHeader extends StatelessWidget {
 }
 
 class TargetsTableItem extends StatelessWidget {
-  const TargetsTableItem({required this.index, Key? key}) : super(key: key);
+  const TargetsTableItem({required this.index, required this.targetsTableAdapter, Key? key}) : super(key: key);
 
+  final TargetsTableAdapter targetsTableAdapter;
   final int index;
 
   Widget wrap(int n, {EdgeInsets? padding, Alignment? align, Widget? child}) {
@@ -79,6 +100,7 @@ class TargetsTableItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final row = targetsTableAdapter.getRowData(index);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -90,9 +112,7 @@ class TargetsTableItem extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: TargetsTable.padding),
                 child: TableAddDelButton(
-                  onTap: () {
-                    print('meow');
-                  },
+                  onTap: () => targetsTableAdapter.remove(index),
                   closeButton: true,
                   color: theme.background,
                   hoveredColor: theme.tertiaryContainer,
@@ -101,19 +121,19 @@ class TargetsTableItem extends StatelessWidget {
               ),
               Expanded(
                   child: Container(
-                color: theme.secondary,
+                child: Text(row.name),
               )),
             ],
           ),
         ),
-        wrap(1, child: Container(color: theme.primary)),
-        wrap(2, child: Container(color: theme.primaryContainer)),
-        wrap(3, child: Container(color: theme.secondary)),
-        wrap(4, child: Container(color: theme.secondaryContainer)),
-        wrap(5, child: Container(color: theme.tertiary)),
-        wrap(6, child: Container(color: theme.tertiaryContainer)),
-        wrap(7, child: Container(color: theme.error)),
-        wrap(8, child: Container(color: theme.errorContainer)),
+        wrap(1, child: Text(row.runs.toString())),
+        wrap(2, child: Text(row.profit)),
+        wrap(3, child: Text(row.cost)),
+        wrap(4, child: Text(row.percent)),
+        wrap(5, child: Text(row.cost_per_unit)),
+        wrap(6, child: Text(row.sell_per_unit)),
+        wrap(7, child: Text(row.out_m3)),
+        wrap(8, child: Text("bpops")),
       ],
     );
   }
