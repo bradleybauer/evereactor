@@ -52,6 +52,8 @@ class TargetsTableAdapter with ChangeNotifier {
   }
 
   void remove(int listIndex) => _buildItems.remove(_sortedIds[listIndex]);
+
+  void setRuns(int listIndex, int runs) => _buildItems.setRuns(_sortedIds[listIndex], runs);
 }
 
 class TargetsTableRowData {

@@ -33,4 +33,6 @@ class BuildItems {
   // Returns whether the buildItems thinks the item should be built... Returns true if it does not have an 'opinion'.
   // If an item is set to buy then it should not be in the material list for any other item.
   bool shouldBuild(int tid) => !_tid2shouldBuild.containsKey(tid) || _tid2shouldBuild[tid]!;
+
+  void setRuns(int tid, int runs) => _tid2runs.update(tid, (value) => runs, ifAbsent: () => runs);
 }

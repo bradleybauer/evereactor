@@ -1,3 +1,4 @@
+import 'package:EveIndy/gui/widgets/table_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +10,7 @@ import 'table_add_del_hover_button.dart';
 class TargetsTable extends StatelessWidget {
   const TargetsTable({Key? key}) : super(key: key);
 
-  static const colFlexs = [60, 15, 15, 15, 7, 15, 15, 15, 18];
+  static const colFlexs = [60, 8, 15, 15, 7, 15, 15, 15, 18];
   static const double headerHeight = 35;
   static const double itemHeight = 30;
   static const double padding = 8;
@@ -58,13 +59,13 @@ class TargetsTableHeader extends StatelessWidget {
     return TableHeader(
       height: TargetsTable.headerHeight,
       textStyle:
-          TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
+      TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(TargetsTable.colFlexs[0],
             child: Text('Targets'),
             padding: const EdgeInsets.fromLTRB(TargetsTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
             align: Alignment.centerLeft),
-        TableContainer.getCol(TargetsTable.colFlexs[1], child: Text('Runs'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[1], child: Text('Runs')),
         TableContainer.getCol(TargetsTable.colFlexs[2], child: Text('Profit'), onTap: () {}),
         TableContainer.getCol(TargetsTable.colFlexs[3], child: Text('Cost'), onTap: () {}),
         TableContainer.getCol(TargetsTable.colFlexs[4], child: Text('%'), onTap: () {}),
@@ -121,12 +122,17 @@ class TargetsTableItem extends StatelessWidget {
               ),
               Expanded(
                   child: Container(
-                child: Text(row.name),
-              )),
+                    child: Text(row.name),
+                  )),
             ],
           ),
         ),
-        wrap(1, child: Text(row.runs.toString())),
+        // wrap(1, child: TableTextField(activeBorderColor: theme.primary, onChanged: (int runs){})),
+        wrap(1, child: TableTextField(initialText: row.runs.toString(), onChanged: (String runs) {
+          if (runs != '') {
+            targetsTableAdapter.setRuns(index, int.parse(runs));
+          }
+        })),
         wrap(2, child: Text(row.profit)),
         wrap(3, child: Text(row.cost)),
         wrap(4, child: Text(row.percent)),

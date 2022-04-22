@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../models/build_items.dart';
-import '../sde_extra.dart';
 
 class BuildItemsAdapter with ChangeNotifier {
   final BuildItems _buildItems = BuildItems();
@@ -22,7 +21,12 @@ class BuildItemsAdapter with ChangeNotifier {
 
   int? getTargetRuns(int id) => _buildItems.getTargetRuns(id);
 
-  Map<int,int> getTarget2Runs() => _buildItems.getTarget2Runs();
+  Map<int, int> getTarget2Runs() => _buildItems.getTarget2Runs();
 
   bool shouldBuild(int tid) => _buildItems.shouldBuild(tid);
+
+  void setRuns(int tid, int runs) {
+    _buildItems.setRuns(tid, runs);
+    notifyListeners();
+  }
 }
