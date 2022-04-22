@@ -18,16 +18,18 @@ class HomePage extends StatelessWidget {
         child: Container(
           padding: Platform.isWeb() ? const EdgeInsets.all(32) : null,
           width: theme.appWidth,
-          child: ClipRRect(
-            borderRadius: Platform.isWeb() ? BorderRadius.circular(10) : BorderRadius.zero,
+          child: PhysicalModel(
             clipBehavior: Clip.antiAlias,
+            borderRadius: Platform.isWeb() ? BorderRadius.circular(10) : BorderRadius.zero,
+            color: Colors.transparent,
+            elevation: Platform.isWeb() ? 32 : 0,
             child: Container(
               color: theme.background,
               child: Stack(
-                children: [
-                  const Body(width: MyTheme.appWidth, verticalPadding: MyTheme.appBarHeight),
+                children: const [
+                  Body(width: MyTheme.appWidth, verticalPadding: MyTheme.appBarHeight),
                   Header(height: MyTheme.appBarHeight, width: MyTheme.appWidth),
-                  const Align(alignment: Alignment.bottomCenter, child: Footer(height: MyTheme.appBarHeight, width: MyTheme.appWidth)),
+                  Align(alignment: Alignment.bottomCenter, child: Footer(height: MyTheme.appBarHeight, width: MyTheme.appWidth)),
                 ],
               ),
             ),
