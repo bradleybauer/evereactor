@@ -9,13 +9,14 @@ import '../sde_extra.dart';
 import 'problem.dart';
 import 'schedule.dart';
 
+const thirtyDays = 30 * 24 * 3600;
+
 abstract class Approximator {
   // if there are more than 1000 batches, then the user has probably entered some stupid combination of settings
   static const MAX_NUM_BATCHES = 1000;
 
   /// Forms a batch using the [available] jobs where each job is scheduled on one line.
   static Batch _getBatch(Map<int, int> available, IndustryType machine, Problem prob) {
-    const thirtyDays = 30 * 24 * 3600;
     final batch = Batch();
     int slotsUsedOnBatch = 0;
     for (int tid in available.keys) {
@@ -90,13 +91,18 @@ abstract class Approximator {
     for (int tid in types) {
       int runs = batch[tid].runs;
       int slots = batch[tid].slots;
-      int newMaxRunsPerSlot = maxT ~/ (SD.timePerRun(tid) * prob.jobTimeBonus[tid]!).ceil();
+      double timePerRun = SD.timePerRun(tid) * prob.jobTimeBonus[tid]!;
+      int newMaxRunsPerSlot = (maxT / timePerRun).floor();
+      // can not queue up more than 30 days worth of runs on one slot.
+      newMaxRunsPerSlot = min(newMaxRunsPerSlot, (thirtyDays / timePerRun).ceil());
       int newNumSlots = ceilDiv(runs, newMaxRunsPerSlot);
+      double newTime = SD.baseTime(runs, newNumSlots, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!;
+      assert(newTime - SD.timePerRun(tid) <= thirtyDays);
       assert(newNumSlots <= slots);
       batch[tid] = BatchItem(
         runs,
         newNumSlots,
-        SD.baseTime(runs, newNumSlots, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!,
+        newTime,
       );
     }
     // newMaxT = util.getMaxTimeOfBatch(batch)
@@ -145,23 +151,25 @@ abstract class Approximator {
   /// If possible, reduce the amount of slots used by a job without increasing the maximum batch time.
   static void _minimizeSlotsWithoutIncreasingMaxTime(Batch batch, IndustryType machine, Problem prob) {
     double maxT = batch.getMaxTime();
+    assert(maxT - SD.timePerRun(batch.getTidOfMaxTime()) <= thirtyDays);
     for (int tid in batch.tids) {
       int runs = batch[tid].runs;
       int slots = batch[tid].slots;
       double time = batch[tid].time;
+      assert(time - SD.timePerRun(tid) <= thirtyDays);
       while (slots > 1) {
         double newT = SD.baseTime(runs, slots - 1, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!;
         // cannot use more runs per line than user request
         final maxNumRunsPerSlot = ceilDiv(runs, slots - 1);
-        if (newT <= maxT && maxNumRunsPerSlot <= prob.maxNumRunsPerSlotOfJob[tid]!) {
+        if (newT <= maxT &&
+            newT - SD.timePerRun(tid) <= thirtyDays &&
+            maxNumRunsPerSlot <= prob.maxNumRunsPerSlotOfJob[tid]!) {
           slots -= 1;
           time = newT;
         } else {
           break;
         }
       }
-      const thirtyDay = 30 * 24 * 3600;
-      assert(time - SD.timePerRun(tid) < thirtyDay);
       batch[tid] = BatchItem(runs, slots, time);
     }
   }

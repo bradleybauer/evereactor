@@ -26,6 +26,18 @@ class Batch {
 
   double getMaxTime() => _items.values.fold(0.0, (previousValue, e) => max(previousValue, e.time));
 
+  int getTidOfMaxTime() {
+    double maxTime = 0;
+    int tid = -1;
+    for (var entry in _items.entries) {
+      if (entry.value.time > maxTime) {
+        tid = entry.key;
+        maxTime = entry.value.time;
+      }
+    }
+    return tid;
+  }
+
   int getNumSlots() => _items.values.fold(0, (previousValue, e) => previousValue + e.slots);
 
   Iterable<int> get tids => _items.keys;
@@ -78,7 +90,7 @@ class Schedule {
               (' ' * (10 - log10(runs).ceil())) +
               '\ts:' +
               slots.toString() +
-              (' ' * (7- log10(slots).ceil())) +
+              (' ' * (7 - log10(slots).ceil())) +
               '\tt:' +
               (tt / 3600).toString() +
               '\n');
