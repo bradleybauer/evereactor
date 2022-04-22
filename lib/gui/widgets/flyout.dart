@@ -1,7 +1,10 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
-import '../my_theme.dart';
 import '../../platform.dart';
+import '../my_theme.dart';
 import 'flyout_controller.dart';
 
 enum FlyoutOpenMode {
@@ -10,7 +13,7 @@ enum FlyoutOpenMode {
   custom, // Manage the controller directly.
 }
 
-enum FlyoutAlign { childTopLeft, appRight }
+enum FlyoutAlign { childTopLeft, childTopRight, appRight }
 
 class Flyout extends StatefulWidget {
   /// Provide [closeTimeout] or [controller] but not both.
@@ -26,8 +29,7 @@ class Flyout extends StatefulWidget {
     this.closeTimeout,
     this.controller,
     Key? key,
-  })  : assert((closeTimeout != null && controller == null) ||
-            (closeTimeout == null && controller != null)),
+  })  : assert((closeTimeout != null && controller == null) || (closeTimeout == null && controller != null)),
         super(key: key);
 
   final double verticalOffset;
@@ -82,23 +84,23 @@ class _FlyoutState extends State<Flyout> {
     switch (widget.align) {
       case FlyoutAlign.appRight:
         if (!Platform.isWeb()) {
-          double dy = -widget.verticalOffset - widget.contentSize.height;
-          double dx = MyTheme.appWidth -
-              widget.windowPadding * 2 -
-              widget.contentSize.width -
-              childPos.dx;
+          double dy = -widget.verticalOffset;
+          double dx = MyTheme.appWidth - childPos.dx - widget.windowPadding - widget.contentSize.width;
           return Offset(dx, dy);
         } else {
           final windowWidth = MediaQuery.of(ctx).size.width;
-          double dy = -widget.verticalOffset - widget.contentSize.height;
-          double dx = (windowWidth - MyTheme.appWidth) / 2 +
-              MyTheme.appWidth -
-              widget.windowPadding * 2 -
+          double dy = -widget.verticalOffset;
+          double dx = windowWidth -
+              childPos.dx -
+              widget.windowPadding -
               widget.contentSize.width -
-              childPos.dx;
+              max(0, windowWidth - MyTheme.appWidth) / 2 - // the app is centered in the browser
+              32; // -32 there is extra padding on web
           return Offset(dx, dy);
         }
       case FlyoutAlign.childTopLeft:
+        return Offset(0.0, -widget.verticalOffset);
+      case FlyoutAlign.childTopRight:
         return Offset(0.0, -widget.verticalOffset);
     }
   }
@@ -156,11 +158,15 @@ class _FlyoutState extends State<Flyout> {
             showWhenUnlinked: false,
             offset: offset,
             followerAnchor: FlyoutAlign.appRight == widget.align
-                ? Alignment.topLeft
-                : Alignment.bottomLeft,
+                ? Alignment.bottomLeft
+                : FlyoutAlign.childTopLeft == widget.align
+                    ? Alignment.bottomLeft
+                    : Alignment.bottomRight,
             targetAnchor: FlyoutAlign.appRight == widget.align
                 ? Alignment.topLeft
-                : Alignment.topLeft,
+                : FlyoutAlign.childTopLeft == widget.align
+                    ? Alignment.topLeft
+                    : Alignment.topRight,
             child: MouseRegion(
               opaque: true,
               onEnter: (event) => controller.open(),
