@@ -13,12 +13,12 @@ class BuildItems {
   final Map<int, bool> _tid2shouldBuild = {};
 
   // Add a number of runs of type id to the build.
-  void add(int tid, int runs) {
+  void addTarget(int tid, int runs) {
     _tid2runs.update(tid, (existingRuns) => existingRuns + runs, ifAbsent: () => runs);
   }
 
   // Remove all runs of type id from the build.
-  void remove(int tid) {
+  void removeTarget(int tid) {
     _tid2runs.remove(tid);
   }
 
@@ -71,4 +71,10 @@ class BuildItems {
   int? getMaxRuns(int tid) => _tid2bpOps[tid]?.maxNumRuns;
 
   int? getMaxBPs(int tid) => _tid2bpOps[tid]?.maxNumBPs;
+
+  void removeAll(int tid) {
+    _tid2shouldBuild.remove(tid);
+    _tid2bpOps.remove(tid);
+    _tid2runs.remove(tid);
+  }
 }

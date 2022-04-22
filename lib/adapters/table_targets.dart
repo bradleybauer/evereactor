@@ -48,10 +48,28 @@ class TargetsTableAdapter with ChangeNotifier {
     String sell_per_unit = "0";
     String out_m3 = "1";
     return TargetsTableRowData(
-        name, runs, profit, cost, percent, percentPositive, cost_per_unit, sell_per_unit, out_m3);
+        name,
+        runs,
+        profit,
+        cost,
+        percent,
+        percentPositive,
+        cost_per_unit,
+        sell_per_unit,
+        out_m3);
   }
 
-  void remove(int listIndex) => _buildItems.remove(_sortedIds[listIndex]);
+  void remove(int listIndex) {
+    final tid = _sortedIds[listIndex];
+    // TODO if tid is not an intermediate then remove it's buildOps
+    bool isIntermediateAndTarget = false;
+    if (isIntermediateAndTarget) {
+      _buildItems.removeAll(tid);
+    }
+    else {
+      _buildItems.removeTarget(tid);
+    }
+  }
 
   void setRuns(int listIndex, int runs) => _buildItems.setRuns(_sortedIds[listIndex], runs);
 
@@ -83,15 +101,13 @@ class TargetsTableRowData {
   final String sell_per_unit;
   final String out_m3;
 
-  const TargetsTableRowData(
-    this.name,
-    this.runs,
-    this.profit,
-    this.cost,
-    this.percent,
-    this.percentPositive,
-    this.cost_per_unit,
-    this.sell_per_unit,
-    this.out_m3,
-  );
+  const TargetsTableRowData(this.name,
+      this.runs,
+      this.profit,
+      this.cost,
+      this.percent,
+      this.percentPositive,
+      this.cost_per_unit,
+      this.sell_per_unit,
+      this.out_m3,);
 }

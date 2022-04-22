@@ -39,7 +39,7 @@ class SearchAdapter with ChangeNotifier {
     }).toList(growable: false);
   }
 
-  void addToBuild(int listIndex) => _buildItems.add(_sortedIds[listIndex], 1);
+  void addToBuild(int listIndex) => _buildItems.addTarget(_sortedIds[listIndex], 1);
 
   void setSearchText(String text) {
     if (text != '') {

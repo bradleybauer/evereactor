@@ -5,13 +5,13 @@ import '../models/build_items.dart';
 class BuildItemsAdapter with ChangeNotifier {
   final BuildItems _buildItems = BuildItems();
 
-  void add(int tid, int runs) {
-    _buildItems.add(tid, runs);
+  void addTarget(int tid, int runs) {
+    _buildItems.addTarget(tid, runs);
     notifyListeners();
   }
 
-  void remove(int tid) {
-    _buildItems.remove(tid);
+  void removeTarget(int tid) {
+    _buildItems.removeTarget(tid);
     notifyListeners();
   }
 
@@ -57,4 +57,6 @@ class BuildItemsAdapter with ChangeNotifier {
   int? getMaxRuns(int tid) => _buildItems.getMaxRuns(tid);
 
   int? getMaxBPs(int tid) => _buildItems.getMaxBPs(tid);
+
+  void removeAll(int tid) => _buildItems.removeAll(tid);
 }
