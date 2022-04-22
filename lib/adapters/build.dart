@@ -34,9 +34,9 @@ class Build with ChangeNotifier {
     final runsExcess = _buildItems.getTarget2Runs();
     final tids = _getAllTypeIds(runsExcess.keys);
     final dependencies = _getDependencies(tids);
-    final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: 100, IndustryType.REACTION: 150};
-    final maxNumSlotsOfJob = tids.map((tid) => MapEntry(tid, 25));
-    final maxNumRunsPerSlotOfJob = tids.map((tid) => MapEntry(tid, 100000));
+    final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: 1, IndustryType.REACTION: 1};
+    final maxNumSlotsOfJob = tids.map((tid) => MapEntry(tid, 1));
+    final maxNumRunsPerSlotOfJob = tids.map((tid) => MapEntry(tid, 1));
     final jobMaterialBonus = tids.map((tid) => MapEntry(tid, 1.0 - 0.0));
     final jobTimeBonus = tids.map((tid) => MapEntry(tid, 1.0 - 0.0));
     return Problem(

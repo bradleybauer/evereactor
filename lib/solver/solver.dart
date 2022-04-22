@@ -10,13 +10,16 @@ import 'problem.dart';
 import 'schedule.dart';
 
 abstract class Approximator {
+  // if there are more than 1000 batches, then the user has probably entered some stupid combination of settings
+  static const MAX_NUM_BATCHES = 1000;
+
   /// Forms a batch using the [available] jobs where each job is scheduled on one line.
   static Batch _getBatch(Map<int, int> available, IndustryType machine, Problem prob) {
     const thirtyDays = 30 * 24 * 3600;
     final batch = Batch();
     int slotsUsedOnBatch = 0;
     for (int tid in available.keys) {
-      // what is the maximum number of slot we have on this batch
+      // what is the maximum number of slots we have remaining on this batch
       final slotsAvailable = min(prob.maxNumSlotsOfMachine[machine]! - slotsUsedOnBatch, prob.maxNumSlotsOfJob[tid]!);
 
       if (slotsAvailable == 0) {
@@ -41,9 +44,10 @@ abstract class Approximator {
       // get number of slots used
       final slotsUsedForJob = ceilDiv(runs, maxNumRunsPerSlot);
 
-      if (slotsUsedOnBatch + slotsUsedForJob > prob.maxNumSlotsOfMachine[machine]!) {
-        break;
-      }
+      assert(slotsUsedOnBatch + slotsUsedForJob <= prob.maxNumSlotsOfMachine[machine]!);
+      // if (slotsUsedOnBatch + slotsUsedForJob > prob.maxNumSlotsOfMachine[machine]!) {
+      //   break;
+      // }
 
       batch[tid] = BatchItem(
         runs,
@@ -223,6 +227,12 @@ abstract class Approximator {
         final batch = _getBatch(neededOfMachineType, machine, prob);
         _setOptimalLineAlloc(batch, machine, prob);
         batches.insert(0, batch);
+
+        // sanity check
+        if (batches.length > MAX_NUM_BATCHES) {
+          // TODO handle error here
+          return Schedule();
+        }
 
         _updateNeededUsingProduced(batch, needed);
         _updateNeededUsingConsumed(batch, needed, machine, prob, inventoryCopy);
