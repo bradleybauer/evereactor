@@ -15,6 +15,7 @@ class HoverButton extends StatefulWidget {
     this.borderRadius = 0,
     this.elevation = 0,
     this.hoveredElevation = 3,
+    this.mouseCursor,
     Key? key,
   }) : super(key: key);
 
@@ -30,6 +31,7 @@ class HoverButton extends StatefulWidget {
   final double borderRadius;
   final double elevation;
   final double hoveredElevation;
+  final MouseCursor? mouseCursor;
 
   @override
   State<HoverButton> createState() => _HoverButtonState();
@@ -46,7 +48,6 @@ class _HoverButtonState extends State<HoverButton> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-        cursor: MouseCursor.uncontrolled,
         onEnter: (e) => onHover(true),
         onExit: (e) => onHover(false),
         child: MyAnimatedContainer(
@@ -58,6 +59,7 @@ class _HoverButtonState extends State<HoverButton> {
           shadowColor: widget.shadowColor,
           onTap: widget.onTap,
           splashColor: widget.splashColor,
+          mouseCursor: widget.mouseCursor,
         ));
   }
 }

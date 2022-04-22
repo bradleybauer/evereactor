@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
 
 class FlyoutController extends ChangeNotifier {
   FlyoutController(this.closeTimeout);
@@ -29,6 +30,27 @@ class FlyoutController extends ChangeNotifier {
     _closeTimer = Timer(closeTimeout, _closeNoVote);
   }
 
+  void close() {
+    _keepOpenVotes -= 1;
+    _closeNoVote();
+  }
+
+  // Used in flyout tap mode
+  void toggle() {
+    if (isOpen) {
+      forceClose();
+    } else {
+      open();
+    }
+  }
+
+  // Sometimes, the MouseRegion fails to keep onEnter/onExit balanced and so the flyout can get stuck open. In this case
+  // allow the user to click outside of the flyout content to forcefully close it.
+  void forceClose() {
+    _keepOpenVotes = 0;
+    _closeNoVote();
+  }
+
   void _closeNoVote() {
     if (_keepOpenVotes <= 0) {
       _keepOpenVotes = 0;
@@ -37,10 +59,5 @@ class FlyoutController extends ChangeNotifier {
       _closeTimer = null;
       notifyListeners();
     }
-  }
-
-  void close() {
-    _keepOpenVotes -= 1;
-    _closeNoVote();
   }
 }

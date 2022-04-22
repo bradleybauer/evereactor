@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../my_theme.dart';
@@ -12,6 +14,7 @@ class MyAnimatedContainer extends StatelessWidget {
     this.borderRadius,
     this.shadowColor = Colors.black,
     this.onTap,
+    this.mouseCursor=MouseCursor.defer,
     Key? key,
   }) : super(key: key);
 
@@ -23,6 +26,7 @@ class MyAnimatedContainer extends StatelessWidget {
   final Color? shadowColor;
   final double? borderRadius;
   final void Function()? onTap;
+  final MouseCursor? mouseCursor;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +35,7 @@ class MyAnimatedContainer extends StatelessWidget {
       widget = Material(
         color: Colors.transparent,
         child: InkWell(
+          mouseCursor: mouseCursor,
           splashColor: splashColor,
           onTap: onTap,
           child: widget,

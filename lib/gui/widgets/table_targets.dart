@@ -1,3 +1,4 @@
+import 'package:EveIndy/gui/widgets/flyout_bp_options.dart';
 import 'package:EveIndy/gui/widgets/table_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,7 @@ import 'table_add_del_hover_button.dart';
 class TargetsTable extends StatelessWidget {
   const TargetsTable({Key? key}) : super(key: key);
 
-  static const colFlexs = [60, 8, 15, 15, 7, 15, 15, 15, 18];
+  static const colFlexs = [58, 8, 15, 15, 7, 15, 15, 15, 10];
   static const double headerHeight = 35;
   static const double itemHeight = 30;
   static const double padding = 8;
@@ -59,7 +60,7 @@ class TargetsTableHeader extends StatelessWidget {
     return TableHeader(
       height: TargetsTable.headerHeight,
       textStyle:
-      TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
+          TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(TargetsTable.colFlexs[0],
             child: Text('Targets'),
@@ -75,6 +76,7 @@ class TargetsTableHeader extends StatelessWidget {
         TableContainer.getCol(
           TargetsTable.colFlexs[8],
           align: Alignment.centerRight,
+          child: Text('BP'),
           padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
         ),
       ],
@@ -102,45 +104,60 @@ class TargetsTableItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final row = targetsTableAdapter.getRowData(index);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        wrap(
-          0,
-          align: Alignment.centerLeft,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: TargetsTable.padding),
-                child: TableAddDelButton(
-                  onTap: () => targetsTableAdapter.remove(index),
-                  closeButton: true,
-                  color: theme.background,
-                  hoveredColor: theme.tertiaryContainer,
-                  splashColor: theme.onTertiaryContainer.withOpacity(.35),
-                ),
-              ),
-              Expanded(
-                  child: Container(
+    return Material(
+      color: Colors.transparent,
+      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
+      child: InkWell(
+        onTap: () {},
+        hoverColor: theme.outline.withOpacity(.1),
+        focusColor: theme.outline.withOpacity(.1),
+        mouseCursor: MouseCursor.defer,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            wrap(
+              0,
+              align: Alignment.centerLeft,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: TargetsTable.padding),
+                    child: TableAddDelButton(
+                      onTap: () => targetsTableAdapter.remove(index),
+                      closeButton: true,
+                      color: theme.background,
+                      hoveredColor: theme.tertiaryContainer,
+                      splashColor: theme.onTertiaryContainer.withOpacity(.35),
+                    ),
+                  ),
+                  Expanded(
+                      child: Container(
                     child: Text(row.name),
                   )),
-            ],
-          ),
+                ],
+              ),
+            ),
+            // wrap(1, child: TableTextField(activeBorderColor: theme.primary, onChanged: (int runs){})),
+            wrap(1,
+                child: TableTextField(
+                    initialText: row.runs.toString(),
+                    onChanged: (String runs) {
+                      if (runs != '') {
+                        targetsTableAdapter.setRuns(index, int.parse(runs));
+                      }
+                    })),
+            wrap(2, child: Text(row.profit)),
+            wrap(3, child: Text(row.cost)),
+            wrap(4, child: Text(row.percent)),
+            wrap(5, child: Text(row.cost_per_unit)),
+            wrap(6, child: Text(row.sell_per_unit)),
+            wrap(7, child: Text(row.out_m3)),
+            wrap(8,
+                child: BpOptionsTableWidget(
+                    style: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground))),
+          ],
         ),
-        // wrap(1, child: TableTextField(activeBorderColor: theme.primary, onChanged: (int runs){})),
-        wrap(1, child: TableTextField(initialText: row.runs.toString(), onChanged: (String runs) {
-          if (runs != '') {
-            targetsTableAdapter.setRuns(index, int.parse(runs));
-          }
-        })),
-        wrap(2, child: Text(row.profit)),
-        wrap(3, child: Text(row.cost)),
-        wrap(4, child: Text(row.percent)),
-        wrap(5, child: Text(row.cost_per_unit)),
-        wrap(6, child: Text(row.sell_per_unit)),
-        wrap(7, child: Text(row.out_m3)),
-        wrap(8, child: Text("bpops")),
-      ],
+      ),
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:EveIndy/gui/widgets/my_animated_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,17 +31,20 @@ class SearchBarFlyoutContent extends StatelessWidget {
         itemExtent: SearchListItem.height, // vertical height of the items
         // itemCount: min(sortIndices.length, maxNumEntries),
         itemCount: numSearchResults,
-        itemBuilder: (_, index) => SearchListItem(listIndex:index, searchAdapter:searchAdapter),
+        itemBuilder: (_, index) => SearchListItem(listIndex: index, searchAdapter: searchAdapter),
       );
     }
-    return TableContainer(
-      maxHeight: size.height,
-      color: theme.tertiaryContainer,
-      elevation: 2,
-      borderRadius: 4,
-      header: const SearchListHeader(),
-      listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
-      listView: listContent,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: size.height, maxWidth: size.width),
+      child: TableContainer(
+        maxHeight: size.height,
+        color: theme.tertiaryContainer,
+        elevation: 2,
+        borderRadius: 4,
+        header: const SearchListHeader(),
+        listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
+        listView: listContent,
+      ),
     );
   }
 }

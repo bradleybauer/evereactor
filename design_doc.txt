@@ -290,9 +290,23 @@ Optimize - desktop // MEDIUM PRIORITY
     stop
     discard optimization
 
+BpOptions
+    in the context of ME and TE: Runs & BPs is easily understood!!!!!
+    so a flyout that looks like:
+
+    |--------------------------|
+    |  [ME] [TE] [Runs] [BPs]  |
+    |--------------------------|
+
+                  |FlyoutChild|
+                  |  -------  |
+
+    where [x] is a textField with default text of "x", should be fine.
+    can give extra information in a tool tip
+
 Targets // HIGH PRIORITY
   Items the user has 'added' to the build
-    (x, name, runs, profit, cost, %, cost/u, sell/u, out m3, BpOptions(me, te, m#r, m#bps))
+    (x, name, runs, profit, cost, %, cost/u, sell/u, out m3, BpOptions)
     If maxBps & maxRunsPerBp are not set then those values are set to the global values
 
 Intermediates (have build/buy column header be buttons that set all? that'd make sense, but NO since i dont need it)

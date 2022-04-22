@@ -13,7 +13,12 @@ enum FlyoutOpenMode {
   custom, // Manage the controller directly.
 }
 
-enum FlyoutAlign { childTopLeft, childTopRight, appRight }
+enum FlyoutAlign {
+  childLeftCenter,
+  childTopLeft,
+  childTopRight,
+  appRight,
+}
 
 class Flyout extends StatefulWidget {
   /// Provide [closeTimeout] or [controller] but not both.
@@ -25,7 +30,7 @@ class Flyout extends StatefulWidget {
     required this.openMode,
     required this.align,
     // Note this only pads the right side of the window atm.
-    required this.windowPadding,
+    this.windowPadding = 0,
     this.closeTimeout,
     this.controller,
     Key? key,
@@ -102,6 +107,8 @@ class _FlyoutState extends State<Flyout> {
         return Offset(0.0, -widget.verticalOffset);
       case FlyoutAlign.childTopRight:
         return Offset(0.0, -widget.verticalOffset);
+      case FlyoutAlign.childLeftCenter:
+        return Offset(-widget.verticalOffset, 0.0);
     }
   }
 
@@ -132,7 +139,7 @@ class _FlyoutState extends State<Flyout> {
       case FlyoutOpenMode.tap:
         ret = GestureDetector(
           behavior: HitTestBehavior.translucent,
-          onTap: controller.open,
+          onTap: controller.toggle,
           child: widget.child,
         );
         break;
@@ -150,23 +157,34 @@ class _FlyoutState extends State<Flyout> {
         final childBox = context.findRenderObject() as RenderBox;
         final offset = getEntryOffset(ctx, childBox);
 
-        return Positioned(
-          width: widget.contentSize.width,
-          // height: widget.contentSize.height,
+        Alignment? followAnchor;
+        Alignment? targetAnchor;
+        switch (widget.align) {
+          case FlyoutAlign.appRight:
+            followAnchor = Alignment.bottomLeft;
+            targetAnchor = Alignment.topLeft;
+            break;
+          case FlyoutAlign.childTopLeft:
+            followAnchor = Alignment.bottomLeft;
+            targetAnchor = Alignment.topLeft;
+            break;
+          case FlyoutAlign.childTopRight:
+            followAnchor = Alignment.bottomRight;
+            targetAnchor = Alignment.topRight;
+            break;
+          case FlyoutAlign.childLeftCenter:
+            followAnchor = Alignment.centerRight;
+            targetAnchor = Alignment.centerLeft;
+            break;
+        }
+
+        return Center(
           child: CompositedTransformFollower(
             link: layerLink,
             showWhenUnlinked: false,
             offset: offset,
-            followerAnchor: FlyoutAlign.appRight == widget.align
-                ? Alignment.bottomLeft
-                : FlyoutAlign.childTopLeft == widget.align
-                    ? Alignment.bottomLeft
-                    : Alignment.bottomRight,
-            targetAnchor: FlyoutAlign.appRight == widget.align
-                ? Alignment.topLeft
-                : FlyoutAlign.childTopLeft == widget.align
-                    ? Alignment.topLeft
-                    : Alignment.topRight,
+            followerAnchor: followAnchor,
+            targetAnchor: targetAnchor,
             child: MouseRegion(
               opaque: true,
               onEnter: (event) => controller.open(),

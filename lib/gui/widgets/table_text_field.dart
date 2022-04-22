@@ -8,13 +8,20 @@ class TableTextField extends StatefulWidget {
   const TableTextField({
     Key? key,
     required this.onChanged,
-    required this.initialText,
+    this.initialText = '',
+    this.width = 40,
+    this.maxNumDigits = 5,
+    this.hintText = '',
+    this.textAlign = TextAlign.right,
   }) : super(key: key);
 
-  static const double width = 40;
   static const double height = TargetsTable.itemHeight * .7;
 
+  final double width;
+  final int maxNumDigits;
   final String initialText;
+  final String hintText;
+  final TextAlign textAlign;
   final void Function(String) onChanged;
 
   @override
@@ -42,7 +49,9 @@ class _TableTextFieldState extends State<TableTextField> {
     return TextField(
       onChanged: widget.onChanged,
       controller: controller,
+      textAlign: widget.textAlign,
       decoration: InputDecoration(
+        hintText: widget.hintText,
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: theme.primary)),
         focusedBorder: OutlineInputBorder(
@@ -51,10 +60,9 @@ class _TableTextFieldState extends State<TableTextField> {
             borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: theme.outline.withOpacity(.2))),
         fillColor: theme.background,
         filled: true,
-        constraints: BoxConstraints.tight(const Size(TableTextField.width, TableTextField.height)),
+        constraints: BoxConstraints.tight(Size(widget.width, TableTextField.height)),
         contentPadding: const EdgeInsets.all(2.0),
       ),
-      textAlign: TextAlign.right,
       style: TextStyle(fontSize: 11, fontFamily: 'NotoSans', color: theme.onBackground),
       keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
       inputFormatters: [
@@ -65,7 +73,7 @@ class _TableTextFieldState extends State<TableTextField> {
             if (text.startsWith('0')) {
               return oldValue;
             }
-            if (text.length > 5) {
+            if (text.length > widget.maxNumDigits) {
               return oldValue;
             }
             if (text.isNotEmpty) {
