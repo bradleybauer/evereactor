@@ -1,9 +1,9 @@
-import 'package:EveIndy/gui/widgets/table_text_field.dart';
 import 'package:flutter/material.dart';
 
 import '../../adapters/build_items.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
+import 'table_text_field.dart';
 
 class BpOptionsTableWidget extends StatelessWidget {
   const BpOptionsTableWidget({
@@ -30,7 +30,7 @@ class BpOptionsTableWidget extends StatelessWidget {
         closeTimeout: const Duration(),
         maxVotes: 1,
         child: const Padding(
-          padding: EdgeInsets.fromLTRB(theme.appBarPadding,0,0,0),
+          padding: EdgeInsets.fromLTRB(theme.appBarPadding, 0, 0, 0),
           child: RotatedBox(
             quarterTurns: 2,
             child: Icon(
@@ -68,31 +68,17 @@ class BpOptionsFlyoutContent extends StatelessWidget {
         children: [
           const SizedBox(width: padding),
           Tooltip(
-            message: 'Material Efficiency',
+            message: 'Max number of blueprints',
             preferBelow: false,
             verticalOffset: toolTipOffset,
             waitDuration: duration,
             child: TableTextField(
-                onChanged: (text) => adapter.setME(tid, text != '' ? int.parse(text) : null),
-                initialText: adapter.getME(tid) != null ? adapter.getME(tid).toString() : '',
-                hintText: 'ME',
+                onChanged: (text) => adapter.setMaxBPs(tid, text != '' ? int.parse(text) : null),
+                initialText: adapter.getMaxBPs(tid) != null ? adapter.getMaxBPs(tid).toString() : '',
+                hintText: 'BPs',
                 allowEmptyString: true,
-                width: 25,
-                maxNumDigits: 2),
-          ),
-          const SizedBox(width: padding),
-          Tooltip(
-            message: 'Time Efficiency',
-            preferBelow: false,
-            verticalOffset: toolTipOffset,
-            waitDuration: duration,
-            child: TableTextField(
-                onChanged: (text) => adapter.setTE(tid, text != '' ? int.parse(text) : null),
-                initialText: adapter.getTE(tid) != null ? adapter.getTE(tid).toString() : '',
-                hintText: 'TE',
-                allowEmptyString: true,
-                width: 25,
-                maxNumDigits: 2),
+                width: 35,
+                maxNumDigits: 3),
           ),
           const SizedBox(width: padding),
           Tooltip(
@@ -110,17 +96,31 @@ class BpOptionsFlyoutContent extends StatelessWidget {
           ),
           const SizedBox(width: padding),
           Tooltip(
-            message: 'Max number of blueprints',
+            message: 'Time Efficiency',
             preferBelow: false,
             verticalOffset: toolTipOffset,
             waitDuration: duration,
             child: TableTextField(
-                onChanged: (text) => adapter.setMaxBPs(tid, text != '' ? int.parse(text) : null),
-                initialText: adapter.getMaxBPs(tid) != null ? adapter.getMaxBPs(tid).toString() : '',
-                hintText: 'BPs',
+                onChanged: (text) => adapter.setTE(tid, text != '' ? int.parse(text) : null),
+                initialText: adapter.getTE(tid) != null ? adapter.getTE(tid).toString() : '',
+                hintText: 'TE',
                 allowEmptyString: true,
-                width: 35,
-                maxNumDigits: 3),
+                width: 25,
+                maxNumDigits: 2),
+          ),
+          const SizedBox(width: padding),
+          Tooltip(
+            message: 'Material Efficiency',
+            preferBelow: false,
+            verticalOffset: toolTipOffset,
+            waitDuration: duration,
+            child: TableTextField(
+                onChanged: (text) => adapter.setME(tid, text != '' ? int.parse(text) : null),
+                initialText: adapter.getME(tid) != null ? adapter.getME(tid).toString() : '',
+                hintText: 'ME',
+                allowEmptyString: true,
+                width: 25,
+                maxNumDigits: 2),
           ),
           const SizedBox(width: padding),
         ],
