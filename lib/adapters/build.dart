@@ -42,25 +42,6 @@ class Build with ChangeNotifier {
     notifyListeners();
   }
 
-  Problem _getOptimizationProblem(Map<int, int> tid2runs) {
-    final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: 100, IndustryType.REACTION: 150};
-    final maxNumSlotsOfJob = _allBuiltItems.map((tid) => MapEntry(tid, 25));
-    final maxNumRunsPerSlotOfJob = _allBuiltItems.map((tid) => MapEntry(tid, 100000));
-    final jobMaterialBonus = _allBuiltItems.map((tid) => MapEntry(tid, 1.0 - 0.0));
-    final jobTimeBonus = _allBuiltItems.map((tid) => MapEntry(tid, 1.0 - 0.0));
-    return Problem(
-      runsExcess: tid2runs,
-      tids: _allBuiltItems,
-      dependencies: _getBuildDependencies(_allBuiltItems),
-      inventory: _inventory.getInventoryCopy(),
-      maxNumSlotsOfMachine: maxNumSlotsOfMachine,
-      maxNumSlotsOfJob: Map.fromEntries(maxNumSlotsOfJob),
-      maxNumRunsPerSlotOfJob: Map.fromEntries(maxNumRunsPerSlotOfJob),
-      jobMaterialBonus: Map.fromEntries(jobMaterialBonus),
-      jobTimeBonus: Map.fromEntries(jobTimeBonus),
-    );
-  }
-
   // Get all the unique item ids that will be built by the scheduler.
   Set<int> _getIntermediatesIDs(Iterable<int> targets) {
     final res = <int>{};
@@ -92,6 +73,34 @@ class Build with ChangeNotifier {
     } else {
       return SD.isBuildable(cid) && !wrongIndyType;
     }
+  }
+
+  Problem _getOptimizationProblem(Map<int, int> tid2runs) {
+    final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: 100, IndustryType.REACTION: 150};
+    // TODO options pane sets global here
+    final maxNumSlotsOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? 25));
+    final maxNumRunsPerSlotOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 100000));
+    final jobMaterialBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getMaterialBonus(tid)));
+    final jobTimeBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getTimeBonus(tid)));
+    return Problem(
+      runsExcess: tid2runs,
+      tids: _allBuiltItems,
+      dependencies: _getBuildDependencies(_allBuiltItems),
+      inventory: _inventory.getInventoryCopy(),
+      maxNumSlotsOfMachine: maxNumSlotsOfMachine,
+      maxNumSlotsOfJob: Map.fromEntries(maxNumSlotsOfJob),
+      maxNumRunsPerSlotOfJob: Map.fromEntries(maxNumRunsPerSlotOfJob),
+      jobMaterialBonus: Map.fromEntries(jobMaterialBonus),
+      jobTimeBonus: Map.fromEntries(jobTimeBonus),
+    );
+  }
+
+  double _getMaterialBonus(int tid) {
+    return 1.0;
+  }
+
+  double _getTimeBonus(int tid) {
+    return 1.0;
   }
 
   Map<int, Map<int, int>> _getBuildDependencies(Iterable<int> tids) {
