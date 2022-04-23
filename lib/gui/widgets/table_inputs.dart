@@ -60,18 +60,28 @@ class InputsTableItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        MyTableCell(
-          InputsTable.colFlexs[0],
-          padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0),
-          align: Alignment.centerLeft,
-          child: Container(height: 30, color: theme.primary),
+    return Material(
+      color: Colors.transparent,
+      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
+      child: InkWell(
+        onTap: () {},
+        hoverColor: theme.outline.withOpacity(.1),
+        focusColor: theme.outline.withOpacity(.1),
+        mouseCursor: MouseCursor.defer,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MyTableCell(
+              InputsTable.colFlexs[0],
+              padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0),
+              align: Alignment.centerLeft,
+              child: Container(height: 30, color: theme.primary),
+            ),
+            MyTableCell(InputsTable.colFlexs[1], child: Container(color: theme.secondary)),
+            MyTableCell(InputsTable.colFlexs[2], child: Container(color: theme.secondaryContainer)),
+          ],
         ),
-        MyTableCell(InputsTable.colFlexs[1], child: Container(color: theme.secondary)),
-        MyTableCell(InputsTable.colFlexs[2], child: Container(color: theme.secondaryContainer)),
-      ],
+      ),
     );
   }
 }

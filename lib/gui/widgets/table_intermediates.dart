@@ -44,7 +44,8 @@ class IntermediatesTableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return TableHeader(
       height: IntermediatesTable.headerHeight,
-      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
+      textStyle:
+          TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(
           IntermediatesTable.colFlexs[0],
@@ -82,39 +83,49 @@ class IntermediatesTableItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final buildItems = Provider.of<BuildItemsAdapter>(context, listen: false);
     final shouldBuild = buildItems.getShouldBuild(tid);
-    return Row(
-      children: [
-        wrap(
-          0,
-          align: Alignment.centerLeft,
-          padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding, 0, 0, 0),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              TableAddDelButton(
-                onTap: () => buildItems.addTarget(tid, 1),
-                closeButton: false,
-                color: theme.background,
-                hoveredColor: theme.tertiaryContainer,
-                splashColor: theme.onTertiaryContainer.withOpacity(.35),
+    return Material(
+      color: Colors.transparent,
+      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
+      child: InkWell(
+        onTap: () {},
+        hoverColor: theme.outline.withOpacity(.1),
+        focusColor: theme.outline.withOpacity(.1),
+        mouseCursor: MouseCursor.defer,
+        child: Row(
+          children: [
+            wrap(
+              0,
+              align: Alignment.centerLeft,
+              padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding, 0, 0, 0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  TableAddDelButton(
+                    onTap: () => buildItems.addTarget(tid, 1),
+                    closeButton: false,
+                    color: theme.background,
+                    hoveredColor: theme.tertiaryContainer,
+                    splashColor: theme.onTertiaryContainer.withOpacity(.35),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding, 0, 0, 0),
+                    child: Text(row.name),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding, 0, 0, 0),
-                child: Text(row.name),
-              ),
-            ],
-          ),
+            ),
+            wrap(1, child: Text(row.value)),
+            wrap(2,
+                child: BuildBuyToggleButtons(
+                  shouldBuild: shouldBuild,
+                  onChange: (bool asdf) {
+                    buildItems.setShouldBuild(tid, asdf);
+                  },
+                )),
+            wrap(3, child: BpOptionsTableWidget(tid: tid, adapter: buildItems)),
+          ],
         ),
-        wrap(1, child: Text(row.value)),
-        wrap(2,
-            child: BuildBuyToggleButtons(
-              shouldBuild: shouldBuild,
-              onChange: (bool asdf) {
-                buildItems.setShouldBuild(tid, asdf);
-              },
-            )),
-        wrap(3, child: BpOptionsTableWidget(tid: tid, adapter: buildItems)),
-      ],
+      ),
     );
   }
 }
