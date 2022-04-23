@@ -122,7 +122,7 @@ class IntermediatesTableItem extends StatelessWidget {
                     buildItems.setShouldBuild(tid, asdf);
                   },
                 )),
-            wrap(3, child: BpOptionsTableWidget(tid: tid, adapter: buildItems)),
+            wrap(3, child: !shouldBuild ? Container() : BpOptionsTableWidget(tid: tid, adapter: buildItems)),
           ],
         ),
       ),
