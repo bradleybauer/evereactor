@@ -63,13 +63,13 @@ class Persistence {
 
   Future<void> setBuildContext(BuildOptions ctx) async {
     await _clearCache(cache.eveBuildContextCache);
-    final companion = EveBuildContextCacheCompanion(
-        reactionsSkillLevel: Value(ctx.reactionSkillLevel),
-        structureMaterialBonus: Value(ctx.structureMaterialBonus),
-        structureTimeBonus: Value(ctx.structureTimeBonus),
-        systemCostIndex: Value(ctx.systemCostIndex),
-        salesTaxPercent: Value(ctx.salesTaxPercent));
-    await cache.into(cache.eveBuildContextCache).insert(companion);
+    // final companion = EveBuildContextCacheCompanion(
+    //     reactionsSkillLevel: Value(ctx.reactionSkillLevel),
+    //     structureMaterialBonus: Value(ctx.structureMaterialBonus),
+    //     structureTimeBonus: Value(ctx.structureTimeBonus),
+    //     systemCostIndex: Value(ctx.systemCostIndex),
+    //     salesTaxPercent: Value(ctx.salesTaxPercent));
+    // await cache.into(cache.eveBuildContextCache).insert(companion);
   }
 
   Future<BuildOptions?> getBuildContext() async {
@@ -77,8 +77,8 @@ class Persistence {
     if (rows.isEmpty) {
       return null;
     }
-    return BuildOptions(rows[0].reactionsSkillLevel, rows[0].structureMaterialBonus, rows[0].structureTimeBonus, rows[0].systemCostIndex,
-        rows[0].salesTaxPercent, 0);
+    // return BuildOptions(rows[0].reactionsSkillLevel, rows[0].structureMaterialBonus, rows[0].structureTimeBonus, rows[0].systemCostIndex,
+    //     rows[0].salesTaxPercent, 0);
   }
 
   Future<Iterable<Tuple3<int, int, int>>> getReactions() async {

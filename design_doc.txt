@@ -250,29 +250,45 @@ Make input boxes simple.
   Red box on invalid input
 
 Options ### see BUILD CUSTOMIZATIONS section above for more details about options
-  Structures (basic dropdown lists)
-    1mfg
-    1rtn 
-    Rigs - size based on structures above.
-      any number but not more than 1 for each item type... (u no what i mean bb)
 
-  Reaction & Manufacturing lines
-  Skills (all skills can be set ? )
-    group skills by skill group
-    if more than x skills in group then give option to set all to a single value
-  Global ME/TE for bps without BpOptions set
+meh lets not do implants
+
+Skills
+    Industry             [  ]   Advanced Industry    [  ]
+    ...                  [  ]   ...                  [  ]
+    ...                  [  ]   ...                  [  ]
+    ...                  [  ]   ...                  [  ]
+    ...                  [  ]   ...                  [  ]
+    ...                  [  ]   ...                  [  ]
+    ...                  [  ]   ...                  [  ]
+    ...                  [  ]   Reactions            [  ]
+
+Jobs
+    Number of reaction jobs [ ]
+    Number of manufacturing jobs [ ]
+
+Blueprints
+    ME [ ]  TE [ ]  Max number of blueprints [ ]
+
+Costs
+    Reaction system cost index [ ] // min is .1%
+    Manufacturing system cost index [ ] // min is .1%
+    Sales tax [ ]
+
+Structures
+    Manufacturing: [ v ]   Rigs: [ v ] x5
+    Reaction: [ v ]        Rigs: [ v ] x5
+
+Market Systems
+    Jita [] Perimeter [] Amarr [] Ashab []
+
+App Settings
+    Language [ v ]
+    [ theme widget, list of circular widgets ]
+
+Structures (basic dropdown lists)
   System Cost Indices for Rtn & Mfg
     Minimum system cost index is .001 (that is .1%)
-    Input as a percent, because that is how it is represented in game (i.e. 6.37% on hover in the industry window.)
-  Tax (sales, mfg, rtn)
-  Trade systems (checkboxes)
-    jita,perim,amarr,ashab
-  Extra costs - convenience for factoring in things like BPC cost (drug bpc's are expensive)
-    not factored in at the bp level, but it affects the total profit %
-
-Search/Browse // HIGH PRIORITY
-  bp filter would be convenient, but.... idk really where to start. /// NO PRIORITY
-  (add, name, profit %)
 
 Optimize - desktop // MEDIUM PRIORITY
   Optimization stats
@@ -290,28 +306,10 @@ Optimize - desktop // MEDIUM PRIORITY
     stop
     discard optimization
 
-BpOptions
-    in the context of ME and TE: Runs & BPs is easily understood!!!!!
-    so a flyout that looks like:
-
-    |--------------------------|
-    |  [ME] [TE] [Runs] [BPs]  |
-    |--------------------------|
-
-                  |FlyoutChild|
-                  |  -------  |
-
-    where [x] is a textField with default text of "x", should be fine.
-    can give extra information in a tool tip
-
 Targets // HIGH PRIORITY
   Items the user has 'added' to the build
     (x, name, runs, profit, cost, %, cost/u, sell/u, out m3, BpOptions)
     If maxBps & maxRunsPerBp are not set then those values are set to the global values
-
-Intermediates (have build/buy column header be buttons that set all? that'd make sense, but NO since i dont need it)
-  A list of all intermediate items to build before building Targets
-    (name, value, build/buy buttons, BpOptions)
 
 Inputs
     raw/purchased materials (including fuel blocks)

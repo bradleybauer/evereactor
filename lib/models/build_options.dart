@@ -1,11 +1,36 @@
-class BuildOptions {
-  final int reactionSkillLevel;
-  final double structureMaterialBonus;
-  final double structureTimeBonus;
-  final double systemCostIndex;
-  final double salesTaxPercent;
-  final double brokersFeePercent;
+import 'rig.dart';
+import 'structure.dart';
 
-  BuildOptions(this.reactionSkillLevel, this.structureMaterialBonus, this.structureTimeBonus, this.systemCostIndex,
-      this.salesTaxPercent, this.brokersFeePercent);
+class BuildOptions {
+  final Map<int, int> skill2level;
+  final int reactionSlots;
+  final int manufacturingSlots;
+  final int ME;
+  final int TE;
+  final int maxNumBps;
+  final double reactionsSystemCostIndex;
+  final double manufacturingSystemCostIndex;
+  final double salesTax;
+  final Structure manufacturingStructure;
+  final Structure reactionsStructure;
+  final List<Rig> manufacturingRigs;
+  final List<Rig> reactionRigs;
+  final Set<int> systems;
+
+  BuildOptions(
+    this.skill2level,
+    this.reactionSlots,
+    this.manufacturingSlots,
+    this.ME,
+    this.TE,
+    this.maxNumBps,
+    this.reactionsSystemCostIndex,
+    this.manufacturingSystemCostIndex,
+    this.salesTax,
+    this.reactionsStructure,
+    this.manufacturingStructure,
+    this.reactionRigs,
+    this.manufacturingRigs,
+    this.systems,
+  );
 }

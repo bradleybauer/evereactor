@@ -79,7 +79,7 @@ class Build with ChangeNotifier {
     final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: 100, IndustryType.REACTION: 150};
     // TODO options pane sets global here
     final maxNumSlotsOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? 25));
-    final maxNumRunsPerSlotOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 100000));
+    final maxNumRunsPerSlotOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000));
     final jobMaterialBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getMaterialBonus(tid)));
     final jobTimeBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getTimeBonus(tid)));
     return Problem(

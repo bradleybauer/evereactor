@@ -1,14 +1,16 @@
+import 'dart:convert';
 import 'dart:math';
+
+import 'package:http/http.dart' as http;
+import 'package:tuple/tuple.dart';
+
 import 'models/build_options.dart';
 import 'models/market_order.dart';
 
-import 'package:tuple/tuple.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 // https://cdn1.eveonline.com/www/newssystem/media/66437/1/rounding.png
 int calcBonusedMaterialAmount(int numRunsParent, int baseNumInputChild, BuildOptions env) {
-  return (numRunsParent * baseNumInputChild * (1.0 - env.structureMaterialBonus)).ceil();
+  // return (numRunsParent * baseNumInputChild * (1.0 - env.structureMaterialBonus)).ceil();
+  return 0;
 }
 
 Tuple4<int, int, int, int> secondsToDHMS(num s) {
@@ -206,18 +208,19 @@ Future<Map<int, List<Order>>> getOrdersFromESI(List<int> ids) async {
     for (int region_id in region_ids) {
       String url = 'https://esi.evetech.net/latest/markets/' + region_id.toString() + '/orders/';
       int page = 1;
-      var response =
-          await http.get(Uri.parse(url + '?datasource=tranquility&order_type=all&page=' + page.toString() + '&type_id=' + id.toString()));
+      var response = await http.get(Uri.parse(
+          url + '?datasource=tranquility&order_type=all&page=' + page.toString() + '&type_id=' + id.toString()));
       var data = jsonDecode(response.body);
       while (data.length > 0) {
         try {
           for (var x in data) {
             // print(x['type_id'].toString() + '\t' + x['price'].toString() + '\t' + x['volume_remain'].toString());
-            ret[x['type_id']]!.add(Order(x['type_id'], x['system_id'], region_id, x['is_buy_order'], x['price'], x['volume_remain']));
+            ret[x['type_id']]!
+                .add(Order(x['type_id'], x['system_id'], region_id, x['is_buy_order'], x['price'], x['volume_remain']));
           }
           print('page:' + page.toString());
-          var response =
-              await http.get(Uri.parse(url + '?datasource=tranquility&order_type=all&page=' + page.toString() + '&type_id=' + id.toString()));
+          var response = await http.get(Uri.parse(
+              url + '?datasource=tranquility&order_type=all&page=' + page.toString() + '&type_id=' + id.toString()));
           data = jsonDecode(response.body);
           page += 1;
         } catch (e) {
