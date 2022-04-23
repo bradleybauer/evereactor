@@ -1,29 +1,29 @@
-class BPOptions {
+class BpOptions {
   final int? ME;
   final int? TE;
   final int? maxNumRuns;
   final int? maxNumBPs;
 
-  const BPOptions({
+  const BpOptions({
     this.ME,
     this.TE,
     this.maxNumRuns,
     this.maxNumBPs,
   });
 
-  BPOptions copyWithME(int? me) {
-    return BPOptions(ME: me, TE: TE, maxNumRuns: maxNumRuns, maxNumBPs: maxNumBPs);
+  BpOptions copyWithME(int? me) {
+    return BpOptions(ME: me, TE: TE, maxNumRuns: maxNumRuns, maxNumBPs: maxNumBPs);
   }
 
-  BPOptions copyWithTE(int? te) {
-    return BPOptions(ME: ME, TE: te, maxNumRuns: maxNumRuns, maxNumBPs: maxNumBPs);
+  BpOptions copyWithTE(int? te) {
+    return BpOptions(ME: ME, TE: te, maxNumRuns: maxNumRuns, maxNumBPs: maxNumBPs);
   }
 
-  BPOptions copyWithRuns(int? runs) {
-    return BPOptions(ME: ME, TE: TE, maxNumRuns: runs, maxNumBPs: maxNumBPs);
+  BpOptions copyWithRuns(int? runs) {
+    return BpOptions(ME: ME, TE: TE, maxNumRuns: runs, maxNumBPs: maxNumBPs);
   }
 
-  BPOptions copyWithBPs(int? bps) {
-    return BPOptions(ME: ME, TE: TE, maxNumRuns: maxNumRuns, maxNumBPs: bps);
+  BpOptions copyWithBPs(int? bps) {
+    return BpOptions(ME: ME, TE: TE, maxNumRuns: maxNumRuns, maxNumBPs: bps);
   }
 }

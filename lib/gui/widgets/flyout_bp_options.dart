@@ -1,17 +1,21 @@
-import 'package:EveIndy/adapters/table_targets.dart';
 import 'package:EveIndy/gui/widgets/table_text_field.dart';
 import 'package:flutter/material.dart';
 
+import '../../adapters/build_items.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
 
 class BpOptionsTableWidget extends StatelessWidget {
-  const BpOptionsTableWidget({required this.adapter, required this.index, Key? key}) : super(key: key);
+  const BpOptionsTableWidget({
+    required this.tid,
+    required this.adapter,
+    Key? key,
+  }) : super(key: key);
 
   static const size = Size(172, 32);
 
-  final TargetsTableAdapter adapter;
-  final int index;
+  final int tid;
+  final BuildItemsAdapter adapter;
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +26,21 @@ class BpOptionsTableWidget extends StatelessWidget {
         openMode: FlyoutOpenMode.hover,
         align: FlyoutAlign.childLeftCenter,
         contentSize: size,
-        content: BpOptionsFlyoutContent(adapter: adapter, index: index),
+        content: BpOptionsFlyoutContent(adapter: adapter, tid: tid),
         closeTimeout: const Duration(),
         maxVotes: 1,
-        child: RotatedBox(
-          quarterTurns: 2,
-          child: Icon(
-            // Icons.settings,
-            // Icons.keyboard_double_arrow_left,
-            Icons.label_important_outline,
-            // Icons.menu,
-            // Icons.check_box_outline_blank_sharp,
-            size: 14,
+        child: const Padding(
+          padding: EdgeInsets.fromLTRB(theme.appBarPadding,0,0,0),
+          child: RotatedBox(
+            quarterTurns: 2,
+            child: Icon(
+              // Icons.settings,
+              // Icons.keyboard_double_arrow_left,
+              Icons.label_important_outline,
+              // Icons.menu,
+              // Icons.check_box_outline_blank_sharp,
+              size: 14,
+            ),
           ),
         ),
       ),
@@ -42,10 +49,10 @@ class BpOptionsTableWidget extends StatelessWidget {
 }
 
 class BpOptionsFlyoutContent extends StatelessWidget {
-  const BpOptionsFlyoutContent({required this.adapter, required this.index, Key? key}) : super(key: key);
+  const BpOptionsFlyoutContent({required this.adapter, required this.tid, Key? key}) : super(key: key);
 
-  final TargetsTableAdapter adapter;
-  final int index;
+  final int tid;
+  final BuildItemsAdapter adapter;
 
   static const padding = 8.0;
   static const toolTipOffset = 19.0;
@@ -66,8 +73,8 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             verticalOffset: toolTipOffset,
             waitDuration: duration,
             child: TableTextField(
-                onChanged: (text) => adapter.setME(index, text != '' ? int.parse(text) : null),
-                initialText: adapter.getME(index) != null ? adapter.getME(index).toString() : '',
+                onChanged: (text) => adapter.setME(tid, text != '' ? int.parse(text) : null),
+                initialText: adapter.getME(tid) != null ? adapter.getME(tid).toString() : '',
                 hintText: 'ME',
                 allowEmptyString: true,
                 width: 25,
@@ -80,8 +87,8 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             verticalOffset: toolTipOffset,
             waitDuration: duration,
             child: TableTextField(
-                onChanged: (text) => adapter.setTE(index, text != '' ? int.parse(text) : null),
-                initialText: adapter.getTE(index) != null ? adapter.getTE(index).toString() : '',
+                onChanged: (text) => adapter.setTE(tid, text != '' ? int.parse(text) : null),
+                initialText: adapter.getTE(tid) != null ? adapter.getTE(tid).toString() : '',
                 hintText: 'TE',
                 allowEmptyString: true,
                 width: 25,
@@ -94,8 +101,8 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             verticalOffset: toolTipOffset,
             waitDuration: duration,
             child: TableTextField(
-                onChanged: (text) => adapter.setMaxRuns(index, text != '' ? int.parse(text) : null),
-                initialText: adapter.getMaxRuns(index) != null ? adapter.getMaxRuns(index).toString() : '',
+                onChanged: (text) => adapter.setMaxRuns(tid, text != '' ? int.parse(text) : null),
+                initialText: adapter.getMaxRuns(tid) != null ? adapter.getMaxRuns(tid).toString() : '',
                 hintText: 'Runs',
                 allowEmptyString: true,
                 width: 47,
@@ -108,8 +115,8 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             verticalOffset: toolTipOffset,
             waitDuration: duration,
             child: TableTextField(
-                onChanged: (text) => adapter.setMaxBPs(index, text != '' ? int.parse(text) : null),
-                initialText: adapter.getMaxBPs(index) != null ? adapter.getMaxBPs(index).toString() : '',
+                onChanged: (text) => adapter.setMaxBPs(tid, text != '' ? int.parse(text) : null),
+                initialText: adapter.getMaxBPs(tid) != null ? adapter.getMaxBPs(tid).toString() : '',
                 hintText: 'BPs',
                 allowEmptyString: true,
                 width: 35,

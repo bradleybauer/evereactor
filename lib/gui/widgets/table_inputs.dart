@@ -14,7 +14,7 @@ class InputsTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TableContainer(
-      maxHeight: 500, // TODO Temporary
+      maxHeight: 600,
       borderColor: theme.outline,
       color: theme.background,
       header: const InputsTableHeader(),
@@ -37,10 +37,13 @@ class InputsTableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return TableHeader(
       height: InputsTable.headerHeight,
-      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
+      textStyle:
+          TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(InputsTable.colFlexs[0],
-            child: Text('Inputs'), align: Alignment.centerLeft, padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0)),
+            child: Text('Inputs'),
+            align: Alignment.centerLeft,
+            padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0)),
         TableContainer.getCol(InputsTable.colFlexs[1],
             child: Text('Cost'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: () {}),
         TableContainer.getCol(InputsTable.colFlexs[2],

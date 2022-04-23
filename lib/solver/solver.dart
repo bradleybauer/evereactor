@@ -71,8 +71,7 @@ abstract class Approximator {
         final int runsCeil = runsFloor + 1;
         prob.dependencies[tid]!.forEach((int child, int childPerParent) {
           // TODO integer math
-          int needed =
-              (childPerParent * runsFloor * prob.jobMaterialBonus[tid]! - .000001).ceil() * (slots - remainder);
+          int needed = (childPerParent * runsFloor * prob.jobMaterialBonus[tid]! - .000001).ceil() * (slots - remainder);
           needed += (childPerParent * runsCeil * prob.jobMaterialBonus[tid]! - .000001).ceil() * remainder;
           batchDependencies.update(child, (value) => value + needed, ifAbsent: () => needed);
         });
@@ -161,9 +160,7 @@ abstract class Approximator {
         double newT = SD.baseTime(runs, slots - 1, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!;
         // cannot use more runs per line than user request
         final maxNumRunsPerSlot = ceilDiv(runs, slots - 1);
-        if (newT <= maxT &&
-            newT - SD.timePerRun(tid) <= thirtyDays &&
-            maxNumRunsPerSlot <= prob.maxNumRunsPerSlotOfJob[tid]!) {
+        if (newT <= maxT && newT - SD.timePerRun(tid) <= thirtyDays && maxNumRunsPerSlot <= prob.maxNumRunsPerSlotOfJob[tid]!) {
           slots -= 1;
           time = newT;
         } else {
@@ -187,8 +184,7 @@ abstract class Approximator {
     }
   }
 
-  static void _updateNeededUsingConsumed(
-      Batch batch, Map<int, int> needed, IndustryType machine, Problem prob, Inventory inventoryCopy) {
+  static void _updateNeededUsingConsumed(Batch batch, Map<int, int> needed, IndustryType machine, Problem prob, Inventory inventoryCopy) {
     // how much did we consume with this batch?
     final batchDependencies = _getBatchDependencies(batch, machine, prob);
     batchDependencies.forEach((tid, deps) {
@@ -229,8 +225,7 @@ abstract class Approximator {
         continue;
       }
       final batches = <Batch>[];
-      Map<int, int> neededOfMachineType =
-          Map.fromEntries(needed.entries.where((entry) => prob.job2machine[entry.key]! == machine));
+      Map<int, int> neededOfMachineType = Map.fromEntries(needed.entries.where((entry) => prob.job2machine[entry.key]! == machine));
       while (neededOfMachineType.isNotEmpty) {
         final batch = _getBatch(neededOfMachineType, machine, prob);
         _setOptimalLineAlloc(batch, machine, prob);

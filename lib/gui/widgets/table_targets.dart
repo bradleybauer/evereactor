@@ -1,12 +1,13 @@
-import 'package:EveIndy/gui/widgets/flyout_bp_options.dart';
-import 'package:EveIndy/gui/widgets/table_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../adapters/build_items.dart';
 import '../../adapters/table_targets.dart';
 import '../my_theme.dart';
+import 'flyout_bp_options.dart';
 import 'table.dart';
 import 'table_add_del_hover_button.dart';
+import 'table_text_field.dart';
 
 class TargetsTable extends StatelessWidget {
   const TargetsTable({Key? key}) : super(key: key);
@@ -18,8 +19,8 @@ class TargetsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final targetsTableAdapter = Provider.of<TargetsTableAdapter>(context);
-    final int numItems = targetsTableAdapter.getNumberOfItems();
+    final adapter = Provider.of<TargetsTableAdapter>(context);
+    final int numItems = adapter.getNumberOfItems();
     Widget list;
     if (numItems == 0) {
       list = Padding(
@@ -37,12 +38,11 @@ class TargetsTable extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
         itemCount: numItems,
         itemExtent: itemHeight,
-        itemBuilder: (_, index) => TargetsTableItem(index: index, targetsTableAdapter: targetsTableAdapter),
+        itemBuilder: (_, index) => TargetsTableItem(tid: adapter.getTid(index), row: adapter.getRowData(index)),
       );
     }
     return TableContainer(
-      maxHeight: 500,
-      // TODO want this to be function of the screen height
+      maxHeight: 600,
       borderColor: theme.outline,
       color: theme.background,
       header: const TargetsTableHeader(),
@@ -85,10 +85,10 @@ class TargetsTableHeader extends StatelessWidget {
 }
 
 class TargetsTableItem extends StatelessWidget {
-  const TargetsTableItem({required this.index, required this.targetsTableAdapter, Key? key}) : super(key: key);
+  const TargetsTableItem({required this.tid, required this.row, Key? key}) : super(key: key);
 
-  final TargetsTableAdapter targetsTableAdapter;
-  final int index;
+  final TargetsRowData row;
+  final int tid;
 
   Widget wrap(int n, {EdgeInsets? padding, Alignment? align, Widget? child}) {
     return Flexible(
@@ -103,7 +103,7 @@ class TargetsTableItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final row = targetsTableAdapter.getRowData(index);
+    final buildItems = Provider.of<BuildItemsAdapter>(context, listen: false);
     return Material(
       color: Colors.transparent,
       textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
@@ -123,17 +123,14 @@ class TargetsTableItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: TargetsTable.padding),
                     child: TableAddDelButton(
-                      onTap: () => targetsTableAdapter.remove(index),
+                      onTap: () => buildItems.removeTarget(tid),
                       closeButton: true,
                       color: theme.background,
                       hoveredColor: theme.tertiaryContainer,
                       splashColor: theme.onTertiaryContainer.withOpacity(.35),
                     ),
                   ),
-                  Expanded(
-                      child: Container(
-                    child: Text(row.name),
-                  )),
+                  Expanded(child: Text(row.name)),
                 ],
               ),
             ),
@@ -143,7 +140,7 @@ class TargetsTableItem extends StatelessWidget {
                     initialText: row.runs.toString(),
                     onChanged: (String runs) {
                       if (runs != '') {
-                        targetsTableAdapter.setRuns(index, int.parse(runs));
+                        buildItems.setRuns(tid, int.parse(runs));
                       }
                     })),
             wrap(2, child: Text(row.profit)),
@@ -152,7 +149,7 @@ class TargetsTableItem extends StatelessWidget {
             wrap(5, child: Text(row.cost_per_unit)),
             wrap(6, child: Text(row.sell_per_unit)),
             wrap(7, child: Text(row.out_m3)),
-            wrap(8, child: BpOptionsTableWidget(adapter: targetsTableAdapter, index: index)),
+            wrap(8, child: BpOptionsTableWidget(adapter: buildItems, tid: tid)),
           ],
         ),
       ),

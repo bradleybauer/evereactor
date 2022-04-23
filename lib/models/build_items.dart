@@ -7,7 +7,7 @@ class BuildItems {
   final Map<int, int> _tid2runs = {};
 
   // The blueprint options for all items involved in the build.
-  final Map<int, BPOptions> _tid2bpOps = {};
+  final Map<int, BpOptions> _tid2bpOps = {};
 
   // Whether we should build the given type id.
   final Map<int, bool> _tid2shouldBuild = {};
@@ -20,6 +20,42 @@ class BuildItems {
   // Remove all runs of type id from the build.
   void removeTarget(int tid) {
     _tid2runs.remove(tid);
+  }
+
+  // Ensures that we do not hold onto old items in the containers.
+  void restrict(Set<int> targets, Set<int> intermediates) {
+    // Remove stray IDs
+    for (int tid in _tid2bpOps.keys.toList()) {
+      // any id in tid2bpOps should be associated with a target or an intermediate
+      if (!targets.contains(tid) && !intermediates.contains(tid)) {
+        _tid2bpOps.remove(tid);
+      }
+    }
+    // Only intermediates have build/buy options
+    for (int tid in _tid2shouldBuild.keys.toList()) {
+      if (!intermediates.contains(tid)) {
+        _tid2shouldBuild.remove(tid);
+      }
+    }
+
+    // Add missing IDs
+    // Every target and intermediate has a BpOptions
+    for (int tid in targets) {
+      if (!_tid2bpOps.containsKey(tid)) {
+        _tid2bpOps[tid] = const BpOptions();
+      }
+    }
+    for (int tid in intermediates) {
+      if (!_tid2bpOps.containsKey(tid)) {
+        _tid2bpOps[tid] = const BpOptions();
+      }
+    }
+    // Intermediates have build/buy option
+    for (int tid in intermediates) {
+      if (!_tid2shouldBuild.containsKey(tid)) {
+        _tid2shouldBuild[tid] = true;
+      }
+    }
   }
 
   int getNumberOfTargets() => _tid2runs.length;
@@ -38,28 +74,28 @@ class BuildItems {
 
   void setME(int tid, int? ME) {
     if (!_tid2bpOps.containsKey(tid)) {
-      _tid2bpOps[tid] = BPOptions(ME: ME);
+      _tid2bpOps[tid] = BpOptions(ME: ME);
     }
     _tid2bpOps[tid] = _tid2bpOps[tid]!.copyWithME(ME);
   }
 
   void setTE(int tid, int? TE) {
     if (!_tid2bpOps.containsKey(tid)) {
-      _tid2bpOps[tid] = BPOptions(TE: TE);
+      _tid2bpOps[tid] = BpOptions(TE: TE);
     }
     _tid2bpOps[tid] = _tid2bpOps[tid]!.copyWithTE(TE);
   }
 
   void setMaxRuns(int tid, int? maxRuns) {
     if (!_tid2bpOps.containsKey(tid)) {
-      _tid2bpOps[tid] = BPOptions(maxNumRuns: maxRuns);
+      _tid2bpOps[tid] = BpOptions(maxNumRuns: maxRuns);
     }
     _tid2bpOps[tid] = _tid2bpOps[tid]!.copyWithRuns(maxRuns);
   }
 
   void setMaxBPs(int tid, int? maxBPs) {
     if (!_tid2bpOps.containsKey(tid)) {
-      _tid2bpOps[tid] = BPOptions(maxNumBPs: maxBPs);
+      _tid2bpOps[tid] = BpOptions(maxNumBPs: maxBPs);
     }
     _tid2bpOps[tid] = _tid2bpOps[tid]!.copyWithBPs(maxBPs);
   }
@@ -72,9 +108,15 @@ class BuildItems {
 
   int? getMaxBPs(int tid) => _tid2bpOps[tid]?.maxNumBPs;
 
-  void removeAll(int tid) {
-    _tid2shouldBuild.remove(tid);
-    _tid2bpOps.remove(tid);
-    _tid2runs.remove(tid);
+  void setShouldBuild(int tid, bool build) {
+    _tid2shouldBuild[tid] = build;
+  }
+
+  bool getShouldBuild(int tid) {
+    if (_tid2shouldBuild.containsKey(tid)) {
+      return _tid2shouldBuild[tid]!;
+    }
+    assert(false);
+    return false;
   }
 }

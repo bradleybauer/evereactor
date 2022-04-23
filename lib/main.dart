@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'adapters/build.dart';
 import 'adapters/inventory.dart';
 import 'adapters/search.dart';
+import 'adapters/table_intermediates.dart';
 import 'platform.dart';
 import 'strings.dart';
 
@@ -43,6 +44,7 @@ Future<void> main() async {
 
   final searchAdapter = SearchAdapter(buildItemsAdapter, strings);
   final targetsTableAdapter = TargetsTableAdapter(marketAdapter, build, buildItemsAdapter, strings);
+  final intermediatesTableAdapter = IntermediatesTableAdapter(marketAdapter, build, strings);
 
   Platform.appReadyHook();
 
@@ -52,6 +54,8 @@ Future<void> main() async {
       ChangeNotifierProvider.value(value: build),
       ChangeNotifierProvider.value(value: searchAdapter),
       ChangeNotifierProvider.value(value: targetsTableAdapter),
+      ChangeNotifierProvider.value(value: intermediatesTableAdapter),
+      ChangeNotifierProvider.value(value: buildItemsAdapter),
       //     ChangeNotifierProvider.value(value: marketAdapter),
       //     ChangeNotifierProvider.value(value: eveBuildContextAdapter),
     ],

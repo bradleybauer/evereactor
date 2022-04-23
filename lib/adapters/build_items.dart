@@ -15,6 +15,8 @@ class BuildItemsAdapter with ChangeNotifier {
     notifyListeners();
   }
 
+  void restrict(Set<int> targets, Set<int> intermediates) => _buildItems.restrict(targets, intermediates);
+
   int getNumberOfTargets() => _buildItems.getNumberOfTargets();
 
   List<int> getTargetsIds() => _buildItems.getTargetsIds();
@@ -58,5 +60,10 @@ class BuildItemsAdapter with ChangeNotifier {
 
   int? getMaxBPs(int tid) => _buildItems.getMaxBPs(tid);
 
-  void removeAll(int tid) => _buildItems.removeAll(tid);
+  void setShouldBuild(int tid, bool build) {
+    _buildItems.setShouldBuild(tid, build);
+    notifyListeners();
+  }
+
+  bool getShouldBuild(int tid) => _buildItems.getShouldBuild(tid);
 }

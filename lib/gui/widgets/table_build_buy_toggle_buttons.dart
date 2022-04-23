@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import '../my_theme.dart';
 import 'hover_button.dart';
 
-class BuildBuyToggleButtons extends StatefulWidget {
-  const BuildBuyToggleButtons({Key? key}) : super(key: key);
+class BuildBuyToggleButtons extends StatelessWidget {
+  BuildBuyToggleButtons({
+    required this.onChange,
+    required this.shouldBuild,
+    Key? key,
+  }) : super(key: key);
 
-  @override
-  State<BuildBuyToggleButtons> createState() => _BuildBuyToggleButtonsState();
-}
+  static const padding = EdgeInsets.fromLTRB(4, 3, 4, 3);
 
-class _BuildBuyToggleButtonsState extends State<BuildBuyToggleButtons> {
-  final padding = const EdgeInsets.fromLTRB(4, 3, 4, 3);
-
-  bool left = false;
+  final bool shouldBuild;
+  final void Function(bool) onChange;
 
   final selected = theme.tertiaryContainer;
   final onSelected = theme.onTertiaryContainer;
@@ -34,19 +34,15 @@ class _BuildBuyToggleButtonsState extends State<BuildBuyToggleButtons> {
                         fontSize: 11,
                         color: hovered
                             ? theme.onPrimary
-                            : left
+                            : shouldBuild
                                 ? onSelected
                                 : theme.onBackground),
                   ));
             },
             borderRadius: 4,
-            onTap: () {
-              setState(() {
-                left = true;
-              });
-            },
+            onTap: () => onChange(true),
             hoveredElevation: 0,
-            color: left ? selected : theme.background,
+            color: shouldBuild ? selected : theme.background,
             splashColor: theme.onPrimary.withOpacity(.25),
             hoveredColor: theme.primary),
         const SizedBox(width: 5),
@@ -61,20 +57,16 @@ class _BuildBuyToggleButtonsState extends State<BuildBuyToggleButtons> {
                         fontSize: 11,
                         color: hovered
                             ? theme.onPrimary
-                            : !left
+                            : !shouldBuild
                                 ? onSelected
                                 : theme.onBackground),
                   ));
             },
             borderRadius: 4,
-            onTap: () {
-              setState(() {
-                left = false;
-              });
-            },
+            onTap: () => onChange(false),
             hoveredElevation: 0,
             splashColor: theme.onPrimary.withOpacity(.25),
-            color: !left ? selected : theme.background,
+            color: !shouldBuild ? selected : theme.background,
             hoveredColor: theme.primary)
       ],
     );

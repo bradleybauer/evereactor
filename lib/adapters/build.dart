@@ -14,6 +14,11 @@ class Build with ChangeNotifier {
   final BuildOptionsAdapter _buildOptions;
   final BuildItemsAdapter _buildItems;
 
+  var _allBuiltItems = <int>{};
+  var _intermediates = <int>{};
+
+  // var _parent2builtChildren = <int, Map<int, int>>{};
+
   Schedule? _schedule;
 
   Build(this._inventory, this._buildOptions, this._buildItems) {
@@ -21,28 +26,32 @@ class Build with ChangeNotifier {
     _buildOptions.addListener(_handleBuildChanged);
     _inventory.addListener(_handleBuildChanged);
 
-    _schedule = Approximator.get(_getOptimizationProblem());
+    // TODO is this needed here?
+    _schedule = Approximator.get(_getOptimizationProblem(_buildItems.getTarget2Runs()));
   }
 
   void _handleBuildChanged() {
-    _schedule = Approximator.get(_getOptimizationProblem());
+    final tid2runs = _buildItems.getTarget2Runs();
+    _intermediates = _getIntermediatesIDs(tid2runs.keys);
+    _allBuiltItems = _intermediates.union(tid2runs.keys.toSet());
+    _buildItems.restrict(tid2runs.keys.toSet(), _intermediates);
+
+    _schedule = Approximator.get(_getOptimizationProblem(tid2runs));
     print(_schedule.toString());
+
     notifyListeners();
   }
 
-  Problem _getOptimizationProblem() {
-    final runsExcess = _buildItems.getTarget2Runs();
-    final tids = _getAllTypeIds(runsExcess.keys);
-    final dependencies = _getBuildDependencies(tids);
+  Problem _getOptimizationProblem(Map<int, int> tid2runs) {
     final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: 100, IndustryType.REACTION: 150};
-    final maxNumSlotsOfJob = tids.map((tid) => MapEntry(tid, 25));
-    final maxNumRunsPerSlotOfJob = tids.map((tid) => MapEntry(tid, 100000));
-    final jobMaterialBonus = tids.map((tid) => MapEntry(tid, 1.0 - 0.0));
-    final jobTimeBonus = tids.map((tid) => MapEntry(tid, 1.0 - 0.0));
+    final maxNumSlotsOfJob = _allBuiltItems.map((tid) => MapEntry(tid, 25));
+    final maxNumRunsPerSlotOfJob = _allBuiltItems.map((tid) => MapEntry(tid, 100000));
+    final jobMaterialBonus = _allBuiltItems.map((tid) => MapEntry(tid, 1.0 - 0.0));
+    final jobTimeBonus = _allBuiltItems.map((tid) => MapEntry(tid, 1.0 - 0.0));
     return Problem(
-      runsExcess: runsExcess,
-      tids: tids,
-      dependencies: dependencies,
+      runsExcess: tid2runs,
+      tids: _allBuiltItems,
+      dependencies: _getBuildDependencies(_allBuiltItems),
       inventory: _inventory.getInventoryCopy(),
       maxNumSlotsOfMachine: maxNumSlotsOfMachine,
       maxNumSlotsOfJob: Map.fromEntries(maxNumSlotsOfJob),
@@ -53,31 +62,36 @@ class Build with ChangeNotifier {
   }
 
   // Get all the unique item ids that will be built by the scheduler.
-  Set<int> _getAllTypeIds(Iterable<int> targets) {
+  Set<int> _getIntermediatesIDs(Iterable<int> targets) {
     final res = <int>{};
     for (int tid in targets) {
-      res.addAll(__getAllTypeIds(tid));
+      res.addAll(__getIntermediatesIDs(tid));
     }
     return res;
   }
 
-  Set<int> __getAllTypeIds(int pid) {
-    final res = <int>{pid};
+  Set<int> __getIntermediatesIDs(int pid) {
+    final res = <int>{};
     for (int cid in SD.materials(pid).keys) {
-      if (_shouldBuild(pid, cid)) {
-        res.addAll(__getAllTypeIds(cid));
+      if (_shouldBuild(pid, cid, useBuildItems: false)) {
+        res.add(cid);
+        res.addAll(__getIntermediatesIDs(cid));
       }
     }
     return res;
   }
 
   // Given the parent and child, returns whether child should be built.
-  bool _shouldBuild(int pid, int cid) {
+  bool _shouldBuild(int pid, int cid, {required bool useBuildItems}) {
     final wrongIndyType = SD.isBuildable(pid) &&
         SD.isBuildable(cid) &&
         SD.industryType(pid) == IndustryType.REACTION &&
         SD.industryType(cid) == IndustryType.MANUFACTURING; // if pid is a reaction and cid is a fuel block
-    return SD.isBuildable(cid) && _buildItems.shouldBuild(cid) && !wrongIndyType;
+    if (useBuildItems) {
+      return SD.isBuildable(cid) && _buildItems.shouldBuild(pid) && _buildItems.shouldBuild(cid) && !wrongIndyType;
+    } else {
+      return SD.isBuildable(cid) && !wrongIndyType;
+    }
   }
 
   Map<int, Map<int, int>> _getBuildDependencies(Iterable<int> tids) {
@@ -89,8 +103,11 @@ class Build with ChangeNotifier {
   }
 
   Map<int, int> _getBuildDependenciesForItem(int pid) {
-    return Map.fromEntries(SD.materials(pid).entries.where((e) => _shouldBuild(pid, e.key)));
+    var res = Map.fromEntries(SD.materials(pid).entries.where((e) => _shouldBuild(pid, e.key, useBuildItems: true)));
+    return res;
   }
+
+  List<int> getIntermediatesIds() => _intermediates.toList(growable: false);
 }
 
 // build
