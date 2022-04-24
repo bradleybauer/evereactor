@@ -1,5 +1,5 @@
 import 'package:EveIndy/adapters/build_items.dart';
-import 'package:EveIndy/adapters/build_options.dart';
+import 'package:EveIndy/adapters/options.dart';
 import 'package:EveIndy/adapters/market.dart';
 import 'package:EveIndy/adapters/table_targets.dart';
 import 'package:EveIndy/gui/main.dart';
@@ -36,7 +36,7 @@ Future<void> main() async {
   final Strings strings = Strings();
 
   final inventoryAdapter = InventoryAdapter();
-  final buildOptionsAdapter = BuildOptionsAdapter();
+  final buildOptionsAdapter = OptionsAdapter();
   final buildItemsAdapter = BuildItemsAdapter();
   final build = Build(inventoryAdapter, buildOptionsAdapter, buildItemsAdapter);
 

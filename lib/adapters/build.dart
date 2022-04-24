@@ -6,12 +6,12 @@ import '../sde_extra.dart';
 import '../solver/problem.dart';
 import '../solver/schedule.dart';
 import 'build_items.dart';
-import 'build_options.dart';
+import 'options.dart';
 import 'inventory.dart';
 
 class Build with ChangeNotifier {
   final InventoryAdapter _inventory;
-  final BuildOptionsAdapter _buildOptions;
+  final OptionsAdapter _buildOptions;
   final BuildItemsAdapter _buildItems;
 
   var _allBuiltItems = <int>{};

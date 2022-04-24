@@ -4,11 +4,11 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:tuple/tuple.dart';
 
-import 'models/build_options.dart';
+import 'models/options.dart';
 import 'models/market_order.dart';
 
 // https://cdn1.eveonline.com/www/newssystem/media/66437/1/rounding.png
-int calcBonusedMaterialAmount(int numRunsParent, int baseNumInputChild, BuildOptions env) {
+int calcBonusedMaterialAmount(int numRunsParent, int baseNumInputChild, Options env) {
   // return (numRunsParent * baseNumInputChild * (1.0 - env.structureMaterialBonus)).ceil();
   return 0;
 }

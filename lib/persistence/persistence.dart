@@ -3,7 +3,7 @@ import 'package:tuple/tuple.dart';
 
 import 'database.dart';
 import '../platform_stub.dart' if (dart.library.io) '../platform_desktop.dart' if (dart.library.html) '../platform_web.dart';
-import '../models/build_options.dart';
+import '../models/options.dart';
 import '../models/order_filter.dart';
 import '../models/market.dart';
 import '../models/market_order.dart';
@@ -61,7 +61,7 @@ class Persistence {
     }
   }
 
-  Future<void> setBuildContext(BuildOptions ctx) async {
+  Future<void> setBuildContext(Options ctx) async {
     await _clearCache(cache.eveBuildContextCache);
     // final companion = EveBuildContextCacheCompanion(
     //     reactionsSkillLevel: Value(ctx.reactionSkillLevel),
@@ -72,7 +72,7 @@ class Persistence {
     // await cache.into(cache.eveBuildContextCache).insert(companion);
   }
 
-  Future<BuildOptions?> getBuildContext() async {
+  Future<Options?> getBuildContext() async {
     final rows = await cache.select(cache.eveBuildContextCache).get();
     if (rows.isEmpty) {
       return null;

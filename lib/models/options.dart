@@ -1,7 +1,7 @@
 import 'rig.dart';
 import 'structure.dart';
 
-class BuildOptions {
+class Options {
   final Map<int, int> skill2level;
   final int reactionSlots;
   final int manufacturingSlots;
@@ -17,7 +17,7 @@ class BuildOptions {
   final List<Rig> reactionRigs;
   final Set<int> systems;
 
-  BuildOptions(
+  Options(
     this.skill2level,
     this.reactionSlots,
     this.manufacturingSlots,
