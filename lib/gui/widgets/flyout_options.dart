@@ -1,14 +1,17 @@
+import 'package:EveIndy/gui/widgets/flyout_controller.dart';
 import 'package:EveIndy/gui/widgets/hover_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../sde.dart';
 import '../../strings.dart';
 import '../my_theme.dart';
+import 'flyout.dart';
 import 'labeled_checkbox.dart';
 import 'table_text_field.dart';
 
 class OptionsFlyout extends StatelessWidget {
-  OptionsFlyout({Key? key}) : super(key: key);
+  OptionsFlyout(this.controller, {Key? key}) : super(key: key);
+  FlyoutController controller;
 
   static const size = Size(510, 700);
   static const padding = theme.appBarPadding;
@@ -222,9 +225,14 @@ class OptionsFlyout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Structures', style: headerStyle),
-        Text(
-          '----',
-          style: style,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(width: padding),
+            Text('Manufacturing structure', style: style),
+            const SizedBox(width: padding),
+            DropdownMenuFlyout(style: style, parentController: controller),
+          ],
         ),
       ],
     );
@@ -313,6 +321,71 @@ class OptionsFlyout extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class DropdownMenuFlyout extends StatefulWidget {
+  const DropdownMenuFlyout({
+    Key? key,
+    required this.style,
+    required this.parentController,
+  }) : super(key: key);
+
+  final TextStyle style;
+  final FlyoutController parentController;
+
+  @override
+  State<DropdownMenuFlyout> createState() => _DropdownMenuFlyoutState();
+}
+
+class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
+  final FlyoutController controller = FlyoutController(theme.buttonFocusDuration, maxVotes: 1);
+
+  @override
+  void initState() {
+    widget.parentController.connect(controller);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.parentController.disconnect();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Flyout(
+      sideOffset: .0,
+      content: () {
+        return Container(
+            width: 40,
+            height: 80,
+            color: Colors.black,
+            child: Column(children: [
+              const SizedBox(height: 60),
+              HoverButton(
+                  builder: (hovered) {
+                    return Container(
+                        height: 20,
+                        child: Text('hai', style: widget.style.copyWith(color: hovered ? Colors.green : Colors.red)));
+                  },
+                  onTap: () {},
+                  color: Colors.black,
+                  hoveredColor: Colors.blue),
+            ]));
+      },
+      child: MouseRegion(
+        cursor: MouseCursor.defer,
+        onEnter: (_) => controller.open(),
+        onExit: (_) => controller.startCloseTimer(),
+        child: Container(width: 40, height: 40, color: Colors.red),
+      ),
+      openMode: FlyoutOpenMode.custom,
+      align: FlyoutAlign.childBottomCenter,
+      // closeTimeout: theme.buttonFocusDuration,
+      controller: controller,
     );
   }
 }

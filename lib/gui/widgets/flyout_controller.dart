@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 class FlyoutController extends ChangeNotifier {
   FlyoutController(this.closeTimeout, {this.maxVotes = 2});
 
+  FlyoutController? linkedController;
+
   final Duration closeTimeout;
 
   // keep some data to pass to the overlay
@@ -60,7 +62,7 @@ class FlyoutController extends ChangeNotifier {
   }
 
   void _closeNoVote() {
-    if (_keepOpenVotes <= 0) {
+    if (_keepOpenVotes <= 0 && (linkedController == null || !linkedController!.isOpen)) {
       _keepOpenVotes = 0;
       final wasClosed = !_isOpen;
       _isOpen = false;
@@ -73,4 +75,13 @@ class FlyoutController extends ChangeNotifier {
 
   bool getDidContentChange() => _contentChanged;
   void setDidContentChange(bool x) => _contentChanged = x;
+
+  // Connects to [controller] so that this remains open if [controller] is open
+  void connect(FlyoutController controller) {
+    linkedController = controller;
+  }
+
+  void disconnect() {
+    linkedController = null;
+  }
 }

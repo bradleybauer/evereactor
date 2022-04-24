@@ -108,7 +108,7 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
     ));
     sizes.add(Size(160, 160));
     // Add Options
-    content.add(OptionsFlyout());
+    content.add(OptionsFlyout(controller));
     sizes.add(OptionsFlyout.size);
 
     for (int i = 0; i < NUMBUTTONS; ++i) {

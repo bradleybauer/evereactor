@@ -8,6 +8,7 @@ enum FlyoutOpenMode {
 }
 
 enum FlyoutAlign {
+  childBottomCenter,
   childLeftCenter,
   childTopLeft,
   childTopRight,
@@ -108,6 +109,10 @@ class _FlyoutState extends State<Flyout> {
             followAnchor = Alignment.centerRight;
             targetAnchor = Alignment.centerRight;
             break;
+          case FlyoutAlign.childBottomCenter:
+            followAnchor = Alignment.topCenter;
+            targetAnchor = Alignment.topCenter;
+            break;
         }
 
         return Center(
@@ -118,7 +123,7 @@ class _FlyoutState extends State<Flyout> {
             followerAnchor: followAnchor,
             targetAnchor: targetAnchor,
             child: MouseRegion(
-              opaque: true,
+              // opaque: false, // must be false, otherwise nested overlays will close each other
               onEnter: (event) => controller.open(),
               onExit: (event) => controller.startCloseTimer(),
               child: Material(
@@ -134,8 +139,8 @@ class _FlyoutState extends State<Flyout> {
 
   Offset getEntryOffset(BuildContext ctx) {
     switch (widget.align) {
+      case FlyoutAlign.childBottomCenter:
       case FlyoutAlign.childTopLeft:
-        return Offset(0.0, -widget.sideOffset);
       case FlyoutAlign.childTopRight:
         return Offset(0.0, -widget.sideOffset);
       case FlyoutAlign.childLeftCenter:
