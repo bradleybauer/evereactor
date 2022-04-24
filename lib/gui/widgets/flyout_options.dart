@@ -1,12 +1,14 @@
-import 'package:EveIndy/gui/widgets/flyout_controller.dart';
-import 'package:EveIndy/gui/widgets/hover_button.dart';
-import 'package:EveIndy/models/industry_type.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../adapters/options.dart';
+import '../../models/industry_type.dart';
 import '../../sde.dart';
 import '../../strings.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
+import 'flyout_controller.dart';
+import 'hover_button.dart';
 import 'labeled_checkbox.dart';
 import 'table_text_field.dart';
 
@@ -25,41 +27,38 @@ class OptionsFlyout extends StatelessWidget {
 
   final FlyoutController controller;
 
-  Widget getSkills() {
-    final skills = SDE.skills.entries.toList(growable: false)
-      ..sort((a, b) => a.value.marketGroupID < b.value.marketGroupID
-          ? -1
-          : a.value.marketGroupID == b.value.marketGroupID
-              ? 0
-              : 1);
-    final skillIDs = skills.map((e) => e.key).toList(growable: false);
-    final numSkills = skillIDs.length;
+  Widget getSkills(OptionsAdapter adapter) {
+    final skills = adapter.getSkills();
+    final numSkills = skills.length;
     final cols = <List<Widget>>[[], [], [], []];
-    for (int i = 0; i < 2; ++i) {
-      final start = numSkills ~/ 2;
-      for (int j = start * i; j < numSkills - (start * (1 - i)); ++j) {
-        final tid = skillIDs[j];
-        final name = SDE.skills[tid]!.nameLocalizations;
-        cols[i * 2].add(
-          Padding(
+    for (int j = 0; j < numSkills; ++j) {
+      int i = j >= numSkills ~/ 2 ? 1 : 0;
+      cols[i * 2].add(
+        Padding(
             padding: EdgeInsets.fromLTRB(itemPadding / 2 * i, itemPadding / 2, 10, itemPadding / 2),
-            child: Text(Strings.get(name), style: style),
+            child: Text(skills[j].name, style: style)),
+      );
+      cols[i * 2 + 1].add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, itemPadding / 2, 6, 0),
+          child: TableTextField(
+            initialText: skills[j].level.toString(),
+            textColor: theme.on(color),
+            borderColor: theme.primary,
+            height: 20,
+            allowEmptyString: false,
+            onChanged: (t) {
+              if (t == '') {
+                t = '3';
+              }
+              adapter.setSkillLevel(skills[j].tid, int.parse(t));
+            },
+            width: 20,
+            maxNumDigits: 1,
+            // overwrite: true,
           ),
-        );
-        cols[i * 2 + 1].add(
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, itemPadding / 2, 6, 0),
-            child: TableTextField(
-              textColor: theme.on(color),
-              borderColor: theme.primary,
-              height: 20,
-              onChanged: (t) {},
-              width: 20,
-              maxNumDigits: 1,
-            ),
-          ),
-        );
-      }
+        ),
+      );
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -87,7 +86,7 @@ class OptionsFlyout extends StatelessWidget {
                           splashColor: theme.on(base).withOpacity(.5),
                           shadowColor: theme.shadow,
                           borderRadius: 2,
-                          onTap: () => print('Setting all skills to ' + (i + 3).toString()),
+                          onTap: () => adapter.setAllSkillLevels(i + 3),
                           hoveredColor: base,
                           hoveredElevation: 0,
                           color: theme.surface,
@@ -107,7 +106,7 @@ class OptionsFlyout extends StatelessWidget {
     );
   }
 
-  Widget getJobs() {
+  Widget getJobs(OptionsAdapter adapter) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,17 +118,31 @@ class OptionsFlyout extends StatelessWidget {
             Text('Number of reaction jobs', style: style),
             const SizedBox(width: padding),
             TableTextField(
+              initialText: adapter.getReactionSlots().toString(),
               textColor: theme.on(color),
               borderColor: theme.primary,
-              onChanged: (t) {},
+              maxNumDigits: 4,
+              onChanged: (t) {
+                if (t == '') {
+                  t = '60';
+                }
+                adapter.setReactionSlots(int.parse(t));
+              },
             ),
             const SizedBox(width: padding),
             Text('Number of manufacturing jobs', style: style),
             const SizedBox(width: padding),
             TableTextField(
+              initialText: adapter.getManufacturingSlots().toString(),
               textColor: theme.on(color),
               borderColor: theme.primary,
-              onChanged: (t) {},
+              maxNumDigits: 4,
+              onChanged: (t) {
+                if (t == '') {
+                  t = '60';
+                }
+                adapter.setManufacturingSlots(int.parse(t));
+              },
             ),
           ],
         ),
@@ -137,36 +150,56 @@ class OptionsFlyout extends StatelessWidget {
     );
   }
 
-  Widget getBlueprints() {
+  Widget getBlueprints(OptionsAdapter adapter) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Blueprints', style: headerStyle),
             const SizedBox(width: theme.appBarPadding),
+            Text('ME', style: style),
+            const SizedBox(width: itemPadding),
             TableTextField(
-              hintText: 'ME',
+              initialText: adapter.getME().toString(),
               textColor: theme.on(color),
               borderColor: theme.primary,
-              onChanged: (t) {},
+              maxNumDigits: 2,
+              width: 25,
+              onChanged: (t) {
+                if (t == '') t = '0';
+                adapter.setME(int.parse(t));
+              },
             ),
             const SizedBox(width: theme.appBarPadding),
+            Text('TE', style: style),
+            const SizedBox(width: itemPadding),
             TableTextField(
-              hintText: 'TE',
+              initialText: adapter.getTE().toString(),
               textColor: theme.on(color),
               borderColor: theme.primary,
-              onChanged: (t) {},
+              maxNumDigits: 2,
+              width: 25,
+              onChanged: (t) {
+                if (t == '') t = '0';
+                adapter.setTE(int.parse(t));
+              },
             ),
             const SizedBox(width: theme.appBarPadding),
+            Text('Max number of blueprints', style: style),
+            const SizedBox(width: itemPadding),
             TableTextField(
-              hintText: 'BPs',
-              textColor: theme.on(base),
+              initialText: adapter.getMaxNumBlueprints().toString(),
+              textColor: theme.on(color),
               borderColor: theme.primary,
-              onChanged: (t) {},
+              maxNumDigits: 3,
+              width: 30,
+              onChanged: (t) {
+                if (t == '') t = '20';
+                adapter.setMaxNumBlueprints(int.parse(t));
+              },
             ),
           ],
         ),
@@ -174,7 +207,7 @@ class OptionsFlyout extends StatelessWidget {
     );
   }
 
-  Widget getCosts() {
+  Widget getCosts(OptionsAdapter adapter) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,17 +221,25 @@ class OptionsFlyout extends StatelessWidget {
             Text('Reaction system cost index', style: style),
             const SizedBox(width: padding),
             TableTextField(
+              initialText: adapter.getReactionSystemCostIndex().toString(),
               textColor: theme.onTertiaryContainer,
               borderColor: theme.primary,
-              onChanged: (t) {},
+              floatingPoint: true,
+              maxNumDigits: 4,
+              width: 32,
+              onChanged: (t) => adapter.setReactionSystemCostIndex(t == '' ? .1 : double.parse(t)),
             ),
             const SizedBox(width: padding),
             Text('Manufacturing system cost index', style: style),
             const SizedBox(width: padding),
             TableTextField(
+              initialText: adapter.getManufacturingSystemCostIndex().toString(),
               textColor: theme.onTertiaryContainer,
               borderColor: theme.primary,
-              onChanged: (t) {},
+              floatingPoint: true,
+              maxNumDigits: 4,
+              width: 32,
+              onChanged: (t) => adapter.setManufacturingSystemCostIndex(t == '' ? .1 : double.parse(t)),
             ),
           ],
         ),
@@ -210,9 +251,13 @@ class OptionsFlyout extends StatelessWidget {
             Text('Sales tax', style: style),
             const SizedBox(width: padding),
             TableTextField(
+              initialText: adapter.getSalesTax().toString(),
               textColor: theme.onTertiaryContainer,
               borderColor: theme.primary,
-              onChanged: (t) {},
+              floatingPoint: true,
+              maxNumDigits: 4,
+              width: 32,
+              onChanged: (t) => adapter.setSalesTax(t == '' ? 0 : double.parse(t)),
             ),
           ],
         ),
@@ -368,6 +413,7 @@ class OptionsFlyout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final adapter = Provider.of<OptionsAdapter>(context);
     return PhysicalModel(
       color: Colors.transparent,
       shadowColor: theme.shadow,
@@ -384,15 +430,15 @@ class OptionsFlyout extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                getSkills(),
+                getSkills(adapter),
                 Flexible(child: Container()),
-                getJobs(),
+                getJobs(adapter),
                 Flexible(child: Container()),
-                getBlueprints(),
-                Flexible(child: Container()),
-                getCosts(),
+                getBlueprints(adapter),
                 Flexible(child: Container()),
                 getStructures(),
+                Flexible(child: Container()),
+                getCosts(adapter),
                 Flexible(child: Container()),
                 getMarkets(),
                 Flexible(child: Container()),

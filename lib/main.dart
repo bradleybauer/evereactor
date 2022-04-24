@@ -37,9 +37,9 @@ Future<void> main() async {
   final marketAdapter = MarketAdapter();
 
   final inventoryAdapter = InventoryAdapter();
-  final buildOptionsAdapter = OptionsAdapter(marketAdapter, strings);
+  final optionsAdapter = OptionsAdapter(marketAdapter, strings);
   final buildItemsAdapter = BuildItemsAdapter();
-  final build = Build(inventoryAdapter, buildOptionsAdapter, buildItemsAdapter);
+  final build = Build(inventoryAdapter, optionsAdapter, buildItemsAdapter);
 
   final searchAdapter = SearchAdapter(buildItemsAdapter, strings);
   final targetsTableAdapter = TargetsTableAdapter(marketAdapter, build, buildItemsAdapter, strings);
@@ -55,6 +55,7 @@ Future<void> main() async {
       ChangeNotifierProvider.value(value: targetsTableAdapter),
       ChangeNotifierProvider.value(value: intermediatesTableAdapter),
       ChangeNotifierProvider.value(value: buildItemsAdapter),
+      ChangeNotifierProvider.value(value: optionsAdapter),
       //     ChangeNotifierProvider.value(value: marketAdapter),
       //     ChangeNotifierProvider.value(value: eveBuildContextAdapter),
     ],

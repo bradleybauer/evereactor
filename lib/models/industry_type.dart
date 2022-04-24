@@ -1,4 +1,4 @@
 enum IndustryType {
-  MANUFACTURING,
   REACTION,
+  MANUFACTURING,
 }
