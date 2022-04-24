@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class FlyoutController extends ChangeNotifier {
   FlyoutController(this.closeTimeout, {this.maxVotes = 2});
 
-  FlyoutController? linkedController;
+  final Set<FlyoutController> linkedControllers = {};
 
   final Duration closeTimeout;
 
@@ -62,7 +62,7 @@ class FlyoutController extends ChangeNotifier {
   }
 
   void _closeNoVote() {
-    if (_keepOpenVotes <= 0 && (linkedController == null || !linkedController!.isOpen)) {
+    if (_keepOpenVotes <= 0 && (linkedControllers.isEmpty || !linkedControllers.any((c) => c.isOpen))) {
       _keepOpenVotes = 0;
       final wasClosed = !_isOpen;
       _isOpen = false;
@@ -78,10 +78,10 @@ class FlyoutController extends ChangeNotifier {
 
   // Connects to [controller] so that this remains open if [controller] is open
   void connect(FlyoutController controller) {
-    linkedController = controller;
+    linkedControllers.add(controller);
   }
 
-  void disconnect() {
-    linkedController = null;
+  void disconnect(FlyoutController controller) {
+    linkedControllers.remove(controller);
   }
 }
