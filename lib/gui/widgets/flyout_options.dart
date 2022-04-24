@@ -8,6 +8,7 @@ import '../../strings.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
 import 'flyout_controller.dart';
+import 'flyout_dropdown.dart';
 import 'hover_button.dart';
 import 'labeled_checkbox.dart';
 import 'table_text_field.dart';
@@ -47,12 +48,7 @@ class OptionsFlyout extends StatelessWidget {
             borderColor: theme.primary,
             height: 20,
             allowEmptyString: false,
-            onChanged: (t) {
-              if (t == '') {
-                t = '3';
-              }
-              adapter.setSkillLevel(skills[j].tid, int.parse(t));
-            },
+            onChanged: (t) => adapter.setSkillLevel(skills[j].tid, t == '' ? 3 : int.parse(t)),
             width: 20,
             maxNumDigits: 1,
             // overwrite: true,
@@ -122,12 +118,7 @@ class OptionsFlyout extends StatelessWidget {
               textColor: theme.on(color),
               borderColor: theme.primary,
               maxNumDigits: 4,
-              onChanged: (t) {
-                if (t == '') {
-                  t = '60';
-                }
-                adapter.setReactionSlots(int.parse(t));
-              },
+              onChanged: (t) => adapter.setReactionSlots(t == '' ? 60 : int.parse(t)),
             ),
             const SizedBox(width: padding),
             Text('Number of manufacturing jobs', style: style),
@@ -137,12 +128,7 @@ class OptionsFlyout extends StatelessWidget {
               textColor: theme.on(color),
               borderColor: theme.primary,
               maxNumDigits: 4,
-              onChanged: (t) {
-                if (t == '') {
-                  t = '60';
-                }
-                adapter.setManufacturingSlots(int.parse(t));
-              },
+              onChanged: (t) => adapter.setManufacturingSlots(t == '' ? 60 : int.parse(t)),
             ),
           ],
         ),
@@ -168,10 +154,7 @@ class OptionsFlyout extends StatelessWidget {
               borderColor: theme.primary,
               maxNumDigits: 2,
               width: 25,
-              onChanged: (t) {
-                if (t == '') t = '0';
-                adapter.setME(int.parse(t));
-              },
+              onChanged: (t) => adapter.setME(t == '' ? 0 : int.parse(t)),
             ),
             const SizedBox(width: theme.appBarPadding),
             Text('TE', style: style),
@@ -182,10 +165,7 @@ class OptionsFlyout extends StatelessWidget {
               borderColor: theme.primary,
               maxNumDigits: 2,
               width: 25,
-              onChanged: (t) {
-                if (t == '') t = '0';
-                adapter.setTE(int.parse(t));
-              },
+              onChanged: (t) => adapter.setTE(t == '' ? 0 : int.parse(t)),
             ),
             const SizedBox(width: theme.appBarPadding),
             Text('Max number of blueprints', style: style),
@@ -196,10 +176,7 @@ class OptionsFlyout extends StatelessWidget {
               borderColor: theme.primary,
               maxNumDigits: 3,
               width: 30,
-              onChanged: (t) {
-                if (t == '') t = '20';
-                adapter.setMaxNumBlueprints(int.parse(t));
-              },
+              onChanged: (t) => adapter.setMaxNumBlueprints(t == '' ? 20 : int.parse(t)),
             ),
           ],
         ),
@@ -452,115 +429,3 @@ class OptionsFlyout extends StatelessWidget {
   }
 }
 
-class DropdownMenuFlyout extends StatefulWidget {
-  const DropdownMenuFlyout({
-    Key? key,
-    required this.items,
-    required this.style,
-    required this.parentController,
-    required this.ids,
-    required this.onSelect,
-    required this.current,
-    this.up = false,
-    this.maxHeight,
-  }) : super(key: key);
-
-  final bool up;
-  final double? maxHeight;
-  final String current;
-  final List<String> items;
-  final List<int> ids;
-  final void Function(int) onSelect;
-  final TextStyle style;
-  final FlyoutController parentController;
-
-  @override
-  State<DropdownMenuFlyout> createState() => _DropdownMenuFlyoutState();
-}
-
-class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
-  final FlyoutController controller = FlyoutController(theme.buttonFocusDuration, maxVotes: 1);
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    widget.parentController.connect(controller);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    widget.parentController.disconnect(controller);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Flyout(
-      sideOffset: 4,
-      content: () {
-        return Container(
-          padding: const EdgeInsets.all(8),
-          constraints: widget.maxHeight != null ? BoxConstraints(maxHeight: widget.maxHeight!) : null,
-          decoration: BoxDecoration(
-            border: Border.all(color: theme.outline),
-            borderRadius: BorderRadius.circular(4),
-            color: theme.surface,
-          ),
-          child: Scrollbar(
-            controller: _scrollController,
-            thumbVisibility: true,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List<Widget>.generate(
-                  widget.items.length,
-                  (i) => HoverButton(
-                      builder: (hovered) => Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: Text(
-                            widget.items[i],
-                            style: widget.style.copyWith(color: hovered ? theme.onSecondary : theme.onSurface),
-                          )),
-                      borderRadius: 3,
-                      onTap: () {
-                        controller.startCloseTimer();
-                        widget.onSelect(widget.ids[i]);
-                      },
-                      splashColor: theme.onPrimary.withOpacity(.5),
-                      hoveredElevation: 0,
-                      color: Colors.transparent,
-                      hoveredColor: theme.secondary),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-      child: MouseRegion(
-        cursor: MouseCursor.defer,
-        onExit: (_) {
-          controller.startCloseTimer();
-        },
-        child: HoverButton(
-          color: theme.surface,
-          hoveredColor: theme.secondary,
-          onTap: () => controller.open(),
-          hoveredElevation: 0,
-          borderRadius: 4,
-          builder: (hovered) => Container(
-            padding: const EdgeInsets.all(3),
-            child: Text(widget.current,
-                style: widget.style.copyWith(color: hovered ? theme.onSecondary : theme.onSurface)),
-          ),
-        ),
-      ),
-      openMode: FlyoutOpenMode.custom,
-      align: widget.up ? FlyoutAlign.dropup : FlyoutAlign.dropdown,
-      // closeTimeout: theme.buttonFocusDuration,
-      controller: controller,
-    );
-  }
-}
