@@ -69,7 +69,7 @@ class _TableTextFieldState extends State<TableTextField> {
             borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: widget.borderColor)),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(3),
-            borderSide: BorderSide(width: 0.0, color: theme.outline.withOpacity(.2))),
+            borderSide: BorderSide(width: 0.0, color: theme.outline.withOpacity(.5))),
         fillColor: widget.fillColor,
         filled: true,
         constraints: BoxConstraints.tight(Size(widget.width, widget.height)),
