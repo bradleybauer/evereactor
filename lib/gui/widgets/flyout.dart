@@ -7,7 +7,10 @@ enum FlyoutOpenMode {
   custom, // Manage the controller directly.
 }
 
+// this is trash i know
 enum FlyoutAlign {
+  dropup,
+  dropdown,
   childBottomCenter,
   childLeftCenter,
   childTopLeft,
@@ -110,6 +113,14 @@ class _FlyoutState extends State<Flyout> {
             followAnchor = Alignment.topCenter;
             targetAnchor = Alignment.topCenter;
             break;
+          case FlyoutAlign.dropdown:
+            followAnchor = Alignment.topRight;
+            targetAnchor = Alignment.topRight;
+            break;
+          case FlyoutAlign.dropup:
+            followAnchor = Alignment.bottomRight;
+            targetAnchor = Alignment.bottomRight;
+            break;
         }
 
         return Center(
@@ -136,6 +147,9 @@ class _FlyoutState extends State<Flyout> {
 
   Offset getEntryOffset(BuildContext ctx) {
     switch (widget.align) {
+      case FlyoutAlign.dropup:
+        return Offset(0.0, widget.sideOffset);
+      case FlyoutAlign.dropdown:
       case FlyoutAlign.childBottomCenter:
       case FlyoutAlign.childTopLeft:
       case FlyoutAlign.childTopRight:

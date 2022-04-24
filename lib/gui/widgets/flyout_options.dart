@@ -1,5 +1,6 @@
 import 'package:EveIndy/gui/widgets/flyout_controller.dart';
 import 'package:EveIndy/gui/widgets/hover_button.dart';
+import 'package:EveIndy/models/industry_type.dart';
 import 'package:flutter/material.dart';
 
 import '../../sde.dart';
@@ -11,7 +12,6 @@ import 'table_text_field.dart';
 
 class OptionsFlyout extends StatelessWidget {
   OptionsFlyout(this.controller, {Key? key}) : super(key: key);
-  FlyoutController controller;
 
   static const size = Size(510, 700);
   static const padding = theme.appBarPadding;
@@ -19,10 +19,11 @@ class OptionsFlyout extends StatelessWidget {
 
   static Color color = theme.secondaryContainer;
   static Color base = theme.secondary;
-
   final headerStyle =
       TextStyle(fontFamily: 'NotoSans', fontSize: 15, fontWeight: FontWeight.w700, color: theme.on(color));
   final style = TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.on(color));
+
+  final FlyoutController controller;
 
   Widget getSkills() {
     final skills = SDE.skills.entries.toList(growable: false)
@@ -231,9 +232,89 @@ class OptionsFlyout extends StatelessWidget {
             const SizedBox(width: padding),
             Text('Manufacturing structure', style: style),
             const SizedBox(width: padding),
-            DropdownMenuFlyout(style: style, parentController: controller),
+            DropdownMenuFlyout(
+              current: Strings.get(SDE.structures.entries.first.value.nameLocalizations),
+              items: SDE.structures.entries
+                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
+                  .map((e) => Strings.get(e.value.nameLocalizations))
+                  .toList(),
+              ids: SDE.structures.entries
+                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
+                  .map((e) => e.key)
+                  .toList(),
+              style: style,
+              parentController: controller,
+              onSelect: (x) => print('selected ' + Strings.get(SDE.structures[x]!.nameLocalizations)),
+            ),
+            const SizedBox(width: padding),
+            Text('Reaction structure', style: style),
+            const SizedBox(width: padding),
+            DropdownMenuFlyout(
+              current: Strings.get(SDE.structures.entries.first.value.nameLocalizations),
+              items: SDE.structures.entries
+                  .where((e) => e.value.industryType == IndustryType.REACTION)
+                  .map((e) => Strings.get(e.value.nameLocalizations))
+                  .toList(),
+              ids: SDE.structures.entries
+                  .where((e) => e.value.industryType == IndustryType.REACTION)
+                  .map((e) => e.key)
+                  .toList(),
+              style: style,
+              parentController: controller,
+              onSelect: (x) => print('selected ' + Strings.get(SDE.structures[x]!.nameLocalizations)),
+            ),
           ],
         ),
+        Row(mainAxisSize: MainAxisSize.min, children: [
+          const SizedBox(width: padding),
+          Text('Manufacturing rigs', style: style),
+        ]),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(width: padding),
+            DropdownMenuFlyout(
+              current: Strings.get(SDE.rigs.entries.first.value.nameLocalizations).replaceAll('Standup ', ''),
+              items: SDE.rigs.entries
+                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
+                  .map((e) => Strings.get(e.value.nameLocalizations).replaceAll('Standup ', ''))
+                  .toList()
+                ..sort((a, b) => a.compareTo(b)),
+              ids: SDE.rigs.entries
+                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
+                  .map((e) => e.key)
+                  .toList(),
+              style: style,
+              parentController: controller,
+              onSelect: (x) => print('selected ' + Strings.get(SDE.structures[x]!.nameLocalizations)),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(width: padding),
+            DropdownMenuFlyout(
+              up: true,
+              maxHeight: 300,
+              current: Strings.get(SDE.rigs.entries.first.value.nameLocalizations).replaceAll('Standup ', ''),
+              items: SDE.rigs.entries
+                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
+                  .map((e) => Strings.get(e.value.nameLocalizations).replaceAll('Standup ', ''))
+                  .toList()
+                ..sort((a, b) => a.compareTo(b)),
+              ids: SDE.rigs.entries
+                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
+                  .map((e) => e.key)
+                  .toList(),
+              style: style,
+              parentController: controller,
+              onSelect: (x) => print('selected ' + Strings.get(SDE.structures[x]!.nameLocalizations)),
+            ),
+          ],
+        )
       ],
     );
   }
@@ -328,10 +409,22 @@ class OptionsFlyout extends StatelessWidget {
 class DropdownMenuFlyout extends StatefulWidget {
   const DropdownMenuFlyout({
     Key? key,
+    required this.items,
     required this.style,
     required this.parentController,
+    required this.ids,
+    required this.onSelect,
+    required this.current,
+    this.up = false,
+    this.maxHeight,
   }) : super(key: key);
 
+  final bool up;
+  final double? maxHeight;
+  final String current;
+  final List<String> items;
+  final List<int> ids;
+  final void Function(int) onSelect;
   final TextStyle style;
   final FlyoutController parentController;
 
@@ -341,6 +434,7 @@ class DropdownMenuFlyout extends StatefulWidget {
 
 class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
   final FlyoutController controller = FlyoutController(theme.buttonFocusDuration, maxVotes: 1);
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -350,40 +444,75 @@ class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
 
   @override
   void dispose() {
-    widget.parentController.disconnect();
+    widget.parentController.disconnect(controller);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Flyout(
-      sideOffset: .0,
+      sideOffset: 4,
       content: () {
         return Container(
-            width: 40,
-            height: 80,
-            color: Colors.black,
-            child: Column(children: [
-              const SizedBox(height: 60),
-              HoverButton(
-                  builder: (hovered) {
-                    return Container(
-                        height: 20,
-                        child: Text('hai', style: widget.style.copyWith(color: hovered ? Colors.green : Colors.red)));
-                  },
-                  onTap: () {},
-                  color: Colors.black,
-                  hoveredColor: Colors.blue),
-            ]));
+          padding: const EdgeInsets.all(8),
+          constraints: widget.maxHeight != null ? BoxConstraints(maxHeight: widget.maxHeight!) : null,
+          decoration: BoxDecoration(
+            border: Border.all(color: theme.outline),
+            borderRadius: BorderRadius.circular(4),
+            color: theme.surface,
+          ),
+          child: Scrollbar(
+            controller: _scrollController,
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List<Widget>.generate(
+                  widget.items.length,
+                  (i) => HoverButton(
+                      builder: (hovered) => Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: Text(
+                            widget.items[i],
+                            style: widget.style.copyWith(color: hovered ? theme.onSecondary : theme.onSurface),
+                          )),
+                      borderRadius: 3,
+                      onTap: () {
+                        controller.startCloseTimer();
+                        widget.onSelect(widget.ids[i]);
+                      },
+                      splashColor: theme.onPrimary.withOpacity(.5),
+                      hoveredElevation: 0,
+                      color: Colors.transparent,
+                      hoveredColor: theme.secondary),
+                ),
+              ),
+            ),
+          ),
+        );
       },
       child: MouseRegion(
         cursor: MouseCursor.defer,
-        onEnter: (_) => controller.open(),
-        onExit: (_) => controller.startCloseTimer(),
-        child: Container(width: 40, height: 40, color: Colors.red),
+        onExit: (_) {
+          controller.startCloseTimer();
+        },
+        child: HoverButton(
+          color: theme.surface,
+          hoveredColor: theme.secondary,
+          onTap: () => controller.open(),
+          hoveredElevation: 0,
+          borderRadius: 4,
+          builder: (hovered) => Container(
+            padding: const EdgeInsets.all(3),
+            child: Text(widget.current,
+                style: widget.style.copyWith(color: hovered ? theme.onSecondary : theme.onSurface)),
+          ),
+        ),
       ),
       openMode: FlyoutOpenMode.custom,
-      align: FlyoutAlign.childBottomCenter,
+      align: widget.up ? FlyoutAlign.dropup : FlyoutAlign.dropdown,
       // closeTimeout: theme.buttonFocusDuration,
       controller: controller,
     );
