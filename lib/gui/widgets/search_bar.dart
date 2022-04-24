@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 
 import '../../adapters/search.dart';
 import '../my_theme.dart';
-import 'flyout_controller.dart';
 import 'flyout.dart';
-import 'table_search.dart';
+import 'flyout_controller.dart';
 import 'search_text_field.dart';
+import 'table_search.dart';
 
 class SearchBar extends StatefulWidget {
   // TODO sad :( not really sure how to organize stuff like this.
@@ -44,7 +44,7 @@ class _SearchBarState extends State<SearchBar> {
         flyoutController.close();
       }
       // set state so that 'text clear' button changes color to primary with the text field border if it is focused while hovered
-      setState((){});
+      setState(() {});
     });
     super.initState();
   }
@@ -60,10 +60,9 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return Flyout(
       align: FlyoutAlign.childTopLeft,
-      content: const SearchBarFlyoutContent(),
-      contentSize: SearchBarFlyoutContent.size,
+      content: () => const SearchBarFlyoutContent(),
       openMode: FlyoutOpenMode.custom,
-      verticalOffset: MyTheme.appBarPadding * 2,
+      sideOffset: MyTheme.appBarPadding * 2,
       windowPadding: MyTheme.appBarPadding,
       // TODO adding this MouseRegion widget made a bug appear in debug mode if I open the search flyout and hover the footer flyout group buttons.
       // do not want to go through the effort of reporting it at flutter github.

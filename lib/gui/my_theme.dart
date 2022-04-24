@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // https://m3.material.io/styles/color/the-color-system/key-colors-tones
 abstract class MyTheme {
   //with ChangeNotifier {
-  static const bool _inDarkMode = false;
+  static const bool _inDarkMode = true;
 
   // static const lightThemeSeedColor = Color.fromARGB(255, 255, 255, 255);
   // static const darkThemeSeedColor = Color.fromARGB(255, 0, 0, 0);
@@ -38,7 +38,7 @@ abstract class MyTheme {
   // TextStyle(fontFeatures: [FontFeature.tabularFigures(), FontFeature.alternative(0)]);
   //TextStyle(fontFamily: 'NotoSans', fontWeight: FontWeight.w600, color: theme.colors.onPrimary)
 
-  static const double appMinHeight = 400;
+  static const double appMinHeight = 500;
   static const double appWidth = 1000;
 
   static const double appBarButtonHeight = 28;

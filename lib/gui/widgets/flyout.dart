@@ -1,14 +1,8 @@
-import 'dart:math';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
-import '../../platform.dart';
-import '../my_theme.dart';
 import 'flyout_controller.dart';
 
 enum FlyoutOpenMode {
-  tap,
   hover,
   custom, // Manage the controller directly.
 }
@@ -17,14 +11,12 @@ enum FlyoutAlign {
   childLeftCenter,
   childTopLeft,
   childTopRight,
-  appRight,
 }
 
 class Flyout extends StatefulWidget {
   /// Provide [closeTimeout] or [controller] but not both.
   const Flyout({
-    required this.verticalOffset,
-    required this.contentSize,
+    required this.sideOffset,
     required this.content,
     required this.child,
     required this.openMode,
@@ -38,9 +30,8 @@ class Flyout extends StatefulWidget {
   })  : assert((closeTimeout != null && controller == null) || (closeTimeout == null && controller != null)),
         super(key: key);
 
-  final double verticalOffset;
-  final Widget content;
-  final Size contentSize;
+  final double sideOffset;
+  final Widget Function() content;
   final Widget child;
   final Duration? closeTimeout;
   final FlyoutOpenMode openMode;
@@ -86,86 +77,25 @@ class _FlyoutState extends State<Flyout> {
     super.dispose();
   }
 
-  Offset getEntryOffset(BuildContext ctx, RenderBox childBox) {
-    final childPos = childBox.localToGlobal(Offset.zero);
-    switch (widget.align) {
-      case FlyoutAlign.appRight:
-        if (!Platform.isWeb()) {
-          double dy = -widget.verticalOffset;
-          double dx = MyTheme.appWidth - childPos.dx - widget.windowPadding - widget.contentSize.width;
-          return Offset(dx, dy);
-        } else {
-          final windowWidth = MediaQuery.of(ctx).size.width;
-          double dy = -widget.verticalOffset;
-          double dx = windowWidth -
-              childPos.dx -
-              widget.windowPadding -
-              widget.contentSize.width -
-              max(0, windowWidth - MyTheme.appWidth) / 2 - // the app is centered in the browser
-              32; // -32 there is extra padding on web
-          return Offset(dx, dy);
-        }
-      case FlyoutAlign.childTopLeft:
-        return Offset(0.0, -widget.verticalOffset);
-      case FlyoutAlign.childTopRight:
-        return Offset(0.0, -widget.verticalOffset);
-      case FlyoutAlign.childLeftCenter:
-        return Offset(-widget.verticalOffset, 0.0);
-    }
-  }
-
   void _handleStateChange() {
-    final overlayState = Overlay.of(context);
-    if (controller.isOpen && entry == null) {
+    if (controller.isOpen && (entry == null || controller.getDidContentChange())) {
       entry = getOverlayEntry();
-      overlayState?.insert(entry!);
+      Overlay.of(context)?.insert(entry!);
     } else if (!controller.isOpen) {
       entry?.remove();
       entry = null;
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget ret;
-
-    switch (widget.openMode) {
-      case FlyoutOpenMode.hover:
-        ret = MouseRegion(
-          // opaque: false,
-          onEnter: (event) => controller.open(),
-          onExit: (event) => controller.startCloseTimer(),
-          child: widget.child,
-        );
-        break;
-      case FlyoutOpenMode.tap:
-        ret = GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: controller.toggle,
-          child: widget.child,
-        );
-        break;
-      case FlyoutOpenMode.custom:
-        ret = widget.child;
-        break;
-    }
-
-    return CompositedTransformTarget(link: layerLink, child: ret);
+    controller.setDidContentChange(false);
   }
 
   OverlayEntry getOverlayEntry() {
     return OverlayEntry(
       builder: ((ctx) {
-        final childBox = context.findRenderObject() as RenderBox;
-        final offset = getEntryOffset(ctx, childBox);
+        final offset = getEntryOffset(ctx);
 
         Alignment? followAnchor;
         Alignment? targetAnchor;
         switch (widget.align) {
-          case FlyoutAlign.appRight:
-            followAnchor = Alignment.bottomLeft;
-            targetAnchor = Alignment.topLeft;
-            break;
           case FlyoutAlign.childTopLeft:
             followAnchor = Alignment.bottomLeft;
             targetAnchor = Alignment.topLeft;
@@ -193,12 +123,42 @@ class _FlyoutState extends State<Flyout> {
               onExit: (event) => controller.startCloseTimer(),
               child: Material(
                 color: Colors.transparent,
-                child: widget.content,
+                child: widget.content(),
               ),
             ),
           ),
         );
       }),
     );
+  }
+
+  Offset getEntryOffset(BuildContext ctx) {
+    switch (widget.align) {
+      case FlyoutAlign.childTopLeft:
+        return Offset(0.0, -widget.sideOffset);
+      case FlyoutAlign.childTopRight:
+        return Offset(0.0, -widget.sideOffset);
+      case FlyoutAlign.childLeftCenter:
+        return Offset(-widget.sideOffset, 0.0);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget ret;
+    switch (widget.openMode) {
+      case FlyoutOpenMode.hover:
+        ret = MouseRegion(
+          // opaque: false,
+          onEnter: (event) => controller.open(),
+          onExit: (event) => controller.startCloseTimer(),
+          child: widget.child,
+        );
+        break;
+      case FlyoutOpenMode.custom:
+        ret = widget.child;
+        break;
+    }
+    return CompositedTransformTarget(link: layerLink, child: ret);
   }
 }

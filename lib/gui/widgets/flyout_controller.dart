@@ -8,6 +8,9 @@ class FlyoutController extends ChangeNotifier {
 
   final Duration closeTimeout;
 
+  // keep some data to pass to the overlay
+  bool _contentChanged = false;
+
   // This kind of fixes the issue where keepOpenVotes get unbalanced due to MouseRegion onExit/onEnter discontinuities.
   final int maxVotes;
 
@@ -21,9 +24,11 @@ class FlyoutController extends ChangeNotifier {
 
   void open() {
     _keepOpenVotes = min(_keepOpenVotes + 1, maxVotes);
+    final wasOpen = _isOpen;
     _isOpen = true;
     _closeTimer?.cancel();
     _closeTimer = null;
+    // if (!wasOpen) notifyListeners();
     notifyListeners();
   }
 
@@ -57,10 +62,15 @@ class FlyoutController extends ChangeNotifier {
   void _closeNoVote() {
     if (_keepOpenVotes <= 0) {
       _keepOpenVotes = 0;
+      final wasClosed = !_isOpen;
       _isOpen = false;
       _closeTimer?.cancel();
       _closeTimer = null;
+      // if (!wasClosed) notifyListeners();
       notifyListeners();
     }
   }
+
+  bool getDidContentChange() => _contentChanged;
+  void setDidContentChange(bool x) => _contentChanged = x;
 }

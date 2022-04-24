@@ -2,27 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../my_theme.dart';
-import 'table_targets.dart';
 
 class TableTextField extends StatefulWidget {
   const TableTextField({
     Key? key,
     required this.onChanged,
+    required this.textColor,
+    required this.borderColor,
+    this.fillColor = Colors.transparent,
     this.initialText = '',
     this.width = 40,
+    this.height = 21,
     this.maxNumDigits = 5,
     this.hintText = '',
     this.textAlign = TextAlign.right,
     this.allowEmptyString = false,
+    this.hintStyle,
   }) : super(key: key);
 
-  static const double height = TargetsTable.itemHeight * .7;
+  final double height;
 
   final double width;
+  final Color fillColor;
+  final Color textColor;
+  final Color borderColor;
   final int maxNumDigits;
   final String initialText;
   final String hintText;
   final TextAlign textAlign;
+  final TextStyle? hintStyle;
   final void Function(String) onChanged;
   final bool allowEmptyString;
 
@@ -54,19 +62,20 @@ class _TableTextFieldState extends State<TableTextField> {
       textAlign: widget.textAlign,
       decoration: InputDecoration(
         hintText: widget.hintText,
+        hintStyle: widget.hintStyle,
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: theme.primary)),
+            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: widget.borderColor)),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: theme.primary)),
+            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: widget.borderColor)),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(3),
             borderSide: BorderSide(width: 0.0, color: theme.outline.withOpacity(.2))),
-        fillColor: theme.background,
+        fillColor: widget.fillColor,
         filled: true,
-        constraints: BoxConstraints.tight(Size(widget.width, TableTextField.height)),
+        constraints: BoxConstraints.tight(Size(widget.width, widget.height)),
         contentPadding: const EdgeInsets.all(2.0),
       ),
-      style: TextStyle(fontSize: 11, fontFamily: 'NotoSans', color: theme.onBackground),
+      style: TextStyle(fontSize: 11, fontFamily: 'NotoSans', color: widget.textColor),
       keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
       inputFormatters: [
         FilteringTextInputFormatter.allow(RegExp(r"[0-9]")),

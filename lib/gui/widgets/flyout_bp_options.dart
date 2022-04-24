@@ -22,11 +22,10 @@ class BpOptionsTableWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
       child: Flyout(
-        verticalOffset: 0,
+        sideOffset: 0,
         openMode: FlyoutOpenMode.hover,
         align: FlyoutAlign.childLeftCenter,
-        contentSize: size,
-        content: BpOptionsFlyoutContent(adapter: adapter, tid: tid),
+        content:()=> BpOptionsFlyoutContent(adapter: adapter, tid: tid),
         closeTimeout: const Duration(),
         maxVotes: 1,
         child: const Padding(
@@ -75,6 +74,9 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             child: TableTextField(
                 onChanged: (text) => adapter.setMaxBPs(tid, text != '' ? int.parse(text) : null),
                 initialText: adapter.getMaxBPs(tid) != null ? adapter.getMaxBPs(tid).toString() : '',
+                borderColor: theme.primary,
+                textColor: theme.onBackground,
+                fillColor: theme.background,
                 hintText: 'BPs',
                 allowEmptyString: true,
                 width: 35,
@@ -87,6 +89,9 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             verticalOffset: toolTipOffset,
             waitDuration: duration,
             child: TableTextField(
+                borderColor: theme.primary,
+                textColor: theme.onBackground,
+                fillColor: theme.background,
                 onChanged: (text) => adapter.setMaxRuns(tid, text != '' ? int.parse(text) : null),
                 initialText: adapter.getMaxRuns(tid) != null ? adapter.getMaxRuns(tid).toString() : '',
                 hintText: 'Runs',
@@ -101,6 +106,9 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             verticalOffset: toolTipOffset,
             waitDuration: duration,
             child: TableTextField(
+                borderColor: theme.primary,
+                textColor: theme.onBackground,
+                fillColor: theme.background,
                 onChanged: (text) => adapter.setTE(tid, text != '' ? int.parse(text) : null),
                 initialText: adapter.getTE(tid) != null ? adapter.getTE(tid).toString() : '',
                 hintText: 'TE',
@@ -115,6 +123,9 @@ class BpOptionsFlyoutContent extends StatelessWidget {
             verticalOffset: toolTipOffset,
             waitDuration: duration,
             child: TableTextField(
+                borderColor: theme.primary,
+                textColor: theme.onBackground,
+                fillColor: theme.background,
                 onChanged: (text) => adapter.setME(tid, text != '' ? int.parse(text) : null),
                 initialText: adapter.getME(tid) != null ? adapter.getME(tid).toString() : '',
                 hintText: 'ME',

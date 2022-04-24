@@ -253,23 +253,6 @@ Options ### see BUILD CUSTOMIZATIONS section above for more details about option
 
 meh lets not do implants
 
-Skills
-    Industry             [  ]   Advanced Industry    [  ]
-    ...                  [  ]   ...                  [  ]
-    ...                  [  ]   ...                  [  ]
-    ...                  [  ]   ...                  [  ]
-    ...                  [  ]   ...                  [  ]
-    ...                  [  ]   ...                  [  ]
-    ...                  [  ]   ...                  [  ]
-    ...                  [  ]   Reactions            [  ]
-
-Jobs
-    Number of reaction jobs [ ]
-    Number of manufacturing jobs [ ]
-
-Blueprints
-    ME [ ]  TE [ ]  Max number of blueprints [ ]
-
 Costs
     Reaction system cost index [ ] // min is .1%
     Manufacturing system cost index [ ] // min is .1%
@@ -278,9 +261,6 @@ Costs
 Structures
     Manufacturing: [ v ]   Rigs: [ v ] x5
     Reaction: [ v ]        Rigs: [ v ] x5
-
-Market Systems
-    Jita [] Perimeter [] Amarr [] Ashab []
 
 App Settings
     Language [ v ]
