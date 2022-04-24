@@ -22,8 +22,6 @@ class Flyout extends StatefulWidget {
     required this.child,
     required this.openMode,
     required this.align,
-    // Note this only pads the right side of the window atm.
-    this.windowPadding = 0,
     this.closeTimeout,
     this.controller,
     this.maxVotes = 2,
@@ -37,7 +35,6 @@ class Flyout extends StatefulWidget {
   final Duration? closeTimeout;
   final FlyoutOpenMode openMode;
   final FlyoutAlign align;
-  final double windowPadding;
   final FlyoutController? controller;
   final int maxVotes;
 
