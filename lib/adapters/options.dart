@@ -5,11 +5,11 @@ import '../strings.dart';
 import 'market.dart';
 
 class OptionsAdapter with ChangeNotifier {
-  final Options _options;
+  final Options _options = Options();
 
   final MarketAdapter _market;
 
-  OptionsAdapter(this._options, this._market, Strings strings) {
+  OptionsAdapter(this._market, Strings strings) {
     _market.addListener(() {
       notifyListeners();
     });

@@ -1,6 +1,6 @@
 import 'package:EveIndy/adapters/build_items.dart';
-import 'package:EveIndy/adapters/options.dart';
 import 'package:EveIndy/adapters/market.dart';
+import 'package:EveIndy/adapters/options.dart';
 import 'package:EveIndy/adapters/table_targets.dart';
 import 'package:EveIndy/gui/main.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,6 @@ Future<void> main() async {
   // final cacheDbAdapter = Persistence();
 
   // Make models
-  // final eveBuildContext = EveBuildContext(5, .022, .22, 3 / 100, 3.6 / 100, 1.2);
   // final market = Market();
   // await market.loadAdjustedPricesFromESI();
 
@@ -35,12 +34,12 @@ Future<void> main() async {
   // Some change notifiers and widgets want to be notified when the language changes
   final Strings strings = Strings();
 
+  final marketAdapter = MarketAdapter();
+
   final inventoryAdapter = InventoryAdapter();
-  final buildOptionsAdapter = OptionsAdapter();
+  final buildOptionsAdapter = OptionsAdapter(marketAdapter, strings);
   final buildItemsAdapter = BuildItemsAdapter();
   final build = Build(inventoryAdapter, buildOptionsAdapter, buildItemsAdapter);
-
-  final marketAdapter = MarketAdapter();
 
   final searchAdapter = SearchAdapter(buildItemsAdapter, strings);
   final targetsTableAdapter = TargetsTableAdapter(marketAdapter, build, buildItemsAdapter, strings);
@@ -62,6 +61,8 @@ Future<void> main() async {
     child: const MyApp(),
   ));
 }
+
+// background on web
 
 // decoration: BoxDecoration(
 //   gradient: LinearGradient(
