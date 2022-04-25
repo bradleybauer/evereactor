@@ -1,5 +1,3 @@
-import 'package:EveIndy/gui/widgets/flyout.dart';
-import 'package:circular_color_picker/circular_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +5,7 @@ import '../../adapters/options.dart';
 import '../../sde.dart';
 import '../../strings.dart';
 import '../my_theme.dart';
+import 'flyout.dart';
 import 'flyout_controller.dart';
 import 'flyout_dropdown.dart';
 import 'hover_button.dart';
@@ -18,7 +17,7 @@ const padding = MyTheme.appBarPadding;
 const itemPadding = 8.0;
 
 class OptionsFlyout extends StatelessWidget {
-  OptionsFlyout(this.controller, this.color, this.base, this.headerStyle, this.style, {Key? key}) : super(key: key);
+  const OptionsFlyout(this.controller, this.color, this.base, this.headerStyle, this.style, {Key? key}) : super(key: key);
 
   final Color color;
   final Color base;
@@ -39,45 +38,29 @@ class OptionsFlyout extends StatelessWidget {
       borderRadius: BorderRadius.circular(4),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Container(
-        width: size.width,
-        height: size.height,
+        constraints: BoxConstraints(maxHeight: size.height, maxWidth: size.width),
+        // width: size.width,
+        // height: size.height,
         color: color,
         child: Padding(
           padding: const EdgeInsets.all(padding),
           child: FocusTraversalGroup(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Wrap(
+              spacing: 8,
+              direction: Axis.vertical,
               children: [
-                SkillSection(
-                    style: style,
-                    color: color,
-                    headerStyle: headerStyle,
-                    base: base,
-                    adapter: adapter),
-                Flexible(child: Container()),
+                SkillSection(style: style, color: color, headerStyle: headerStyle, base: base, adapter: adapter),
                 JobsSection(headerStyle: headerStyle, style: style, color: color, adapter: adapter),
-                Flexible(child: Container()),
-                BlueprintsSection(
-                    headerStyle: headerStyle, style: style, color: color, adapter: adapter),
-                Flexible(child: Container()),
-                StructuresSection(
-                    style: style,
-                    controller: controller,
-                    headerStyle: headerStyle,
-                    adapter: adapter),
-                Flexible(child: Container()),
-                CostsSection(
-                    headerStyle: headerStyle,
-                    style: style,
-                    adapter: adapter),
-                Flexible(child: Container()),
+                BlueprintsSection(headerStyle: headerStyle, style: style, color: color, adapter: adapter),
+                StructuresSection(style: style, controller: controller, headerStyle: headerStyle, adapter: adapter),
+                CostsSection(headerStyle: headerStyle, style: style, adapter: adapter),
                 MarketsSection(base: base, headerStyle: headerStyle, style: style),
-                Flexible(child: Container()),
                 AppSection(
                     headerStyle: headerStyle,
                     style: style,
                     controller: controller,
                     color: color,
+                    base: base,
                     adapter: adapter,
                     context: context),
               ],
@@ -96,6 +79,7 @@ class AppSection extends StatelessWidget {
     required this.style,
     required this.controller,
     required this.color,
+    required this.base,
     required this.adapter,
     required this.context,
   }) : super(key: key);
@@ -104,6 +88,7 @@ class AppSection extends StatelessWidget {
   final TextStyle style;
   final FlyoutController controller;
   final Color color;
+  final Color base;
   final OptionsAdapter adapter;
   final BuildContext context;
 
@@ -111,6 +96,7 @@ class AppSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text('App', style: headerStyle),
         const SizedBox(width: padding),
@@ -126,33 +112,35 @@ class AppSection extends StatelessWidget {
           up: true,
         ),
         const SizedBox(width: itemPadding),
-        HoverButton(
-            builder: (b) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('1', style: style.copyWith(color: !b ? theme.on(color) : Colors.black)),
-                ),
-            onTap: () {},
-            color: Colors.transparent,
-            hoveredColor: Colors.blue),
+        // HoverButton(
+        //     builder: (b) => Padding(
+        //           padding: const EdgeInsets.all(8.0),
+        //           child: Text('1', style: style.copyWith(color: !b ? theme.on(color) : Colors.black)),
+        //         ),
+        //     onTap: () {},
+        //     color: Colors.transparent,
+        //     hoveredColor: Colors.blue),
+        // const SizedBox(width: itemPadding),
+        // HoverButton(
+        //     builder: (b) => Padding(
+        //           padding: const EdgeInsets.all(8.0),
+        //           child: Text('2', style: style.copyWith(color: !b ? theme.on(color) : Colors.black)),
+        //         ),
+        //     onTap: () {},
+        //     color: Colors.transparent,
+        //     hoveredColor: Colors.blue),
+        // const SizedBox(width: itemPadding),
+        // HoverButton(
+        //     builder: (b) => Padding(
+        //           padding: const EdgeInsets.all(8.0),
+        //           child: Text('3', style: style.copyWith(color: !b ? theme.on(color) : Colors.black)),
+        //         ),
+        //     onTap: () => theme.setColor(Colors.red),
+        //     color: Colors.transparent,
+        //     hoveredColor: Colors.blue),
+        LightDarkModeButtons(light: !theme.isDark, color: color, base: base, onTap: theme.toggleLightDark),
         const SizedBox(width: itemPadding),
-        HoverButton(
-            builder: (b) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('2', style: style.copyWith(color: !b ? theme.on(color) : Colors.black)),
-                ),
-            onTap: () {},
-            color: Colors.transparent,
-            hoveredColor: Colors.blue),
-        const SizedBox(width: itemPadding),
-        HoverButton(
-            builder: (b) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('3', style: style.copyWith(color: !b ? theme.on(color) : Colors.black)),
-                ),
-            onTap: () => theme.setColor(Colors.red),
-            color: Colors.transparent,
-            hoveredColor: Colors.blue),
-        ASDF(controller),
+        ColorChanger(controller, color, base),
       ],
     );
   }
@@ -232,7 +220,7 @@ class StructuresSection extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
             child: DropdownMenuFlyout(
-              current: 'Rigs',
+              current: 'Add Rigs',
               items: adapter.getManufacturingRigs().map((e) => e.name).toList(),
               style: style,
               parentController: controller,
@@ -248,7 +236,7 @@ class StructuresSection extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
             child: DropdownMenuFlyout(
-              current: 'Rigs',
+              current: 'Add Rigs',
               items: adapter.getReactionRigs().map((e) => e.name).toList(),
               style: style,
               parentController: controller,
@@ -364,58 +352,45 @@ class CostsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
-    return Column(
+    return Row(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Costs', style: headerStyle),
-        const SizedBox(height: itemPadding / 2),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(width: padding),
-            Text('Reaction system cost index', style: style),
-            const SizedBox(width: padding),
-            TableTextField(
-              initialText: adapter.getReactionSystemCostIndex().toString(),
-              textColor: theme.onTertiaryContainer,
-              borderColor: theme.primary,
-              floatingPoint: true,
-              maxNumDigits: 4,
-              width: 32,
-              onChanged: (t) => adapter.setReactionSystemCostIndex(t == '' ? .1 : double.parse(t)),
-            ),
-            const SizedBox(width: padding),
-            Text('Manufacturing system cost index', style: style),
-            const SizedBox(width: padding),
-            TableTextField(
-              initialText: adapter.getManufacturingSystemCostIndex().toString(),
-              textColor: theme.onTertiaryContainer,
-              borderColor: theme.primary,
-              floatingPoint: true,
-              maxNumDigits: 4,
-              width: 32,
-              onChanged: (t) => adapter.setManufacturingSystemCostIndex(t == '' ? .1 : double.parse(t)),
-            ),
-          ],
+        const SizedBox(width: padding),
+        Text('Reaction index', style: style),
+        const SizedBox(width: padding),
+        TableTextField(
+          initialText: adapter.getReactionSystemCostIndex().toString(),
+          textColor: theme.onTertiaryContainer,
+          activeBorderColor: theme.primary,
+          floatingPoint: true,
+          maxNumDigits: 4,
+          width: 32,
+          onChanged: (t) => adapter.setReactionSystemCostIndex(t == '' ? .1 : double.parse(t)),
         ),
-        const SizedBox(height: itemPadding),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(width: padding),
-            Text('Sales tax', style: style),
-            const SizedBox(width: padding),
-            TableTextField(
-              initialText: adapter.getSalesTax().toString(),
-              textColor: theme.onTertiaryContainer,
-              borderColor: theme.primary,
-              floatingPoint: true,
-              maxNumDigits: 4,
-              width: 32,
-              onChanged: (t) => adapter.setSalesTax(t == '' ? 0 : double.parse(t)),
-            ),
-          ],
+        const SizedBox(width: padding),
+        Text('Manufacturing index', style: style),
+        const SizedBox(width: padding),
+        TableTextField(
+          initialText: adapter.getManufacturingSystemCostIndex().toString(),
+          textColor: theme.onTertiaryContainer,
+          activeBorderColor: theme.primary,
+          floatingPoint: true,
+          maxNumDigits: 4,
+          width: 32,
+          onChanged: (t) => adapter.setManufacturingSystemCostIndex(t == '' ? .1 : double.parse(t)),
+        ),
+        const SizedBox(width: padding),
+        Text('Sales tax', style: style),
+        const SizedBox(width: padding),
+        TableTextField(
+          initialText: adapter.getSalesTax().toString(),
+          textColor: theme.onTertiaryContainer,
+          activeBorderColor: theme.primary,
+          floatingPoint: true,
+          maxNumDigits: 4,
+          width: 32,
+          onChanged: (t) => adapter.setSalesTax(t == '' ? 0 : double.parse(t)),
         ),
       ],
     );
@@ -453,7 +428,7 @@ class BlueprintsSection extends StatelessWidget {
             TableTextField(
               initialText: adapter.getME().toString(),
               textColor: theme.on(color),
-              borderColor: theme.primary,
+              activeBorderColor: theme.primary,
               maxNumDigits: 2,
               width: 25,
               onChanged: (t) => adapter.setME(t == '' ? 0 : int.parse(t)),
@@ -464,7 +439,7 @@ class BlueprintsSection extends StatelessWidget {
             TableTextField(
               initialText: adapter.getTE().toString(),
               textColor: theme.on(color),
-              borderColor: theme.primary,
+              activeBorderColor: theme.primary,
               maxNumDigits: 2,
               width: 25,
               onChanged: (t) => adapter.setTE(t == '' ? 0 : int.parse(t)),
@@ -475,7 +450,7 @@ class BlueprintsSection extends StatelessWidget {
             TableTextField(
               initialText: adapter.getMaxNumBlueprints().toString(),
               textColor: theme.on(color),
-              borderColor: theme.primary,
+              activeBorderColor: theme.primary,
               maxNumDigits: 3,
               width: 30,
               onChanged: (t) => adapter.setMaxNumBlueprints(t == '' ? 20 : int.parse(t)),
@@ -510,6 +485,7 @@ class JobsSection extends StatelessWidget {
       children: [
         Text('Jobs', style: headerStyle),
         Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(width: padding),
             Text('Number of reaction jobs', style: style),
@@ -517,7 +493,7 @@ class JobsSection extends StatelessWidget {
             TableTextField(
               initialText: adapter.getReactionSlots().toString(),
               textColor: theme.on(color),
-              borderColor: theme.primary,
+              activeBorderColor: theme.primary,
               maxNumDigits: 4,
               onChanged: (t) => adapter.setReactionSlots(t == '' ? 60 : int.parse(t)),
             ),
@@ -527,7 +503,7 @@ class JobsSection extends StatelessWidget {
             TableTextField(
               initialText: adapter.getManufacturingSlots().toString(),
               textColor: theme.on(color),
-              borderColor: theme.primary,
+              activeBorderColor: theme.primary,
               maxNumDigits: 4,
               onChanged: (t) => adapter.setManufacturingSlots(t == '' ? 60 : int.parse(t)),
             ),
@@ -580,7 +556,7 @@ class SkillSection extends StatelessWidget {
             child: TableTextField(
               initialText: skills[j].level.toString(),
               textColor: theme.on(color),
-              borderColor: theme.primary,
+              activeBorderColor: theme.primary,
               allowEmptyString: false,
               onChanged: (t) => adapter.setSkillLevel(skills[j].tid, t == '' ? 3 : int.parse(t)),
               width: 20,
@@ -638,15 +614,17 @@ class SkillSection extends StatelessWidget {
   }
 }
 
-class ASDF extends StatefulWidget {
-  ASDF(this.controller, {Key? key}) : super(key: key);
+class ColorChanger extends StatefulWidget {
+  ColorChanger(this.controller, this.color, this.base, {Key? key}) : super(key: key);
   FlyoutController controller;
+  Color color;
+  Color base;
 
   @override
-  State<ASDF> createState() => _ASDFState();
+  State<ColorChanger> createState() => _ColorChangerState();
 }
 
-class _ASDFState extends State<ASDF> {
+class _ColorChangerState extends State<ColorChanger> {
   final FlyoutController controller = FlyoutController(theme.buttonFocusDuration, maxVotes: 1);
 
   @override
@@ -663,36 +641,108 @@ class _ASDFState extends State<ASDF> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return Flyout(
-        content: (ctx) => ASD((c) => Provider.of<MyTheme>(ctx,listen: false).setColor(c)),
-        child: Container(width: 10, height: 10, color: Colors.black),
-        openMode: FlyoutOpenMode.hover,
-        align: FlyoutAlign.dropup,
+        content: (ctx) => ColorChangerContent((Color c) {
+              Provider.of<MyTheme>(ctx, listen: false).setColor(c);
+              print('setting color');
+            }),
+        child: MouseRegion(
+          onExit: (_) => controller.startCloseTimer(),
+          child: HoverButton(
+            mouseCursor: MouseCursor.defer,
+            builder: (hovered) => Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Icon(Icons.color_lens, size: 14, color: theme.on(hovered ? widget.base : theme.surface)),
+            ),
+            color: theme.surface,
+            hoveredColor: widget.base,
+            onTap: () => controller.open(),
+            borderRadius: 3,
+            hoveredElevation: 0,
+          ),
+        ),
+        openMode: FlyoutOpenMode.custom,
+        align: FlyoutAlign.childRightCenter,
         controller: controller);
   }
 }
 
-class ASD extends StatefulWidget {
-  const ASD(this.onChange, {Key? key}) : super(key: key);
+class ColorChangerContent extends StatefulWidget {
+  const ColorChangerContent(this.onChange, {Key? key}) : super(key: key);
 
-  final Function onChange;
+  final Function(Color) onChange;
 
   @override
-  State<ASD> createState() => _ASDState();
+  State<ColorChangerContent> createState() => _ColorChangerContentState();
 }
 
-class _ASDState extends State<ASD> {
+class _ColorChangerContentState extends State<ColorChangerContent> {
   Color color = Colors.black;
+  double hue = 0;
+  // Changing saturation and value does nothing basically, when using ColorScheme.fromSeed(.)
+  static const double sat = 1;
+  static const double val = 1;
+
+
+  @override
+  void initState() {
+    hue = HSVColor.fromColor(Provider.of<MyTheme>(context,listen:false).getColor()).hue;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return CircularColorPicker(
-      onColorChange: (value) {
-        setState(() {
-          color = value;
-          widget.onChange(value);
-        });
-      },
+    final theme = Provider.of<MyTheme>(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.surface,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: theme.outline),
+      ),
+      constraints: const BoxConstraints.tightFor(width: 180, height: 30),
+      child: Slider(
+        value: hue,
+        mouseCursor: MouseCursor.defer,
+        min: 0,
+        max: 360,
+        onChanged: (double v) {
+          setState(() {
+            hue = v;
+            color = HSVColor.fromAHSV(1, hue, sat, val).toColor();
+          });
+          widget.onChange(color);
+        },
+      ),
+    );
+  }
+}
+
+class LightDarkModeButtons extends StatelessWidget {
+  const LightDarkModeButtons(
+      {required this.light, required this.color, required this.base, required this.onTap, Key? key})
+      : super(key: key);
+
+  final void Function() onTap;
+  final bool light;
+  final Color color;
+  final Color base;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
+    return HoverButton(
+      mouseCursor: MouseCursor.defer,
+      builder: (hovered) => Padding(
+        padding: const EdgeInsets.all(4.0),
+        child:
+            Icon(light ? Icons.light_mode : Icons.dark_mode, size: 14, color: theme.on(hovered ? base : theme.surface)),
+      ),
+      color: theme.surface,
+      hoveredColor: base,
+      borderRadius: 3,
+      hoveredElevation: 0,
+      onTap: onTap,
     );
   }
 }

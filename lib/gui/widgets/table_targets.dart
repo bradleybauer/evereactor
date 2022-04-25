@@ -141,7 +141,7 @@ class TargetsTableItem extends StatelessWidget {
             wrap(1,
                 child: TableTextField(
                     initialText: row.runs.toString(),
-                    borderColor: theme.primary,
+                    activeBorderColor: theme.primary,
                     textColor: theme.onBackground,
                     onChanged: (String runs) {
                       if (runs != '') {

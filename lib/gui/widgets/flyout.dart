@@ -9,6 +9,7 @@ enum FlyoutOpenMode {
 
 // this is trash i know
 enum FlyoutAlign {
+  childRightCenter,
   dropup,
   dropdown,
   childBottomCenter,
@@ -105,6 +106,11 @@ class _FlyoutState extends State<Flyout> {
             followAnchor = Alignment.bottomRight;
             targetAnchor = Alignment.topRight;
             break;
+
+          case FlyoutAlign.childRightCenter:
+            followAnchor = Alignment.centerLeft;
+            targetAnchor = Alignment.centerLeft;
+            break;
           case FlyoutAlign.childLeftCenter:
             followAnchor = Alignment.centerRight;
             targetAnchor = Alignment.centerRight;
@@ -136,7 +142,7 @@ class _FlyoutState extends State<Flyout> {
               onExit: (event) => controller.startCloseTimer(),
               child: Material(
                 color: Colors.transparent,
-                child: widget.content(context),
+                child: widget.content(ctx),
               ),
             ),
           ),
@@ -154,6 +160,8 @@ class _FlyoutState extends State<Flyout> {
       case FlyoutAlign.childTopLeft:
       case FlyoutAlign.childTopRight:
         return Offset(0.0, -widget.sideOffset);
+
+      case FlyoutAlign.childRightCenter:
       case FlyoutAlign.childLeftCenter:
         return Offset(-widget.sideOffset, 0.0);
     }

@@ -32,22 +32,6 @@ Todo use package:animations to get nice fade in animation for flyout containers
 
 Perfect is the enemy of the good
 
-Model
-    BuildModel
-        target item ids & runs
-    BuildEnvironment
-        bp options
-        system indexes
-        ...
-    Market
-        selected markets
-        tax settings
-        prices
-        ...
-    AppSettings
-        colors
-        language
-
 TODO cleanup this design doc
 
 TODO set different max height for tables

@@ -52,12 +52,7 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
         ),
         borderRadius: 4,
       ),
-      onEnter: (e) {
-        _open(i);
-        print('bye');
-        theme.setColor(Colors.blue);
-        // theme.toggleLightDark();
-      },
+      onEnter: (e) => _open(i),
       onExit: (e) => controller.startCloseTimer(),
     );
   }
@@ -65,18 +60,18 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
-    final icons = <IconData>[Icons.question_mark, Icons.copy, Icons.memory_sharp, Icons.settings];
+    final icons = <IconData>[Icons.settings, Icons.copy, Icons.memory_sharp, Icons.question_mark];
     final buttons = <Widget>[];
     for (int i = 0; i < NUMBUTTONS; ++i) {
       if (i > 0) {
-        buttons.add(SizedBox(width: MyTheme.appBarPadding));
+        buttons.add(const SizedBox(width: MyTheme.appBarPadding));
       }
       buttons.add(button(i, icons[i], theme));
     }
     return Flyout(
       child: Row(mainAxisSize: MainAxisSize.min, children: buttons),
       content: (ctx) {
-        if (current == 3) {
+        if (current == 0) {
           final theme = Provider.of<MyTheme>(context);
           final color = theme.secondaryContainer;
           final base = theme.secondary;
@@ -95,7 +90,7 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
             width: 160,
             height: 160,
             color: Colors.blue,
-            child: Center(child: Text(['QA','Copy','Optimizer'][current] + ' content')),
+            child: Center(child: Text(['_','QA', 'Copy', 'Optimizer'][current] + ' content')),
           ),
         );
       },

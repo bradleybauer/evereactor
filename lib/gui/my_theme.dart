@@ -6,7 +6,7 @@ class MyTheme with ChangeNotifier {
     setColor(const Color.fromARGB(255, 184, 91, 91), notify:false);
   }
 
-  bool _inDarkMode = false;
+  bool _inDarkMode = true;
   late Color _seedColor;
   // Return the Material Design 3 color scheme generated from [_seedColor].
   // static ColorScheme get colors => ColorScheme.fromSeed(seedColor: _seedColor, brightness: _inDarkMode ? Brightness.dark : Brightness.light);
@@ -14,6 +14,8 @@ class MyTheme with ChangeNotifier {
 
   // This one line is why the TextField outline border changes to a nice color when clicked. Nice!
   ThemeData theme = ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: Colors.black)).copyWith(useMaterial3: true);
+
+  get isDark => _inDarkMode;
 
   Color primary = Colors.black;
   Color onPrimary = Colors.black;
@@ -42,8 +44,10 @@ class MyTheme with ChangeNotifier {
 
   void toggleLightDark() {
     _inDarkMode = !_inDarkMode;
-    notifyListeners();
+    setColor(_seedColor);
   }
+
+  Color getColor() => _seedColor;
 
   void setColor(Color color,{bool notify=true}) {
     // _inDarkMode = !_inDarkMode;

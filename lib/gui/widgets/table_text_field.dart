@@ -9,7 +9,7 @@ class TableTextField extends StatefulWidget {
     Key? key,
     required this.onChanged,
     required this.textColor,
-    required this.borderColor,
+    required this.activeBorderColor,
     this.fillColor = Colors.transparent,
     this.initialText = '',
     this.width = 40,
@@ -27,7 +27,7 @@ class TableTextField extends StatefulWidget {
   final double width;
   final Color fillColor;
   final Color textColor;
-  final Color borderColor;
+  final Color activeBorderColor;
   final int maxNumDigits;
   final String initialText;
   final String hintText;
@@ -145,12 +145,12 @@ class _TableTextFieldState extends State<TableTextField> {
         hintText: widget.hintText,
         hintStyle: widget.hintStyle,
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: widget.borderColor)),
+            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: widget.activeBorderColor)),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: widget.borderColor)),
+            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: widget.activeBorderColor)),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(3),
-            borderSide: BorderSide(width: 0.0, color: theme.outline.withOpacity(.5))),
+            borderSide: BorderSide(width: 0.0, color: theme.outline.withOpacity(.2))),
         fillColor: widget.fillColor,
         filled: true,
         constraints: BoxConstraints.tight(Size(widget.width, widget.height)),
