@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 
@@ -40,6 +41,7 @@ class TableContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bRadius = borderRadius == null ? null : BorderRadius.circular(borderRadius!);
+    final theme = Provider.of<MyTheme>(context);
     return PhysicalModel(
       color: Colors.transparent,
       elevation: elevation,

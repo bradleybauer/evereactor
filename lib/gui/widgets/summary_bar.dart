@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 
@@ -10,6 +11,7 @@ class SummaryBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return PhysicalModel(
       color: Colors.transparent,
       elevation: 2,

@@ -20,11 +20,11 @@ enum FlyoutAlign {
 class Flyout extends StatefulWidget {
   /// Provide [closeTimeout] or [controller] but not both.
   const Flyout({
-    required this.sideOffset,
     required this.content,
     required this.child,
     required this.openMode,
     required this.align,
+    this.sideOffset = 0,
     this.closeTimeout,
     this.controller,
     this.maxVotes = 2,
@@ -33,7 +33,7 @@ class Flyout extends StatefulWidget {
         super(key: key);
 
   final double sideOffset;
-  final Widget Function() content;
+  final Widget Function(BuildContext) content;
   final Widget child;
   final Duration? closeTimeout;
   final FlyoutOpenMode openMode;
@@ -136,7 +136,7 @@ class _FlyoutState extends State<Flyout> {
               onExit: (event) => controller.startCloseTimer(),
               child: Material(
                 color: Colors.transparent,
-                child: widget.content(),
+                child: widget.content(context),
               ),
             ),
           ),

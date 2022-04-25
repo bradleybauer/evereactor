@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 
@@ -30,6 +31,7 @@ class MyAnimatedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     Widget widget = child;
     if (onTap != null) {
       widget = Material(

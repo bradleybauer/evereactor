@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 import 'hover_button.dart';
@@ -26,6 +27,7 @@ class TableAddDelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return HoverButton(
       builder: (hovered) {
         return Container(

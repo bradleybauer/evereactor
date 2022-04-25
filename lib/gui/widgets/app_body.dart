@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'table_intermediates.dart';
 import 'summary_bar.dart';
@@ -16,6 +17,7 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return Stack(
       children: [
         Padding(
@@ -32,26 +34,26 @@ class Body extends StatelessWidget {
                 Container(
                   width: width,
                   color: theme.surfaceVariant.withOpacity(.75),
-                  padding: const EdgeInsets.all(theme.appBarPadding * 2),
+                  padding: EdgeInsets.all(MyTheme.appBarPadding * 2),
                   child: const TargetsTable(),
                 ),
                 Container(
                   width: width,
                   color: theme.surfaceVariant.withOpacity(.25),
-                  padding: const EdgeInsets.all(theme.appBarPadding * 2),
+                  padding: EdgeInsets.all(MyTheme.appBarPadding * 2),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Flexible(
+                    children: [
+                      const Flexible(
                         flex: 7,
                         fit: FlexFit.tight,
-                        child: IntermediatesTable(),
+                        child: const IntermediatesTable(),
                       ),
-                      SizedBox(width: theme.appBarPadding * 2),
-                      Flexible(
+                      SizedBox(width: MyTheme.appBarPadding * 2),
+                      const Flexible(
                         flex: 5,
                         fit: FlexFit.tight,
-                        child: InputsTable(),
+                        child: const InputsTable(),
                       ),
                     ],
                   ),
@@ -64,7 +66,7 @@ class Body extends StatelessWidget {
           // Summary Box
           alignment: Alignment.topCenter,
           child: Padding(
-            padding: EdgeInsets.fromLTRB(0, theme.appBarPadding * 2 + verticalPadding!, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, MyTheme.appBarPadding * 2 + verticalPadding!, 0, 0),
             child: const SummaryBar(),
           ),
         ),

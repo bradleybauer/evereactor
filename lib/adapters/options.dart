@@ -95,7 +95,7 @@ class OptionsAdapter with ChangeNotifier {
   double getReactionSystemCostIndex() => _options.getReactionSystemCostIndex();
 
   void setReactionSystemCostIndex(double index) {
-    index = min(50, max(0.1, index));
+    index = min(50, max(0, index)); // allow cost index to be 0 so the input field works better.
     _options.setReactionSystemCostIndex(index);
     notify();
   }
@@ -103,7 +103,7 @@ class OptionsAdapter with ChangeNotifier {
   double getManufacturingSystemCostIndex() => _options.getManufacturingSystemCostIndex();
 
   void setManufacturingSystemCostIndex(double index) {
-    index = min(50, max(0.1, index));
+    index = min(50, max(0, index));
     _options.setManufacturingSystemCostIndex(index);
     notify();
   }

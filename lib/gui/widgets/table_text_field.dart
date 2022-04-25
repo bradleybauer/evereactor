@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 
@@ -135,6 +136,7 @@ class _TableTextFieldState extends State<TableTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return TextField(
       onChanged: widget.onChanged,
       controller: controller,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 import 'table.dart';
@@ -13,6 +14,7 @@ class InputsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return TableContainer(
       maxHeight: 600,
       borderColor: theme.outline,
@@ -35,6 +37,7 @@ class InputsTableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return TableHeader(
       height: InputsTable.headerHeight,
       textStyle:
@@ -60,6 +63,7 @@ class InputsTableItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return Material(
       color: Colors.transparent,
       textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),

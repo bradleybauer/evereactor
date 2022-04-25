@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'paste_clear_button.dart';
 import 'get_market_data_button.dart';
@@ -14,21 +15,22 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     var rowButtons = [
       const GetMarketDataButton(),
-      const SizedBox(width: MyTheme.appBarPadding),
+      SizedBox(width: MyTheme.appBarPadding),
       const PasteClearButton(),
     ];
 
     // Add a close button on windows.
     if (!Platform.isWeb()) {
       rowButtons += [
-        const SizedBox(width: MyTheme.appBarPadding),
+        SizedBox(width: MyTheme.appBarPadding),
         HoverButton(
           onTap: Platform.closeWindow,
           builder: (bool hovered) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
+              padding: EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
               child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.onPrimary : theme.onSecondaryContainer),
             );
           },
@@ -44,7 +46,7 @@ class Header extends StatelessWidget {
       Align(
         alignment: Alignment.centerLeft,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
+          padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
           child: Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: theme.primary),
             width: 180,
@@ -60,7 +62,7 @@ class Header extends StatelessWidget {
       Align(
         alignment: Alignment.centerRight,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
+          padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: rowButtons,

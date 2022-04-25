@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 import 'flyout.dart';
@@ -16,7 +17,7 @@ class FooterFlyoutGroup extends StatefulWidget {
 }
 
 class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
-  final FlyoutController controller = FlyoutController(MyTheme.buttonFocusDuration, maxVotes: 1);
+  final FlyoutController controller = FlyoutController(theme.buttonFocusDuration, maxVotes: 1);
   int current = 0;
 
   @override
@@ -38,7 +39,7 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
     controller.open();
   }
 
-  Widget button(int i, IconData icon) {
+  Widget button(int i, IconData icon, MyTheme theme) {
     bool selected = current == i && controller.isOpen;
     return MouseRegion(
       child: MyAnimatedContainer(
@@ -51,76 +52,53 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
         ),
         borderRadius: 4,
       ),
-      onEnter: (e) => _open(i),
+      onEnter: (e) {
+        _open(i);
+        print('bye');
+        theme.setColor(Colors.blue);
+        // theme.toggleLightDark();
+      },
       onExit: (e) => controller.startCloseTimer(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     final icons = <IconData>[Icons.question_mark, Icons.copy, Icons.memory_sharp, Icons.settings];
     final buttons = <Widget>[];
-    final content = <Widget>[];
-    final sizes = <Size>[];
-    // Add QA
-    content.add(PhysicalModel(
-      color: Colors.transparent,
-      elevation: 4,
-      shadowColor: theme.shadow,
-      borderRadius: BorderRadius.circular(10),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Container(
-        width: 160,
-        height: 160,
-        color: Colors.blue,
-        child: Center(child: Text('QA content')),
-      ),
-    ));
-    sizes.add(Size(160, 160));
-    // Add Copy
-    content.add(PhysicalModel(
-      color: Colors.transparent,
-      elevation: 4,
-      shadowColor: theme.shadow,
-      borderRadius: BorderRadius.circular(10),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Container(
-        width: 160,
-        height: 160,
-        color: Colors.blue,
-        child: Center(child: Text('Copy content')),
-      ),
-    ));
-    sizes.add(Size(160, 160));
-    // Add Optimizer
-    content.add(PhysicalModel(
-      color: Colors.transparent,
-      elevation: 4,
-      shadowColor: theme.shadow,
-      borderRadius: BorderRadius.circular(10),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Container(
-        width: 160,
-        height: 160,
-        color: Colors.blue,
-        child: Center(child: Text('Optimizer content')),
-      ),
-    ));
-    sizes.add(Size(160, 160));
-    // Add Options
-    content.add(OptionsFlyout(controller));
-    sizes.add(OptionsFlyout.size);
-
     for (int i = 0; i < NUMBUTTONS; ++i) {
       if (i > 0) {
-        buttons.add(const SizedBox(width: theme.appBarPadding));
+        buttons.add(SizedBox(width: MyTheme.appBarPadding));
       }
-      buttons.add(button(i, icons[i]));
+      buttons.add(button(i, icons[i], theme));
     }
-
     return Flyout(
       child: Row(mainAxisSize: MainAxisSize.min, children: buttons),
-      content: ()=>content[current],
+      content: (ctx) {
+        if (current == 3) {
+          final theme = Provider.of<MyTheme>(context);
+          final color = theme.secondaryContainer;
+          final base = theme.secondary;
+          final headerStyle = TextStyle(
+              fontFamily: 'NotoSans', fontSize: 15, fontWeight: FontWeight.w700, color: theme.onSecondaryContainer);
+          final style = TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.onSecondaryContainer);
+          return OptionsFlyout(controller, color, base, headerStyle, style);
+        }
+        return PhysicalModel(
+          color: Colors.transparent,
+          elevation: 4,
+          shadowColor: theme.shadow,
+          borderRadius: BorderRadius.circular(10),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: Container(
+            width: 160,
+            height: 160,
+            color: Colors.blue,
+            child: Center(child: Text(['QA','Copy','Optimizer'][current] + ' content')),
+          ),
+        );
+      },
       sideOffset: MyTheme.appBarPadding * 2,
       align: FlyoutAlign.childTopRight,
       openMode: FlyoutOpenMode.custom,

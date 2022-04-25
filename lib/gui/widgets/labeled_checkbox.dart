@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 import 'hover_button.dart';
@@ -25,6 +26,7 @@ class LabeledCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return HoverButton(
       splashColor: theme.on(hoverColor).withOpacity(.5),
       borderRadius: 3,
@@ -64,7 +66,7 @@ class LabeledCheckbox extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, theme.appBarPadding, 0), child: getLabel(hovered, value)),
+                    padding: EdgeInsets.fromLTRB(0, 0, MyTheme.appBarPadding, 0), child: getLabel(hovered, value)),
               ],
             ),
           ),

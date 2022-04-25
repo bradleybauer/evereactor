@@ -19,7 +19,7 @@ class SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBar> {
-  final flyoutController = FlyoutController(MyTheme.buttonFocusDuration);
+  late final flyoutController;
   final focusNode = FocusNode();
   final textEditController = TextEditingController();
 
@@ -28,6 +28,7 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   void initState() {
+    flyoutController = FlyoutController(MyTheme.buttonFocusDuration);
     textEditController.addListener(() {
       final text = textEditController.text.trim();
       if (text != previousText) {
@@ -58,9 +59,10 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return Flyout(
       align: FlyoutAlign.childTopLeft,
-      content: () => const SearchBarFlyoutContent(),
+      content: (ctx) => const SearchBarFlyoutContent(),
       openMode: FlyoutOpenMode.custom,
       sideOffset: MyTheme.appBarPadding * 2,
       // TODO adding this MouseRegion widget made a bug appear in debug mode if I open the search flyout and hover the footer flyout group buttons.

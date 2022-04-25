@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../adapters/build_items.dart';
 import '../my_theme.dart';
@@ -19,18 +20,19 @@ class BpOptionsTableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
+      padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
       child: Flyout(
         sideOffset: 0,
         openMode: FlyoutOpenMode.hover,
         align: FlyoutAlign.childLeftCenter,
-        content:()=> BpOptionsFlyoutContent(adapter: adapter, tid: tid),
+        content:(ctx)=> BpOptionsFlyoutContent(adapter: adapter, tid: tid),
         closeTimeout: const Duration(),
         maxVotes: 1,
-        child: const Padding(
-          padding: EdgeInsets.fromLTRB(theme.appBarPadding, 0, 0, 0),
-          child: RotatedBox(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(MyTheme.appBarPadding, 0, 0, 0),
+          child: const RotatedBox(
             quarterTurns: 2,
             child: Icon(
               // Icons.settings,
@@ -59,6 +61,7 @@ class BpOptionsFlyoutContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return Container(
       decoration: BoxDecoration(color: theme.surfaceVariant, borderRadius: BorderRadius.circular(4)),
       width: BpOptionsTableWidget.size.width,

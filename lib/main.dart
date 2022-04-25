@@ -3,6 +3,7 @@ import 'package:EveIndy/adapters/market.dart';
 import 'package:EveIndy/adapters/options.dart';
 import 'package:EveIndy/adapters/table_targets.dart';
 import 'package:EveIndy/gui/main.dart';
+import 'package:EveIndy/gui/my_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +35,8 @@ Future<void> main() async {
   // Some change notifiers and widgets want to be notified when the language changes
   final Strings strings = Strings();
 
+  final MyTheme myTheme = MyTheme();
+
   final marketAdapter = MarketAdapter();
 
   final inventoryAdapter = InventoryAdapter();
@@ -49,6 +52,7 @@ Future<void> main() async {
 
   runApp(MultiProvider(
     providers: [
+      ChangeNotifierProvider.value(value: myTheme),
       ChangeNotifierProvider.value(value: strings),
       ChangeNotifierProvider.value(value: build),
       ChangeNotifierProvider.value(value: searchAdapter),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 import 'flyout.dart';
@@ -34,11 +35,12 @@ class DropdownMenuFlyout extends StatefulWidget {
 }
 
 class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
-  final FlyoutController controller = FlyoutController(theme.buttonFocusDuration, maxVotes: 1);
+  final FlyoutController controller = FlyoutController(MyTheme.buttonFocusDuration, maxVotes: 1);
   final _scrollController = ScrollController();
 
   @override
   void initState() {
+    final theme = Provider.of<MyTheme>(context,listen:false);
     widget.parentController.connect(controller);
     super.initState();
   }
@@ -51,9 +53,10 @@ class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return Flyout(
       sideOffset: 8,
-      content: () {
+      content: (ctx) {
         return Container(
           padding: const EdgeInsets.all(4),
           constraints: widget.maxHeight != null ? BoxConstraints(maxHeight: widget.maxHeight!) : null,

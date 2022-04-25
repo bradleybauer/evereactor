@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 import 'hover_button.dart';
 
 class BuildBuyToggleButtons extends StatelessWidget {
-  BuildBuyToggleButtons({
+  const BuildBuyToggleButtons({
     required this.onChange,
     required this.shouldBuild,
     Key? key,
@@ -15,11 +16,11 @@ class BuildBuyToggleButtons extends StatelessWidget {
   final bool shouldBuild;
   final void Function(bool) onChange;
 
-  final selected = theme.tertiaryContainer;
-  final onSelected = theme.onTertiaryContainer;
-
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
+    final selected = theme.tertiaryContainer;
+    final onSelected = theme.onTertiaryContainer;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [

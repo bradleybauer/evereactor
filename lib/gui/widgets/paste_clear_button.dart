@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 import 'hover_button.dart';
@@ -15,6 +16,7 @@ class _PasteClearButtonState extends State<PasteClearButton> {
   bool paste = true;
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     Widget pasteOrClear = paste
         ? TextField(
             // onChanged: (s) => Provider.of<BuildAdapter>(context, listen: false).setInventoryFromStr(s),
@@ -29,7 +31,7 @@ class _PasteClearButtonState extends State<PasteClearButton> {
                 child: Text(Strings.pasteInventory, style: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.onSurfaceVariant)),
                 padding: const EdgeInsets.fromLTRB(3, 3, 3, 0),
                 decoration: BoxDecoration(
-                  color: theme.colors.surfaceVariant,
+                  color: theme.surfaceVariant,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),

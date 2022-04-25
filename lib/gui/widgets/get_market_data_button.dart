@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
 
 import '../../strings.dart';
@@ -24,6 +25,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     Widget widget;
     switch (state) {
       case _ButtonState.READY:
@@ -79,7 +81,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
     }
 
     return ConstrainedBox(
-      constraints: BoxConstraints.tight(const Size(150, MyTheme.appBarButtonHeight)),
+      constraints: BoxConstraints.tight(Size(150, MyTheme.appBarButtonHeight)),
       child: widget,
     );
   }

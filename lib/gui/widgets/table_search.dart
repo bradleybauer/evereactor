@@ -18,6 +18,7 @@ class SearchBarFlyoutContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchAdapter = Provider.of<SearchAdapter>(context);
     final numSearchResults = searchAdapter.getNumberOfSearchResults();
+    final theme = Provider.of<MyTheme>(context);
     Widget listContent;
     if (numSearchResults == 0) {
       listContent = SizedBox(
@@ -58,6 +59,7 @@ class SearchListHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return PhysicalModel(
       color: Colors.transparent,
       elevation: 1,
@@ -70,15 +72,15 @@ class SearchListHeader extends StatelessWidget {
         items: [
           TableContainer.getCol(
             SearchBarFlyoutContent.colFlexs[0],
-            child: Text('Items'),
+            child: const Text('Items'),
             align: Alignment.centerLeft,
-            padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
+            padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
           ),
           TableContainer.getCol(
             SearchBarFlyoutContent.colFlexs[1],
-            padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
+            padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
             align: Alignment.centerRight,
-            child: Text('Profit %'),
+            child: const Text('Profit %'),
             onTap: () {},
           ),
         ],
@@ -108,8 +110,9 @@ class SearchListItem extends StatelessWidget {
     const columnWidthFudgeFactor = 30.0;
 
     final SearchTableRowData rowData = searchAdapter.getRowData(listIndex);
+    final theme = Provider.of<MyTheme>(context);
     return Container(
-      color: listIndex % 2 == 1 ? null : theme.colors.tertiary.withOpacity(.1),
+      color: listIndex % 2 == 1 ? null : theme.tertiary.withOpacity(.1),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: buttonPadding),
         child: Row(

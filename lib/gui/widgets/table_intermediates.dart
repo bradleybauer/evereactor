@@ -19,6 +19,7 @@ class IntermediatesTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     final adapter = Provider.of<IntermediatesTableAdapter>(context);
     return TableContainer(
       maxHeight: 600,
@@ -42,6 +43,7 @@ class IntermediatesTableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return TableHeader(
       height: IntermediatesTable.headerHeight,
       textStyle:
@@ -81,6 +83,7 @@ class IntermediatesTableItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     final buildItems = Provider.of<BuildItemsAdapter>(context, listen: false);
     final shouldBuild = buildItems.getShouldBuild(tid);
     return Material(

@@ -26,6 +26,7 @@ class SearchAdapter with ChangeNotifier {
   }
 
   void _initSearchCandidates() {
+    _searchCandidates.clear();
     for (int id in _ids) {
       final String name = Strings.get(SDE.items[id]!.nameLocalizations);
       _searchCandidates.add([name] + _getCategoryNames(id));

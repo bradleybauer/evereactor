@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 import 'flyout_button_group.dart';
@@ -12,19 +13,20 @@ class Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     final stackWidgets = <Widget>[
-      const Align(
+      Align(
         alignment: Alignment.centerRight,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
-          child: FooterFlyoutGroup(),
+          child: const FooterFlyoutGroup(),
         ),
       ),
-      const Align(
+      Align(
         alignment: Alignment.centerLeft,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
-          child: SearchBar(),
+          child: const SearchBar(),
         ),
       ),
     ];

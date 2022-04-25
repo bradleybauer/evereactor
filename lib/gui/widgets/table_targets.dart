@@ -19,6 +19,7 @@ class TargetsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     final adapter = Provider.of<TargetsTableAdapter>(context);
     final int numItems = adapter.getNumberOfItems();
     Widget list;
@@ -57,6 +58,7 @@ class TargetsTableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return TableHeader(
       height: TargetsTable.headerHeight,
       textStyle:
@@ -77,7 +79,7 @@ class TargetsTableHeader extends StatelessWidget {
           TargetsTable.colFlexs[8],
           align: Alignment.centerRight,
           child: Text('BP'),
-          padding: const EdgeInsets.symmetric(horizontal: theme.appBarPadding),
+          padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
         ),
       ],
     );
@@ -103,6 +105,7 @@ class TargetsTableItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     final buildItems = Provider.of<BuildItemsAdapter>(context, listen: false);
     return Material(
       color: Colors.transparent,
