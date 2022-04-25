@@ -144,17 +144,23 @@ class OptionsAdapter with ChangeNotifier {
     notify();
   }
 
-  List<RigData> getManufacturingRigs() => SDE.rigs.entries
-      .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
-      .map((e) => RigData(e.key, Strings.get(e.value.nameLocalizations).replaceFirst('Standup ', '')))
-      .toList()
-    ..sort((a, b) => a.name.compareTo(b.name));
+  List<RigData> getManufacturingRigs() {
+    final selectedRigs = _options.getManufacturingRigs().toSet();
+    return SDE.rigs.entries
+        .where((e) => e.value.industryType == IndustryType.MANUFACTURING && !selectedRigs.contains(e.key))
+        .map((e) => RigData(e.key, Strings.get(e.value.nameLocalizations).replaceFirst('Standup ', '')))
+        .toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+  }
 
-  List<RigData> getReactionRigs() => SDE.rigs.entries
-      .where((e) => e.value.industryType == IndustryType.REACTION)
-      .map((e) => RigData(e.key, Strings.get(e.value.nameLocalizations).replaceFirst('Standup ', '')))
-      .toList()
-    ..sort((a, b) => a.name.compareTo(b.name));
+  List<RigData> getReactionRigs() {
+    final selectedRigs = _options.getReactionRigs().toSet();
+    return SDE.rigs.entries
+        .where((e) => e.value.industryType == IndustryType.REACTION && !selectedRigs.contains(e.key))
+        .map((e) => RigData(e.key, Strings.get(e.value.nameLocalizations).replaceFirst('Standup ', '')))
+        .toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+  }
 
   List<RigData> getSelectedManufacturingRigs() =>
       _options.getManufacturingRigs().map((e) => RigData(e, Strings.get(SDE.rigs[e]!.nameLocalizations))).toList();
