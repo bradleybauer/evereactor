@@ -72,8 +72,8 @@ abstract class Approximator {
         prob.dependencies[tid]!.forEach((int child, int childPerParent) {
           // TODO integer math
           int needed =
-              (childPerParent * runsFloor * prob.jobMaterialBonus[tid]! - .000001).ceil() * (slots - remainder);
-          needed += (childPerParent * runsCeil * prob.jobMaterialBonus[tid]! - .000001).ceil() * remainder;
+              max(runsFloor,(childPerParent * runsFloor * prob.jobMaterialBonus[tid]! - .000001).ceil()) * (slots - remainder);
+          needed += max(runsCeil,(childPerParent * runsCeil * prob.jobMaterialBonus[tid]! - .000001).ceil()) * remainder;
           batchDependencies.update(child, (value) => value + needed, ifAbsent: () => needed);
         });
       }
