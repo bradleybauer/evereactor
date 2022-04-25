@@ -1,6 +1,5 @@
-// TODO max number of runs per slot depends on all time efficiency modifiers
-//      maybe will not worry about this. in most real use cases this will not come into effect... I hope.
-//      at least it will not for my use cases, which is producing tons of ships and all the intermediates in excess.
+import 'package:fraction/fraction.dart';
+
 import '../models/industry_type.dart';
 import '../models/inventory.dart';
 import '../sde_extra.dart';
@@ -13,8 +12,8 @@ class Problem {
   final Map<IndustryType, int> maxNumSlotsOfMachine; // buildOptions
   final Map<int, int> maxNumSlotsOfJob; // buildItems // limits number of blueprints used for a job type
   final Map<int, int> maxNumRunsPerSlotOfJob; // buildItems // limits number of runs on any blueprint for a job type
-  final Map<int, double> jobMaterialBonus; // buildItems & buildOptions
-  final Map<int, double> jobTimeBonus; // buildItems & buildOptions
+  final Map<int, Fraction> jobMaterialBonus; // buildItems & buildOptions
+  final Map<int, Fraction> jobTimeBonus; // buildItems & buildOptions
   final int float2int; // idk yet, ircc can be dynamically computed
 
   // functions of constructor args

@@ -1,7 +1,9 @@
 import 'package:EveIndy/models/industry_type.dart';
 import 'package:EveIndy/solver/solver.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/fraction.dart';
 
+import '../sde.dart';
 import '../sde_extra.dart';
 import '../solver/problem.dart';
 import '../solver/schedule.dart';
@@ -11,19 +13,20 @@ import 'inventory.dart';
 
 class Build with ChangeNotifier {
   final InventoryAdapter _inventory;
-  final OptionsAdapter _buildOptions;
+  final OptionsAdapter _options;
   final BuildItemsAdapter _buildItems;
 
   var _allBuiltItems = <int>{};
   var _intermediates = <int>{};
 
+  // TODO or need _parent2bom ?
   // var _parent2builtChildren = <int, Map<int, int>>{};
 
   Schedule? _schedule;
 
-  Build(this._inventory, this._buildOptions, this._buildItems) {
+  Build(this._inventory, this._options, this._buildItems) {
     _buildItems.addListener(_handleBuildChanged);
-    _buildOptions.addListener(_handleBuildChanged);
+    _options.addListener(_handleBuildChanged);
     _inventory.addListener(_handleBuildChanged);
 
     // TODO is this needed here?
@@ -76,9 +79,9 @@ class Build with ChangeNotifier {
   }
 
   Problem _getOptimizationProblem(Map<int, int> tid2runs) {
-    final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: 100, IndustryType.REACTION: 150};
+    final maxNumSlotsOfMachine = {IndustryType.MANUFACTURING: _options.getManufacturingSlots(), IndustryType.REACTION: _options.getReactionSlots()};
     // TODO options pane sets global here
-    final maxNumSlotsOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? 25));
+    final maxNumSlotsOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
     final maxNumRunsPerSlotOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000));
     final jobMaterialBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getMaterialBonus(tid)));
     final jobTimeBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getTimeBonus(tid)));
@@ -95,12 +98,25 @@ class Build with ChangeNotifier {
     );
   }
 
-  double _getMaterialBonus(int tid) {
-    return 1.0;
+  Fraction _getMaterialBonus(int tid) {
+    final bp = SDE.blueprints[tid]!;
+    // make use of structures, rigs, & ME settings
+    final ret = Fraction.fromDouble(1-.022);
+    print(ret);
+    return ret;
   }
 
-  double _getTimeBonus(int tid) {
-    return 1.0;
+  Fraction _getTimeBonus(int tid) {
+    final bp = SDE.blueprints[tid]!;
+    // make use of structures, rigs, skills, & TE settings
+    //pass
+    // for (int tid in bp.skills) {
+    //   final skill = SDE.skills[tid]!;
+    //   // final skillLevel = _options.getSkillLevel(tid);
+    // }
+    final ret = Fraction.fromDouble(1-.022);
+    print(ret);
+    return ret;
   }
 
   Map<int, Map<int, int>> _getBuildDependencies(Iterable<int> tids) {

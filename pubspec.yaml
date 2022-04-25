@@ -36,6 +36,7 @@ dependencies:
       url: https://github.com/TFSThiagoBR98/bitsdojo_window.git
       path: bitsdojo_window
       ref: 6af085bd44d95824b326e8c673cc5821b65219b6 
+  fraction: ^4.0.1
 
 #  flutter_acrylic: ^1.0.0+2
 #  animations: ^2.0.2

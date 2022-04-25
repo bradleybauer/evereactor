@@ -1,6 +1,6 @@
-// TODO use integer math for all bonuses.
-
 import 'dart:math';
+
+import 'package:fraction/fraction.dart';
 
 import '../math.dart';
 import '../models/industry_type.dart';
@@ -34,7 +34,11 @@ abstract class Approximator {
       int runs = ceilDiv(numUnits, SD.numProducedPerRun(tid));
 
       // can not have more than this number of runs on a slot due to 30 day constraint
-      int maxNumRunsPerSlot = (thirtyDays / (SD.timePerRun(tid) * prob.jobTimeBonus[tid]!)).ceil();
+      // int maxNumRunsPerSlot = (thirtyDays / (SD.timePerRun(tid) * prob.jobTimeBonus[tid]!)).ceil();
+
+      // thirtyDays / (base * bonus)
+      int maxNumRunsPerSlot = ceilDiv(
+          thirtyDays * prob.jobTimeBonus[tid]!.denominator, SD.timePerRun(tid) * prob.jobTimeBonus[tid]!.numerator);
 
       // can not have more runs on a slot than the user requested max
       maxNumRunsPerSlot = min(maxNumRunsPerSlot, prob.maxNumRunsPerSlotOfJob[tid]!);
@@ -53,7 +57,8 @@ abstract class Approximator {
       batch[tid] = BatchItem(
         runs,
         slotsUsedForJob,
-        SD.baseTime(runs, slotsUsedForJob, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!,
+        // SD.baseTime(runs, slotsUsedForJob, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!,
+        SD.baseTime(runs, slotsUsedForJob, SD.timePerRun(tid)).toFraction() * prob.jobTimeBonus[tid]!,
       );
       slotsUsedOnBatch += slotsUsedForJob;
     }
@@ -71,9 +76,16 @@ abstract class Approximator {
         final int runsCeil = runsFloor + 1;
         prob.dependencies[tid]!.forEach((int child, int childPerParent) {
           // TODO integer math
-          int needed =
-              max(runsFloor,(childPerParent * runsFloor * prob.jobMaterialBonus[tid]! - .000001).ceil()) * (slots - remainder);
-          needed += max(runsCeil,(childPerParent * runsCeil * prob.jobMaterialBonus[tid]! - .000001).ceil()) * remainder;
+          int needed = max(
+                  runsFloor,
+                  ceilDiv(childPerParent * runsFloor * prob.jobMaterialBonus[tid]!.numerator,
+                      prob.jobMaterialBonus[tid]!.denominator)) *
+              (slots - remainder);
+          needed += max(
+                  runsCeil,
+                  ceilDiv(childPerParent * runsCeil * prob.jobMaterialBonus[tid]!.numerator,
+                      prob.jobMaterialBonus[tid]!.denominator)) *
+              remainder;
           batchDependencies.update(child, (value) => value + needed, ifAbsent: () => needed);
         });
       }
@@ -91,14 +103,16 @@ abstract class Approximator {
     for (int tid in types) {
       int runs = batch[tid].runs;
       int slots = batch[tid].slots;
-      double timePerRun = SD.timePerRun(tid) * prob.jobTimeBonus[tid]!;
-      int newMaxRunsPerSlot = (maxT / timePerRun).floor();
+      Fraction timePerRun = SD.timePerRun(tid).toFraction() * prob.jobTimeBonus[tid]!;
+      // int newMaxRunsPerSlot = (maxT / timePerRun).floor();
+      int newMaxRunsPerSlot = (maxT.numerator * timePerRun.numerator) ~/ (maxT.denominator * timePerRun.denominator);
       // can not queue up more than 30 days worth of runs on one slot.
-      newMaxRunsPerSlot = min(newMaxRunsPerSlot, (thirtyDays / timePerRun).ceil());
+      newMaxRunsPerSlot = min(newMaxRunsPerSlot, ceilDiv(thirtyDays * timePerRun.denominator, timePerRun.numerator));
       newMaxRunsPerSlot = min(newMaxRunsPerSlot, prob.maxNumRunsPerSlotOfJob[tid]!);
       int newNumSlots = ceilDiv(runs, newMaxRunsPerSlot);
-      double newTime = SD.baseTime(runs, newNumSlots, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!;
-      assert(newTime - SD.timePerRun(tid) <= thirtyDays);
+      // double newTime = SD.baseTime(runs, newNumSlots, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!;
+      Fraction newTime = SD.baseTime(runs, newNumSlots, SD.timePerRun(tid)).toFraction() * prob.jobTimeBonus[tid]!;
+      assert((newTime - SD.timePerRun(tid).toFraction()) <= thirtyDays.toFraction());
       assert(newNumSlots <= slots);
       batch[tid] = BatchItem(
         runs,
@@ -106,8 +120,8 @@ abstract class Approximator {
         newTime,
       );
     }
-    // newMaxT = util.getMaxTimeOfBatch(batch)
-    // assert (newMaxT == maxT)
+    // final newMaxT = batch.getMaxTime();
+    // assert (newMaxT == maxT);
   }
 
   // Add slots, one at a time, to the jobs of max time to minimize the max time.
@@ -134,7 +148,8 @@ abstract class Approximator {
             batch[tid] = BatchItem(
               runs,
               slots,
-              SD.baseTime(runs, slots, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!,
+              // SD.baseTime(runs, slots, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!,
+              SD.baseTime(runs, slots, SD.timePerRun(tid)).toFraction() * prob.jobTimeBonus[tid]!,
             );
             s -= 1;
             if (s == 0) {
@@ -151,19 +166,19 @@ abstract class Approximator {
 
   /// If possible, reduce the amount of slots used by a job without increasing the maximum batch time.
   static void _minimizeSlotsWithoutIncreasingMaxTime(Batch batch, IndustryType machine, Problem prob) {
-    double maxT = batch.getMaxTime();
-    assert(maxT - SD.timePerRun(batch.getTidOfMaxTime()) <= thirtyDays);
+    Fraction maxT = batch.getMaxTime();
+    assert(maxT - SD.timePerRun(batch.getTidOfMaxTime()).toFraction() <= thirtyDays.toFraction());
     for (int tid in batch.tids) {
       int runs = batch[tid].runs;
       int slots = batch[tid].slots;
-      double time = batch[tid].time;
-      assert(time - SD.timePerRun(tid) <= thirtyDays);
+      Fraction time = batch[tid].time;
+      assert(time - SD.timePerRun(tid).toFraction() <= thirtyDays.toFraction());
       while (slots > 1) {
-        double newT = SD.baseTime(runs, slots - 1, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!;
+        Fraction newT = SD.baseTime(runs, slots - 1, SD.timePerRun(tid)).toFraction() * prob.jobTimeBonus[tid]!;
         // cannot use more runs per line than user request
         final maxNumRunsPerSlot = ceilDiv(runs, slots - 1);
         if (newT <= maxT &&
-            newT - SD.timePerRun(tid) <= thirtyDays &&
+            newT - SD.timePerRun(tid).toFraction() <= thirtyDays.toFraction() &&
             maxNumRunsPerSlot <= prob.maxNumRunsPerSlotOfJob[tid]!) {
           slots -= 1;
           time = newT;
@@ -258,7 +273,10 @@ abstract class Approximator {
       if (prob.M2DependsOnM1) {
         schedule.time += Batch.getTimeForBatches(batches);
       } else {
-        schedule.time = max(schedule.time, Batch.getTimeForBatches(batches));
+        final machineTime = Batch.getTimeForBatches(batches);
+        if (schedule.time < machineTime) {
+          schedule.time = machineTime;
+        }
       }
     }
     return schedule;
