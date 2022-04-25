@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../adapters/options.dart';
-import '../../models/industry_type.dart';
 import '../../sde.dart';
 import '../../strings.dart';
 import '../my_theme.dart';
-import 'flyout.dart';
 import 'flyout_controller.dart';
 import 'flyout_dropdown.dart';
 import 'hover_button.dart';
@@ -33,7 +31,7 @@ class OptionsFlyout extends StatelessWidget {
     final numSkills = skills.length;
     final cols = <List<Widget>>[[], [], [], []];
     for (int j = 0; j < numSkills; ++j) {
-      int i = j >= numSkills ~/ 2 ? 1 : 0;
+      int i = j > numSkills ~/ 2 ? 1 : 0;
       cols[i * 2].add(
         Padding(
             padding: EdgeInsets.fromLTRB(itemPadding / 2 * i, itemPadding / 2, 10, itemPadding / 2),
@@ -242,101 +240,126 @@ class OptionsFlyout extends StatelessWidget {
     );
   }
 
-  Widget getStructures() {
+  Widget getStructures(OptionsAdapter adapter) {
+    List<Widget> addManufacturingRigButton = [];
+    List<Widget> addReactionRigButton = [];
+    if (adapter.getNumSelectedManufacturingRigs() < 6) {
+      addManufacturingRigButton = [
+        Padding(
+            padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
+            child: DropdownMenuFlyout(
+              current: 'Rigs',
+              items: adapter.getManufacturingRigs().map((e) => e.name).toList(),
+              style: style,
+              parentController: controller,
+              ids: adapter.getManufacturingRigs().map((e) => e.tid).toList(),
+              onSelect: (tid) => adapter.addManufacturingRig(tid),
+              up: true,
+              maxHeight: 300,
+            )),
+      ];
+    }
+    if (adapter.getNumSelectedReactionRigs() < 6) {
+      addReactionRigButton = [
+        Padding(
+            padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
+            child: DropdownMenuFlyout(
+              current: 'Rigs',
+              items: adapter.getReactionRigs().map((e) => e.name).toList(),
+              style: style,
+              parentController: controller,
+              ids: adapter.getReactionRigs().map((e) => e.tid).toList(),
+              onSelect: (tid) => adapter.addReactionRig(tid),
+              up: true,
+              maxHeight: 350,
+            )),
+      ];
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Structures', style: headerStyle),
+        const SizedBox(height: itemPadding),
         Row(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(width: padding),
-            Text('Manufacturing structure', style: style),
-            const SizedBox(width: padding),
-            DropdownMenuFlyout(
-              current: Strings.get(SDE.structures.entries.first.value.nameLocalizations),
-              items: SDE.structures.entries
-                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
-                  .map((e) => Strings.get(e.value.nameLocalizations))
-                  .toList(),
-              ids: SDE.structures.entries
-                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
-                  .map((e) => e.key)
-                  .toList(),
-              style: style,
-              parentController: controller,
-              onSelect: (x) => print('selected ' + Strings.get(SDE.structures[x]!.nameLocalizations)),
-            ),
-            const SizedBox(width: padding),
-            Text('Reaction structure', style: style),
-            const SizedBox(width: padding),
-            DropdownMenuFlyout(
-              current: Strings.get(SDE.structures.entries.first.value.nameLocalizations),
-              items: SDE.structures.entries
-                  .where((e) => e.value.industryType == IndustryType.REACTION)
-                  .map((e) => Strings.get(e.value.nameLocalizations))
-                  .toList(),
-              ids: SDE.structures.entries
-                  .where((e) => e.value.industryType == IndustryType.REACTION)
-                  .map((e) => e.key)
-                  .toList(),
-              style: style,
-              parentController: controller,
-              onSelect: (x) => print('selected ' + Strings.get(SDE.structures[x]!.nameLocalizations)),
-            ),
-          ],
+          children: <Widget>[
+                const SizedBox(width: padding),
+                DropdownMenuFlyout(
+                  current: adapter.getManufacturingStructure().name,
+                  items: adapter.getManufacturingStructures().map((e) => e.name).toList(),
+                  ids: adapter.getManufacturingStructures().map((e) => e.tid).toList(),
+                  width: 55,
+                  style: style,
+                  parentController: controller,
+                  onSelect: (x) => adapter.setManufacturingStructure(x),
+                ),
+              ] +
+              List<Widget>.generate(
+                adapter.getSelectedManufacturingRigs().length,
+                (i) => Padding(
+                  padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
+                  child: Tooltip(
+                    preferBelow: false,
+                    verticalOffset: 17,
+                    message: adapter.getSelectedManufacturingRigs()[i].name,
+                    child: HoverButton(
+                      color: theme.surface,
+                      hoveredColor: theme.secondary,
+                      onTap: () => adapter.removeManufacturingRig(i),
+                      hoveredElevation: 0,
+                      borderRadius: 4,
+                      builder: (hovered) {
+                        return Container(
+                            padding: const EdgeInsets.all(3),
+                            child: Icon(Icons.close, size: 16, color: hovered ? theme.onSecondary : theme.onSurface));
+                      },
+                    ),
+                  ),
+                ),
+              ) +
+              addManufacturingRigButton,
         ),
-        Row(mainAxisSize: MainAxisSize.min, children: [
-          const SizedBox(width: padding),
-          Text('Manufacturing rigs', style: style),
-        ]),
+        const SizedBox(height: itemPadding),
         Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(width: padding),
-            DropdownMenuFlyout(
-              current: Strings.get(SDE.rigs.entries.first.value.nameLocalizations).replaceAll('Standup ', ''),
-              items: SDE.rigs.entries
-                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
-                  .map((e) => Strings.get(e.value.nameLocalizations).replaceAll('Standup ', ''))
-                  .toList()
-                ..sort((a, b) => a.compareTo(b)),
-              ids: SDE.rigs.entries
-                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
-                  .map((e) => e.key)
-                  .toList(),
-              style: style,
-              parentController: controller,
-              onSelect: (x) => print('selected ' + Strings.get(SDE.structures[x]!.nameLocalizations)),
-            ),
-          ],
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+                const SizedBox(width: padding),
+                DropdownMenuFlyout(
+                  current: adapter.getReactionStructure().name,
+                  items: adapter.getReactionStructures().map((e) => e.name).toList(),
+                  ids: adapter.getReactionStructures().map((e) => e.tid).toList(),
+                  width: 55,
+                  style: style,
+                  parentController: controller,
+                  onSelect: (x) => adapter.setReactionStructure(x),
+                ),
+              ] +
+              List<Widget>.generate(
+                adapter.getSelectedReactionRigs().length,
+                (i) => Padding(
+                  padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
+                  child: Tooltip(
+                    preferBelow: false,
+                    verticalOffset: 17,
+                    message: adapter.getSelectedReactionRigs()[i].name,
+                    child: HoverButton(
+                      color: theme.surface,
+                      hoveredColor: theme.secondary,
+                      onTap: () => adapter.removeReactionRig(i),
+                      hoveredElevation: 0,
+                      borderRadius: 4,
+                      builder: (hovered) {
+                        return Container(
+                            padding: const EdgeInsets.all(3),
+                            child: Icon(Icons.close, size: 16, color: hovered ? theme.onSecondary : theme.onSurface));
+                      },
+                    ),
+                  ),
+                ),
+              ) +
+              addReactionRigButton,
         ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(width: padding),
-            DropdownMenuFlyout(
-              up: true,
-              maxHeight: 300,
-              current: Strings.get(SDE.rigs.entries.first.value.nameLocalizations).replaceAll('Standup ', ''),
-              items: SDE.rigs.entries
-                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
-                  .map((e) => Strings.get(e.value.nameLocalizations).replaceAll('Standup ', ''))
-                  .toList()
-                ..sort((a, b) => a.compareTo(b)),
-              ids: SDE.rigs.entries
-                  .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
-                  .map((e) => e.key)
-                  .toList(),
-              style: style,
-              parentController: controller,
-              onSelect: (x) => print('selected ' + Strings.get(SDE.structures[x]!.nameLocalizations)),
-            ),
-          ],
-        )
       ],
     );
   }
@@ -376,14 +399,20 @@ class OptionsFlyout extends StatelessWidget {
     );
   }
 
-  Widget getApp() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
+  Widget getApp(OptionsAdapter adapter, BuildContext context) {
+    return Row(
       children: [
         Text('App', style: headerStyle),
-        Text('Language [ v ]', style: style),
-        Text('[ theme ]', style: style),
+        const SizedBox(width: padding),
+        Text('Language',style: style),
+        const SizedBox(width: itemPadding),
+        DropdownMenuFlyout(
+            items: adapter.getLangs().map((e) => e.name).toList(),
+            style: style,
+            parentController: controller,
+            ids: adapter.getLangs().map((e) => e.label).toList(),
+            onSelect: (lang) => Provider.of<Strings>(context,listen: false).setLang(lang),
+            current: adapter.getLangName())
       ],
     );
   }
@@ -413,13 +442,13 @@ class OptionsFlyout extends StatelessWidget {
                 Flexible(child: Container()),
                 getBlueprints(adapter),
                 Flexible(child: Container()),
-                getStructures(),
+                getStructures(adapter),
                 Flexible(child: Container()),
                 getCosts(adapter),
                 Flexible(child: Container()),
                 getMarkets(),
                 Flexible(child: Container()),
-                getApp(),
+                getApp(adapter,context),
               ],
             ),
           ),
@@ -428,4 +457,3 @@ class OptionsFlyout extends StatelessWidget {
     );
   }
 }
-

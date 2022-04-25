@@ -114,8 +114,8 @@ class _FlyoutState extends State<Flyout> {
             targetAnchor = Alignment.topCenter;
             break;
           case FlyoutAlign.dropdown:
-            followAnchor = Alignment.topRight;
-            targetAnchor = Alignment.topRight;
+            followAnchor = Alignment.topCenter;
+            targetAnchor = Alignment.topCenter;
             break;
           case FlyoutAlign.dropup:
             followAnchor = Alignment.bottomRight;

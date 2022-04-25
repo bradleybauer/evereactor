@@ -1,6 +1,5 @@
+import 'industry_type.dart';
 import '../sde.dart';
-import 'rig.dart';
-import 'structure.dart';
 
 class Options {
   int _reactionSlots = 60;
@@ -11,12 +10,14 @@ class Options {
   double _reactionsSystemCostIndex = .1;
   double _manufacturingSystemCostIndex = .1;
   double _salesTax = 0;
-  Structure? _manufacturingStructure;
-  Structure? _reactionsStructure;
+  int _manufacturingStructure =
+      SDE.structures.entries.where((e) => e.value.industryType == IndustryType.MANUFACTURING).first.key;
+  int _reactionStructure =
+      SDE.structures.entries.where((e) => e.value.industryType == IndustryType.REACTION).first.key;
 
   final Map<int, int> _skill2level = {};
-  final List<Rig> _manufacturingRigs = [];
-  final List<Rig> _reactionRigs = [];
+  final List<int> _manufacturingRigs = [];
+  final List<int> _reactionRigs = [];
   final Set<int> _systems = {};
 
   void setAllSkillLevels(int level) => SDE.skills.keys.forEach((int tid) => _skill2level[tid] = level);
@@ -61,4 +62,28 @@ class Options {
   double getSalesTax() => _salesTax;
 
   void setSalesTax(double tax) => _salesTax = tax;
+
+  int getManufacturingStructure() => _manufacturingStructure;
+
+  void setManufacturingStructure(int tid) => _manufacturingStructure = tid;
+
+  int getReactionStructure() => _reactionStructure;
+
+  void setReactionStructure(int tid) => _reactionStructure = tid;
+
+  List<int> getManufacturingRigs() => _manufacturingRigs;
+
+  void addManufacturingRig(int tid) => _manufacturingRigs.add(tid);
+
+  void removeManufacturingRig(int i) => _manufacturingRigs.removeAt(i);
+
+  List<int> getReactionRigs() => _reactionRigs;
+
+  void addReactionRig(int tid) => _reactionRigs.add(tid);
+
+  void removeReactionRig(int i) => _reactionRigs.removeAt(i);
+
+  int getNumSelectedManufacturingRigs() => _manufacturingRigs.length;
+  int getNumSelectedReactionRigs() => _reactionRigs.length;
+
 }

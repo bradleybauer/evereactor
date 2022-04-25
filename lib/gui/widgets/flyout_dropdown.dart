@@ -16,14 +16,16 @@ class DropdownMenuFlyout extends StatefulWidget {
     required this.current,
     this.up = false,
     this.maxHeight,
+    this.width,
   }) : super(key: key);
 
   final bool up;
+  final double? width;
   final double? maxHeight;
   final String current;
   final List<String> items;
-  final List<int> ids;
-  final void Function(int) onSelect;
+  final List<dynamic> ids;
+  final void Function(dynamic) onSelect;
   final TextStyle style;
   final FlyoutController parentController;
 
@@ -50,10 +52,10 @@ class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
   @override
   Widget build(BuildContext context) {
     return Flyout(
-      sideOffset: 4,
+      sideOffset: 8,
       content: () {
         return Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(4),
           constraints: widget.maxHeight != null ? BoxConstraints(maxHeight: widget.maxHeight!) : null,
           decoration: BoxDecoration(
             border: Border.all(color: theme.outline),
@@ -79,7 +81,7 @@ class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
                           )),
                       borderRadius: 3,
                       onTap: () {
-                        controller.startCloseTimer();
+                        controller.forceClose();
                         widget.onSelect(widget.ids[i]);
                       },
                       splashColor: theme.onPrimary.withOpacity(.5),
@@ -103,11 +105,15 @@ class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
           onTap: () => controller.open(),
           hoveredElevation: 0,
           borderRadius: 4,
-          builder: (hovered) => Container(
-            padding: const EdgeInsets.all(3),
-            child: Text(widget.current,
-                style: widget.style.copyWith(color: hovered ? theme.onSecondary : theme.onSurface)),
-          ),
+          builder: (hovered) {
+            final text = Text(widget.current,
+                style: widget.style.copyWith(color: hovered ? theme.onSecondary : theme.onSurface));
+            if (widget.width != null) {
+              return Container(
+                  padding: const EdgeInsets.all(3), width: widget.width, alignment: Alignment.center, child: text);
+            }
+            return Container(padding: const EdgeInsets.all(3), child: text);
+          },
         ),
       ),
       openMode: FlyoutOpenMode.custom,

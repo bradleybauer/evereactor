@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:EveIndy/models/industry_type.dart';
 import 'package:flutter/material.dart';
 
 import '../models/options.dart';
@@ -114,6 +115,81 @@ class OptionsAdapter with ChangeNotifier {
     _options.setSalesTax(tax);
     notify();
   }
+
+  Iterable<StructureData> getManufacturingStructures() => SDE.structures.entries
+      .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
+      .map((e) => StructureData(e.key, Strings.get(e.value.nameLocalizations)));
+
+  Iterable<StructureData> getReactionStructures() => SDE.structures.entries
+      .where((e) => e.value.industryType == IndustryType.REACTION)
+      .map((e) => StructureData(e.key, Strings.get(e.value.nameLocalizations)));
+
+  StructureData getManufacturingStructure() {
+    int tid = _options.getManufacturingStructure();
+    return StructureData(tid, Strings.get(SDE.structures[tid]!.nameLocalizations));
+  }
+
+  void setManufacturingStructure(int tid) {
+    _options.setManufacturingStructure(tid);
+    notify();
+  }
+
+  StructureData getReactionStructure() {
+    int tid = _options.getReactionStructure();
+    return StructureData(tid, Strings.get(SDE.structures[tid]!.nameLocalizations));
+  }
+
+  void setReactionStructure(int tid) {
+    _options.setReactionStructure(tid);
+    notify();
+  }
+
+  List<RigData> getManufacturingRigs() => SDE.rigs.entries
+      .where((e) => e.value.industryType == IndustryType.MANUFACTURING)
+      .map((e) => RigData(e.key, Strings.get(e.value.nameLocalizations).replaceFirst('Standup ', '')))
+      .toList()
+    ..sort((a, b) => a.name.compareTo(b.name));
+
+  List<RigData> getReactionRigs() => SDE.rigs.entries
+      .where((e) => e.value.industryType == IndustryType.REACTION)
+      .map((e) => RigData(e.key, Strings.get(e.value.nameLocalizations).replaceFirst('Standup ', '')))
+      .toList()
+    ..sort((a, b) => a.name.compareTo(b.name));
+
+  List<RigData> getSelectedManufacturingRigs() =>
+      _options.getManufacturingRigs().map((e) => RigData(e, Strings.get(SDE.rigs[e]!.nameLocalizations))).toList();
+
+  void addManufacturingRig(int tid) {
+    _options.addManufacturingRig(tid);
+    notify();
+  }
+
+  void removeManufacturingRig(int i) {
+    _options.removeManufacturingRig(i);
+    notify();
+  }
+
+  List<RigData> getSelectedReactionRigs() =>
+      _options.getReactionRigs().map((e) => RigData(e, Strings.get(SDE.rigs[e]!.nameLocalizations))).toList();
+
+  void addReactionRig(int tid) {
+    _options.addReactionRig(tid);
+    notify();
+  }
+
+  void removeReactionRig(int i) {
+    _options.removeReactionRig(i);
+    notify();
+  }
+
+  int getNumSelectedManufacturingRigs() => _options.getNumSelectedManufacturingRigs();
+
+  int getNumSelectedReactionRigs() => _options.getNumSelectedReactionRigs();
+
+  List<LangData> getLangs() =>
+      Strings.langNames.entries.map((e) => LangData(e.key, Strings.get(Strings.langNames[e.key]!))).toList();
+
+  String getLangName() => Strings.get(Strings.langNames[Strings.getLang()]!);
 }
 
 class SkillsData {
@@ -122,4 +198,25 @@ class SkillsData {
   final int level;
 
   const SkillsData(this.tid, this.name, this.level);
+}
+
+class StructureData {
+  final int tid;
+  final String name;
+
+  StructureData(this.tid, this.name);
+}
+
+class RigData {
+  final int tid;
+  final String name;
+
+  RigData(this.tid, this.name);
+}
+
+class LangData {
+  final String label;
+  final String name;
+
+  LangData(this.label, this.name);
 }
