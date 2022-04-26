@@ -115,6 +115,8 @@ abstract class Approximator {
       final tmp = maxT.numerator.toFraction() * Fraction(timePerRun.denominator, timePerRun.numerator*maxT.denominator).reduce();
       int newMaxRunsPerSlot = tmp.numerator~/tmp.denominator;
 
+      // int newMaxRunsPerSlot = (maxT.numerator / maxT.denominator * timePerRun.denominator / timePerRun.numerator).round();
+
       // can not queue up more than 30 days worth of runs on one slot.
       newMaxRunsPerSlot = min(newMaxRunsPerSlot, ceilDiv(thirtyDays * timePerRun.denominator, timePerRun.numerator));
       newMaxRunsPerSlot = min(newMaxRunsPerSlot, prob.maxNumRunsPerSlotOfJob[tid]!);

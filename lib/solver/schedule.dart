@@ -54,13 +54,13 @@ class Batch {
 
   operator []=(int i, BatchItem value) => _items[i] = value;
 
-  static Fraction getTimeForBatches(List<Batch> batches) =>
-      batches.fold(0.toFraction(), (Fraction previousValue, batch) => (previousValue + batch.getMaxTime())).reduce();
+  static double getTimeForBatches(List<Batch> batches) =>
+      batches.fold(0.0, (double previousValue, batch) => previousValue.toDouble() + batch.getMaxTime().toDouble());
 }
 
 class Schedule {
   final _machine2batches = <IndustryType, List<Batch>>{};
-  Fraction time = 0.toFraction();
+  double time = 0.0;
 
   void addBatches(IndustryType machine, List<Batch> batches) => _machine2batches[machine] = batches;
 
