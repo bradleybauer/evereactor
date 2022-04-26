@@ -43,7 +43,8 @@ class TargetsTable extends StatelessWidget {
       );
     }
     return TableContainer(
-      maxHeight:  MediaQuery.of(context).size.height - 206,
+      // maxHeight: MediaQuery.of(context).size.height - 206,
+      maxHeight:  590,
       borderColor: theme.outline,
       color: theme.background,
       header: const TargetsTableHeader(),

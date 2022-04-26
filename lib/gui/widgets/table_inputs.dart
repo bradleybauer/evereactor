@@ -18,7 +18,8 @@ class InputsTable extends StatelessWidget {
     final theme = Provider.of<MyTheme>(context);
     final adapter = Provider.of<InputsTableAdapter>(context);
     return TableContainer(
-      maxHeight: MediaQuery.of(context).size.height - 206,
+      // maxHeight: MediaQuery.of(context).size.height - 206,
+      maxHeight: 590,
       borderColor: theme.outline,
       color: theme.background,
       header: const InputsTableHeader(),
