@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../sde.dart';
+import '../sde_extra.dart';
 import '../strings.dart';
 import 'build.dart';
 import 'market.dart';
@@ -27,7 +28,11 @@ class InputsTableAdapter with ChangeNotifier {
           String b_cat = SDE.item2marketGroupAncestors[b]!.map((int marketGroupID) {
             return SDE.marketGroupNames[marketGroupID]!['en'];
           }).join('');
-          return b_cat.compareTo(a_cat);
+          int comp = b_cat.compareTo(a_cat);
+          if (comp == 0) {
+            return SD.enName(a).compareTo(SD.enName(b));
+          }
+          return comp;
         });
       // TODO temporary
       _sortedIds = _inputIds;
