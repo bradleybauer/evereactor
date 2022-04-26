@@ -121,7 +121,11 @@ class Py2Dart:
         code += str(obj['productQuantity']) + ','
         code += self._int2int(obj['materials']) + ','
         code += str(obj['time']) + ','
-        code += self._ints(obj['skills'])
+        if 'techLevel' in obj:
+            code += self._ints(obj['skills']) + ','
+            code += str(obj['techLevel'])
+        else:
+            code += self._ints(obj['skills'])
         return code + ')'
 
     def _item(self, obj) -> str:

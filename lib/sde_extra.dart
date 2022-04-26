@@ -18,4 +18,26 @@ abstract class SD {
   static bool isBuildable(int tid) => SDE.blueprints.containsKey(tid);
 
   static String enName(int tid) => SDE.items[tid]!.nameLocalizations['en']!;
+
+  static bool isTech1(int tid) {
+    final lvl = SDE.blueprints[tid]?.techLevel;
+    // components do not have 'techLevel' in the sde, so... assume true here..
+    // also some 'faction' ships like ikitursa and drekavac are thought of as T1 by the SDE.
+    // the fact the SDE does not give a field for whether an item can be built from a BPO
+    // in game (excluding t2 bpo) is stupid as fuck.
+    // I try to deal with edencom & trig ships in the sde_extractor... but there may be other edge cases.
+    var ret = true;
+    if (lvl != null) {
+      ret = lvl == 1;
+    }
+    return ret;
+  }
+
+  static bool isTech2(int tid) {
+    final lvl = SDE.blueprints[tid]?.techLevel;
+    if (lvl == null) {
+      return false;
+    }
+    return lvl == 2;
+  }
 }

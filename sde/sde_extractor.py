@@ -191,6 +191,7 @@ class SDE_Extractor:
 
                     # so just use the top level skills with global skills (adv indy/indy) added below
                     bp['skills'] = skills.intersection(set(skillsOfInterest))
+
                     break  # a bp can contain only one of the two possible activities
             productID = sdeBP['activities'][activity]['products'][0]['typeID']
             # if activity == 'manufacturing' and 3380 not in bp['skills']:
@@ -198,6 +199,14 @@ class SDE_Extractor:
             if activity == 'manufacturing':
                 bp['skills'].add(3380) # all industry items are affected by adv indy and indy
                 bp['skills'].add(3388) # but adv indy and indy not always in the req skills list
+
+            # add meta level to bp
+            if 'sofFactionName' in self.sde.typeIDs[productID] and self.sde.typeIDs[productID]['sofFactionName'] == 'upwell-defence':
+                bp['techLevel'] = -1
+            elif 'metaGroupID' in self.sde.typeIDs[productID]:
+                bp['techLevel'] = self.sde.typeIDs[productID]['metaGroupID']
+            elif 'raceID' in self.sde.typeIDs[productID] and self.sde.typeIDs[productID]['raceID']==135: # 't1' trig ships, not availabe as bpos
+                bp['techLevel'] = -1
             blueprints[productID] = bp
         return blueprints
 

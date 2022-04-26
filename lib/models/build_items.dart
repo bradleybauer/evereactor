@@ -1,3 +1,4 @@
+import '../sde_extra.dart';
 import 'blueprint_options.dart';
 
 // Stores per-item level information about the build
@@ -26,7 +27,7 @@ class BuildItems {
   void restrict(Set<int> targets, Set<int> intermediates) {
     // Remove stray IDs
     for (int tid in _tid2bpOps.keys.toList()) {
-      // any id in tid2bpOps should be associated with a target or an intermediate
+      // every id in tid2bpOps should be associated with a target or an intermediate
       if (!targets.contains(tid) && !intermediates.contains(tid)) {
         _tid2bpOps.remove(tid);
       }
@@ -35,6 +36,19 @@ class BuildItems {
     for (int tid in _tid2shouldBuild.keys.toList()) {
       if (!intermediates.contains(tid)) {
         _tid2shouldBuild.remove(tid);
+      }
+    }
+
+    // if a non tech 1 item does not have a bpops yet then give it a default of ME:0,TE:0...
+    for (int tid in targets.union(intermediates)) {
+      if (!SD.isTech1(tid)) {
+        if (!_tid2bpOps.containsKey(tid)) {
+          if (SD.isTech2(tid)) {
+            _tid2bpOps[tid] = const BpOptions(ME: 3, TE: 2);
+          } else {
+            _tid2bpOps[tid] = const BpOptions(ME: 0, TE: 0);
+          }
+        }
       }
     }
 

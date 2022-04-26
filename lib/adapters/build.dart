@@ -26,8 +26,7 @@ class Build with ChangeNotifier {
   var _intermediates = <int>{};
 
   var _totalBOM = <int, int>{};
-
-  // var _targetBOM = <int,int>{};
+  var _targetBOM = <int,int>{};
 
   Schedule? _schedule;
 
@@ -59,6 +58,11 @@ class Build with ChangeNotifier {
     notifyListeners();
   }
 
+  // get map tid -> quantity where quantity is the amount of tid that needs to be purchased in order to do the build.
+  // [schedule] is a list of batches
+  // batch is a map tid->(runs,lines)
+  // [buildItems] is the item level build information
+  // The BOM (Bill Of Materials) is whatever is required by produced that is not supplied by inventory
   Map<int, int> _getTotalBOM(Map<int, int> targets, Problem problem) {
     final inventory = _inventory.getInventoryCopy();
 
@@ -94,6 +98,10 @@ class Build with ChangeNotifier {
     });
 
     return result;
+  }
+
+  Map<int,Map<int,int>> _getBOMs(Map<int, int> targets, Problem problem) {
+return {};
   }
 
   // Get all the unique item ids that will be built by the scheduler.
@@ -136,7 +144,8 @@ class Build with ChangeNotifier {
     };
     final maxNumSlotsOfJob =
         _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
-    final maxNumRunsPerSlotOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000000));
+    final maxNumRunsPerSlotOfJob =
+        _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000000));
     final jobMaterialBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getMaterialBonus(tid)));
     final jobTimeBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getTimeBonus(tid, _options.getSkills())));
     return Problem(
@@ -175,7 +184,8 @@ class Build with ChangeNotifier {
     ret *= getRigBonus(tid, _options.getSelectedManufacturingRigs().map((e) => e.tid), BonusType.MATERIAL);
 
     // blueprint me settings
-    ret *= 1.toFraction() - Fraction(_buildItems.getME(tid) ?? _options.getME(), 100);
+    ret *= 1.toFraction() -
+        Fraction(_buildItems.getME(tid) ?? _options.getME(), 100);
 
     return ret.reduce();
   }
@@ -218,7 +228,8 @@ class Build with ChangeNotifier {
     ret *= getSkillBonus(tid, bp, skills);
 
     // bp
-    ret *= 1.toFraction() - Fraction(_buildItems.getTE(tid) ?? _options.getTE(), 100);
+    ret *= 1.toFraction() -
+        Fraction(_buildItems.getTE(tid) ?? _options.getTE(), 100);
 
     return ret.reduce();
   }

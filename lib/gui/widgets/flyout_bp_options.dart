@@ -15,8 +15,6 @@ class BpOptionsTableWidget extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  static const size = Size(172, 32);
-
   final int tid;
   final BuildItemsAdapter adapter;
 
