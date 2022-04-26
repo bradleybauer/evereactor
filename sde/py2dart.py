@@ -55,6 +55,14 @@ class Py2Dart:
             code = code[:-1]  # trim the final comma
         return code + ']'
 
+    def _intset(self, obj) -> str:
+        code = '{'
+        for x in obj:
+            code += str(x) + ','
+        if len(obj) > 0:
+            code = code[:-1]  # trim the final comma
+        return code + '}'
+
     def _structure(self, obj) -> str:
         code = 'Structure('
         code += (DART_REACTION if obj['activity'] == PY_REACTION else DART_MANUFACTURING) + ','
@@ -88,8 +96,8 @@ class Py2Dart:
             if 0 < len(obj['bonuses']):
                 code = code[:-1]
         code += '},'
-        code += self._ints(obj['domain']['categoryIDs']) + ','
-        code += self._ints(obj['domain']['groupIDs']) + ','
+        code += self._intset(obj['domain']['categoryIDs']) + ','
+        code += self._intset(obj['domain']['groupIDs']) + ','
         code += self._str2str(obj['name'])
         return code + ')'
 
@@ -141,11 +149,11 @@ class Py2Dart:
         blueprints = ex.getBlueprints(productionSkills.keys())
         items = ex.getIndustryItems(blueprints)
         # marketGroupGraph = ex.getMarketGroupGraph(blueprints)
-        marketGroupNames = ex.getMarketGroupNames(blueprints, productionSkills)
+        marketGroupNames = ex.getMarketGroupNames(items, productionSkills)
         group2category = ex.getGroup2Category(blueprints)
         region2systems, system2name = ex.getTradeHubs()
         marketGroup2parent = ex.getMarketGroup2Parent(blueprints)
-        buildableItem2marketGroupAncestors = ex.getBuildableItem2marketGroupAncestors(items, blueprints)
+        item2marketGroupAncestors = ex.getItem2marketGroupAncestors(items, blueprints)
         # buildableItemIDs = ex.getBuildableItemIDs(blueprints)
 
         code = ''
@@ -175,9 +183,9 @@ class Py2Dart:
         code += self._dict2map('structures', 'int', 'Structure', structures, self._structure)
         code += self._dict2map('implants', 'int', 'Implant', implants, self._implant)
         code += self._dict2map('group2category', 'int', 'int', group2category, self._int)
-        code += self._dict2map('region2systems', 'int', 'List<int>', region2systems, self._ints)
+        code += self._dict2map('region2systems', 'int', 'Set<int>', region2systems, self._intset)
         code += self._dict2map('system2name', 'int', 'Map<String,String>', system2name, self._str2str)
-        code += self._dict2map('buildableItem2marketGroupAncestors', 'int', 'List<int>', buildableItem2marketGroupAncestors, self._ints)
+        code += self._dict2map('item2marketGroupAncestors', 'int', 'Set<int>', item2marketGroupAncestors, self._intset)
         code += '}'
 
         # # Dart run the output to check for syntax errors

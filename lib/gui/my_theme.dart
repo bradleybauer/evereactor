@@ -131,6 +131,3 @@ class MyTheme with ChangeNotifier {
   static const double appBarHeight = 48;
   static const double appBarPadding = 10;
 }
-
-// MyTheme theme = MyTheme();
-typedef theme = MyTheme;

@@ -4,8 +4,8 @@ import 'industry_type.dart';
 class Rig {
   final IndustryType industryType;
   final Map<BonusType, double> bonuses;
-  final List<int> domainCategoryIDs;
-  final List<int> domainGroupIDs;
+  final Set<int> domainCategoryIDs;
+  final Set<int> domainGroupIDs;
   final Map<String, String> nameLocalizations;
 
   const Rig(

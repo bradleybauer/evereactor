@@ -12,7 +12,7 @@ import 'table_build_buy_toggle_buttons.dart';
 class IntermediatesTable extends StatelessWidget {
   const IntermediatesTable({Key? key}) : super(key: key);
 
-  static const colFlexs = [600, 200, 190, 90];
+  static const colFlexs = [600, 200, 190, 120];
   static const double headerHeight = 35;
   static const double itemHeight = 30;
   static const double padding = 8;
@@ -22,7 +22,7 @@ class IntermediatesTable extends StatelessWidget {
     final theme = Provider.of<MyTheme>(context);
     final adapter = Provider.of<IntermediatesTableAdapter>(context);
     return TableContainer(
-      maxHeight: 600,
+      maxHeight: MediaQuery.of(context).size.height - 206,
       borderColor: theme.outline,
       color: theme.background,
       header: const IntermediatesTableHeader(),
@@ -70,17 +70,6 @@ class IntermediatesTableItem extends StatelessWidget {
   final IntermediatesRowData row;
   final int tid;
 
-  Widget wrap(int n, {EdgeInsets? padding, Alignment? align, Widget? child}) {
-    return Flexible(
-      flex: IntermediatesTable.colFlexs[n],
-      child: Container(
-        padding: padding,
-        alignment: align ?? Alignment.centerRight,
-        child: child,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
@@ -96,8 +85,8 @@ class IntermediatesTableItem extends StatelessWidget {
         mouseCursor: MouseCursor.defer,
         child: Row(
           children: [
-            wrap(
-              0,
+            MyTableCell(
+              IntermediatesTable.colFlexs[0],
               align: Alignment.centerLeft,
               padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding, 0, 0, 0),
               child: Row(
@@ -117,15 +106,16 @@ class IntermediatesTableItem extends StatelessWidget {
                 ],
               ),
             ),
-            wrap(1, child: Text(row.value)),
-            wrap(2,
+            MyTableCell(IntermediatesTable.colFlexs[1], child: Text(row.value)),
+            MyTableCell(IntermediatesTable.colFlexs[2],
                 child: BuildBuyToggleButtons(
                   shouldBuild: shouldBuild,
                   onChange: (bool asdf) {
                     buildItems.setShouldBuild(tid, asdf);
                   },
                 )),
-            wrap(3, child: !shouldBuild ? Container() : BpOptionsTableWidget(tid: tid, adapter: buildItems)),
+            MyTableCell(IntermediatesTable.colFlexs[3],
+                child: !shouldBuild ? Container() : BpOptionsTableWidget(tid: tid, adapter: buildItems)),
           ],
         ),
       ),

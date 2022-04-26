@@ -1,7 +1,9 @@
+import 'package:EveIndy/models/industry_type.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../adapters/build_items.dart';
+import '../../sde.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
 import 'table_text_field.dart';
@@ -22,17 +24,17 @@ class BpOptionsTableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
+      padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
       child: Flyout(
         sideOffset: 0,
         openMode: FlyoutOpenMode.hover,
         align: FlyoutAlign.childLeftCenter,
-        content:(ctx)=> BpOptionsFlyoutContent(adapter: adapter, tid: tid),
+        content: (ctx) => BpOptionsFlyoutContent(adapter: adapter, tid: tid),
         closeTimeout: const Duration(),
         maxVotes: 1,
-        child: Padding(
+        child: const Padding(
           padding: EdgeInsets.fromLTRB(MyTheme.appBarPadding, 0, 0, 0),
-          child: const RotatedBox(
+          child: RotatedBox(
             quarterTurns: 2,
             child: Icon(
               // Icons.settings,
@@ -62,82 +64,83 @@ class BpOptionsFlyoutContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
+    var fields = <Widget>[
+      Tooltip(
+        message: 'Max number of blueprints',
+        preferBelow: false,
+        verticalOffset: toolTipOffset,
+        waitDuration: duration,
+        child: TableTextField(
+            onChanged: (text) => adapter.setMaxBPs(tid, text != '' ? int.parse(text) : null),
+            initialText: adapter.getMaxBPs(tid) != null ? adapter.getMaxBPs(tid).toString() : '',
+            activeBorderColor: theme.primary,
+            textColor: theme.onBackground,
+            fillColor: theme.background,
+            hintText: 'BPs',
+            allowEmptyString: true,
+            width: 35,
+            maxNumDigits: 3),
+      ),
+    ];
+    if (SDE.blueprints[tid]!.industryType != IndustryType.REACTION) {
+      fields += <Widget>[
+        Tooltip(
+          message: 'Max number of runs per blueprint',
+          preferBelow: false,
+          verticalOffset: toolTipOffset,
+          waitDuration: duration,
+          child: TableTextField(
+              activeBorderColor: theme.primary,
+              textColor: theme.onBackground,
+              fillColor: theme.background,
+              onChanged: (text) => adapter.setMaxRuns(tid, text != '' ? int.parse(text) : null),
+              initialText: adapter.getMaxRuns(tid) != null ? adapter.getMaxRuns(tid).toString() : '',
+              hintText: 'Runs',
+              allowEmptyString: true,
+              width: 47,
+              maxNumDigits: 6),
+        ),
+        Tooltip(
+          message: 'Time Efficiency',
+          preferBelow: false,
+          verticalOffset: toolTipOffset,
+          waitDuration: duration,
+          child: TableTextField(
+              activeBorderColor: theme.primary,
+              textColor: theme.onBackground,
+              fillColor: theme.background,
+              onChanged: (text) => adapter.setTE(tid, text != '' ? int.parse(text) : null),
+              initialText: adapter.getTE(tid) != null ? adapter.getTE(tid).toString() : '',
+              hintText: 'TE',
+              allowEmptyString: true,
+              width: 25,
+              maxNumDigits: 2),
+        ),
+        Tooltip(
+          message: 'Material Efficiency',
+          preferBelow: false,
+          verticalOffset: toolTipOffset,
+          waitDuration: duration,
+          child: TableTextField(
+              activeBorderColor: theme.primary,
+              textColor: theme.onBackground,
+              fillColor: theme.background,
+              onChanged: (text) => adapter.setME(tid, text != '' ? int.parse(text) : null),
+              initialText: adapter.getME(tid) != null ? adapter.getME(tid).toString() : '',
+              hintText: 'ME',
+              allowEmptyString: true,
+              width: 25,
+              maxNumDigits: 2),
+        ),
+      ];
+    }
     return Container(
+      padding: const EdgeInsets.all(padding / 2),
       decoration: BoxDecoration(color: theme.surfaceVariant, borderRadius: BorderRadius.circular(4)),
-      width: BpOptionsTableWidget.size.width,
-      height: BpOptionsTableWidget.size.height,
-      child: Row(
-        children: [
-          const SizedBox(width: padding),
-          Tooltip(
-            message: 'Max number of blueprints',
-            preferBelow: false,
-            verticalOffset: toolTipOffset,
-            waitDuration: duration,
-            child: TableTextField(
-                onChanged: (text) => adapter.setMaxBPs(tid, text != '' ? int.parse(text) : null),
-                initialText: adapter.getMaxBPs(tid) != null ? adapter.getMaxBPs(tid).toString() : '',
-                activeBorderColor: theme.primary,
-                textColor: theme.onBackground,
-                fillColor: theme.background,
-                hintText: 'BPs',
-                allowEmptyString: true,
-                width: 35,
-                maxNumDigits: 3),
-          ),
-          const SizedBox(width: padding),
-          Tooltip(
-            message: 'Max number of runs per blueprint',
-            preferBelow: false,
-            verticalOffset: toolTipOffset,
-            waitDuration: duration,
-            child: TableTextField(
-                activeBorderColor: theme.primary,
-                textColor: theme.onBackground,
-                fillColor: theme.background,
-                onChanged: (text) => adapter.setMaxRuns(tid, text != '' ? int.parse(text) : null),
-                initialText: adapter.getMaxRuns(tid) != null ? adapter.getMaxRuns(tid).toString() : '',
-                hintText: 'Runs',
-                allowEmptyString: true,
-                width: 47,
-                maxNumDigits: 6),
-          ),
-          const SizedBox(width: padding),
-          Tooltip(
-            message: 'Time Efficiency',
-            preferBelow: false,
-            verticalOffset: toolTipOffset,
-            waitDuration: duration,
-            child: TableTextField(
-                activeBorderColor: theme.primary,
-                textColor: theme.onBackground,
-                fillColor: theme.background,
-                onChanged: (text) => adapter.setTE(tid, text != '' ? int.parse(text) : null),
-                initialText: adapter.getTE(tid) != null ? adapter.getTE(tid).toString() : '',
-                hintText: 'TE',
-                allowEmptyString: true,
-                width: 25,
-                maxNumDigits: 2),
-          ),
-          const SizedBox(width: padding),
-          Tooltip(
-            message: 'Material Efficiency',
-            preferBelow: false,
-            verticalOffset: toolTipOffset,
-            waitDuration: duration,
-            child: TableTextField(
-                activeBorderColor: theme.primary,
-                textColor: theme.onBackground,
-                fillColor: theme.background,
-                onChanged: (text) => adapter.setME(tid, text != '' ? int.parse(text) : null),
-                initialText: adapter.getME(tid) != null ? adapter.getME(tid).toString() : '',
-                hintText: 'ME',
-                allowEmptyString: true,
-                width: 25,
-                maxNumDigits: 2),
-          ),
-          const SizedBox(width: padding),
-        ],
+      child: Wrap(
+        spacing: padding,
+        direction: Axis.horizontal,
+        children: fields,
       ),
     );
   }

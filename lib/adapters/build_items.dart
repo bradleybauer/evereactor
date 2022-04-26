@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../models/build_items.dart';
@@ -28,6 +30,7 @@ class BuildItemsAdapter with ChangeNotifier {
   bool shouldBuild(int tid) => _buildItems.shouldBuild(tid);
 
   void setRuns(int tid, int runs) {
+    runs = max(1, runs);
     _buildItems.setRuns(tid, runs);
     notifyListeners();
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../adapters/table_inputs.dart';
 import '../my_theme.dart';
 import 'table.dart';
 
@@ -15,8 +16,9 @@ class InputsTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
+    final adapter = Provider.of<InputsTableAdapter>(context);
     return TableContainer(
-      maxHeight: 600,
+      maxHeight: MediaQuery.of(context).size.height - 206,
       borderColor: theme.outline,
       color: theme.background,
       header: const InputsTableHeader(),
@@ -24,9 +26,9 @@ class InputsTable extends StatelessWidget {
       listView: ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
-        itemCount: 4,
+        itemCount: adapter.getNumberOfItems(),
         itemExtent: itemHeight,
-        itemBuilder: (_, index) => InputsTableItem(index: index),
+        itemBuilder: (_, index) => InputsTableItem(row: adapter.getRowData(index)),
       ),
     );
   }
@@ -57,13 +59,14 @@ class InputsTableHeader extends StatelessWidget {
 }
 
 class InputsTableItem extends StatelessWidget {
-  const InputsTableItem({required this.index, Key? key}) : super(key: key);
+  const InputsTableItem({required this.row, Key? key}) : super(key: key);
 
-  final int index;
+  final InputsRowData row;
 
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
+    final style = TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground);
     return Material(
       color: Colors.transparent,
       textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
@@ -75,14 +78,13 @@ class InputsTableItem extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            MyTableCell(
-              InputsTable.colFlexs[0],
-              padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0),
-              align: Alignment.centerLeft,
-              child: Container(height: 30, color: theme.primary),
-            ),
-            MyTableCell(InputsTable.colFlexs[1], child: Container(color: theme.secondary)),
-            MyTableCell(InputsTable.colFlexs[2], child: Container(color: theme.secondaryContainer)),
+            MyTableCell(InputsTable.colFlexs[0],
+                padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0),
+                align: Alignment.centerLeft,
+                child: Text(row.name, style: style)),
+            MyTableCell(InputsTable.colFlexs[1], child: Text(row.totalCost, style: style)),
+            MyTableCell(InputsTable.colFlexs[2],
+                padding: const EdgeInsets.fromLTRB(0, 0, 12, 0), child: Text(row.costPerUnit, style: style)),
           ],
         ),
       ),

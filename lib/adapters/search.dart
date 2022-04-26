@@ -35,7 +35,7 @@ class SearchAdapter with ChangeNotifier {
 
   // Get the names of the item's market category (and parent market categories) in the current localization.
   List<String> _getCategoryNames(int id) {
-    return SDE.buildableItem2marketGroupAncestors[id]!.map((int marketGroupID) {
+    return SDE.item2marketGroupAncestors[id]!.map((int marketGroupID) {
       return Strings.get(SDE.marketGroupNames[marketGroupID]!);
     }).toList(growable: false);
   }

@@ -4,9 +4,9 @@ import '../sde.dart';
 class Options {
   int _reactionSlots = 60;
   int _manufacturingSlots = 60;
-  int _ME = 0;
-  int _TE = 0;
-  int _maxNumBps = 999;
+  int _ME = 10;
+  int _TE = 20;
+  int _maxNumBps = 30;
   double _reactionsSystemCostIndex = .1;
   double _manufacturingSystemCostIndex = .1;
   double _salesTax = 0;

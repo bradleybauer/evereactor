@@ -17,7 +17,7 @@ class FooterFlyoutGroup extends StatefulWidget {
 }
 
 class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
-  final FlyoutController controller = FlyoutController(theme.buttonFocusDuration, maxVotes: 1);
+  final FlyoutController controller = FlyoutController(MyTheme.buttonFocusDuration, maxVotes: 1);
   int current = 0;
 
   @override

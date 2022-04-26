@@ -17,7 +17,8 @@ const padding = MyTheme.appBarPadding;
 const itemPadding = 8.0;
 
 class OptionsFlyout extends StatelessWidget {
-  const OptionsFlyout(this.controller, this.color, this.base, this.headerStyle, this.style, {Key? key}) : super(key: key);
+  const OptionsFlyout(this.controller, this.color, this.base, this.headerStyle, this.style, {Key? key})
+      : super(key: key);
 
   final Color color;
   final Color base;
@@ -112,32 +113,8 @@ class AppSection extends StatelessWidget {
           up: true,
         ),
         const SizedBox(width: itemPadding),
-        // HoverButton(
-        //     builder: (b) => Padding(
-        //           padding: const EdgeInsets.all(8.0),
-        //           child: Text('1', style: style.copyWith(color: !b ? theme.on(color) : Colors.black)),
-        //         ),
-        //     onTap: () {},
-        //     color: Colors.transparent,
-        //     hoveredColor: Colors.blue),
-        // const SizedBox(width: itemPadding),
-        // HoverButton(
-        //     builder: (b) => Padding(
-        //           padding: const EdgeInsets.all(8.0),
-        //           child: Text('2', style: style.copyWith(color: !b ? theme.on(color) : Colors.black)),
-        //         ),
-        //     onTap: () {},
-        //     color: Colors.transparent,
-        //     hoveredColor: Colors.blue),
-        // const SizedBox(width: itemPadding),
-        // HoverButton(
-        //     builder: (b) => Padding(
-        //           padding: const EdgeInsets.all(8.0),
-        //           child: Text('3', style: style.copyWith(color: !b ? theme.on(color) : Colors.black)),
-        //         ),
-        //     onTap: () => theme.setColor(Colors.red),
-        //     color: Colors.transparent,
-        //     hoveredColor: Colors.blue),
+        Text('Colors', style: style),
+        const SizedBox(width: itemPadding),
         LightDarkModeButtons(light: !theme.isDark, color: color, base: base, onTap: theme.toggleLightDark),
         const SizedBox(width: itemPadding),
         ColorChanger(controller, color, base),
@@ -625,7 +602,7 @@ class ColorChanger extends StatefulWidget {
 }
 
 class _ColorChangerState extends State<ColorChanger> {
-  final FlyoutController controller = FlyoutController(theme.buttonFocusDuration, maxVotes: 1);
+  final FlyoutController controller = FlyoutController(MyTheme.buttonFocusDuration, maxVotes: 1);
 
   @override
   void initState() {
@@ -643,10 +620,7 @@ class _ColorChangerState extends State<ColorChanger> {
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     return Flyout(
-        content: (ctx) => ColorChangerContent((Color c) {
-              Provider.of<MyTheme>(ctx, listen: false).setColor(c);
-              print('setting color');
-            }),
+        content: (ctx) => ColorChangerContent((Color c) => Provider.of<MyTheme>(ctx, listen: false).setColor(c)),
         child: MouseRegion(
           onExit: (_) => controller.startCloseTimer(),
           child: HoverButton(
@@ -680,14 +654,14 @@ class ColorChangerContent extends StatefulWidget {
 class _ColorChangerContentState extends State<ColorChangerContent> {
   Color color = Colors.black;
   double hue = 0;
+
   // Changing saturation and value does nothing basically, when using ColorScheme.fromSeed(.)
   static const double sat = 1;
   static const double val = 1;
 
-
   @override
   void initState() {
-    hue = HSVColor.fromColor(Provider.of<MyTheme>(context,listen:false).getColor()).hue;
+    hue = HSVColor.fromColor(Provider.of<MyTheme>(context, listen: false).getColor()).hue;
     super.initState();
   }
 

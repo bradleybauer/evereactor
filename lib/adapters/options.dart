@@ -52,6 +52,8 @@ class OptionsAdapter with ChangeNotifier {
     notify();
   }
 
+  int getSkillLevel(int tid) => _options.getSkillLevel(tid);
+
   int getReactionSlots() => _options.getReactionSlots();
 
   void setReactionSlots(int slots) {

@@ -19,9 +19,14 @@ class IntermediatesTableAdapter with ChangeNotifier {
 
     _build.addListener(() {
       _intermediatesIds = _build.getIntermediatesIds()
-        ..sort((a, b) { // Not a perfect sorting function
-          int initial = SDE.items[a]!.marketGroupID.compareTo(SDE.items[b]!.marketGroupID);
-          return initial == 0 ? a.compareTo(b) : initial;
+        ..sort((a, b) {
+          String a_cat = SDE.item2marketGroupAncestors[a]!.map((int marketGroupID) {
+            return SDE.marketGroupNames[marketGroupID]!['en'];
+          }).join('');
+          String b_cat = SDE.item2marketGroupAncestors[b]!.map((int marketGroupID) {
+            return SDE.marketGroupNames[marketGroupID]!['en'];
+          }).join('');
+          return b_cat.compareTo(a_cat);
         });
       // TODO temporary
       _sortedIds = _intermediatesIds;

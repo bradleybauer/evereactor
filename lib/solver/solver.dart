@@ -75,7 +75,6 @@ abstract class Approximator {
         final int runsFloor = runs ~/ slots;
         final int runsCeil = runsFloor + 1;
         prob.dependencies[tid]!.forEach((int child, int childPerParent) {
-          // TODO integer math
           int needed = max(
                   runsFloor,
                   ceilDiv(childPerParent * runsFloor * prob.jobMaterialBonus[tid]!.numerator,
@@ -103,9 +102,19 @@ abstract class Approximator {
     for (int tid in types) {
       int runs = batch[tid].runs;
       int slots = batch[tid].slots;
-      Fraction timePerRun = SD.timePerRun(tid).toFraction() * prob.jobTimeBonus[tid]!;
+      Fraction timePerRun = (SD.timePerRun(tid).toFraction() * prob.jobTimeBonus[tid]!).reduce();
+
       // int newMaxRunsPerSlot = (maxT / timePerRun).floor();
-      int newMaxRunsPerSlot = (maxT.numerator * timePerRun.numerator) ~/ (maxT.denominator * timePerRun.denominator);
+
+      // int newMaxRunsPerSlot = (maxT.numerator * timePerRun.numerator) ~/ (maxT.denominator * timePerRun.denominator);
+
+      // final temp = maxT / timePerRun);
+      // int newMaxRunsPerSlot = temp.numerator ~/ temp.denominator;
+
+      // numerators get large so divide reduce inbetween product
+      final tmp = maxT.numerator.toFraction() * Fraction(timePerRun.denominator, timePerRun.numerator*maxT.denominator).reduce();
+      int newMaxRunsPerSlot = tmp.numerator~/tmp.denominator;
+
       // can not queue up more than 30 days worth of runs on one slot.
       newMaxRunsPerSlot = min(newMaxRunsPerSlot, ceilDiv(thirtyDays * timePerRun.denominator, timePerRun.numerator));
       newMaxRunsPerSlot = min(newMaxRunsPerSlot, prob.maxNumRunsPerSlotOfJob[tid]!);

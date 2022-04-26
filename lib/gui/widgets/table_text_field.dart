@@ -90,7 +90,7 @@ class _TableTextFieldState extends State<TableTextField> {
     }
     try {
       final text = newValue.text;
-      if (text.startsWith('0')) {
+      if (text.startsWith('0') && text.length > 1) {
         final ret = removeLeadingCharacterAndSubsequenZeros(text);
         if (ret == '') {
           return oldValue;

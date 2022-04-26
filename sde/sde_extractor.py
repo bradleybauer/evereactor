@@ -185,9 +185,19 @@ class SDE_Extractor:
                     # not the type of items I care to use my app with.
                     assert('skills' in sdeBP['activities'][activity])
                     skills = {pair['typeID'] for pair in sdeBP['activities'][activity]['skills']}
-                    bp['skills'] = self._getBlueprintSkills(skills, skill2parents, skillsOfInterest)
+
+                    # (i.e. 'muninn' includes adv small ship constr when it shouldn't)
+                    # bp['skills'] = self._getBlueprintSkills(skills, skill2parents, skillsOfInterest) # this includes incorrect skills for certain bps
+
+                    # so just use the top level skills with global skills (adv indy/indy) added below
+                    bp['skills'] = skills.intersection(set(skillsOfInterest))
                     break  # a bp can contain only one of the two possible activities
             productID = sdeBP['activities'][activity]['products'][0]['typeID']
+            # if activity == 'manufacturing' and 3380 not in bp['skills']:
+            #     print(self.sde.typeIDs[bid]['name']['en'],bp['skills'],bp)
+            if activity == 'manufacturing':
+                bp['skills'].add(3380) # all industry items are affected by adv indy and indy
+                bp['skills'].add(3388) # but adv indy and indy not always in the req skills list
             blueprints[productID] = bp
         return blueprints
 
@@ -416,14 +426,14 @@ class SDE_Extractor:
         edges[parent].add(node)
         self._addSegmentsOfPathToEdgeMap(parent, edges, getParent)
 
-    def getMarketGroupNames(self, blueprints, skills):
+    def getMarketGroupNames(self, items, skills):
         """
         Return the names of the groups in the market group graph and of the groups of the skills in the set of skills.
         marketGroupID -> name
         """
         sde = self.sde
 
-        marketGroupGraph = self.getMarketGroupGraph(blueprints)
+        marketGroupGraph = self.getMarketGroupGraph(items)
         marketGroupNames = {}
         for k, v in marketGroupGraph.items():
             marketGroupNames[k] = sde.marketGroups[k]['nameID']
@@ -532,18 +542,18 @@ class SDE_Extractor:
     #             mat2id[itemName[lang]] = mid
     #     return mat2id:
 
-    def getBuildableItem2marketGroupAncestors(self, items, blueprints):
-        marketGroup2Parent = self.getMarketGroup2Parent(blueprints)
-        buildableItem2marketGroupAncestors = {}
-        for tid in blueprints:
+    def getItem2marketGroupAncestors(self, items, blueprints):
+        marketGroup2Parent = self.getMarketGroup2Parent(items)
+        item2marketGroupAncestors = {}
+        for tid in items:
             groups = []
             marketGroupID = items[tid]['marketGroupID']
             while marketGroupID in marketGroup2Parent:
                 groups.append(marketGroupID)
                 marketGroupID = marketGroup2Parent[marketGroupID]
             groups.append(marketGroupID)
-            buildableItem2marketGroupAncestors[tid] = groups[::-1]
-        return buildableItem2marketGroupAncestors
+            item2marketGroupAncestors[tid] = groups[::-1]
+        return item2marketGroupAncestors
 
 def __test():
     extractor = SDE_Extractor(CCP_SDE())

@@ -45,12 +45,12 @@ class BuildItems {
         _tid2bpOps[tid] = const BpOptions();
       }
     }
+    // Intermediates have build/buy option
     for (int tid in intermediates) {
       if (!_tid2bpOps.containsKey(tid)) {
         _tid2bpOps[tid] = const BpOptions();
       }
     }
-    // Intermediates have build/buy option
     for (int tid in intermediates) {
       if (!_tid2shouldBuild.containsKey(tid)) {
         _tid2shouldBuild[tid] = true;

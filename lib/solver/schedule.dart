@@ -9,11 +9,13 @@ class BatchItem {
   final int slots;
   final Fraction time;
 
-  const BatchItem(this.runs, this.slots, this.time);
+  BatchItem(this.runs, this.slots, Fraction time) : this.time = time.reduce();
 }
 
 class Batch {
   final Map<int, BatchItem> _items = {};
+
+  Map<int, BatchItem> getItems() => _items;
 
   Iterable<int> getJobsOfMaxTime() {
     final maxT = getMaxTime();
@@ -53,7 +55,7 @@ class Batch {
   operator []=(int i, BatchItem value) => _items[i] = value;
 
   static Fraction getTimeForBatches(List<Batch> batches) =>
-      batches.fold(0.toFraction(), (previousValue, batch) => previousValue + batch.getMaxTime());
+      batches.fold(0.toFraction(), (Fraction previousValue, batch) => (previousValue + batch.getMaxTime())).reduce();
 }
 
 class Schedule {
@@ -61,6 +63,8 @@ class Schedule {
   Fraction time = 0.toFraction();
 
   void addBatches(IndustryType machine, List<Batch> batches) => _machine2batches[machine] = batches;
+
+  Map<IndustryType,List<Batch>> getBatches() => _machine2batches;
 
 //     for machine in sorted(schedule):
 //         print()

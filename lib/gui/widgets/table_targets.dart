@@ -43,7 +43,7 @@ class TargetsTable extends StatelessWidget {
       );
     }
     return TableContainer(
-      maxHeight: 600,
+      maxHeight:  MediaQuery.of(context).size.height - 206,
       borderColor: theme.outline,
       color: theme.background,
       header: const TargetsTableHeader(),
@@ -65,21 +65,21 @@ class TargetsTableHeader extends StatelessWidget {
           TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(TargetsTable.colFlexs[0],
-            child: Text('Targets'),
+            child: const Text('Targets'),
             padding: const EdgeInsets.fromLTRB(TargetsTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
             align: Alignment.centerLeft),
-        TableContainer.getCol(TargetsTable.colFlexs[1], child: Text('Runs')),
-        TableContainer.getCol(TargetsTable.colFlexs[2], child: Text('Profit'), onTap: () {}),
-        TableContainer.getCol(TargetsTable.colFlexs[3], child: Text('Cost'), onTap: () {}),
-        TableContainer.getCol(TargetsTable.colFlexs[4], child: Text('%'), onTap: () {}),
-        TableContainer.getCol(TargetsTable.colFlexs[5], child: Text('Cost/u'), onTap: () {}),
-        TableContainer.getCol(TargetsTable.colFlexs[6], child: Text('Sell/u'), onTap: () {}),
-        TableContainer.getCol(TargetsTable.colFlexs[7], child: Text('Out m3'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[1], child: const Text('Runs')),
+        TableContainer.getCol(TargetsTable.colFlexs[2], child: const Text('Profit'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[3], child: const Text('Cost'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[4], child: const Text('%'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[5], child: const Text('Cost/u'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[6], child: const Text('Sell/u'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[7], child: const Text('Out m3'), onTap: () {}),
         TableContainer.getCol(
           TargetsTable.colFlexs[8],
           align: Alignment.centerRight,
-          child: Text('BP'),
-          padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
+          child: const Text('BP'),
+          padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
         ),
       ],
     );
@@ -91,17 +91,6 @@ class TargetsTableItem extends StatelessWidget {
 
   final TargetsRowData row;
   final int tid;
-
-  Widget wrap(int n, {EdgeInsets? padding, Alignment? align, Widget? child}) {
-    return Flexible(
-      flex: TargetsTable.colFlexs[n],
-      child: Container(
-        padding: padding,
-        alignment: align ?? Alignment.centerRight,
-        child: child,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,8 +107,8 @@ class TargetsTableItem extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            wrap(
-              0,
+            MyTableCell(
+              TargetsTable.colFlexs[0],
               align: Alignment.centerLeft,
               child: Row(
                 children: [
@@ -138,7 +127,7 @@ class TargetsTableItem extends StatelessWidget {
               ),
             ),
             // wrap(1, child: TableTextField(activeBorderColor: theme.primary, onChanged: (int runs){})),
-            wrap(1,
+            MyTableCell(TargetsTable.colFlexs[1],
                 child: TableTextField(
                     initialText: row.runs.toString(),
                     activeBorderColor: theme.primary,
@@ -148,13 +137,13 @@ class TargetsTableItem extends StatelessWidget {
                         buildItems.setRuns(tid, int.parse(runs));
                       }
                     })),
-            wrap(2, child: Text(row.profit)),
-            wrap(3, child: Text(row.cost)),
-            wrap(4, child: Text(row.percent)),
-            wrap(5, child: Text(row.cost_per_unit)),
-            wrap(6, child: Text(row.sell_per_unit)),
-            wrap(7, child: Text(row.out_m3)),
-            wrap(8, child: BpOptionsTableWidget(adapter: buildItems, tid: tid)),
+            MyTableCell(TargetsTable.colFlexs[2], child: Text(row.profit)),
+            MyTableCell(TargetsTable.colFlexs[3], child: Text(row.cost)),
+            MyTableCell(TargetsTable.colFlexs[4], child: Text(row.percent)),
+            MyTableCell(TargetsTable.colFlexs[5], child: Text(row.cost_per_unit)),
+            MyTableCell(TargetsTable.colFlexs[6], child: Text(row.sell_per_unit)),
+            MyTableCell(TargetsTable.colFlexs[7], child: Text(row.out_m3)),
+            MyTableCell(TargetsTable.colFlexs[8], child: BpOptionsTableWidget(adapter: buildItems, tid: tid)),
           ],
         ),
       ),

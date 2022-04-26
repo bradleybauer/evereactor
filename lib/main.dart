@@ -1,6 +1,7 @@
 import 'package:EveIndy/adapters/build_items.dart';
 import 'package:EveIndy/adapters/market.dart';
 import 'package:EveIndy/adapters/options.dart';
+import 'package:EveIndy/adapters/table_inputs.dart';
 import 'package:EveIndy/adapters/table_targets.dart';
 import 'package:EveIndy/gui/main.dart';
 import 'package:EveIndy/gui/my_theme.dart';
@@ -23,7 +24,7 @@ Future<void> main() async {
 
   // Make adapters & load model data from cache through them
   // Info loaded from cache is market, orderfilter, context, lines&runs, inventory
-  // final marketAdapter = MarketAdapter(market, cacheDbAdapter);
+  // final market = MarketAdapter(market, cacheDbAdapter);
   // await marketAdapter.loadFromCache();
 
   // final buildAdapter = BuildAdapter(Build(eveBuildContext), cacheDbAdapter);
@@ -37,16 +38,17 @@ Future<void> main() async {
 
   final MyTheme myTheme = MyTheme();
 
-  final marketAdapter = MarketAdapter();
+  final market = MarketAdapter();
 
-  final inventoryAdapter = InventoryAdapter();
-  final optionsAdapter = OptionsAdapter(marketAdapter, strings);
-  final buildItemsAdapter = BuildItemsAdapter();
-  final build = Build(inventoryAdapter, optionsAdapter, buildItemsAdapter);
+  final inventory = InventoryAdapter();
+  final options = OptionsAdapter(market, strings);
+  final buildItems = BuildItemsAdapter();
+  final build = Build(inventory, options, buildItems);
 
-  final searchAdapter = SearchAdapter(buildItemsAdapter, strings);
-  final targetsTableAdapter = TargetsTableAdapter(marketAdapter, build, buildItemsAdapter, strings);
-  final intermediatesTableAdapter = IntermediatesTableAdapter(marketAdapter, build, strings);
+  final searchAdapter = SearchAdapter(buildItems, strings);
+  final targetsTableAdapter = TargetsTableAdapter(market, build, buildItems, strings);
+  final intermediatesTableAdapter = IntermediatesTableAdapter(market, build, strings);
+  final inputsTableAdapter = InputsTableAdapter(market, build, strings);
 
   Platform.appReadyHook();
 
@@ -58,10 +60,9 @@ Future<void> main() async {
       ChangeNotifierProvider.value(value: searchAdapter),
       ChangeNotifierProvider.value(value: targetsTableAdapter),
       ChangeNotifierProvider.value(value: intermediatesTableAdapter),
-      ChangeNotifierProvider.value(value: buildItemsAdapter),
-      ChangeNotifierProvider.value(value: optionsAdapter),
-      //     ChangeNotifierProvider.value(value: marketAdapter),
-      //     ChangeNotifierProvider.value(value: eveBuildContextAdapter),
+      ChangeNotifierProvider.value(value: inputsTableAdapter),
+      ChangeNotifierProvider.value(value: buildItems),
+      ChangeNotifierProvider.value(value: options),
     ],
     child: const MyApp(),
   ));
