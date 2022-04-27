@@ -236,7 +236,7 @@ class Build with ChangeNotifier {
     final maxNumSlotsOfJob =
         _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
     final maxNumRunsPerSlotOfJob =
-        _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000000));
+        _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 9007199254740991));
     final jobMaterialBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getMaterialBonus(tid)));
     final jobTimeBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getTimeBonus(tid, _options.getSkills())));
     return Problem(
