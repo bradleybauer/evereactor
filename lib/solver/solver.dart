@@ -248,7 +248,7 @@ abstract class Approximator {
     return tid2numProduced;
   }
 
-  static Schedule get(Problem prob) {
+  static Schedule? get(Problem prob) {
     Map<int, int> needed = _getNumProducedFromRuns(prob.runsExcess);
     Inventory inventoryCopy = Inventory.cloneOf(prob.inventory);
     final schedule = Schedule();
@@ -267,8 +267,7 @@ abstract class Approximator {
 
         // sanity check
         if (batches.length > MAX_NUM_BATCHES) {
-          // TODO handle error here
-          return Schedule();
+          return null;
         }
 
         _updateNeededUsingProduced(batch, needed);

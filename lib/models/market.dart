@@ -16,6 +16,8 @@ class Market {
 
   Map<int, double> _adjustedPrices = {};
 
+  DateTime? _orderFetchTime;
+
   OrderFilter getOrderFilter() => _orderFilter;
 
   void setAdjustedPrices(Map<int, double> prices) => _adjustedPrices = prices;
@@ -53,6 +55,8 @@ class Market {
     _orderFilter = filter;
     _filterMarket();
   }
+
+  void setOrderFetchTime(DateTime dateTime) => _orderFetchTime = dateTime;
 
 //   // returns negative if quantity of id is not available on market
 //   double getAvgMinSellForQuantity(int id, int quantity) {
