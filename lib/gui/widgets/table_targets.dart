@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/build_items.dart';
 import '../../controllers/table_targets.dart';
+import '../../platform.dart';
 import '../my_theme.dart';
 import 'flyout_bp_options.dart';
 import 'table.dart';
@@ -44,7 +45,7 @@ class TargetsTable extends StatelessWidget {
     }
     return TableContainer(
       // maxHeight: MediaQuery.of(context).size.height - 206,
-      maxHeight: 590,
+      maxHeight: Platform.isWeb() ? MyTheme.webTableHeight : MyTheme.desktopTableHeight,
       borderColor: theme.outline,
       color: theme.background,
       header: const TargetsTableHeader(),

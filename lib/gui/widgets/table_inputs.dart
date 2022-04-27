@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../platform.dart';
 import '../../controllers/table_inputs.dart';
 import '../my_theme.dart';
 import 'table.dart';
@@ -19,7 +20,7 @@ class InputsTable extends StatelessWidget {
     final controller = Provider.of<InputsTableController>(context);
     return TableContainer(
       // maxHeight: MediaQuery.of(context).size.height - 206,
-      maxHeight: 590,
+      maxHeight: Platform.isWeb() ? MyTheme.webTableHeight : MyTheme.desktopTableHeight,
       borderColor: theme.outline,
       color: theme.background,
       header: const InputsTableHeader(),
