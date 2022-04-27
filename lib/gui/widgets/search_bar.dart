@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../adapters/search.dart';
+import '../../controllers/search.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
 import 'flyout_controller.dart';
@@ -32,7 +32,7 @@ class _SearchBarState extends State<SearchBar> {
     textEditController.addListener(() {
       final text = textEditController.text.trim();
       if (text != previousText) {
-        Provider.of<SearchAdapter>(context, listen: false).setSearchText(text);
+        Provider.of<SearchController>(context, listen: false).setSearchText(text);
         setState(() {
           previousText = text;
         });

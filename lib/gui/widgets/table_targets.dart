@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../adapters/build_items.dart';
-import '../../adapters/table_targets.dart';
+import '../../controllers/build_items.dart';
+import '../../controllers/table_targets.dart';
 import '../my_theme.dart';
 import 'flyout_bp_options.dart';
 import 'table.dart';
@@ -20,8 +20,8 @@ class TargetsTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
-    final adapter = Provider.of<TargetsTableAdapter>(context);
-    final int numItems = adapter.getNumberOfItems();
+    final controller = Provider.of<TargetsTableController>(context);
+    final int numItems = controller.getNumberOfItems();
     Widget list;
     if (numItems == 0) {
       list = Padding(
@@ -39,12 +39,12 @@ class TargetsTable extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
         itemCount: numItems,
         itemExtent: itemHeight,
-        itemBuilder: (_, index) => TargetsTableItem(tid: adapter.getTid(index), row: adapter.getRowData(index)),
+        itemBuilder: (_, index) => TargetsTableItem(tid: controller.getTid(index), row: controller.getRowData(index)),
       );
     }
     return TableContainer(
       // maxHeight: MediaQuery.of(context).size.height - 206,
-      maxHeight:  590,
+      maxHeight: 590,
       borderColor: theme.outline,
       color: theme.background,
       header: const TargetsTableHeader(),
@@ -62,8 +62,7 @@ class TargetsTableHeader extends StatelessWidget {
     final theme = Provider.of<MyTheme>(context);
     return TableHeader(
       height: TargetsTable.headerHeight,
-      textStyle:
-          TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
+      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(TargetsTable.colFlexs[0],
             child: const Text('Targets'),
@@ -96,7 +95,7 @@ class TargetsTableItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
-    final buildItems = Provider.of<BuildItemsAdapter>(context, listen: false);
+    final buildItems = Provider.of<BuildItemsController>(context, listen: false);
     return Material(
       color: Colors.transparent,
       textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
@@ -144,7 +143,7 @@ class TargetsTableItem extends StatelessWidget {
             MyTableCell(TargetsTable.colFlexs[5], child: Text(row.cost_per_unit)),
             MyTableCell(TargetsTable.colFlexs[6], child: Text(row.sell_per_unit)),
             MyTableCell(TargetsTable.colFlexs[7], child: Text(row.out_m3)),
-            MyTableCell(TargetsTable.colFlexs[8], child: BpOptionsTableWidget(adapter: buildItems, tid: tid)),
+            MyTableCell(TargetsTable.colFlexs[8], child: BpOptionsTableWidget(controller: buildItems, tid: tid)),
           ],
         ),
       ),

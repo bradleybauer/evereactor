@@ -6,14 +6,14 @@ import '../strings.dart';
 import 'build.dart';
 import 'market.dart';
 
-class IntermediatesTableAdapter with ChangeNotifier {
-  final MarketAdapter _market;
+class IntermediatesTableController with ChangeNotifier {
+  final MarketController _market;
   final Build _build;
 
   List<int> _intermediatesIds = [];
   List<int> _sortedIds = [];
 
-  IntermediatesTableAdapter(this._market, this._build, Strings strings) {
+  IntermediatesTableController(this._market, this._build, Strings strings) {
     _market.addListener(() {
       notifyListeners();
     });
@@ -21,12 +21,18 @@ class IntermediatesTableAdapter with ChangeNotifier {
     _build.addListener(() {
       _intermediatesIds = _build.getIntermediatesIds()
         ..sort((a, b) {
-          String a_cat = SDE.item2marketGroupAncestors[a]!.map((int marketGroupID) {
-            return SDE.marketGroupNames[marketGroupID]!['en'];
-          }).take(3).join('');
-          String b_cat = SDE.item2marketGroupAncestors[b]!.map((int marketGroupID) {
-            return SDE.marketGroupNames[marketGroupID]!['en'];
-          }).take(3).join('');
+          String a_cat = SDE.item2marketGroupAncestors[a]!
+              .map((int marketGroupID) {
+                return SDE.marketGroupNames[marketGroupID]!['en'];
+              })
+              .take(3)
+              .join('');
+          String b_cat = SDE.item2marketGroupAncestors[b]!
+              .map((int marketGroupID) {
+                return SDE.marketGroupNames[marketGroupID]!['en'];
+              })
+              .take(3)
+              .join('');
           int comp = b_cat.compareTo(a_cat);
           if (comp == 0) {
             return SD.enName(a).compareTo(SD.enName(b));

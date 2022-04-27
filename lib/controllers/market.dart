@@ -9,12 +9,19 @@ import '../models/market_order.dart';
 import '../models/order_filter.dart';
 import '../sde.dart';
 
-class MarketAdapter with ChangeNotifier {
-  // final CacheDatabaseAdapter _cache;
+enum EsiState {
+  CurrentlyFetchingData,
+  Idle,
+}
+
+class MarketController with ChangeNotifier {
+  // final CacheDatabaseController _cache;
 
   final Market _market = Market();
 
-  // MarketAdapter(this._cache);
+  EsiState _esiState = EsiState.Idle;
+
+  // MarketController(this._cache);
 
   // Future<void> updateOrderFilter(List<int> systemIds, bool isBuy) async {
   //   final filter = OrderFilter(systemIds);
@@ -24,17 +31,25 @@ class MarketAdapter with ChangeNotifier {
   // }
 
   Future<void> updateMarketData({required void Function(double) progressCallback}) async {
-    Map<int, double> adjustedPrices = await _fetchAdjustedPrices();
-    Map<int, List<Order>> region2tid2orders = await _fetchMarketData(callback: progressCallback);
+    _esiState = EsiState.CurrentlyFetchingData;
+    progressCallback(0.0);
 
-    // esiCacheTimeout = currentTime
+    Map<int, List<Order>> orders = await _fetchMarketData(callback: progressCallback);
+    Map<int, double> adjustedPrices = await _fetchAdjustedPrices();
+
     _market.setAdjustedPrices(adjustedPrices);
-    _market.setOrders(orders, currentTime);
+    _market.setOrders(orders);
+
+    // TODO market data is cached every 300 seconds on esi server... so only allow updating once every 300 seconds.
+    // _market.setOrderFetchTime(DateTime.now());
 
     // _cache.setMarket(market);
 
+    _esiState = EsiState.Idle;
     notifyListeners();
   }
+
+  EsiState getEsiState() => _esiState;
 
   Future<Map<int, double>> _fetchAdjustedPrices() async {
     var response = await http.get(Uri.parse('https://esi.evetech.net/latest/markets/prices/?datasource=tranquility'));
@@ -67,10 +82,8 @@ class MarketAdapter with ChangeNotifier {
     int numRequestsProcessed = 0;
     final region2pages = <int, int>{};
     for (int region in SDE.region2systems.keys) {
-      print('initial req:');
       try {
         final initialReq = await http.get(_getUri(region));
-        print(initialReq.statusCode);
         region2pages[region] = int.parse(initialReq.headers['x-pages']!);
       } catch (e) {}
       numRequestsProcessed += 1;

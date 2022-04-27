@@ -6,14 +6,14 @@ import '../strings.dart';
 import 'build.dart';
 import 'market.dart';
 
-class InputsTableAdapter with ChangeNotifier {
-  final MarketAdapter _market;
+class InputsTableController with ChangeNotifier {
+  final MarketController _market;
   final Build _build;
 
   List<int> _inputIds = [];
   List<int> _sortedIds = [];
 
-  InputsTableAdapter(this._market, this._build, Strings strings) {
+  InputsTableController(this._market, this._build, Strings strings) {
     _market.addListener(() {
       notifyListeners();
     });

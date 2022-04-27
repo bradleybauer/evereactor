@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'adapters/build.dart';
-import 'adapters/build_items.dart';
-import 'adapters/inventory.dart';
-import 'adapters/market.dart';
-import 'adapters/options.dart';
-import 'adapters/search.dart';
-import 'adapters/table_inputs.dart';
-import 'adapters/table_intermediates.dart';
-import 'adapters/table_targets.dart';
+import 'controllers/build.dart';
+import 'controllers/build_items.dart';
+import 'controllers/inventory.dart';
+import 'controllers/market.dart';
+import 'controllers/options.dart';
+import 'controllers/search.dart';
+import 'controllers/table_inputs.dart';
+import 'controllers/table_intermediates.dart';
+import 'controllers/table_targets.dart';
 import 'gui/main.dart';
 import 'gui/my_theme.dart';
 import 'platform.dart';
@@ -17,39 +17,39 @@ import 'strings.dart';
 import 'misc.dart';
 
 Future<void> main() async {
-  // final cacheDbAdapter = Persistence();
+  // final cacheDbController = Persistence
 
   // Make models
   // final market = Market();
   // await market.loadAdjustedPricesFromESI();
 
-  // Make adapters & load model data from cache through them
+  // Make controllers & load model data from cache through them
   // Info loaded from cache is market, orderfilter, context, lines&runs, inventory
-  // final market = MarketAdapter(market, cacheDbAdapter);
-  // await marketAdapter.loadFromCache();
+  // final market = MarketController(market, cacheDbContro
+  // await marketController.loadFromCache
 
-  // final buildAdapter = BuildAdapter(Build(eveBuildContext), cacheDbAdapter);
-  // await buildAdapter.loadFromCache();
+  // final buildController = BuildController(Build(eveBuildContext), cacheDbCon
+  // await buildController.loadFromCache
 
-  // final eveBuildContextAdapter = EveBuildContextAdapter(eveBuildContext, cacheDbAdapter);
-  // await eveBuildContextAdapter.loadFromCache(buildAdapter);
+  // final eveBuildContextController = EveBuildContextController(eveBuildContext, cacheDbCon
+  // await eveBuildContextController.loadFromCache(buildContro
 
   // Some change notifiers and widgets want to be notified when the language changes
   final Strings strings = Strings();
 
   final MyTheme myTheme = MyTheme();
 
-  final market = MarketAdapter();
+  final market = MarketController();
 
-  final inventory = InventoryAdapter();
-  final options = OptionsAdapter(market, strings);
-  final buildItems = BuildItemsAdapter();
+  final inventory = InventoryController();
+  final options = OptionsController(market, strings);
+  final buildItems = BuildItemsController();
   final build = Build(inventory, options, buildItems);
 
-  final searchAdapter = SearchAdapter(buildItems, strings);
-  final targetsTableAdapter = TargetsTableAdapter(market, build, buildItems, strings);
-  final intermediatesTableAdapter = IntermediatesTableAdapter(market, build, strings);
-  final inputsTableAdapter = InputsTableAdapter(market, build, strings);
+  final searchController = SearchController(buildItems, strings);
+  final targetsTableController = TargetsTableController(market, build, buildItems, strings);
+  final intermediatesTableController = IntermediatesTableController(market, build, strings);
+  final inputsTableController = InputsTableController(market, build, strings);
 
   Platform.appReadyHook();
 
@@ -58,10 +58,10 @@ Future<void> main() async {
       ChangeNotifierProvider.value(value: myTheme),
       ChangeNotifierProvider.value(value: strings),
       ChangeNotifierProvider.value(value: build),
-      ChangeNotifierProvider.value(value: searchAdapter),
-      ChangeNotifierProvider.value(value: targetsTableAdapter),
-      ChangeNotifierProvider.value(value: intermediatesTableAdapter),
-      ChangeNotifierProvider.value(value: inputsTableAdapter),
+      ChangeNotifierProvider.value(value: searchController),
+      ChangeNotifierProvider.value(value: targetsTableController),
+      ChangeNotifierProvider.value(value: intermediatesTableController),
+      ChangeNotifierProvider.value(value: inputsTableController),
       ChangeNotifierProvider.value(value: buildItems),
       ChangeNotifierProvider.value(value: options),
       ChangeNotifierProvider.value(value: market),

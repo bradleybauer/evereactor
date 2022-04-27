@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../adapters/search.dart';
+import '../../controllers/search.dart';
 import '../my_theme.dart';
 import 'table.dart';
 import 'table_add_del_hover_button.dart';
@@ -16,8 +16,8 @@ class SearchBarFlyoutContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchAdapter = Provider.of<SearchAdapter>(context);
-    final numSearchResults = searchAdapter.getNumberOfSearchResults();
+    final searchController = Provider.of<SearchController>(context);
+    final numSearchResults = searchController.getNumberOfSearchResults();
     final theme = Provider.of<MyTheme>(context);
     Widget listContent;
     if (numSearchResults == 0) {
@@ -32,7 +32,7 @@ class SearchBarFlyoutContent extends StatelessWidget {
         itemExtent: SearchListItem.height, // vertical height of the items
         // itemCount: min(sortIndices.length, maxNumEntries),
         itemCount: numSearchResults,
-        itemBuilder: (_, index) => SearchListItem(listIndex: index, searchAdapter: searchAdapter),
+        itemBuilder: (_, index) => SearchListItem(listIndex: index, searchController: searchController),
       );
     }
     return ConstrainedBox(
@@ -67,8 +67,7 @@ class SearchListHeader extends StatelessWidget {
       child: TableHeader(
         color: theme.tertiaryContainer,
         height: height,
-        textStyle: TextStyle(
-            fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onTertiaryContainer),
+        textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.w700, color: theme.onTertiaryContainer),
         items: [
           TableContainer.getCol(
             SearchBarFlyoutContent.colFlexs[0],
@@ -92,13 +91,13 @@ class SearchListHeader extends StatelessWidget {
 class SearchListItem extends StatelessWidget {
   const SearchListItem({
     required this.listIndex,
-    required this.searchAdapter,
+    required this.searchController,
     Key? key,
   }) : super(key: key);
 
   static const double height = 30;
 
-  final SearchAdapter searchAdapter;
+  final SearchController searchController;
   final int listIndex;
 
   // TODO If I use MyTableCell here and do not specify column widths, then the text does not wrap for long lines.
@@ -109,7 +108,7 @@ class SearchListItem extends StatelessWidget {
     const buttonPadding = 8.0;
     const columnWidthFudgeFactor = 30.0;
 
-    final SearchTableRowData rowData = searchAdapter.getRowData(listIndex);
+    final SearchTableRowData rowData = searchController.getRowData(listIndex);
     final theme = Provider.of<MyTheme>(context);
     return Container(
       color: listIndex % 2 == 1 ? null : theme.tertiary.withOpacity(.1),
@@ -118,7 +117,7 @@ class SearchListItem extends StatelessWidget {
         child: Row(
           children: [
             TableAddDelButton(
-              onTap: () => searchAdapter.addToBuild(listIndex),
+              onTap: () => searchController.addToBuild(listIndex),
               closeButton: false,
               color: theme.background,
               hoveredColor: theme.tertiary,
@@ -131,10 +130,7 @@ class SearchListItem extends StatelessWidget {
               waitDuration: const Duration(milliseconds: 600),
               message: rowData.category,
               child: Container(
-                width: SearchBarFlyoutContent.columnWidths[0] -
-                    TableAddDelButton.width -
-                    buttonPadding * 2 +
-                    columnWidthFudgeFactor,
+                width: SearchBarFlyoutContent.columnWidths[0] - TableAddDelButton.width - buttonPadding * 2 + columnWidthFudgeFactor,
                 padding: const EdgeInsets.symmetric(horizontal: buttonPadding),
                 child: Text(rowData.name),
               ),

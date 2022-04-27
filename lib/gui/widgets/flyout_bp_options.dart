@@ -2,7 +2,7 @@ import 'package:EveIndy/models/industry_type.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../adapters/build_items.dart';
+import '../../controllers/build_items.dart';
 import '../../sde.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
@@ -11,12 +11,12 @@ import 'table_text_field.dart';
 class BpOptionsTableWidget extends StatelessWidget {
   const BpOptionsTableWidget({
     required this.tid,
-    required this.adapter,
+    required this.controller,
     Key? key,
   }) : super(key: key);
 
   final int tid;
-  final BuildItemsAdapter adapter;
+  final BuildItemsController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class BpOptionsTableWidget extends StatelessWidget {
         sideOffset: 0,
         openMode: FlyoutOpenMode.hover,
         align: FlyoutAlign.childLeftCenter,
-        content: (ctx) => BpOptionsFlyoutContent(adapter: adapter, tid: tid),
+        content: (ctx) => BpOptionsFlyoutContent(controller: controller, tid: tid),
         closeTimeout: const Duration(),
         maxVotes: 1,
         child: const Padding(
@@ -50,10 +50,10 @@ class BpOptionsTableWidget extends StatelessWidget {
 }
 
 class BpOptionsFlyoutContent extends StatelessWidget {
-  const BpOptionsFlyoutContent({required this.adapter, required this.tid, Key? key}) : super(key: key);
+  const BpOptionsFlyoutContent({required this.controller, required this.tid, Key? key}) : super(key: key);
 
   final int tid;
-  final BuildItemsAdapter adapter;
+  final BuildItemsController controller;
 
   static const padding = 8.0;
   static const toolTipOffset = 19.0;
@@ -69,8 +69,8 @@ class BpOptionsFlyoutContent extends StatelessWidget {
         verticalOffset: toolTipOffset,
         waitDuration: duration,
         child: TableTextField(
-            onChanged: (text) => adapter.setMaxBPs(tid, text != '' ? int.parse(text) : null),
-            initialText: adapter.getMaxBPs(tid) != null ? adapter.getMaxBPs(tid).toString() : '',
+            onChanged: (text) => controller.setMaxBPs(tid, text != '' ? int.parse(text) : null),
+            initialText: controller.getMaxBPs(tid) != null ? controller.getMaxBPs(tid).toString() : '',
             activeBorderColor: theme.primary,
             textColor: theme.onBackground,
             fillColor: theme.background,
@@ -91,8 +91,8 @@ class BpOptionsFlyoutContent extends StatelessWidget {
               activeBorderColor: theme.primary,
               textColor: theme.onBackground,
               fillColor: theme.background,
-              onChanged: (text) => adapter.setMaxRuns(tid, text != '' ? int.parse(text) : null),
-              initialText: adapter.getMaxRuns(tid) != null ? adapter.getMaxRuns(tid).toString() : '',
+              onChanged: (text) => controller.setMaxRuns(tid, text != '' ? int.parse(text) : null),
+              initialText: controller.getMaxRuns(tid) != null ? controller.getMaxRuns(tid).toString() : '',
               hintText: 'Runs',
               allowEmptyString: true,
               width: 47,
@@ -107,8 +107,8 @@ class BpOptionsFlyoutContent extends StatelessWidget {
               activeBorderColor: theme.primary,
               textColor: theme.onBackground,
               fillColor: theme.background,
-              onChanged: (text) => adapter.setTE(tid, text != '' ? int.parse(text) : null),
-              initialText: adapter.getTE(tid) != null ? adapter.getTE(tid).toString() : '',
+              onChanged: (text) => controller.setTE(tid, text != '' ? int.parse(text) : null),
+              initialText: controller.getTE(tid) != null ? controller.getTE(tid).toString() : '',
               hintText: 'TE',
               allowEmptyString: true,
               width: 25,
@@ -123,8 +123,8 @@ class BpOptionsFlyoutContent extends StatelessWidget {
               activeBorderColor: theme.primary,
               textColor: theme.onBackground,
               fillColor: theme.background,
-              onChanged: (text) => adapter.setME(tid, text != '' ? int.parse(text) : null),
-              initialText: adapter.getME(tid) != null ? adapter.getME(tid).toString() : '',
+              onChanged: (text) => controller.setME(tid, text != '' ? int.parse(text) : null),
+              initialText: controller.getME(tid) != null ? controller.getME(tid).toString() : '',
               hintText: 'ME',
               allowEmptyString: true,
               width: 25,

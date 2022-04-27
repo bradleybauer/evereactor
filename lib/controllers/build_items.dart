@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/build_items.dart';
 
-class BuildItemsAdapter with ChangeNotifier {
+class BuildItemsController with ChangeNotifier {
   final BuildItems _buildItems = BuildItems();
 
   void addTarget(int tid, int runs) {

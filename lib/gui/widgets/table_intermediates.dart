@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../adapters/build_items.dart';
-import '../../adapters/table_intermediates.dart';
+import '../../controllers/build_items.dart';
+import '../../controllers/table_intermediates.dart';
 import '../my_theme.dart';
 import 'flyout_bp_options.dart';
 import 'table.dart';
@@ -20,7 +20,7 @@ class IntermediatesTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
-    final adapter = Provider.of<IntermediatesTableAdapter>(context);
+    final controller = Provider.of<IntermediatesTableController>(context);
     return TableContainer(
       // maxHeight: MediaQuery.of(context).size.height - 206,
       maxHeight: 590,
@@ -31,9 +31,9 @@ class IntermediatesTable extends StatelessWidget {
       listView: ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
-        itemCount: adapter.getNumberOfItems(),
+        itemCount: controller.getNumberOfItems(),
         itemExtent: itemHeight,
-        itemBuilder: (_, index) => IntermediatesTableItem(tid: adapter.getTid(index), row: adapter.getRowData(index)),
+        itemBuilder: (_, index) => IntermediatesTableItem(tid: controller.getTid(index), row: controller.getRowData(index)),
       ),
     );
   }
@@ -47,8 +47,7 @@ class IntermediatesTableHeader extends StatelessWidget {
     final theme = Provider.of<MyTheme>(context);
     return TableHeader(
       height: IntermediatesTable.headerHeight,
-      textStyle:
-          TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
+      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(
           IntermediatesTable.colFlexs[0],
@@ -74,7 +73,7 @@ class IntermediatesTableItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
-    final buildItems = Provider.of<BuildItemsAdapter>(context, listen: false);
+    final buildItems = Provider.of<BuildItemsController>(context, listen: false);
     final shouldBuild = buildItems.getShouldBuild(tid);
     return Material(
       color: Colors.transparent,
@@ -116,7 +115,7 @@ class IntermediatesTableItem extends StatelessWidget {
                   },
                 )),
             MyTableCell(IntermediatesTable.colFlexs[3],
-                child: !shouldBuild ? Container() : BpOptionsTableWidget(tid: tid, adapter: buildItems)),
+                child: !shouldBuild ? Container() : BpOptionsTableWidget(tid: tid, controller: buildItems)),
           ],
         ),
       ),

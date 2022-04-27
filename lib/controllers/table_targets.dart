@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-import '../adapters/build_items.dart';
+import '../controllers/build_items.dart';
 import '../sde.dart';
 import '../strings.dart';
 import 'build.dart';
 import 'market.dart';
 
-class TargetsTableAdapter with ChangeNotifier {
-  final BuildItemsAdapter _buildItems;
-  final MarketAdapter _market;
+class TargetsTableController with ChangeNotifier {
+  final BuildItemsController _buildItems;
+  final MarketController _market;
   final Build _build;
 
   List<int> _targetsIds = [];
   List<int> _sortedIds = [];
 
-  TargetsTableAdapter(this._market, this._build, this._buildItems, Strings strings) {
+  TargetsTableController(this._market, this._build, this._buildItems, Strings strings) {
     _market.addListener(() {
       notifyListeners();
     });
@@ -46,8 +46,7 @@ class TargetsTableAdapter with ChangeNotifier {
     String cost_per_unit = "0";
     String sell_per_unit = "0";
     String out_m3 = "1";
-    return TargetsRowData(
-        tid, name, runs, profit, cost, percent, percentPositive, cost_per_unit, sell_per_unit, out_m3);
+    return TargetsRowData(tid, name, runs, profit, cost, percent, percentPositive, cost_per_unit, sell_per_unit, out_m3);
   }
 }
 

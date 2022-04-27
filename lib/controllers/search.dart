@@ -5,18 +5,18 @@ import '../search.dart';
 import '../strings.dart';
 import 'build_items.dart';
 
-class SearchAdapter with ChangeNotifier {
-  final BuildItemsAdapter _buildItems; // for adding items to the build
-  //final MarketAdapter market;
+class SearchController with ChangeNotifier {
+  final BuildItemsController _buildItems; // for adding items to the build
+  //final MarketController market;
   //final BasicBuild // for calculating profit percentages fast
-  //final CacheAdapter
+  //final CacheController
 
   final _search = FilterSearch();
   static final _ids = SDE.blueprints.keys.toList(growable: false);
   List<int> _sortedIds = _ids;
   final List<List<String>> _searchCandidates = [];
 
-  SearchAdapter(this._buildItems, Strings strings) {
+  SearchController(this._buildItems, Strings strings) {
     _initSearchCandidates();
 
     strings.addListener(() {

@@ -40,7 +40,6 @@ class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
 
   @override
   void initState() {
-    final theme = Provider.of<MyTheme>(context,listen:false);
     widget.parentController.connect(controller);
     super.initState();
   }

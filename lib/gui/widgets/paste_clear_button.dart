@@ -19,7 +19,7 @@ class _PasteClearButtonState extends State<PasteClearButton> {
     final theme = Provider.of<MyTheme>(context);
     Widget pasteOrClear = paste
         ? TextField(
-            // onChanged: (s) => Provider.of<BuildAdapter>(context, listen: false).setInventoryFromStr(s),
+            // onChanged: (s) => Provider.of<BuildController>(context, listen: false).setInventoryFromStr(
             onChanged: (s) {
               setState(() => paste = false);
             },

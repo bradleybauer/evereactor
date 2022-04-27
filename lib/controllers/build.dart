@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -19,9 +20,9 @@ import 'inventory.dart';
 import 'options.dart';
 
 class Build with ChangeNotifier {
-  final InventoryAdapter _inventory;
-  final OptionsAdapter _options;
-  final BuildItemsAdapter _buildItems;
+  final InventoryController _inventory;
+  final OptionsController _options;
+  final BuildItemsController _buildItems;
 
   var _allBuiltItems = <int>{};
   var _intermediates = <int>{};
@@ -47,11 +48,17 @@ class Build with ChangeNotifier {
     _buildItems.restrict(tid2runs.keys.toSet(), _intermediates);
 
     final problem = _getOptimizationProblem(tid2runs);
-    _schedule = Approximator.get(problem);
+    final schedule = Approximator.get(problem);
+    // TODO handle errors!
+    if (schedule == null) {
+      //
+      return;
+    }
+    _schedule = schedule;
     _totalBOM = _getTotalBOM(tid2runs, problem);
     _target2costShare = _getShares(tid2runs, problem);
 
-    print(_schedule.toString());
+    // print(_schedule.toString());
     print((_schedule!.time.toDouble() / (3600 * 24)));
     // print('----------------------- BOM -------------------------');
     // _totalBOM.forEach((int tid, int needed) {
@@ -132,8 +139,8 @@ class Build with ChangeNotifier {
             if (!mid2numNeeded.containsKey(mid)) mid2numNeeded[mid] = {};
             if (!mid2numNeeded[mid]!.containsKey(tid)) mid2numNeeded[mid]![tid] = 0;
             // parent wants numNeeded more of child
-            mid2numNeeded[mid]![tid] = mid2numNeeded[mid]![tid]! +
-                getNumNeeded(batchItem.runs, batchItem.slots, qtyPerRun, problem.jobMaterialBonus[tid]!);
+            mid2numNeeded[mid]![tid] =
+                mid2numNeeded[mid]![tid]! + getNumNeeded(batchItem.runs, batchItem.slots, qtyPerRun, problem.jobMaterialBonus[tid]!);
           });
         });
       }
@@ -199,9 +206,7 @@ class Build with ChangeNotifier {
 
   Set<int> __getIntermediatesIDs(int pid) {
     final res = <int>{};
-    for (int cid in SD
-        .materials(pid)
-        .keys) {
+    for (int cid in SD.materials(pid).keys) {
       if (_shouldBuild(pid, cid, useBuildItems: false)) {
         res.add(cid);
         res.addAll(__getIntermediatesIDs(cid));
@@ -228,10 +233,8 @@ class Build with ChangeNotifier {
       IndustryType.MANUFACTURING: _options.getManufacturingSlots(),
       IndustryType.REACTION: _options.getReactionSlots()
     };
-    final maxNumSlotsOfJob =
-    _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
-    final maxNumRunsPerSlotOfJob =
-    _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000000));
+    final maxNumSlotsOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
+    final maxNumRunsPerSlotOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000000));
     final jobMaterialBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getMaterialBonus(tid)));
     final jobTimeBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getTimeBonus(tid, _options.getSkills())));
     return Problem(
@@ -261,9 +264,7 @@ class Build with ChangeNotifier {
     var ret = 1.toFraction();
 
     // structures
-    final structure = SDE.structures[_options
-        .getManufacturingStructure()
-        .tid]!;
+    final structure = SDE.structures[_options.getManufacturingStructure().tid]!;
     if (structure.bonuses.containsKey(BonusType.MATERIAL)) {
       ret *= structure.bonuses[BonusType.MATERIAL]!.toFraction();
     }
@@ -303,9 +304,7 @@ class Build with ChangeNotifier {
     var ret = 1.toFraction();
 
     // structure
-    final structure = SDE.structures[_options
-        .getManufacturingStructure()
-        .tid]!;
+    final structure = SDE.structures[_options.getManufacturingStructure().tid]!;
     if (structure.bonuses.containsKey(BonusType.TIME)) {
       ret *= structure.bonuses[BonusType.TIME]!.toFraction();
     }
@@ -326,9 +325,7 @@ class Build with ChangeNotifier {
     var ret = 1.toFraction();
 
     // structure
-    final structure = SDE.structures[_options
-        .getReactionStructure()
-        .tid]!;
+    final structure = SDE.structures[_options.getReactionStructure().tid]!;
     if (structure.bonuses.containsKey(BonusType.TIME)) {
       ret *= structure.bonuses[BonusType.TIME]!.toFraction();
     }
@@ -380,8 +377,7 @@ class Build with ChangeNotifier {
     var ret = 1.toFraction();
     for (var skillData in skills) {
       if (bp.skills.contains(skillData.tid)) {
-        ret *= 1.toFraction() +
-            skillData.level.toFraction() * SDE.skills[skillData.tid]!.bonus.toFraction() / 100.toFraction();
+        ret *= 1.toFraction() + skillData.level.toFraction() * SDE.skills[skillData.tid]!.bonus.toFraction() / 100.toFraction();
       }
     }
     return ret.reduce();
@@ -396,10 +392,7 @@ class Build with ChangeNotifier {
   }
 
   Map<int, int> _getBuildDependenciesForItem(int pid) =>
-      Map.fromEntries(SD
-          .materials(pid)
-          .entries
-          .where((e) => _shouldBuild(pid, e.key, useBuildItems: true)));
+      Map.fromEntries(SD.materials(pid).entries.where((e) => _shouldBuild(pid, e.key, useBuildItems: true)));
 
   List<int> getIntermediatesIds() => _intermediates.toList(growable: false);
 
@@ -418,7 +411,7 @@ class Build with ChangeNotifier {
 //   "get build string"
 //   set/clear inv
 //
-// targets table adapter
+// targets table controller
 //  get rows
 
 /*

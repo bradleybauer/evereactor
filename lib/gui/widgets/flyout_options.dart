@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../adapters/options.dart';
+import '../../controllers/options.dart';
 import '../../sde.dart';
 import '../../strings.dart';
 import '../my_theme.dart';
@@ -17,7 +17,7 @@ const padding = MyTheme.appBarPadding;
 const itemPadding = 8.0;
 
 class OptionsFlyout extends StatelessWidget {
-  const OptionsFlyout(this.controller, this.color, this.base, this.headerStyle, this.style, {Key? key})
+  const OptionsFlyout(this.flyoutController, this.color, this.base, this.headerStyle, this.style, {Key? key})
       : super(key: key);
 
   final Color color;
@@ -26,11 +26,11 @@ class OptionsFlyout extends StatelessWidget {
   final TextStyle headerStyle;
   final TextStyle style;
 
-  final FlyoutController controller;
+  final FlyoutController flyoutController;
 
   @override
   Widget build(BuildContext context) {
-    final adapter = Provider.of<OptionsAdapter>(context);
+    final controller = Provider.of<OptionsController>(context);
     final theme = Provider.of<MyTheme>(context);
     return PhysicalModel(
       color: Colors.transparent,
@@ -50,11 +50,17 @@ class OptionsFlyout extends StatelessWidget {
               spacing: 8,
               direction: Axis.vertical,
               children: [
-                SkillSection(style: style, color: color, headerStyle: headerStyle, base: base, adapter: adapter),
-                JobsSection(headerStyle: headerStyle, style: style, color: color, adapter: adapter),
-                BlueprintsSection(headerStyle: headerStyle, style: style, color: color, adapter: adapter),
-                StructuresSection(style: style, controller: controller, headerStyle: headerStyle, adapter: adapter),
-                CostsSection(headerStyle: headerStyle, style: style, adapter: adapter),
+                SkillSection(style: style, color: color, headerStyle: headerStyle, base: base, controller: controller),
+                JobsSection(headerStyle: headerStyle, style: style, color: color, controller: controller),
+                BlueprintsSection(headerStyle: headerStyle, style: style, color: color, controller: controller),
+                StructuresSection(
+                    style: style, controller: controller, headerStyle: headerStyle, flyoutController: flyoutController),
+                CostsSection(
+                    color: color,
+                    headerStyle: headerStyle,
+                    style: style,
+                    controller: controller,
+                    flyoutController: flyoutController),
                 MarketsSection(base: base, headerStyle: headerStyle, style: style),
                 AppSection(
                     headerStyle: headerStyle,
@@ -62,7 +68,7 @@ class OptionsFlyout extends StatelessWidget {
                     controller: controller,
                     color: color,
                     base: base,
-                    adapter: adapter,
+                    flyoutController: flyoutController,
                     context: context),
               ],
             ),
@@ -81,16 +87,16 @@ class AppSection extends StatelessWidget {
     required this.controller,
     required this.color,
     required this.base,
-    required this.adapter,
+    required this.flyoutController,
     required this.context,
   }) : super(key: key);
 
   final TextStyle headerStyle;
   final TextStyle style;
-  final FlyoutController controller;
+  final FlyoutController flyoutController;
   final Color color;
   final Color base;
-  final OptionsAdapter adapter;
+  final OptionsController controller;
   final BuildContext context;
 
   @override
@@ -104,12 +110,12 @@ class AppSection extends StatelessWidget {
         Text('Language', style: style),
         const SizedBox(width: itemPadding),
         DropdownMenuFlyout(
-          items: adapter.getLangs().map((e) => e.name).toList(),
+          items: controller.getLangs().map((e) => e.name).toList(),
           style: style,
-          parentController: controller,
-          ids: adapter.getLangs().map((e) => e.label).toList(),
+          parentController: flyoutController,
+          ids: controller.getLangs().map((e) => e.label).toList(),
           onSelect: (lang) => Provider.of<Strings>(context, listen: false).setLang(lang),
-          current: adapter.getLangName(),
+          current: controller.getLangName(),
           up: true,
         ),
         const SizedBox(width: itemPadding),
@@ -117,7 +123,7 @@ class AppSection extends StatelessWidget {
         const SizedBox(width: itemPadding),
         LightDarkModeButtons(light: !theme.isDark, color: color, base: base, onTap: theme.toggleLightDark),
         const SizedBox(width: itemPadding),
-        ColorChanger(controller, color, base),
+        ColorChanger(flyoutController, color, base),
       ],
     );
   }
@@ -179,13 +185,13 @@ class StructuresSection extends StatelessWidget {
     required this.style,
     required this.controller,
     required this.headerStyle,
-    required this.adapter,
+    required this.flyoutController,
   }) : super(key: key);
 
   final TextStyle style;
-  final FlyoutController controller;
+  final FlyoutController flyoutController;
   final TextStyle headerStyle;
-  final OptionsAdapter adapter;
+  final OptionsController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -193,33 +199,33 @@ class StructuresSection extends StatelessWidget {
     List<Widget> addManufacturingRigButton = [];
     List<Widget> addReactionRigButton = [];
     final maxNumRigs = 3;
-    if (adapter.getNumSelectedManufacturingRigs() < maxNumRigs) {
+    if (controller.getNumSelectedManufacturingRigs() < maxNumRigs) {
       addManufacturingRigButton = [
         Padding(
             padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
             child: DropdownMenuFlyout(
               current: 'Add Rigs',
-              items: adapter.getManufacturingRigs().map((e) => e.name).toList(),
+              items: controller.getManufacturingRigs().map((e) => e.name).toList(),
               style: style,
-              parentController: controller,
-              ids: adapter.getManufacturingRigs().map((e) => e.tid).toList(),
-              onSelect: (tid) => adapter.addManufacturingRig(tid),
+              parentController: flyoutController,
+              ids: controller.getManufacturingRigs().map((e) => e.tid).toList(),
+              onSelect: (tid) => controller.addManufacturingRig(tid),
               up: true,
               maxHeight: 300,
             )),
       ];
     }
-    if (adapter.getNumSelectedReactionRigs() < maxNumRigs) {
+    if (controller.getNumSelectedReactionRigs() < maxNumRigs) {
       addReactionRigButton = [
         Padding(
             padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
             child: DropdownMenuFlyout(
               current: 'Add Rigs',
-              items: adapter.getReactionRigs().map((e) => e.name).toList(),
+              items: controller.getReactionRigs().map((e) => e.name).toList(),
               style: style,
-              parentController: controller,
-              ids: adapter.getReactionRigs().map((e) => e.tid).toList(),
-              onSelect: (tid) => adapter.addReactionRig(tid),
+              parentController: flyoutController,
+              ids: controller.getReactionRigs().map((e) => e.tid).toList(),
+              onSelect: (tid) => controller.addReactionRig(tid),
               up: true,
               maxHeight: 350,
             )),
@@ -233,30 +239,30 @@ class StructuresSection extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text('Structures', style: headerStyle),
+                Text('Structures', style: headerStyle),
                 const SizedBox(width: padding),
                 DropdownMenuFlyout(
-                  current: adapter.getManufacturingStructure().name,
-                  items: adapter.getManufacturingStructures().map((e) => e.name).toList(),
-                  ids: adapter.getManufacturingStructures().map((e) => e.tid).toList(),
+                  current: controller.getManufacturingStructure().name,
+                  items: controller.getManufacturingStructures().map((e) => e.name).toList(),
+                  ids: controller.getManufacturingStructures().map((e) => e.tid).toList(),
                   width: 55,
                   style: style,
-                  parentController: controller,
-                  onSelect: (x) => adapter.setManufacturingStructure(x),
+                  parentController: flyoutController,
+                  onSelect: (x) => controller.setManufacturingStructure(x),
                 ),
               ] +
               List<Widget>.generate(
-                adapter.getSelectedManufacturingRigs().length,
+                controller.getSelectedManufacturingRigs().length,
                 (i) => Padding(
                   padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
                   child: Tooltip(
                     preferBelow: false,
                     verticalOffset: 17,
-                    message: adapter.getSelectedManufacturingRigs()[i].name,
+                    message: controller.getSelectedManufacturingRigs()[i].name,
                     child: HoverButton(
                       color: theme.surface,
                       hoveredColor: theme.secondary,
-                      onTap: () => adapter.removeManufacturingRig(i),
+                      onTap: () => controller.removeManufacturingRig(i),
                       hoveredElevation: 0,
                       borderRadius: 4,
                       builder: (hovered) {
@@ -268,30 +274,31 @@ class StructuresSection extends StatelessWidget {
                   ),
                 ),
               ) +
-              addManufacturingRigButton + [
-                const SizedBox(width: padding*2),
+              addManufacturingRigButton +
+              [
+                const SizedBox(width: padding * 2),
                 DropdownMenuFlyout(
-                  current: adapter.getReactionStructure().name,
-                  items: adapter.getReactionStructures().map((e) => e.name).toList(),
-                  ids: adapter.getReactionStructures().map((e) => e.tid).toList(),
+                  current: controller.getReactionStructure().name,
+                  items: controller.getReactionStructures().map((e) => e.name).toList(),
+                  ids: controller.getReactionStructures().map((e) => e.tid).toList(),
                   width: 55,
                   style: style,
-                  parentController: controller,
-                  onSelect: (x) => adapter.setReactionStructure(x),
+                  parentController: flyoutController,
+                  onSelect: (x) => controller.setReactionStructure(x),
                 ),
               ] +
               List<Widget>.generate(
-                adapter.getSelectedReactionRigs().length,
+                controller.getSelectedReactionRigs().length,
                 (i) => Padding(
                   padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
                   child: Tooltip(
                     preferBelow: false,
                     verticalOffset: 17,
-                    message: adapter.getSelectedReactionRigs()[i].name,
+                    message: controller.getSelectedReactionRigs()[i].name,
                     child: HoverButton(
                       color: theme.surface,
                       hoveredColor: theme.secondary,
-                      onTap: () => adapter.removeReactionRig(i),
+                      onTap: () => controller.removeReactionRig(i),
                       hoveredElevation: 0,
                       borderRadius: 4,
                       builder: (hovered) {
@@ -315,12 +322,16 @@ class CostsSection extends StatelessWidget {
     Key? key,
     required this.headerStyle,
     required this.style,
-    required this.adapter,
+    required this.flyoutController,
+    required this.controller,
+    required this.color,
   }) : super(key: key);
 
+  final Color color;
   final TextStyle headerStyle;
   final TextStyle style;
-  final OptionsAdapter adapter;
+  final FlyoutController flyoutController;
+  final OptionsController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -333,37 +344,37 @@ class CostsSection extends StatelessWidget {
         Text('Reaction index', style: style),
         const SizedBox(width: padding),
         TableTextField(
-          initialText: adapter.getReactionSystemCostIndex().toString(),
-          textColor: theme.onTertiaryContainer,
+          initialText: controller.getReactionSystemCostIndex().toString(),
+          textColor: theme.on(color),
           activeBorderColor: theme.primary,
           floatingPoint: true,
           maxNumDigits: 4,
           width: 32,
-          onChanged: (t) => adapter.setReactionSystemCostIndex(t == '' ? .1 : double.parse(t)),
+          onChanged: (t) => controller.setReactionSystemCostIndex(t == '' ? .1 : double.parse(t)),
         ),
         const SizedBox(width: padding),
         Text('Manufacturing index', style: style),
         const SizedBox(width: padding),
         TableTextField(
-          initialText: adapter.getManufacturingSystemCostIndex().toString(),
-          textColor: theme.onTertiaryContainer,
+          initialText: controller.getManufacturingSystemCostIndex().toString(),
+          textColor: theme.on(color),
           activeBorderColor: theme.primary,
           floatingPoint: true,
           maxNumDigits: 4,
           width: 32,
-          onChanged: (t) => adapter.setManufacturingSystemCostIndex(t == '' ? .1 : double.parse(t)),
+          onChanged: (t) => controller.setManufacturingSystemCostIndex(t == '' ? .1 : double.parse(t)),
         ),
         const SizedBox(width: padding),
         Text('Sales tax', style: style),
         const SizedBox(width: padding),
         TableTextField(
-          initialText: adapter.getSalesTax().toString(),
-          textColor: theme.onTertiaryContainer,
+          initialText: controller.getSalesTax().toString(),
+          textColor: theme.on(color),
           activeBorderColor: theme.primary,
           floatingPoint: true,
           maxNumDigits: 4,
           width: 32,
-          onChanged: (t) => adapter.setSalesTax(t == '' ? 0 : double.parse(t)),
+          onChanged: (t) => controller.setSalesTax(t == '' ? 0 : double.parse(t)),
         ),
       ],
     );
@@ -376,13 +387,13 @@ class BlueprintsSection extends StatelessWidget {
     required this.headerStyle,
     required this.style,
     required this.color,
-    required this.adapter,
+    required this.controller,
   }) : super(key: key);
 
   final TextStyle headerStyle;
   final TextStyle style;
   final Color color;
-  final OptionsAdapter adapter;
+  final OptionsController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -399,34 +410,34 @@ class BlueprintsSection extends StatelessWidget {
             Text('ME', style: style),
             const SizedBox(width: itemPadding),
             TableTextField(
-              initialText: adapter.getME().toString(),
+              initialText: controller.getME().toString(),
               textColor: theme.on(color),
               activeBorderColor: theme.primary,
               maxNumDigits: 2,
               width: 25,
-              onChanged: (t) => adapter.setME(t == '' ? 0 : int.parse(t)),
+              onChanged: (t) => controller.setME(t == '' ? 0 : int.parse(t)),
             ),
             const SizedBox(width: MyTheme.appBarPadding),
             Text('TE', style: style),
             const SizedBox(width: itemPadding),
             TableTextField(
-              initialText: adapter.getTE().toString(),
+              initialText: controller.getTE().toString(),
               textColor: theme.on(color),
               activeBorderColor: theme.primary,
               maxNumDigits: 2,
               width: 25,
-              onChanged: (t) => adapter.setTE(t == '' ? 0 : int.parse(t)),
+              onChanged: (t) => controller.setTE(t == '' ? 0 : int.parse(t)),
             ),
             const SizedBox(width: MyTheme.appBarPadding),
             Text('Max number of blueprints', style: style),
             const SizedBox(width: itemPadding),
             TableTextField(
-              initialText: adapter.getMaxNumBlueprints().toString(),
+              initialText: controller.getMaxNumBlueprints().toString(),
               textColor: theme.on(color),
               activeBorderColor: theme.primary,
               maxNumDigits: 3,
               width: 30,
-              onChanged: (t) => adapter.setMaxNumBlueprints(t == '' ? 20 : int.parse(t)),
+              onChanged: (t) => controller.setMaxNumBlueprints(t == '' ? 20 : int.parse(t)),
             ),
           ],
         ),
@@ -441,13 +452,13 @@ class JobsSection extends StatelessWidget {
     required this.headerStyle,
     required this.style,
     required this.color,
-    required this.adapter,
+    required this.controller,
   }) : super(key: key);
 
   final TextStyle headerStyle;
   final TextStyle style;
   final Color color;
-  final OptionsAdapter adapter;
+  final OptionsController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -460,21 +471,21 @@ class JobsSection extends StatelessWidget {
         Text('Reactions jobs', style: style),
         const SizedBox(width: padding),
         TableTextField(
-          initialText: adapter.getReactionSlots().toString(),
+          initialText: controller.getReactionSlots().toString(),
           textColor: theme.on(color),
           activeBorderColor: theme.primary,
           maxNumDigits: 4,
-          onChanged: (t) => adapter.setReactionSlots(t == '' ? 60 : int.parse(t)),
+          onChanged: (t) => controller.setReactionSlots(t == '' ? 60 : int.parse(t)),
         ),
         const SizedBox(width: padding),
         Text('Manufacturing jobs', style: style),
         const SizedBox(width: padding),
         TableTextField(
-          initialText: adapter.getManufacturingSlots().toString(),
+          initialText: controller.getManufacturingSlots().toString(),
           textColor: theme.on(color),
           activeBorderColor: theme.primary,
           maxNumDigits: 4,
-          onChanged: (t) => adapter.setManufacturingSlots(t == '' ? 60 : int.parse(t)),
+          onChanged: (t) => controller.setManufacturingSlots(t == '' ? 60 : int.parse(t)),
         ),
       ],
     );
@@ -488,19 +499,19 @@ class SkillSection extends StatelessWidget {
     required this.color,
     required this.headerStyle,
     required this.base,
-    required this.adapter,
+    required this.controller,
   }) : super(key: key);
 
   final TextStyle style;
   final Color color;
   final TextStyle headerStyle;
   final Color base;
-  final OptionsAdapter adapter;
+  final OptionsController controller;
 
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
-    final skills = adapter.getSkills();
+    final skills = controller.getSkills();
     final numSkills = skills.length;
     final cols = <List<Widget>>[[], [], [], []];
     for (int j = 0; j < numSkills; ++j) {
@@ -525,7 +536,7 @@ class SkillSection extends StatelessWidget {
               textColor: theme.on(color),
               activeBorderColor: theme.primary,
               allowEmptyString: false,
-              onChanged: (t) => adapter.setSkillLevel(skills[j].tid, t == '' ? 3 : int.parse(t)),
+              onChanged: (t) => controller.setSkillLevel(skills[j].tid, t == '' ? 3 : int.parse(t)),
               width: 20,
               maxNumDigits: 1,
               // overwrite: true,
@@ -560,7 +571,7 @@ class SkillSection extends StatelessWidget {
                           splashColor: theme.on(base).withOpacity(.5),
                           shadowColor: theme.shadow,
                           borderRadius: 2,
-                          onTap: () => adapter.setAllSkillLevels(i + 3),
+                          onTap: () => controller.setAllSkillLevels(i + 3),
                           hoveredColor: base,
                           hoveredElevation: 0,
                           color: theme.surface,

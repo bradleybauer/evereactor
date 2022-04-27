@@ -8,11 +8,11 @@ import '../sde.dart';
 import '../strings.dart';
 import 'market.dart';
 
-class OptionsAdapter with ChangeNotifier {
+class OptionsController with ChangeNotifier {
   final Options _options = Options();
-  final MarketAdapter _market;
+  final MarketController _market;
 
-  OptionsAdapter(this._market, Strings strings) {
+  OptionsController(this._market, Strings strings) {
     strings.addListener(() {
       notify();
     });
@@ -41,9 +41,7 @@ class OptionsAdapter with ChangeNotifier {
                         : 1)
                 : 1);
       });
-    return skills
-        .map((e) => SkillsData(e.key, Strings.get(e.value.nameLocalizations), _options.getSkillLevel(e.key)))
-        .toList();
+    return skills.map((e) => SkillsData(e.key, Strings.get(e.value.nameLocalizations), _options.getSkillLevel(e.key))).toList();
   }
 
   void setSkillLevel(int tid, int level) {
@@ -194,8 +192,7 @@ class OptionsAdapter with ChangeNotifier {
 
   int getNumSelectedReactionRigs() => _options.getNumSelectedReactionRigs();
 
-  List<LangData> getLangs() =>
-      Strings.langNames.entries.map((e) => LangData(e.key, Strings.get(Strings.langNames[e.key]!))).toList();
+  List<LangData> getLangs() => Strings.langNames.entries.map((e) => LangData(e.key, Strings.get(Strings.langNames[e.key]!))).toList();
 
   String getLangName() => Strings.get(Strings.langNames[Strings.getLang()]!);
 }
