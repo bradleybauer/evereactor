@@ -262,6 +262,7 @@ class StructuresSection extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
                   child: Tooltip(
                     preferBelow: false,
+                    waitDuration: const Duration(milliseconds: 500),
                     verticalOffset: 17,
                     message: controller.getSelectedManufacturingRigs()[i].name,
                     child: HoverButton(
@@ -297,6 +298,7 @@ class StructuresSection extends StatelessWidget {
                 (i) => Padding(
                   padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
                   child: Tooltip(
+                    waitDuration: const Duration(milliseconds: 500),
                     preferBelow: false,
                     verticalOffset: 17,
                     message: controller.getSelectedReactionRigs()[i].name,
