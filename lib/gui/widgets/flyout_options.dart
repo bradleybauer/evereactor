@@ -40,8 +40,6 @@ class OptionsFlyout extends StatelessWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Container(
         constraints: BoxConstraints(maxHeight: size.height, maxWidth: size.width),
-        // width: size.width,
-        // height: size.height,
         color: color,
         child: Padding(
           padding: const EdgeInsets.all(padding),
@@ -212,6 +210,7 @@ class StructuresSection extends StatelessWidget {
               onSelect: (tid) => controller.addManufacturingRig(tid),
               up: true,
               maxHeight: 300,
+              // selectionClosesFlyout: false, // TODO does not work
             )),
       ];
     }
@@ -228,6 +227,7 @@ class StructuresSection extends StatelessWidget {
               onSelect: (tid) => controller.addReactionRig(tid),
               up: true,
               maxHeight: 350,
+              // selectionClosesFlyout: false, // TODO does not work
             )),
       ];
     }
@@ -368,7 +368,7 @@ class CostsSection extends StatelessWidget {
         Text('Sales tax', style: style),
         const SizedBox(width: padding),
         TableTextField(
-          initialText: controller.getSalesTax().toString(),
+          initialText: controller.getSalesTaxPercent().toString(),
           textColor: theme.on(color),
           activeBorderColor: theme.primary,
           floatingPoint: true,

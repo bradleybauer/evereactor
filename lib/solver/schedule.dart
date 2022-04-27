@@ -1,6 +1,7 @@
 import 'package:EveIndy/misc.dart';
 import 'package:fraction/fraction.dart';
 
+import '../math.dart';
 import '../models/industry_type.dart';
 import '../sde_extra.dart';
 

@@ -35,9 +35,9 @@ Future<void> main() async {
   // await eveBuildContextController.loadFromCache(buildContro
 
   // Some change notifiers and widgets want to be notified when the language changes
-  final Strings strings = Strings();
-
   final MyTheme myTheme = MyTheme();
+
+  final Strings strings = Strings();
 
   final market = MarketController();
 
@@ -46,10 +46,10 @@ Future<void> main() async {
   final buildItems = BuildItemsController();
   final build = Build(inventory, options, buildItems);
 
-  final searchController = SearchController(buildItems, strings);
-  final targetsTableController = TargetsTableController(market, build, buildItems, strings);
+  final targetsTableController = TargetsTableController(market, build, buildItems, options, strings);
   final intermediatesTableController = IntermediatesTableController(market, build, strings);
   final inputsTableController = InputsTableController(market, build, strings);
+  final searchController = SearchController(market, buildItems, strings);
 
   Platform.appReadyHook();
 

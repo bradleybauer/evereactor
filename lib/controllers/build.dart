@@ -1,9 +1,7 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fraction/fraction.dart';
-import 'package:http/http.dart' as http;
 
 import '../math.dart';
 import '../models/blueprint.dart';
@@ -58,7 +56,7 @@ class Build with ChangeNotifier {
     _totalBOM = _getTotalBOM(tid2runs, problem);
     _target2costShare = _getShares(tid2runs, problem);
 
-    // print(_schedule.toString());
+    print(_schedule.toString());
     print((_schedule!.time.toDouble() / (3600 * 24)));
     // print('----------------------- BOM -------------------------');
     // _totalBOM.forEach((int tid, int needed) {
@@ -139,8 +137,8 @@ class Build with ChangeNotifier {
             if (!mid2numNeeded.containsKey(mid)) mid2numNeeded[mid] = {};
             if (!mid2numNeeded[mid]!.containsKey(tid)) mid2numNeeded[mid]![tid] = 0;
             // parent wants numNeeded more of child
-            mid2numNeeded[mid]![tid] =
-                mid2numNeeded[mid]![tid]! + getNumNeeded(batchItem.runs, batchItem.slots, qtyPerRun, problem.jobMaterialBonus[tid]!);
+            mid2numNeeded[mid]![tid] = mid2numNeeded[mid]![tid]! +
+                getNumNeeded(batchItem.runs, batchItem.slots, qtyPerRun, problem.jobMaterialBonus[tid]!);
           });
         });
       }
@@ -233,8 +231,10 @@ class Build with ChangeNotifier {
       IndustryType.MANUFACTURING: _options.getManufacturingSlots(),
       IndustryType.REACTION: _options.getReactionSlots()
     };
-    final maxNumSlotsOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
-    final maxNumRunsPerSlotOfJob = _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000000));
+    final maxNumSlotsOfJob =
+        _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
+    final maxNumRunsPerSlotOfJob =
+        _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000000));
     final jobMaterialBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getMaterialBonus(tid)));
     final jobTimeBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getTimeBonus(tid, _options.getSkills())));
     return Problem(
@@ -377,7 +377,8 @@ class Build with ChangeNotifier {
     var ret = 1.toFraction();
     for (var skillData in skills) {
       if (bp.skills.contains(skillData.tid)) {
-        ret *= 1.toFraction() + skillData.level.toFraction() * SDE.skills[skillData.tid]!.bonus.toFraction() / 100.toFraction();
+        ret *= 1.toFraction() +
+            skillData.level.toFraction() * SDE.skills[skillData.tid]!.bonus.toFraction() / 100.toFraction();
       }
     }
     return ret.reduce();
@@ -398,21 +399,10 @@ class Build with ChangeNotifier {
 
   List<int> getInputIds() => _totalBOM.keys.toList();
 
-  Map<int, double> getShare(int tid) => _target2costShare[tid]!;
-}
+  Map<int, double> getCostShare(int tid) => _target2costShare[tid]!;
 
-// build
-//   get multi-buy
-//   get total build time
-//   get total output volume
-//   get output volume (tid)
-//   get bom
-//   "get product info"
-//   "get build string"
-//   set/clear inv
-//
-// targets table controller
-//  get rows
+  Map<int, int> getBOM() => _totalBOM;
+}
 
 /*
 class ChainProcessor {

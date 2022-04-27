@@ -40,4 +40,6 @@ abstract class SD {
     }
     return lvl == 2;
   }
+
+  static double m3(int tid, int qty) => qty * SDE.items[tid]!.volume;
 }

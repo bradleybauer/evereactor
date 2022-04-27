@@ -9,7 +9,7 @@ class Options {
   int _maxNumBps = 30;
   double _reactionsSystemCostIndex = .1;
   double _manufacturingSystemCostIndex = .1;
-  double _salesTax = 0;
+  double _salesTaxPercent = 0;
   int _manufacturingStructure =
       SDE.structures.entries.where((e) => e.value.industryType == IndustryType.MANUFACTURING).first.key;
   int _reactionStructure =
@@ -59,9 +59,9 @@ class Options {
 
   void setManufacturingSystemCostIndex(double index) => _manufacturingSystemCostIndex = index;
 
-  double getSalesTax() => _salesTax;
+  double getSalesTaxPercent() => _salesTaxPercent;
 
-  void setSalesTax(double tax) => _salesTax = tax;
+  void setSalesTax(double tax) => _salesTaxPercent = tax;
 
   int getManufacturingStructure() => _manufacturingStructure;
 

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'math.dart';
 
 class Dura {
   final int days;
@@ -64,14 +65,6 @@ int getMaxNumRunsPerLine(int runs, int lines) {
   return runs ~/ lines + (runs % lines == 0 ? 0 : 1);
 }
 
-int clamp(int x, int l, int h) {
-  return max(l, min(h, x));
-}
-
-double log10(num x) {
-  return log(x) / log(10);
-}
-
 double limitCurrencyPrecision(num x) {
   int xi = (x * 100).round();
   int digits = log10(xi).round() - 1;
@@ -95,6 +88,7 @@ String commaFormat(num number) {
   return ret;
 }
 
+// TODO make this smart actually
 String currencyFormatNumber(
   num isk, {
   bool roundFraction = true,
@@ -109,16 +103,16 @@ String currencyFormatNumber(
   if (roundBigIskToMillions && isk.abs() > 0 && log10(isk.abs()).floor() >= 6) {
     int rounded = (isk / pow(10, 6)).round().abs();
     ret = commaFormat(rounded) + 'm';
-  } else if (roundBigIskToMillions && isk.abs() > 0) {
-    if (isk.abs() < 49999) {
-      return '0';
-    }
-    int rounded = (isk / pow(10, 6) * 10).round().abs();
-    String roundedStr = rounded.toString();
-    if (roundedStr.endsWith('0')) {
-      roundedStr = roundedStr[0];
-    }
-    ret = '0.' + roundedStr + 'm';
+  // } else if (roundBigIskToMillions && isk.abs() > 0) {
+  //   if (isk.abs() < 49999) {
+  //     return '0';
+  //   }
+  //   int rounded = (isk / pow(10, 6) * 10).round().abs();
+  //   String roundedStr = rounded.toString();
+  //   if (roundedStr.endsWith('0')) {
+  //     roundedStr = roundedStr[0];
+  //   }
+  //   ret = '0.' + roundedStr + 'm';
   } else {
     final fractionInt = roundFraction ? 0 : ((isk.abs() - isk.abs().truncate()) * 100).round();
     final fraction = fractionInt >= 10

@@ -108,7 +108,7 @@ class OptionsController with ChangeNotifier {
     notify();
   }
 
-  double getSalesTax() => _options.getSalesTax();
+  double getSalesTaxPercent() => _options.getSalesTaxPercent();
 
   void setSalesTax(double tax) {
     tax = min(10, max(0, tax));

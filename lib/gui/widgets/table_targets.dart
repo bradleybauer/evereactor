@@ -39,7 +39,7 @@ class TargetsTable extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
         itemCount: numItems,
         itemExtent: itemHeight,
-        itemBuilder: (_, index) => TargetsTableItem(tid: controller.getTid(index), row: controller.getRowData(index)),
+        itemBuilder: (_, index) => TargetsTableItem(row: controller.getRowData(index)),
       );
     }
     return TableContainer(
@@ -87,10 +87,9 @@ class TargetsTableHeader extends StatelessWidget {
 }
 
 class TargetsTableItem extends StatelessWidget {
-  const TargetsTableItem({required this.tid, required this.row, Key? key}) : super(key: key);
+  const TargetsTableItem({required this.row, Key? key}) : super(key: key);
 
   final TargetsRowData row;
-  final int tid;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +114,7 @@ class TargetsTableItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: TargetsTable.padding),
                     child: TableAddDelButton(
-                      onTap: () => buildItems.removeTarget(tid),
+                      onTap: () => buildItems.removeTarget(row.tid),
                       closeButton: true,
                       color: theme.background,
                       hoveredColor: theme.tertiaryContainer,
@@ -134,16 +133,16 @@ class TargetsTableItem extends StatelessWidget {
                     textColor: theme.onBackground,
                     onChanged: (String runs) {
                       if (runs != '') {
-                        buildItems.setRuns(tid, int.parse(runs));
+                        buildItems.setRuns(row.tid, int.parse(runs));
                       }
                     })),
             MyTableCell(TargetsTable.colFlexs[2], child: Text(row.profit)),
             MyTableCell(TargetsTable.colFlexs[3], child: Text(row.cost)),
             MyTableCell(TargetsTable.colFlexs[4], child: Text(row.percent)),
-            MyTableCell(TargetsTable.colFlexs[5], child: Text(row.cost_per_unit)),
-            MyTableCell(TargetsTable.colFlexs[6], child: Text(row.sell_per_unit)),
-            MyTableCell(TargetsTable.colFlexs[7], child: Text(row.out_m3)),
-            MyTableCell(TargetsTable.colFlexs[8], child: BpOptionsTableWidget(controller: buildItems, tid: tid)),
+            MyTableCell(TargetsTable.colFlexs[5], child: Text(row.costPerUnit)),
+            MyTableCell(TargetsTable.colFlexs[6], child: Text(row.sellPerUnit)),
+            MyTableCell(TargetsTable.colFlexs[7], child: Text(row.outM3)),
+            MyTableCell(TargetsTable.colFlexs[8], child: BpOptionsTableWidget(controller: buildItems, tid: row.tid)),
           ],
         ),
       ),

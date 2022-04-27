@@ -21,14 +21,8 @@ class MarketController with ChangeNotifier {
 
   EsiState _esiState = EsiState.Idle;
 
-  // MarketController(this._cache);
 
-  // Future<void> updateOrderFilter(List<int> systemIds, bool isBuy) async {
-  //   final filter = OrderFilter(systemIds);
-  //   market.setMarketFilter(filter, isBuy);
-  //   await _cache.setOrderFilter(filter, isBuy);
-  //   notifyListeners();
-  // }
+  // MarketController(this._cache);
 
   Future<void> updateMarketData({required void Function(double) progressCallback}) async {
     _esiState = EsiState.CurrentlyFetchingData;
@@ -110,7 +104,7 @@ class MarketController with ChangeNotifier {
             }
             final data = jsonDecode(response.body);
             tid2regionOrders = _getOrdersFromPage(region, data);
-            addB2A(result, tid2regionOrders);
+            _addB2A(result, tid2regionOrders);
           }
         } catch (e) {}
 
@@ -139,7 +133,7 @@ class MarketController with ChangeNotifier {
         continue;
       }
       // if not in some system that I care about then ignore
-      if (OrderFilter.allSystems(system)) {
+      if (!OrderFilter.allSystems(system)) {
         continue;
       }
 
@@ -149,7 +143,7 @@ class MarketController with ChangeNotifier {
     return ret;
   }
 
-  void addB2A(Map<int, List<Order>> a, Map<int, List<Order>> b) {
+  void _addB2A(Map<int, List<Order>> a, Map<int, List<Order>> b) {
     for (var entry in b.entries) {
       if (a.containsKey(entry.key)) {
         a[entry.key] = a[entry.key]! + entry.value;
@@ -160,6 +154,16 @@ class MarketController with ChangeNotifier {
   }
 
   OrderFilter getOrderFilter() => _market.getOrderFilter();
+
+  Map<int,double> avgBuyFromSell(Map<int, int> bom) => _market.avgBuyFromSell(bom);
+
+  double avgSellToBuyItem(int tid, int quantity) => _market.avgSellToBuyItem(tid, quantity);
+// Future<void> setOrderFilter(List<int> systemIds) async {
+//   final filter = OrderFilter(systemIds);
+//   _market.setOrderFilter(filter);
+//   // await _cache.setOrderFilter(filter, isBuy);
+//   notifyListeners();
+// }
 
 // Future<void> loadFromCache() async {
 // }

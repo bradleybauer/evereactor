@@ -4,10 +4,11 @@ import '../sde.dart';
 import '../search.dart';
 import '../strings.dart';
 import 'build_items.dart';
+import 'market.dart';
 
 class SearchController with ChangeNotifier {
   final BuildItemsController _buildItems; // for adding items to the build
-  //final MarketController market;
+  final MarketController _market;
   //final BasicBuild // for calculating profit percentages fast
   //final CacheController
 
@@ -16,8 +17,12 @@ class SearchController with ChangeNotifier {
   List<int> _sortedIds = _ids;
   final List<List<String>> _searchCandidates = [];
 
-  SearchController(this._buildItems, Strings strings) {
+  SearchController(this._market, this._buildItems, Strings strings) {
     _initSearchCandidates();
+
+    _market.addListener(() {
+      notifyListeners();
+    });
 
     strings.addListener(() {
       notifyListeners();

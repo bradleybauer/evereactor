@@ -18,6 +18,7 @@ class DropdownMenuFlyout extends StatefulWidget {
     this.up = false,
     this.maxHeight,
     this.width,
+    this.selectionClosesFlyout = true,
   }) : super(key: key);
 
   final bool up;
@@ -29,6 +30,7 @@ class DropdownMenuFlyout extends StatefulWidget {
   final void Function(dynamic) onSelect;
   final TextStyle style;
   final FlyoutController parentController;
+  final bool selectionClosesFlyout;
 
   @override
   State<DropdownMenuFlyout> createState() => _DropdownMenuFlyoutState();
@@ -83,7 +85,9 @@ class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
                           )),
                       borderRadius: 3,
                       onTap: () {
-                        controller.forceClose();
+                        if (widget.selectionClosesFlyout) {
+                          controller.forceClose();
+                        }
                         widget.onSelect(widget.ids[i]);
                       },
                       splashColor: theme.onPrimary.withOpacity(.5),

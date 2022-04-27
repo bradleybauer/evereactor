@@ -88,7 +88,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
     }
 
     return ConstrainedBox(
-      constraints: BoxConstraints.tight(Size(150, MyTheme.appBarButtonHeight)),
+      constraints: BoxConstraints.tight(Size(130, MyTheme.appBarButtonHeight)),
       child: widget,
     );
   }
