@@ -49,6 +49,7 @@ class Batch {
   Iterable<int> get tids => _items.keys;
 
   Iterable<MapEntry<int, BatchItem>> get entries => _items.entries;
+  Map<int, BatchItem> get items => _items;
 
   operator [](int i) => _items[i]!;
 

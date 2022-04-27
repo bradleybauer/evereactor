@@ -35,6 +35,8 @@ def _getTotalBOM(schedule, inventory, buildItems, buildEnv):
 # [inventory] is a map tid -> quantity
 # [buildItems] is the item level build information
 def getBOMs(schedule, inventory, buildItems):
+    # the first part of this algorithm calculates a table of doubles with size (num materials, num targets)
+
     # how much mid is needed by each parent of mid
     # mid -> (pid -> number mid needed by pid)
     # for any given mid, this can be seen as a tree where mid is the root.
@@ -55,7 +57,7 @@ def getBOMs(schedule, inventory, buildItems):
 
     # for items that are both dependents and targets we need to treat them differently
     for mid in mid2numNeeded:
-        for pid,qty in mid2numNeeded[mid].items():
+        for pid in mid2numNeeded[mid]:
             if pid in buildItems.targets and pid in mid2numNeeded:
                 fractionAsTarget = buildItems.targetsRuns[pid] / totalRuns[pid]
                 # Creates a leaf in the tree since -pid is NOT in mid2numNeeded since it is not a mid (no material has negative id)
@@ -70,7 +72,7 @@ def getBOMs(schedule, inventory, buildItems):
         for pid,qty in mid2numNeeded[mid].items():
             sum += qty
         for pid in mid2numNeeded[mid]:
-            mid2fractions[mid] = mid2numNeeded[mid] / sum
+            mid2fractions[mid][pid] = mid2numNeeded[mid][pid] / sum
 
     totalBOM = _getTotalBOM(schedule, inventory, buildItems)
     indivBOMs = {}

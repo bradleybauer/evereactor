@@ -1,18 +1,19 @@
 import 'dart:math';
 
-import 'package:EveIndy/models/blueprint.dart';
-import 'package:EveIndy/models/bonus_type.dart';
-import 'package:EveIndy/models/industry_type.dart';
-import 'package:EveIndy/solver/solver.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/fraction.dart';
+import 'package:http/http.dart' as http;
 
 import '../math.dart';
+import '../models/blueprint.dart';
+import '../models/bonus_type.dart';
+import '../models/industry_type.dart';
 import '../models/rig.dart';
 import '../sde.dart';
 import '../sde_extra.dart';
 import '../solver/problem.dart';
 import '../solver/schedule.dart';
+import '../solver/solver.dart';
 import 'build_items.dart';
 import 'inventory.dart';
 import 'options.dart';
@@ -26,7 +27,7 @@ class Build with ChangeNotifier {
   var _intermediates = <int>{};
 
   var _totalBOM = <int, int>{};
-  var _targetBOM = <int,int>{};
+  var _target2costShare = <int, Map<int, double>>{};
 
   Schedule? _schedule;
 
@@ -35,11 +36,11 @@ class Build with ChangeNotifier {
     _options.addListener(_handleBuildChanged);
     _inventory.addListener(_handleBuildChanged);
 
-    // TODO is this needed here?
-    _schedule = Approximator.get(_getOptimizationProblem(_buildItems.getTarget2Runs()));
+    _handleBuildChanged(notify: false);
   }
 
-  void _handleBuildChanged() {
+  // TODO this is getting a bit performance intensive... might be worth it to try my ChainProcessor here.
+  void _handleBuildChanged({bool notify = true}) {
     final tid2runs = _buildItems.getTarget2Runs();
     _intermediates = _getIntermediatesIDs(tid2runs.keys);
     _allBuiltItems = _intermediates.where((e) => _buildItems.shouldBuild(e)).toSet().union(tid2runs.keys.toSet());
@@ -47,15 +48,26 @@ class Build with ChangeNotifier {
 
     final problem = _getOptimizationProblem(tid2runs);
     _schedule = Approximator.get(problem);
+    _totalBOM = _getTotalBOM(tid2runs, problem);
+    _target2costShare = _getShares(tid2runs, problem);
+
     print(_schedule.toString());
     print((_schedule!.time.toDouble() / (3600 * 24)));
+    // print('----------------------- BOM -------------------------');
+    // _totalBOM.forEach((int tid, int needed) {
+    //   print(SD.enName(tid) + ' : ' + needed.toString());
+    // });
+    // print('----------------------- Shares -------------------------');
+    // _target2costShare.forEach((tid, share) {
+    //   print(SD.enName(tid));
+    //   share.forEach((mid, qty) {
+    //     print('\t' + SD.enName(mid) + ' : ' + qty.toString());
+    //   });
+    // });
 
-    _totalBOM = _getTotalBOM(tid2runs, problem);
-    _totalBOM.forEach((int tid, int needed) {
-      print(SD.enName(tid) + ' : ' + needed.toString());
-    });
-
-    notifyListeners();
+    if (notify) {
+      notifyListeners();
+    }
   }
 
   // get map tid -> quantity where quantity is the amount of tid that needs to be purchased in order to do the build.
@@ -100,8 +112,80 @@ class Build with ChangeNotifier {
     return result;
   }
 
-  Map<int,Map<int,int>> _getBOMs(Map<int, int> targets, Problem problem) {
-return {};
+  Map<int, Map<int, double>> _getShares(Map<int, int> targets, Problem problem) {
+    // the first part of this algorithm calculates a table of doubles with size (num materials, num targets)
+
+    // how much mid is needed by each parent of mid
+    // mid -> (pid -> number mid needed by pid)
+    // for any given mid, this can be seen as a tree where mid is the root.
+    Map<int, Map<int, double>> mid2numNeeded = {};
+    // the total number of runs of tid scheduled
+    // tid -> totalNumRuns
+    Map<int, int> totalRuns = {};
+    // calculate mid2numNeeded and totalRuns
+    _schedule!.getBatches().forEach((_, batches) {
+      for (var batch in batches) {
+        batch.items.forEach((tid, batchItem) {
+          if (!totalRuns.containsKey(tid)) totalRuns[tid] = 0;
+          totalRuns[tid] = totalRuns[tid]! + batchItem.runs;
+          SD.materials(tid).forEach((mid, qtyPerRun) {
+            if (!mid2numNeeded.containsKey(mid)) mid2numNeeded[mid] = {};
+            if (!mid2numNeeded[mid]!.containsKey(tid)) mid2numNeeded[mid]![tid] = 0;
+            // parent wants numNeeded more of child
+            mid2numNeeded[mid]![tid] = mid2numNeeded[mid]![tid]! +
+                getNumNeeded(batchItem.runs, batchItem.slots, qtyPerRun, problem.jobMaterialBonus[tid]!);
+          });
+        });
+      }
+    });
+    // for items that are both dependents and targets we need to treat them differently
+    for (var mid in mid2numNeeded.keys.toList()) {
+      final pid2qty = mid2numNeeded[mid]!;
+      for (var pid in pid2qty.keys.toList()) {
+        if (_buildItems.getTargetsIds().contains(pid) && mid2numNeeded.containsKey(pid)) {
+          final fractionAsTarget = targets[pid]! / totalRuns[pid]!;
+          // Creates a leaf in the tree since -pid is NOT in mid2numNeeded since it is not a mid (no material has negative id)
+          mid2numNeeded[mid]![-pid] = mid2numNeeded[mid]![pid]! * fractionAsTarget;
+          mid2numNeeded[mid]![pid] = mid2numNeeded[mid]![pid]! * (1 - fractionAsTarget);
+        }
+      }
+    }
+    mid2numNeeded.keys.toList().forEach((mid) {
+      // normalize the quantities
+      final pid2qty = mid2numNeeded[mid]!;
+      double sum = pid2qty.values.fold(0.0, (v, qty) => v + qty);
+      pid2qty.keys.toList().forEach((pid) {
+        pid2qty[pid] = pid2qty[pid]! / sum;
+      });
+    });
+    final Map<int, Map<int, double>> tid2costShare = {};
+    for (var mid in _totalBOM.keys) {
+      _getShare(mid, mid2numNeeded).forEach((tid, share) {
+        tid = tid.abs(); // in case tid is both target and dependency then tid is negative for target branch
+        if (!tid2costShare.containsKey(tid)) {
+          tid2costShare[tid] = {};
+        }
+        tid2costShare[tid]![mid] = share;
+      });
+    }
+    return tid2costShare;
+  }
+
+  Map<int, double> _getShare(int mid, Map<int, Map<int, double>> mid2fractions) {
+    final share = <int, double>{};
+    // if this item is a target
+    if (!mid2fractions.containsKey(mid)) {
+      return {mid: 1.0};
+    }
+
+    // share is a weighted combination of parent shares
+    mid2fractions[mid]!.forEach((pid, frac) {
+      _getShare(pid, mid2fractions).forEach((tid, subshare) {
+        if (!share.containsKey(tid)) share[tid] = 0;
+        share[tid] = share[tid]! + frac * subshare;
+      });
+    });
+    return share;
   }
 
   // Get all the unique item ids that will be built by the scheduler.
@@ -115,7 +199,9 @@ return {};
 
   Set<int> __getIntermediatesIDs(int pid) {
     final res = <int>{};
-    for (int cid in SD.materials(pid).keys) {
+    for (int cid in SD
+        .materials(pid)
+        .keys) {
       if (_shouldBuild(pid, cid, useBuildItems: false)) {
         res.add(cid);
         res.addAll(__getIntermediatesIDs(cid));
@@ -143,9 +229,9 @@ return {};
       IndustryType.REACTION: _options.getReactionSlots()
     };
     final maxNumSlotsOfJob =
-        _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
+    _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
     final maxNumRunsPerSlotOfJob =
-        _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000000));
+    _allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 1000000000));
     final jobMaterialBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getMaterialBonus(tid)));
     final jobTimeBonus = _allBuiltItems.map((tid) => MapEntry(tid, _getTimeBonus(tid, _options.getSkills())));
     return Problem(
@@ -175,7 +261,9 @@ return {};
     var ret = 1.toFraction();
 
     // structures
-    final structure = SDE.structures[_options.getManufacturingStructure().tid]!;
+    final structure = SDE.structures[_options
+        .getManufacturingStructure()
+        .tid]!;
     if (structure.bonuses.containsKey(BonusType.MATERIAL)) {
       ret *= structure.bonuses[BonusType.MATERIAL]!.toFraction();
     }
@@ -184,8 +272,7 @@ return {};
     ret *= getRigBonus(tid, _options.getSelectedManufacturingRigs().map((e) => e.tid), BonusType.MATERIAL);
 
     // blueprint me settings
-    ret *= 1.toFraction() -
-        Fraction(_buildItems.getME(tid) ?? _options.getME(), 100);
+    ret *= 1.toFraction() - Fraction(_buildItems.getME(tid) ?? _options.getME(), 100);
 
     return ret.reduce();
   }
@@ -216,7 +303,9 @@ return {};
     var ret = 1.toFraction();
 
     // structure
-    final structure = SDE.structures[_options.getManufacturingStructure().tid]!;
+    final structure = SDE.structures[_options
+        .getManufacturingStructure()
+        .tid]!;
     if (structure.bonuses.containsKey(BonusType.TIME)) {
       ret *= structure.bonuses[BonusType.TIME]!.toFraction();
     }
@@ -228,8 +317,7 @@ return {};
     ret *= getSkillBonus(tid, bp, skills);
 
     // bp
-    ret *= 1.toFraction() -
-        Fraction(_buildItems.getTE(tid) ?? _options.getTE(), 100);
+    ret *= 1.toFraction() - Fraction(_buildItems.getTE(tid) ?? _options.getTE(), 100);
 
     return ret.reduce();
   }
@@ -238,7 +326,9 @@ return {};
     var ret = 1.toFraction();
 
     // structure
-    final structure = SDE.structures[_options.getReactionStructure().tid]!;
+    final structure = SDE.structures[_options
+        .getReactionStructure()
+        .tid]!;
     if (structure.bonuses.containsKey(BonusType.TIME)) {
       ret *= structure.bonuses[BonusType.TIME]!.toFraction();
     }
@@ -306,11 +396,16 @@ return {};
   }
 
   Map<int, int> _getBuildDependenciesForItem(int pid) =>
-      Map.fromEntries(SD.materials(pid).entries.where((e) => _shouldBuild(pid, e.key, useBuildItems: true)));
+      Map.fromEntries(SD
+          .materials(pid)
+          .entries
+          .where((e) => _shouldBuild(pid, e.key, useBuildItems: true)));
 
   List<int> getIntermediatesIds() => _intermediates.toList(growable: false);
 
   List<int> getInputIds() => _totalBOM.keys.toList();
+
+  Map<int, double> getShare(int tid) => _target2costShare[tid]!;
 }
 
 // build

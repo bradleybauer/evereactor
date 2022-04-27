@@ -120,6 +120,9 @@ class SDE_Extractor:
                 if 'Unrefined' in self.sde.typeIDs[productTID]['name']['en']:
                     notInterestingItem = True
                     break
+                if 'Palatine Keepstar' in self.sde.typeIDs[productTID]['name']['en']:
+                    notInterestingItem = True
+                    break
                 break
         return isPublished and hasActivities and isProductPublished and hasMaterials and not hasProductAsAnInput and allMaterialsAreOnTheMarket and productIsOnTheMarket and requiresSkills and not notInterestingItem
 
