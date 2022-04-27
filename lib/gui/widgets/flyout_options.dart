@@ -192,7 +192,8 @@ class StructuresSection extends StatelessWidget {
     final theme = Provider.of<MyTheme>(context);
     List<Widget> addManufacturingRigButton = [];
     List<Widget> addReactionRigButton = [];
-    if (adapter.getNumSelectedManufacturingRigs() < 6) {
+    final maxNumRigs = 3;
+    if (adapter.getNumSelectedManufacturingRigs() < maxNumRigs) {
       addManufacturingRigButton = [
         Padding(
             padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
@@ -208,7 +209,7 @@ class StructuresSection extends StatelessWidget {
             )),
       ];
     }
-    if (adapter.getNumSelectedReactionRigs() < 6) {
+    if (adapter.getNumSelectedReactionRigs() < maxNumRigs) {
       addReactionRigButton = [
         Padding(
             padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
@@ -228,11 +229,11 @@ class StructuresSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Structures', style: headerStyle),
         const SizedBox(height: itemPadding),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
+            Text('Structures', style: headerStyle),
                 const SizedBox(width: padding),
                 DropdownMenuFlyout(
                   current: adapter.getManufacturingStructure().name,
@@ -267,13 +268,8 @@ class StructuresSection extends StatelessWidget {
                   ),
                 ),
               ) +
-              addManufacturingRigButton,
-        ),
-        const SizedBox(height: itemPadding),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-                const SizedBox(width: padding),
+              addManufacturingRigButton + [
+                const SizedBox(width: padding*2),
                 DropdownMenuFlyout(
                   current: adapter.getReactionStructure().name,
                   items: adapter.getReactionStructures().map((e) => e.name).toList(),
@@ -456,35 +452,29 @@ class JobsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
-    return Column(
+    return Row(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Jobs', style: headerStyle),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(width: padding),
-            Text('Number of reaction jobs', style: style),
-            const SizedBox(width: padding),
-            TableTextField(
-              initialText: adapter.getReactionSlots().toString(),
-              textColor: theme.on(color),
-              activeBorderColor: theme.primary,
-              maxNumDigits: 4,
-              onChanged: (t) => adapter.setReactionSlots(t == '' ? 60 : int.parse(t)),
-            ),
-            const SizedBox(width: padding),
-            Text('Number of manufacturing jobs', style: style),
-            const SizedBox(width: padding),
-            TableTextField(
-              initialText: adapter.getManufacturingSlots().toString(),
-              textColor: theme.on(color),
-              activeBorderColor: theme.primary,
-              maxNumDigits: 4,
-              onChanged: (t) => adapter.setManufacturingSlots(t == '' ? 60 : int.parse(t)),
-            ),
-          ],
+        const SizedBox(width: padding),
+        Text('Reactions jobs', style: style),
+        const SizedBox(width: padding),
+        TableTextField(
+          initialText: adapter.getReactionSlots().toString(),
+          textColor: theme.on(color),
+          activeBorderColor: theme.primary,
+          maxNumDigits: 4,
+          onChanged: (t) => adapter.setReactionSlots(t == '' ? 60 : int.parse(t)),
+        ),
+        const SizedBox(width: padding),
+        Text('Manufacturing jobs', style: style),
+        const SizedBox(width: padding),
+        TableTextField(
+          initialText: adapter.getManufacturingSlots().toString(),
+          textColor: theme.on(color),
+          activeBorderColor: theme.primary,
+          maxNumDigits: 4,
+          onChanged: (t) => adapter.setManufacturingSlots(t == '' ? 60 : int.parse(t)),
         ),
       ],
     );
