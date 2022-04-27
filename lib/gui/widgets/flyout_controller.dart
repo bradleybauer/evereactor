@@ -26,12 +26,18 @@ class FlyoutController extends ChangeNotifier {
 
   void open() {
     _keepOpenVotes = min(_keepOpenVotes + 1, maxVotes);
-    final wasOpen = _isOpen;
     _isOpen = true;
     _closeTimer?.cancel();
     _closeTimer = null;
     // if (!wasOpen) notifyListeners();
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _closeTimer?.cancel();
+    _closeTimer = null;
+    super.dispose();
   }
 
   void startCloseTimer() {
