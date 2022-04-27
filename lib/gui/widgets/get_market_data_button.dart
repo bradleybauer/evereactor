@@ -66,7 +66,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
                   ),
               ),
               SizedBox(width: MyTheme.appBarPadding),
-              Text("loading", style: TextStyle(fontFamily: 'NotoSans', fontSize: 12)),
+              Text("Downloading", style: TextStyle(fontFamily: 'NotoSans', fontSize: 12)),
             ]),
           ),
         );
