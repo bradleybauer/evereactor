@@ -207,7 +207,9 @@ class Build with ChangeNotifier {
     for (int cid in SD.materials(pid).keys) {
       if (_shouldBuild(pid, cid, useBuildItems: false)) {
         res.add(cid);
-        res.addAll(__getIntermediatesIDs(cid));
+        if (_shouldBuild(pid, cid, useBuildItems: true)) {
+          res.addAll(__getIntermediatesIDs(cid));
+        }
       }
     }
     return res;
