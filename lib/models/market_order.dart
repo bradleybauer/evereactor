@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
+
 class Order {
   final int typeID;
   final int systemID;
@@ -8,9 +12,6 @@ class Order {
 
   Order(this.typeID, this.systemID, this.regionID, this.isBuy, this.price, this.volumeRemaining);
 
-  @override
-  String toString() {
-    return {'typeID': typeID, 'systemID': systemID, 'regionID': regionID, 'isBuy': isBuy, 'price': price, 'volumeRemaining': volumeRemaining}
-        .toString();
-  }
+  // static Order fromRequest(Response response, int region) {
+  // }
 }

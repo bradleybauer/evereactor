@@ -1,3 +1,4 @@
+import 'package:EveIndy/adapters/market.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -26,6 +27,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
+    final adapter = Provider.of<MarketAdapter>(context,listen: false);
     Widget widget;
     switch (state) {
       case _ButtonState.READY:
@@ -43,6 +45,9 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
                     });
                   });
                 });
+              });
+              adapter.updateMarketData(progressCallback: (d){
+                print('Progress:' + d.toString());
               });
             },
             builder: (hovered) {

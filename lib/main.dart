@@ -1,19 +1,20 @@
-import 'package:EveIndy/adapters/build_items.dart';
-import 'package:EveIndy/adapters/market.dart';
-import 'package:EveIndy/adapters/options.dart';
-import 'package:EveIndy/adapters/table_inputs.dart';
-import 'package:EveIndy/adapters/table_targets.dart';
-import 'package:EveIndy/gui/main.dart';
-import 'package:EveIndy/gui/my_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'adapters/build.dart';
+import 'adapters/build_items.dart';
 import 'adapters/inventory.dart';
+import 'adapters/market.dart';
+import 'adapters/options.dart';
 import 'adapters/search.dart';
+import 'adapters/table_inputs.dart';
 import 'adapters/table_intermediates.dart';
+import 'adapters/table_targets.dart';
+import 'gui/main.dart';
+import 'gui/my_theme.dart';
 import 'platform.dart';
 import 'strings.dart';
+import 'misc.dart';
 
 Future<void> main() async {
   // final cacheDbAdapter = Persistence();
@@ -63,6 +64,7 @@ Future<void> main() async {
       ChangeNotifierProvider.value(value: inputsTableAdapter),
       ChangeNotifierProvider.value(value: buildItems),
       ChangeNotifierProvider.value(value: options),
+      ChangeNotifierProvider.value(value: market),
     ],
     child: const MyApp(),
   ));

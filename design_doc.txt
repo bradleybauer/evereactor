@@ -1,3 +1,5 @@
+Perfect is the enemy of the good
+
 How does inventory work?
     inventory is always applied if it is available.
     if there is inventory for an item that is set to build then the build of that item will be elided if possible.
@@ -28,19 +30,11 @@ What items go into the intermediates table? (build/buy table)
     BpOps
         an item has BpOps iff it is not also in the targets table
 
-Todo use package:animations to get nice fade in animation for flyout containers
-
-Perfect is the enemy of the good
-
-TODO cleanup this design doc
-
-TODO set different max height for tables
+TODO show warning if no orders were found for certain tid in build?
 
 TODO don't forget about dart super parameters.
 
-TODO make sure the SDE extractor is still good. i added marketGroup2Parent, that should be put into the py2dart file.
-
-TODO unicode normalize search strings in search bar
+TODO unicode normalize search strings in search bar?
 
 TODO app name is in web/persistenceWebWorker.dart and in lib\persistence\cache_adapter.dart
 
