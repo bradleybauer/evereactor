@@ -41,7 +41,9 @@ class OptionsController with ChangeNotifier {
                         : 1)
                 : 1);
       });
-    return skills.map((e) => SkillsData(e.key, Strings.get(e.value.nameLocalizations), _options.getSkillLevel(e.key))).toList();
+    return skills
+        .map((e) => SkillsData(e.key, Strings.get(e.value.nameLocalizations), _options.getSkillLevel(e.key)))
+        .toList();
   }
 
   void setSkillLevel(int tid, int level) {
@@ -192,7 +194,8 @@ class OptionsController with ChangeNotifier {
 
   int getNumSelectedReactionRigs() => _options.getNumSelectedReactionRigs();
 
-  List<LangData> getLangs() => Strings.langNames.entries.map((e) => LangData(e.key, Strings.get(Strings.langNames[e.key]!))).toList();
+  List<LangData> getLangs() =>
+      Strings.langNames.entries.map((e) => LangData(e.key, Strings.get(Strings.langNames[e.key]!))).toList();
 
   String getLangName() => Strings.get(Strings.langNames[Strings.getLang()]!);
 }

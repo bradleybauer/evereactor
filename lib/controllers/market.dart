@@ -21,7 +21,6 @@ class MarketController with ChangeNotifier {
 
   EsiState _esiState = EsiState.Idle;
 
-
   // MarketController(this._cache);
 
   Future<void> updateMarketData({required void Function(double) progressCallback}) async {
@@ -155,15 +154,27 @@ class MarketController with ChangeNotifier {
 
   OrderFilter getOrderFilter() => _market.getOrderFilter();
 
-  Map<int,double> avgBuyFromSell(Map<int, int> bom) => _market.avgBuyFromSell(bom);
+  Map<int, double> avgBuyFromSell(Map<int, int> bom) => _market.avgBuyFromSell(bom);
 
   double avgSellToBuyItem(int tid, int quantity) => _market.avgSellToBuyItem(tid, quantity);
-// Future<void> setOrderFilter(List<int> systemIds) async {
-//   final filter = OrderFilter(systemIds);
-//   _market.setOrderFilter(filter);
-//   // await _cache.setOrderFilter(filter, isBuy);
-//   notifyListeners();
-// }
+
+  void setOrderFilter(OrderFilter newFilter) {
+    if (newFilter.getSystems().isEmpty) {
+      newFilter = OrderFilter.acceptAll();
+    }
+    _market.setMarketFilter(newFilter);
+    notifyListeners();
+  }
+
+  void removeSystemFromFilter(int systemID) {
+    setOrderFilter(_market.getOrderFilter().copyWithout(systemID));
+  }
+
+  void addSystemToFilter(int systemID) {
+    setOrderFilter(_market.getOrderFilter().copyWith(systemID));
+  }
+
+  Set<int> getOrderFilterSystems() => _market.getOrderFilter().getSystems();
 
 // Future<void> loadFromCache() async {
 // }

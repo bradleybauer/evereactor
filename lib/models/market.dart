@@ -10,10 +10,10 @@ class Market {
   // A map from typeIDs to orders
   // For a typeID given, the List<Order> may be empty but it is never null.
   Map<int, List<Order>> _orders = {};
-  OrderFilter _orderFilter = OrderFilter.acceptAll();
   Map<int, _BuysSells> _filteredMarket = {};
   Map<int, double> _adjustedPrices = {};
   DateTime? _orderFetchTime;
+  OrderFilter _orderFilter = OrderFilter.acceptAll();
 
   OrderFilter getOrderFilter() => _orderFilter;
 

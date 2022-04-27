@@ -19,7 +19,7 @@ class LabeledCheckbox extends StatelessWidget {
   final Color color;
   final Color hoverColor;
   final Color activeColor;
-  final Widget Function(bool, bool) getLabel;
+  final Widget Function(bool) getLabel;
   final Function() onTap;
 
   static const double height = 23;
@@ -65,8 +65,7 @@ class LabeledCheckbox extends StatelessWidget {
                     overlayColor: MaterialStateProperty.all(Colors.transparent),
                   ),
                 ),
-                Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, MyTheme.appBarPadding, 0), child: getLabel(hovered, value)),
+                Padding(padding: EdgeInsets.fromLTRB(0, 0, MyTheme.appBarPadding, 0), child: getLabel(hovered)),
               ],
             ),
           ),

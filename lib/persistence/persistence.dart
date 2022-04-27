@@ -52,12 +52,12 @@ class Persistence {
   Future<void> setOrderFilter(OrderFilter filter, bool isBuy) async {
     if (isBuy) {
       await _clearCache(cache.buyOrderFilterCache);
-      final inserts = filter.systems.map((e) => BuyOrderFilterCacheCompanion.insert(systemId: e));
-      await cache.batch((batch) => batch.insertAll(cache.buyOrderFilterCache, inserts));
+      // final inserts = filter.systems.map((e) => BuyOrderFilterCacheCompanion.insert(systemId: e));
+      // await cache.batch((batch) => batch.insertAll(cache.buyOrderFilterCache, inserts));
     } else {
       await _clearCache(cache.sellOrderFilterCache);
-      final inserts = filter.systems.map((e) => SellOrderFilterCacheCompanion.insert(systemId: e));
-      await cache.batch((batch) => batch.insertAll(cache.sellOrderFilterCache, inserts));
+      // final inserts = filter.systems.map((e) => SellOrderFilterCacheCompanion.insert(systemId: e));
+      // await cache.batch((batch) => batch.insertAll(cache.sellOrderFilterCache, inserts));
     }
   }
 

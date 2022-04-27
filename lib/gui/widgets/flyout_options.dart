@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../controllers/market.dart';
 import '../../controllers/options.dart';
 import '../../sde.dart';
 import '../../strings.dart';
@@ -145,6 +146,8 @@ class MarketsSection extends StatelessWidget {
     final color = theme.surface;
     final hover = theme.tertiary;
     final active = base;
+    final controller = Provider.of<MarketController>(context);
+    final systems = controller.getOrderFilterSystems();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -153,18 +156,20 @@ class MarketsSection extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [Text('Markets', style: headerStyle), const SizedBox(height: 4)] +
               SDE.system2name.entries
-                  .map((i) => Padding(
+                  .map((entry) => Padding(
                         padding: const EdgeInsets.fromLTRB(padding, 0, 0, 0),
                         child: LabeledCheckbox(
-                          onTap: () => print('Name of system:' + i.key.toString() + ' is ' + Strings.get(i.value)),
-                          getLabel: (hovered, value) => Text(Strings.get(i.value),
+                          onTap: () => systems.contains(entry.key)
+                              ? controller.removeSystemFromFilter(entry.key)
+                              : controller.addSystemToFilter(entry.key),
+                          getLabel: (hovered) => Text(Strings.get(entry.value),
                               style: style.copyWith(
-                                  color: value
+                                  color: systems.contains(entry.key)
                                       ? (hovered ? theme.on(hover) : theme.on(active))
                                       : hovered
                                           ? theme.on(hover)
                                           : theme.on(color))),
-                          value: false,
+                          value: systems.contains(entry.key),
                           color: color,
                           hoverColor: hover,
                           activeColor: active,
@@ -196,7 +201,7 @@ class StructuresSection extends StatelessWidget {
     final theme = Provider.of<MyTheme>(context);
     List<Widget> addManufacturingRigButton = [];
     List<Widget> addReactionRigButton = [];
-    final maxNumRigs = 3;
+    const maxNumRigs = 3;
     if (controller.getNumSelectedManufacturingRigs() < maxNumRigs) {
       addManufacturingRigButton = [
         Padding(
