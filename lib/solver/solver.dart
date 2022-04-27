@@ -104,18 +104,8 @@ abstract class Approximator {
       int slots = batch[tid].slots;
       Fraction timePerRun = (SD.timePerRun(tid).toFraction() * prob.jobTimeBonus[tid]!).reduce();
 
-      // int newMaxRunsPerSlot = (maxT / timePerRun).floor();
-
-      // int newMaxRunsPerSlot = (maxT.numerator * timePerRun.numerator) ~/ (maxT.denominator * timePerRun.denominator);
-
-      // final temp = maxT / timePerRun);
-      // int newMaxRunsPerSlot = temp.numerator ~/ temp.denominator;
-
-      // numerators get large so divide reduce inbetween product
-      final tmp = maxT.numerator.toFraction() * Fraction(timePerRun.denominator, timePerRun.numerator*maxT.denominator).reduce();
-      int newMaxRunsPerSlot = tmp.numerator~/tmp.denominator;
-
-      // int newMaxRunsPerSlot = (maxT.numerator / maxT.denominator * timePerRun.denominator / timePerRun.numerator).round();
+      // Unfortunately have to reduce precision here. Using Fraction has repeatedly led to div by zero exceptions.
+      int newMaxRunsPerSlot = maxT.toDouble() ~/ timePerRun.toDouble();
 
       // can not queue up more than 30 days worth of runs on one slot.
       // newMaxRunsPerSlot = min(newMaxRunsPerSlot, ceilDiv(thirtyDays * timePerRun.denominator, timePerRun.numerator));
