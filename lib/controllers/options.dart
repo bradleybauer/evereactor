@@ -1,29 +1,22 @@
 import 'dart:math';
 
-import 'package:EveIndy/models/industry_type.dart';
 import 'package:flutter/material.dart';
 
+import '../models/industry_type.dart';
 import '../models/options.dart';
 import '../sde.dart';
 import '../strings.dart';
-import 'market.dart';
 
-class OptionsController with ChangeNotifier {
-  final Options _options = Options();
-  final MarketController _market;
-
-  OptionsController(this._market, Strings strings) {
-    strings.addListener(() {
-      notify();
-    });
+class OptionsController extends Options with ChangeNotifier {
+  OptionsController(Strings strings) {
+    strings.addListener(notify);
   }
 
-  void notify() {
-    notifyListeners();
-  }
+  void notify() => notifyListeners();
 
+  @override
   void setAllSkillLevels(int level) {
-    _options.setAllSkillLevels(level);
+    super.setAllSkillLevels(level);
     notify();
   }
 
@@ -42,79 +35,70 @@ class OptionsController with ChangeNotifier {
                 : 1);
       });
     return skills
-        .map((e) => SkillsData(e.key, Strings.get(e.value.nameLocalizations), _options.getSkillLevel(e.key)))
+        .map((e) => SkillsData(e.key, Strings.get(e.value.nameLocalizations), super.getSkillLevel(e.key)))
         .toList();
   }
 
+  @override
   void setSkillLevel(int tid, int level) {
     level = max(1, min(level, 5));
-    _options.setSkillLevel(tid, level);
+    super.setSkillLevel(tid, level);
     notify();
   }
 
-  int getSkillLevel(int tid) => _options.getSkillLevel(tid);
-
-  int getReactionSlots() => _options.getReactionSlots();
-
+  @override
   void setReactionSlots(int slots) {
     slots = max(1, min(slots, 5000));
-    _options.setReactionSlots(slots);
+    super.setReactionSlots(slots);
     notify();
   }
 
-  int getManufacturingSlots() => _options.getManufacturingSlots();
-
+  @override
   void setManufacturingSlots(int slots) {
     slots = max(1, min(slots, 5000));
-    _options.setManufacturingSlots(slots);
+    super.setManufacturingSlots(slots);
     notify();
   }
 
-  int getME() => _options.getME();
-
+  @override
   void setME(int ME) {
     ME = min(20, max(0, ME));
-    _options.setME(ME);
+    super.setME(ME);
     notify();
   }
 
-  int getTE() => _options.getTE();
-
+  @override
   void setTE(int TE) {
     TE = min(20, max(0, TE));
-    _options.setTE(TE);
+    super.setTE(TE);
     notify();
   }
 
-  int getMaxNumBlueprints() => _options.getMaxNumBlueprints();
-
+  @override
   void setMaxNumBlueprints(int maxNumBps) {
     maxNumBps = min(999, max(1, maxNumBps));
-    _options.setMaxNumBlueprints(maxNumBps);
+    super.setMaxNumBlueprints(maxNumBps);
     notify();
   }
 
-  double getReactionSystemCostIndex() => _options.getReactionSystemCostIndex();
-
+  @override
   void setReactionSystemCostIndex(double index) {
     index = min(50, max(0, index)); // allow cost index to be 0 so the input field works better.
-    _options.setReactionSystemCostIndex(index);
+    super.setReactionSystemCostIndex(index);
     notify();
   }
 
-  double getManufacturingSystemCostIndex() => _options.getManufacturingSystemCostIndex();
-
+  @override
   void setManufacturingSystemCostIndex(double index) {
     index = min(50, max(0, index));
-    _options.setManufacturingSystemCostIndex(index);
+    super.setManufacturingSystemCostIndex(index);
     notify();
   }
 
-  double getSalesTaxPercent() => _options.getSalesTaxPercent();
-
+  @override
   void setSalesTax(double tax) {
     tax = min(10, max(0, tax));
-    _options.setSalesTax(tax);
+    super.setSalesTax(tax);
     notify();
   }
 
@@ -126,28 +110,28 @@ class OptionsController with ChangeNotifier {
       .where((e) => e.value.industryType == IndustryType.REACTION)
       .map((e) => StructureData(e.key, Strings.get(e.value.nameLocalizations)));
 
-  StructureData getManufacturingStructure() {
-    int tid = _options.getManufacturingStructure();
-    return StructureData(tid, Strings.get(SDE.structures[tid]!.nameLocalizations));
-  }
+  String getSelectedManufacturingStructureName() =>
+      Strings.get(SDE.structures[super.getManufacturingStructure()]!.nameLocalizations);
 
+  int getSelectedManufacturingStructureTid() => super.getManufacturingStructure();
+
+  @override
   void setManufacturingStructure(int tid) {
-    _options.setManufacturingStructure(tid);
+    super.setManufacturingStructure(tid);
     notify();
   }
 
-  StructureData getReactionStructure() {
-    int tid = _options.getReactionStructure();
-    return StructureData(tid, Strings.get(SDE.structures[tid]!.nameLocalizations));
-  }
+  String getSelectedReactionStructureName() =>
+      Strings.get(SDE.structures[super.getReactionStructure()]!.nameLocalizations);
 
+  @override
   void setReactionStructure(int tid) {
-    _options.setReactionStructure(tid);
+    super.setReactionStructure(tid);
     notify();
   }
 
-  List<RigData> getManufacturingRigs() {
-    final selectedRigs = _options.getManufacturingRigs().toSet();
+  List<RigData> getManufacturingRigData() {
+    final selectedRigs = super.getManufacturingRigs().toSet();
     return SDE.rigs.entries
         .where((e) => e.value.industryType == IndustryType.MANUFACTURING && !selectedRigs.contains(e.key))
         .map((e) => RigData(e.key, Strings.get(e.value.nameLocalizations).replaceFirst('Standup ', '')))
@@ -155,8 +139,8 @@ class OptionsController with ChangeNotifier {
       ..sort((a, b) => a.name.compareTo(b.name));
   }
 
-  List<RigData> getReactionRigs() {
-    final selectedRigs = _options.getReactionRigs().toSet();
+  List<RigData> getReactionRigData() {
+    final selectedRigs = super.getReactionRigs().toSet();
     return SDE.rigs.entries
         .where((e) => e.value.industryType == IndustryType.REACTION && !selectedRigs.contains(e.key))
         .map((e) => RigData(e.key, Strings.get(e.value.nameLocalizations).replaceFirst('Standup ', '')))
@@ -165,34 +149,34 @@ class OptionsController with ChangeNotifier {
   }
 
   List<RigData> getSelectedManufacturingRigs() =>
-      _options.getManufacturingRigs().map((e) => RigData(e, Strings.get(SDE.rigs[e]!.nameLocalizations))).toList();
+      super.getManufacturingRigs().map((e) => RigData(e, Strings.get(SDE.rigs[e]!.nameLocalizations))).toList();
 
+  @override
   void addManufacturingRig(int tid) {
-    _options.addManufacturingRig(tid);
+    super.addManufacturingRig(tid);
     notify();
   }
 
+  @override
   void removeManufacturingRig(int i) {
-    _options.removeManufacturingRig(i);
+    super.removeManufacturingRig(i);
     notify();
   }
 
   List<RigData> getSelectedReactionRigs() =>
-      _options.getReactionRigs().map((e) => RigData(e, Strings.get(SDE.rigs[e]!.nameLocalizations))).toList();
+      super.getReactionRigs().map((e) => RigData(e, Strings.get(SDE.rigs[e]!.nameLocalizations))).toList();
 
+  @override
   void addReactionRig(int tid) {
-    _options.addReactionRig(tid);
+    super.addReactionRig(tid);
     notify();
   }
 
+  @override
   void removeReactionRig(int i) {
-    _options.removeReactionRig(i);
+    super.removeReactionRig(i);
     notify();
   }
-
-  int getNumSelectedManufacturingRigs() => _options.getNumSelectedManufacturingRigs();
-
-  int getNumSelectedReactionRigs() => _options.getNumSelectedReactionRigs();
 
   List<LangData> getLangs() =>
       Strings.langNames.entries.map((e) => LangData(e.key, Strings.get(Strings.langNames[e.key]!))).toList();

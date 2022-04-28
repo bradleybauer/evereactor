@@ -208,10 +208,10 @@ class StructuresSection extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
             child: DropdownMenuFlyout(
               current: 'Add Rigs',
-              items: controller.getManufacturingRigs().map((e) => e.name).toList(),
+              items: controller.getSelectedManufacturingRigs().map((e) => e.name).toList(),
               style: style,
               parentController: flyoutController,
-              ids: controller.getManufacturingRigs().map((e) => e.tid).toList(),
+              ids: controller.getSelectedManufacturingRigs().map((e) => e.tid).toList(),
               onSelect: (tid) => controller.addManufacturingRig(tid),
               up: true,
               maxHeight: 300,
@@ -225,10 +225,10 @@ class StructuresSection extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(itemPadding, 0, 0, 0),
             child: DropdownMenuFlyout(
               current: 'Add Rigs',
-              items: controller.getReactionRigs().map((e) => e.name).toList(),
+              items: controller.getSelectedReactionRigs().map((e) => e.name).toList(),
               style: style,
               parentController: flyoutController,
-              ids: controller.getReactionRigs().map((e) => e.tid).toList(),
+              ids: controller.getSelectedReactionRigs().map((e) => e.tid).toList(),
               onSelect: (tid) => controller.addReactionRig(tid),
               up: true,
               maxHeight: 350,
@@ -247,7 +247,7 @@ class StructuresSection extends StatelessWidget {
                 Text('Structures', style: headerStyle),
                 const SizedBox(width: padding),
                 DropdownMenuFlyout(
-                  current: controller.getManufacturingStructure().name,
+                  current: controller.getSelectedManufacturingStructureName(),
                   items: controller.getManufacturingStructures().map((e) => e.name).toList(),
                   ids: controller.getManufacturingStructures().map((e) => e.tid).toList(),
                   width: 55,
@@ -284,7 +284,7 @@ class StructuresSection extends StatelessWidget {
               [
                 const SizedBox(width: padding * 2),
                 DropdownMenuFlyout(
-                  current: controller.getReactionStructure().name,
+                  current: controller.getSelectedReactionStructureName(),
                   items: controller.getReactionStructures().map((e) => e.name).toList(),
                   ids: controller.getReactionStructures().map((e) => e.tid).toList(),
                   width: 55,
