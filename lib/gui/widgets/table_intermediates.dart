@@ -23,7 +23,8 @@ class IntermediatesTable extends StatelessWidget {
     final theme = Provider.of<MyTheme>(context);
     final controller = Provider.of<IntermediatesTableController>(context);
     return TableContainer(
-      maxHeight: Platform.isWeb() ? MyTheme.webTableHeight : MyTheme.desktopTableHeight,
+      // maxHeight: MediaQuery.of(context).size.height - 206,
+      maxHeight: (Platform.isWeb() ? MyTheme.webTableHeight : MyTheme.desktopTableHeight),
       borderColor: theme.outline,
       color: theme.background,
       header: const IntermediatesTableHeader(),
@@ -55,7 +56,7 @@ class IntermediatesTableHeader extends StatelessWidget {
           align: Alignment.centerLeft,
           padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
         ),
-        TableContainer.getCol(IntermediatesTable.colFlexs[1], child: Text('Value'), onTap: () {}),
+        TableContainer.getCol(IntermediatesTable.colFlexs[1], child: Text('Value')),
         TableContainer.getCol(IntermediatesTable.colFlexs[2], child: Text('Build/Buy')),
         TableContainer.getCol(IntermediatesTable.colFlexs[3],
             padding: const EdgeInsets.fromLTRB(0, 0, IntermediatesTable.padding, 0), child: Text('BP')),

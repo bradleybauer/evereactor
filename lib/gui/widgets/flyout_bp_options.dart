@@ -1,7 +1,7 @@
-import 'package:EveIndy/models/industry_type.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/industry_type.dart';
 import '../../controllers/build_items.dart';
 import '../../sde.dart';
 import '../my_theme.dart';
@@ -99,22 +99,6 @@ class BpOptionsFlyoutContent extends StatelessWidget {
               maxNumDigits: 6),
         ),
         Tooltip(
-          message: 'Time Efficiency',
-          preferBelow: false,
-          verticalOffset: toolTipOffset,
-          waitDuration: duration,
-          child: TableTextField(
-              activeBorderColor: theme.primary,
-              textColor: theme.onBackground,
-              fillColor: theme.background,
-              onChanged: (text) => controller.setTE(tid, text != '' ? int.parse(text) : null),
-              initialText: controller.getTE(tid) != null ? controller.getTE(tid).toString() : '',
-              hintText: 'TE',
-              allowEmptyString: true,
-              width: 25,
-              maxNumDigits: 2),
-        ),
-        Tooltip(
           message: 'Material Efficiency',
           preferBelow: false,
           verticalOffset: toolTipOffset,
@@ -126,6 +110,22 @@ class BpOptionsFlyoutContent extends StatelessWidget {
               onChanged: (text) => controller.setME(tid, text != '' ? int.parse(text) : null),
               initialText: controller.getME(tid) != null ? controller.getME(tid).toString() : '',
               hintText: 'ME',
+              allowEmptyString: true,
+              width: 25,
+              maxNumDigits: 2),
+        ),
+        Tooltip(
+          message: 'Time Efficiency',
+          preferBelow: false,
+          verticalOffset: toolTipOffset,
+          waitDuration: duration,
+          child: TableTextField(
+              activeBorderColor: theme.primary,
+              textColor: theme.onBackground,
+              fillColor: theme.background,
+              onChanged: (text) => controller.setTE(tid, text != '' ? int.parse(text) : null),
+              initialText: controller.getTE(tid) != null ? controller.getTE(tid).toString() : '',
+              hintText: 'TE',
               allowEmptyString: true,
               width: 25,
               maxNumDigits: 2),

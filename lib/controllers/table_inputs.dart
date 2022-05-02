@@ -1,6 +1,6 @@
-import 'package:EveIndy/misc.dart';
 import 'package:flutter/material.dart';
 
+import '../misc.dart';
 import '../math.dart';
 import '../sde.dart';
 import '../sde_extra.dart';

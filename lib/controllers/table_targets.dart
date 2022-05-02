@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 
-import '../controllers/build_items.dart';
-import '../controllers/options.dart';
+import 'controllers.dart';
 import '../math.dart';
 import '../misc.dart';
 import '../sde.dart';
 import '../sde_extra.dart';
 import '../strings.dart';
 import 'build.dart';
-import 'market.dart';
+
+enum _SortColumn {
+  DEFAULT,
+  PROFIT,
+  COST,
+  PERCENT,
+  COSTPERUNIT,
+  SELLPERUNIT,
+  OUTM3,
+}
+
+enum _SortDir {
+  ASC,
+  DESC,
+}
 
 class TargetsTableController with ChangeNotifier {
   final MarketController _market;
@@ -17,6 +30,9 @@ class TargetsTableController with ChangeNotifier {
   final BuildItemsController _buildItems;
 
   final _data = <_Data>[];
+
+  var _sortColumn = _SortColumn.DEFAULT;
+  var _sortDir = _SortDir.DESC;
 
   TargetsTableController(this._market, this._build, this._buildItems, this._options, Strings strings) {
     _market.addListener(_handleModelChange);
@@ -34,6 +50,7 @@ class TargetsTableController with ChangeNotifier {
     final bom = _build.getBOM();
     final bomCostsPerUnit = _market.avgBuyFromSell(bom);
     final bomCosts = prod(bom, bomCostsPerUnit);
+    // so how do i share job cost between items? grrr.
     for (int tid in targetIds) {
       final runs = _buildItems.getTargetRuns(tid);
       final qty = runs * SD.numProducedPerRun(tid);
@@ -48,11 +65,40 @@ class TargetsTableController with ChangeNotifier {
       _data.add(_Data(tid, runs, profit, cost, percent, costPerUnit, sellPerUnit, outM3));
     }
 
-    // TODO sort _data
+    _resort();
 
     if (notify) {
       notifyListeners();
     }
+  }
+
+  void _resort() {
+    switch (_sortColumn) {
+      case _SortColumn.DEFAULT:
+        break;
+      case _SortColumn.PROFIT:
+        _data.sort((a, b) => _sortFunc(a.profit, b.profit));
+        break;
+      case _SortColumn.COST:
+        _data.sort((a, b) => _sortFunc(a.cost, b.cost));
+        break;
+      case _SortColumn.PERCENT:
+        _data.sort((a, b) => _sortFunc(a.percent, b.percent));
+        break;
+      case _SortColumn.COSTPERUNIT:
+        _data.sort((a, b) => _sortFunc(a.costPerUnit, b.costPerUnit));
+        break;
+      case _SortColumn.SELLPERUNIT:
+        _data.sort((a, b) => _sortFunc(a.sellPerUnit, b.sellPerUnit));
+        break;
+      case _SortColumn.OUTM3:
+        _data.sort((a, b) => _sortFunc(a.outM3, b.outM3));
+        break;
+    }
+  }
+
+  int _sortFunc(num a, num b) {
+    return _sortDir == _SortDir.ASC ? a.compareTo(b) : b.compareTo(a);
   }
 
   int getNumberOfItems() => _data.length;
@@ -71,6 +117,33 @@ class TargetsTableController with ChangeNotifier {
     String outM3 = volumeNumberFormat(x.outM3);
     return TargetsRowData(x.tid, name, runs, profit, cost, percent, percentPositive, costPerUnit, sellPerUnit, outM3);
   }
+
+  void _advanceSortState(_SortColumn col) {
+    if (_sortColumn == col) {
+      if (_sortDir == _SortDir.DESC) {
+        _sortDir = _SortDir.ASC;
+      } else {
+        _sortColumn = _SortColumn.DEFAULT;
+        _sortDir = _SortDir.DESC;
+      }
+    } else {
+      _sortColumn = col;
+      _sortDir = _SortDir.DESC;
+    }
+    _handleModelChange();
+  }
+
+  void sortProfit() => _advanceSortState(_SortColumn.PROFIT);
+
+  void sortCost() => _advanceSortState(_SortColumn.COST);
+
+  void sortPercent() => _advanceSortState(_SortColumn.PERCENT);
+
+  void sortCostPerUnit() => _advanceSortState(_SortColumn.COSTPERUNIT);
+
+  void sortSellPerUnit() => _advanceSortState(_SortColumn.SELLPERUNIT);
+
+  void sortOutM3() => _advanceSortState(_SortColumn.OUTM3);
 }
 
 class _Data {

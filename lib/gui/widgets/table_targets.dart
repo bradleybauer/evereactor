@@ -45,10 +45,10 @@ class TargetsTable extends StatelessWidget {
     }
     return TableContainer(
       // maxHeight: MediaQuery.of(context).size.height - 206,
-      maxHeight: Platform.isWeb() ? MyTheme.webTableHeight : MyTheme.desktopTableHeight,
+      maxHeight: (Platform.isWeb() ? MyTheme.webTableHeight : MyTheme.desktopTableHeight),
       borderColor: theme.outline,
       color: theme.background,
-      header: const TargetsTableHeader(),
+      header: TargetsTableHeader(controller: controller),
       listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
       listView: list,
     );
@@ -56,26 +56,33 @@ class TargetsTable extends StatelessWidget {
 }
 
 class TargetsTableHeader extends StatelessWidget {
-  const TargetsTableHeader({Key? key}) : super(key: key);
+  const TargetsTableHeader({required this.controller, Key? key}) : super(key: key);
+
+  final TargetsTableController controller;
 
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     return TableHeader(
       height: TargetsTable.headerHeight,
-      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
+      textStyle:
+          TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(TargetsTable.colFlexs[0],
             child: const Text('Targets'),
             padding: const EdgeInsets.fromLTRB(TargetsTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
             align: Alignment.centerLeft),
         TableContainer.getCol(TargetsTable.colFlexs[1], child: const Text('Runs')),
-        TableContainer.getCol(TargetsTable.colFlexs[2], child: const Text('Profit'), onTap: () {}),
-        TableContainer.getCol(TargetsTable.colFlexs[3], child: const Text('Cost'), onTap: () {}),
-        TableContainer.getCol(TargetsTable.colFlexs[4], child: const Text('%'), onTap: () {}),
-        TableContainer.getCol(TargetsTable.colFlexs[5], child: const Text('Cost/u'), onTap: () {}),
-        TableContainer.getCol(TargetsTable.colFlexs[6], child: const Text('Sell/u'), onTap: () {}),
-        TableContainer.getCol(TargetsTable.colFlexs[7], child: const Text('Out m3'), onTap: () {}),
+        TableContainer.getCol(TargetsTable.colFlexs[2],
+            child: const Text('Profit'), onTap: () => controller.sortProfit()),
+        TableContainer.getCol(TargetsTable.colFlexs[3], child: const Text('Cost'), onTap: () => controller.sortCost()),
+        TableContainer.getCol(TargetsTable.colFlexs[4], child: const Text('%'), onTap: () => controller.sortPercent()),
+        TableContainer.getCol(TargetsTable.colFlexs[5],
+            child: const Text('Cost/u'), onTap: () => controller.sortCostPerUnit()),
+        TableContainer.getCol(TargetsTable.colFlexs[6],
+            child: const Text('Sell/u'), onTap: () => controller.sortSellPerUnit()),
+        TableContainer.getCol(TargetsTable.colFlexs[7],
+            child: const Text('Out m3'), onTap: () => controller.sortOutM3()),
         TableContainer.getCol(
           TargetsTable.colFlexs[8],
           align: Alignment.centerRight,

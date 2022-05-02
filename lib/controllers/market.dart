@@ -178,6 +178,8 @@ class MarketController with ChangeNotifier {
 
   Set<int> getOrderFilterSystems() => _market.getOrderFilter().getSystems();
 
+  Map<int, double> getAdustedPrices() => _market.getAdjustedPrices();
+
 // Future<void> loadFromCache() async {
 // }
 }

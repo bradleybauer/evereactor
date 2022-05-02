@@ -49,11 +49,11 @@ String prettyPrintSecondsToDH(num _seconds) {
   String ret = '';
   if (days > 0) {
     // ret += days.toString() + ' days';
-    ret += days.toString() + ' / ';
+    ret += days.toString() + ' days ';
   }
   if (hours > 0) {
     // ret += ' ' + hours.toString() + ' hours';
-    ret += hours.toString();
+    ret += hours.toString() + ' hours ';
   }
   return ret;
 }

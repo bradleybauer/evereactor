@@ -118,6 +118,8 @@ class Market {
     return avgPrices;
   }
 
+  Map<int,double> getAdjustedPrices() => {..._adjustedPrices};
+
 // double maxBuy(int id) {
 //   if (_filteredMarket[id]!.buys.isEmpty) {
 //     return double.negativeInfinity;

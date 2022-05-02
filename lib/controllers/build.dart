@@ -20,7 +20,7 @@ class Build with ChangeNotifier {
   var _totalBOM = <int, int>{};
   var _target2costShare = <int, Map<int, double>>{};
 
-  Schedule? _schedule;
+  Schedule _schedule = Schedule();
 
   Build(this._inventory, this._options, this._buildItems) {
     _buildItems.addListener(_handleBuildChanged);
@@ -79,7 +79,7 @@ class Build with ChangeNotifier {
     ///   produced and numAsDeps of sylFib is set in required. This causes targetNumRuns to cancel out some of numAsDeps
     ///   (in return statement) which is not supposed to happen.
     final needed = targets.map((target, runs) => MapEntry(target, runs * SD.numProducedPerRun(target)));
-    for (List<Batch> batches in _schedule!.getBatches().values) {
+    for (List<Batch> batches in _schedule.getBatches().values) {
       for (Batch batch in batches) {
         batch.getItems().forEach((tid, batchItem) {
           final runs = batchItem.runs;
@@ -116,7 +116,7 @@ class Build with ChangeNotifier {
     // tid -> totalNumRuns
     Map<int, int> totalRuns = {};
     // calculate mid2numNeeded and totalRuns
-    _schedule!.getBatches().forEach((_, batches) {
+    _schedule.getBatches().forEach((_, batches) {
       for (var batch in batches) {
         batch.items.forEach((tid, batchItem) {
           if (!totalRuns.containsKey(tid)) totalRuns[tid] = 0;
@@ -223,6 +223,10 @@ class Build with ChangeNotifier {
   Map<int, double> getCostShare(int tid) => _target2costShare[tid]!;
 
   Map<int, int> getBOM() => _totalBOM;
+
+  Schedule getSchedule() => _schedule;
+
+  double getTime() => _schedule.time;
 }
 
 /*

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../models/bonus_type.dart';
 import '../models/industry_type.dart';
 import '../models/options.dart';
 import '../sde.dart';
@@ -179,6 +180,8 @@ class OptionsController extends Options with ChangeNotifier {
     super.removeReactionRig(i);
     notify();
   }
+
+  double? getManufacturingCostBonus() => SDE.structures[super.getManufacturingStructure()]!.bonuses[BonusType.COST];
 
   List<LangData> getLangs() =>
       Strings.langNames.entries.map((e) => LangData(e.key, Strings.get(Strings.langNames[e.key]!))).toList();

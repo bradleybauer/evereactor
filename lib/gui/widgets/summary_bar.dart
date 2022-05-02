@@ -1,7 +1,7 @@
-import 'package:EveIndy/controllers/summary.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../controllers/summary.dart';
 import '../my_theme.dart';
 
 class SummaryBar extends StatelessWidget {
@@ -26,8 +26,8 @@ class SummaryBar extends StatelessWidget {
           alignment: Alignment.center,
           color: theme.tertiary,
           child: Text(
-            'Profit: ' + controller.getData().profit + '    Cost: ' + controller.getData().cost,
-            style: TextStyle(fontFamily: 'NotoSans', fontSize: 14, color: theme.onTertiary),
+            'Profit  ' + controller.getData().profit + '       Cost  ' + controller.getData().cost + '        Jobs  '+controller.getData().jobCost + '        In m3  ' + controller.getData().inm3+'       Out m3  ' + controller.getData().outm3 + '      Time ' + controller.getData().time,
+            style: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.onTertiary),
           )),
     );
   }

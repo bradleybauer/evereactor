@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:fraction/fraction.dart';
 
 int ceilDiv(int x, int y) {
   return (x + y - 1) ~/ y;

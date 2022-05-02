@@ -20,7 +20,7 @@ class InputsTable extends StatelessWidget {
     final controller = Provider.of<InputsTableController>(context);
     return TableContainer(
       // maxHeight: MediaQuery.of(context).size.height - 206,
-      maxHeight: Platform.isWeb() ? MyTheme.webTableHeight : MyTheme.desktopTableHeight,
+      maxHeight: (Platform.isWeb() ? MyTheme.webTableHeight : MyTheme.desktopTableHeight),
       borderColor: theme.outline,
       color: theme.background,
       header: const InputsTableHeader(),
@@ -49,9 +49,9 @@ class InputsTableHeader extends StatelessWidget {
         TableContainer.getCol(InputsTable.colFlexs[0],
             child: Text('Inputs'), align: Alignment.centerLeft, padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0)),
         TableContainer.getCol(InputsTable.colFlexs[1],
-            child: Text('Cost'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: () {}),
+            child: Text('Cost'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0)),
         TableContainer.getCol(InputsTable.colFlexs[2],
-            child: Text('Cost/u'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: () {}),
+            child: Text('Cost/u'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0)),
       ],
     );
   }

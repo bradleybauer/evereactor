@@ -1,9 +1,9 @@
-import 'package:EveIndy/math.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/fraction.dart';
 
 import '../industry.dart';
 import '../sde_extra.dart';
+import '../math.dart';
 import 'build_items.dart';
 import 'options.dart';
 

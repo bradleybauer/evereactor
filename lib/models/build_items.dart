@@ -1,6 +1,5 @@
 import '../sde_extra.dart';
 import 'blueprint_options.dart';
-import 'industry_type.dart';
 
 // Stores per-item information about the build.
 class BuildItems {

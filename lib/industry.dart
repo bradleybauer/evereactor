@@ -1,8 +1,9 @@
 import 'dart:math';
 
-import 'package:EveIndy/sde.dart';
 import 'package:fraction/fraction.dart';
 
+import '../sde.dart';
+import '../solver/schedule.dart';
 import 'controllers/build_items.dart';
 import 'controllers/options.dart';
 import 'math.dart';
@@ -10,6 +11,7 @@ import 'models/blueprint.dart';
 import 'models/bonus_type.dart';
 import 'models/industry_type.dart';
 import 'models/rig.dart';
+import 'sde_extra.dart';
 
 int getNumNeeded(int runs, int slots, int childPerParent, Fraction bonus) {
   final remainder = runs % slots;
@@ -162,4 +164,29 @@ Fraction getSkillBonus(int tid, Blueprint bp, OptionsController options) {
     }
   }
   return ret;
+}
+
+double getCostOfJobs(
+    Schedule schedule, Map<int, double> adjustedPrices, double mfgCostIndex, double rtnCostIndex, double mfgCostBonus) {
+  double value = 0.0;
+  schedule.getBatches().forEach((indyType, batches) {
+    final costIndex = (indyType == IndustryType.MANUFACTURING ? mfgCostIndex : rtnCostIndex) / 100;
+    final costBonus = indyType == IndustryType.MANUFACTURING ? mfgCostBonus : 1;
+    for (var batch in batches) {
+      batch.items.forEach((tid, batchItem) {
+        double baseCosts = 0.0;
+        SD.materials(tid).forEach((cid, qtyPerRun) {
+          baseCosts += qtyPerRun * (adjustedPrices[cid] ?? 0);
+        });
+        final numRuns = batchItem.runs;
+        final numSlots = batchItem.slots;
+        final runsPerLine = (numRuns / numSlots).floor();
+        final numLinesWithExtraRun = numRuns % numSlots;
+        final x = (numSlots - numLinesWithExtraRun) * runsPerLine * baseCosts;
+        final y = numLinesWithExtraRun * (runsPerLine + 1) * baseCosts;
+        value += (x + y) * costIndex * costBonus;
+      });
+    }
+  });
+  return value;
 }

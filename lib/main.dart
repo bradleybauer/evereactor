@@ -1,9 +1,6 @@
-import 'package:EveIndy/controllers/summary.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'controllers/basic_build.dart';
-import 'controllers/build.dart';
 import 'controllers/controllers.dart';
 import 'gui/main.dart';
 import 'gui/my_theme.dart';
