@@ -23,7 +23,6 @@ class IntermediatesTable extends StatelessWidget {
     final theme = Provider.of<MyTheme>(context);
     final controller = Provider.of<IntermediatesTableController>(context);
     return TableContainer(
-      // maxHeight: MediaQuery.of(context).size.height - 206,
       maxHeight: Platform.isWeb() ? MyTheme.webTableHeight : MyTheme.desktopTableHeight,
       borderColor: theme.outline,
       color: theme.background,
@@ -34,7 +33,7 @@ class IntermediatesTable extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
         itemCount: controller.getNumberOfItems(),
         itemExtent: itemHeight,
-        itemBuilder: (_, index) => IntermediatesTableItem(tid: controller.getTid(index), row: controller.getRowData(index)),
+        itemBuilder: (_, index) => IntermediatesTableItem(row: controller.getRowData(index)),
       ),
     );
   }
@@ -66,16 +65,15 @@ class IntermediatesTableHeader extends StatelessWidget {
 }
 
 class IntermediatesTableItem extends StatelessWidget {
-  const IntermediatesTableItem({required this.row, required this.tid, Key? key}) : super(key: key);
+  const IntermediatesTableItem({required this.row, Key? key}) : super(key: key);
 
   final IntermediatesRowData row;
-  final int tid;
 
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     final buildItems = Provider.of<BuildItemsController>(context, listen: false);
-    final shouldBuild = buildItems.getShouldBuild(tid);
+    final shouldBuild = buildItems.getShouldBuild(row.tid);
     return Material(
       color: Colors.transparent,
       textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
@@ -94,7 +92,7 @@ class IntermediatesTableItem extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   TableAddDelButton(
-                    onTap: () => buildItems.addTarget(tid, 1),
+                    onTap: () => buildItems.addTarget(row.tid, 1),
                     closeButton: false,
                     color: theme.background,
                     hoveredColor: theme.tertiaryContainer,
@@ -112,11 +110,11 @@ class IntermediatesTableItem extends StatelessWidget {
                 child: BuildBuyToggleButtons(
                   shouldBuild: shouldBuild,
                   onChange: (bool asdf) {
-                    buildItems.setShouldBuild(tid, asdf);
+                    buildItems.setShouldBuild(row.tid, asdf);
                   },
                 )),
             MyTableCell(IntermediatesTable.colFlexs[3],
-                child: !shouldBuild ? Container() : BpOptionsTableWidget(tid: tid, controller: buildItems)),
+                child: !shouldBuild ? Container() : BpOptionsTableWidget(tid: row.tid, controller: buildItems)),
           ],
         ),
       ),

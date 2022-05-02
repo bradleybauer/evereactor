@@ -42,4 +42,11 @@ abstract class SD {
   }
 
   static double m3(int tid, int qty) => qty * SDE.items[tid]!.volume;
+
+  static bool isWrongIndyType(int pid, int cid) {
+    // if pid is a reaction and cid is a fuel block
+    return SD.industryType(pid) == IndustryType.REACTION &&
+        SD.isBuildable(cid) &&
+        SD.industryType(cid) == IndustryType.MANUFACTURING;
+  }
 }

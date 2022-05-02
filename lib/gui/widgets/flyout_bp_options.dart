@@ -20,7 +20,6 @@ class BpOptionsTableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Provider.of<MyTheme>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
       child: Flyout(
@@ -32,13 +31,14 @@ class BpOptionsTableWidget extends StatelessWidget {
         maxVotes: 1,
         child: const Padding(
           padding: EdgeInsets.fromLTRB(MyTheme.appBarPadding, 0, 0, 0),
+          // padding: EdgeInsets.symmetric(horizontal:MyTheme.appBarPadding),
           child: RotatedBox(
             quarterTurns: 2,
             child: Icon(
               // Icons.settings,
               // Icons.keyboard_double_arrow_left,
-              Icons.label_important_outline,
-              // Icons.menu,
+              // Icons.label_important_outline,
+              Icons.menu,
               // Icons.check_box_outline_blank_sharp,
               size: 14,
             ),

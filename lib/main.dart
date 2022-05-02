@@ -1,20 +1,14 @@
+import 'package:EveIndy/controllers/summary.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'controllers/basic_build.dart';
 import 'controllers/build.dart';
-import 'controllers/build_items.dart';
-import 'controllers/inventory.dart';
-import 'controllers/market.dart';
-import 'controllers/options.dart';
-import 'controllers/search.dart';
-import 'controllers/table_inputs.dart';
-import 'controllers/table_intermediates.dart';
-import 'controllers/table_targets.dart';
+import 'controllers/controllers.dart';
 import 'gui/main.dart';
 import 'gui/my_theme.dart';
 import 'platform.dart';
 import 'strings.dart';
-import 'misc.dart';
 
 Future<void> main() async {
   // final cacheDbController = Persistence
@@ -36,20 +30,20 @@ Future<void> main() async {
 
   // Some change notifiers and widgets want to be notified when the language changes
   final MyTheme myTheme = MyTheme();
-
   final Strings strings = Strings();
 
   final market = MarketController();
-
   final inventory = InventoryController();
-  final options = OptionsController(market, strings);
+  final options = OptionsController(strings);
   final buildItems = BuildItemsController();
   final build = Build(inventory, options, buildItems);
-
+  final basicBuild = BasicBuild(options, buildItems);
   final targetsTableController = TargetsTableController(market, build, buildItems, options, strings);
-  final intermediatesTableController = IntermediatesTableController(market, build, strings);
+  final intermediatesTableController =
+      IntermediatesTableController(market, buildItems, options, basicBuild, strings);
   final inputsTableController = InputsTableController(market, build, strings);
   final searchController = SearchController(market, buildItems, strings);
+  final summaryController = SummaryController(market, buildItems, build, options, strings);
 
   Platform.appReadyHook();
 
@@ -65,6 +59,7 @@ Future<void> main() async {
       ChangeNotifierProvider.value(value: buildItems),
       ChangeNotifierProvider.value(value: options),
       ChangeNotifierProvider.value(value: market),
+      ChangeNotifierProvider.value(value: summaryController),
     ],
     child: const MyApp(),
   ));

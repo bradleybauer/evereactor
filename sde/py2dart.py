@@ -149,7 +149,7 @@ class Py2Dart:
         structures = ex.getStructuresAndBonuses()
         rigs = ex.getIndustryRigsAndBonuses()
         productionSkills = ex.getProductionSkills()
-        implants = ex.getImplants()
+        # implants = ex.getImplants()
         blueprints = ex.getBlueprints(productionSkills.keys())
         items = ex.getIndustryItems(blueprints)
         # marketGroupGraph = ex.getMarketGroupGraph(blueprints)
@@ -166,7 +166,7 @@ class Py2Dart:
         code += "import 'models/item.dart';"
         code += "import 'models/blueprint.dart';"
         code += "import 'models/structure.dart';"
-        code += "import 'models/implant.dart';"
+        # code += "import 'models/implant.dart';"
         code += "import 'models/rig.dart';"
         code += "import 'models/skill.dart';"
 
@@ -185,7 +185,7 @@ class Py2Dart:
         code += self._dict2map('marketGroup2parent', 'int', 'int', marketGroup2parent, self._int)
         code += self._dict2map('skills', 'int', 'Skill', productionSkills, self._skill)
         code += self._dict2map('structures', 'int', 'Structure', structures, self._structure)
-        code += self._dict2map('implants', 'int', 'Implant', implants, self._implant)
+        # code += self._dict2map('implants', 'int', 'Implant', implants, self._implant)
         code += self._dict2map('group2category', 'int', 'int', group2category, self._int)
         code += self._dict2map('region2systems', 'int', 'Set<int>', region2systems, self._intset)
         code += self._dict2map('system2name', 'int', 'Map<String,String>', system2name, self._str2str)

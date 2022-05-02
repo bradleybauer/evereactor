@@ -13,7 +13,7 @@ import 'table_text_field.dart';
 class TargetsTable extends StatelessWidget {
   const TargetsTable({Key? key}) : super(key: key);
 
-  static const colFlexs = [58, 8, 15, 15, 7, 15, 15, 15, 10];
+  static const colFlexs = [35, 8, 10, 10, 7, 10, 10, 7, 6];
   static const double headerHeight = 35;
   static const double itemHeight = 30;
   static const double padding = 8;

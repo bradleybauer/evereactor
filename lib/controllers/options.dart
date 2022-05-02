@@ -124,13 +124,15 @@ class OptionsController extends Options with ChangeNotifier {
   String getSelectedReactionStructureName() =>
       Strings.get(SDE.structures[super.getReactionStructure()]!.nameLocalizations);
 
+  int getSelectedReactionStructureTid() =>super.getReactionStructure();
+
   @override
   void setReactionStructure(int tid) {
     super.setReactionStructure(tid);
     notify();
   }
 
-  List<RigData> getManufacturingRigData() {
+  List<RigData> getAvailableManufacturingRigs() {
     final selectedRigs = super.getManufacturingRigs().toSet();
     return SDE.rigs.entries
         .where((e) => e.value.industryType == IndustryType.MANUFACTURING && !selectedRigs.contains(e.key))
@@ -139,7 +141,7 @@ class OptionsController extends Options with ChangeNotifier {
       ..sort((a, b) => a.name.compareTo(b.name));
   }
 
-  List<RigData> getReactionRigData() {
+  List<RigData> getAvailableReactionRigs() {
     final selectedRigs = super.getReactionRigs().toSet();
     return SDE.rigs.entries
         .where((e) => e.value.industryType == IndustryType.REACTION && !selectedRigs.contains(e.key))

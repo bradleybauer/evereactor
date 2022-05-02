@@ -12,10 +12,7 @@ class InputsTableController with ChangeNotifier {
   final MarketController _market;
   final Build _build;
 
-  List<int> _inputIds = [];
-  List<int> _sortedIds = [];
-
-  final Map<int, _Data> _data = {};
+  final _data = <_Data>[];
 
   InputsTableController(this._market, this._build, Strings strings) {
     _market.addListener(_handleModelChange);
@@ -28,7 +25,7 @@ class InputsTableController with ChangeNotifier {
   void _handleModelChange({notify = true}) {
     _data.clear();
 
-    _inputIds = _build.getInputIds()
+    final inputIds = _build.getInputIds()
       ..sort((a, b) {
         // Could write a List compare alg here but... this works,is already written and is easy...
         String a_cat = SDE.item2marketGroupAncestors[a]!.map((int marketGroupID) {
@@ -43,25 +40,27 @@ class InputsTableController with ChangeNotifier {
         }
         return comp;
       });
+
     final bom = _build.getBOM();
     final bomCostsPerUnit = _market.avgBuyFromSell(bom);
     final bomCosts = prod(bom, bomCostsPerUnit);
-    for (int tid in bomCosts.keys) {
-      _data[tid] = _Data(bomCosts[tid]!, bomCostsPerUnit[tid]!);
+    for (int tid in inputIds) {
+      _data.add(_Data(tid, bomCosts[tid]!, bomCostsPerUnit[tid]!));
     }
 
-    _sortedIds = _inputIds; // TODO temporary
+    // TODO sort the data
+    _data.sort((a,b)=>b.totalCost.compareTo(a.totalCost));
+
     if (notify) {
       notifyListeners();
     }
   }
 
-  int getNumberOfItems() => _inputIds.length;
+  int getNumberOfItems() => _data.length;
 
   InputsRowData getRowData(int listIndex) {
-    int tid = _sortedIds[listIndex];
-    _Data x = _data[tid]!;
-    final name = Strings.get(SDE.items[tid]!.nameLocalizations);
+    _Data x = _data[listIndex];
+    final name = Strings.get(SDE.items[x.tid]!.nameLocalizations);
     final totalCost = currencyFormatNumber(x.totalCost);
     final costPerUnit = currencyFormatNumber(x.costPerUnit,
         roundBigIskToMillions: false, roundFraction: false, removeFraction: false, removeZeroFractionFromString: true);
@@ -70,10 +69,11 @@ class InputsTableController with ChangeNotifier {
 }
 
 class _Data {
+  final int tid;
   final double totalCost;
   final double costPerUnit;
 
-  const _Data(this.totalCost, this.costPerUnit);
+  const _Data(this.tid, this.totalCost, this.costPerUnit);
 }
 
 class InputsRowData {

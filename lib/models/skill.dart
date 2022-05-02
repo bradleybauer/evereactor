@@ -12,18 +12,4 @@ class Skill {
     this.bonus,
     this.nameLocalizations,
   );
-
-  //@override
-  //String toString() {
-  //  return {
-  //    'typeID': typeID,
-  //    'typeName': typeName,
-  //    'productTypeID': productTypeID,
-  //    'iconID': iconID,
-  //    'quantity': numProducedPerRun,
-  //    'inputTypeIDs': inputTypeIDs,
-  //    'inputQuantities': inputQuantities,
-  //    'baseTimePerRunSeconds': baseTimePerRunSeconds
-  //  }.toString();
-  //}
 }

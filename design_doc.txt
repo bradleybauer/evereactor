@@ -1,3 +1,4 @@
+Should have the profit column from the search window be in the intermediates table as well.
 Perfect is the enemy of the good
 
 How does inventory work?
@@ -68,15 +69,8 @@ One thing I want to be true about this app is that the scenario where it gives t
 
 RESTRICTIONS----------------------------------------------------------------------------------------------------------
 Never build any MFG item that is input to RTN item (fuel blocks)
-  Just learned that fuel blocks are basically always only used as input to reactions
-  There are not mfg items built by my app that take fuel blocks as inputs.
 
 Assumes structures are located where the rigs give the best bonuses. (LS for thukker rigs)
-  ??? this one is annoying, i mean. it basically works for anyone doing everything in ns/wh
-  but,
-  for people in LS its wrong if they use rigs other than thukker.
-    :(
-  don't really want to work on it though.
 
 I am not supporting arbitrary systems. Why?
   1: Jita & Amarr are the two best high sec trade hubs.
@@ -89,16 +83,7 @@ I am not supporting arbitrary systems. Why?
 Note - Large 'Sheriff' Shield Extender Blueprint can drop with 20% ME
   https://cdn.discordapp.com/attachments/492765138760237056/932976232474222622/unknown.png
 
-Not sure if i will do Structure+Rig
-Maybe will just ask for 1rtn and 1mfg structure and for a set of rigs (distinct in item type receiving bonus)
-Unfortunately I think it is common to have multiple mfg structures.
-Fuck it.
-It will work for me to have 1rtn 1mfg.
-I mean if I have multiple rtn structures do I then have multiple rtn systems?
-I am not going into that much detail.
-
 *** It is practically impossible to get everything perfect ***
-
 Time Efficiency
     Not possible to get perfect times unless you specifiy EVERYTHING which requires too much coding for me and too much configuration for the user.
     And to get perfect timing would require having different bonuses PER LINE in the solver which is impossible with the solver as it is written now.
@@ -123,11 +108,7 @@ Apparently indexeddb can hold a lot of data https://stackoverflow.com/questions/
 
 Application X - Contact 'Dark808bb'
 
-Use concurrent fetch of market data is pretty quick! yay.
-So just load all cpp eve market data and cache it into drift
-That really is the best way
-
-Now pretty reasonable to add a market data age clock thingy
+Now pretty reasonable to add a market data age clock thingy - LOW PRIORITY
 ----------------------------------------------------------------------------------------------------------------------
 
 LOOKS-----------------------------------------------------------------------------------------------------------------
@@ -141,12 +122,8 @@ Get some fonts here https://fonts.google.com/
 --------------------------------------------------------------------------- ----- ------------------------------------
 
 DEVELOPMENT-----------------------------------------------------------------------------------------------------------
-msix_config for startmenu stuff google 'how to create msix_config windows'
+TODO msix_config for startmenu stuff google 'how to create msix_config windows'
 Setup CI? so that people can be sure that exe hosted on github releases has been built by the code
-----------------------------------------------------------------------------------------------------------------------
-
-ICONS-----------------------------------------------------------------------------------------------------------------
-I might not show icons in the app. a compact view may be more desirable than showing eye candy.
 ----------------------------------------------------------------------------------------------------------------------
 
 SDE-------------------------------------------------------------------------------------------------------------------
@@ -200,15 +177,7 @@ mega sad face
 ----------------------------------------------------------------------------------------------------------------------
 
 GUI/UX----------------------------------------------------------------------------------------------------------------
-
-Flyouts:
-   app title
-        chooses different app
-        If I create more eve apps then could have the title bar be a flyout that navigates between them basically instantly
-
-Having a schedule visualization would be super good. // NO PRIORITY
-
-Tooltips
+TODO Tooltips
   Get Market Data : Loads market data from the ESI.
   Value: Profit if built i.e. (Profit if Build) - (Profit if Buy)
   Cost/u : build price per unit
@@ -217,37 +186,7 @@ Tooltips
 
 TODO have a + sign for positive values in intermediates table so it is more clear that doing the build "Adds" value
 
-Make input boxes simple.
-  For integer inputs just restrict input to integers and maximum number of characters
-  For percents just restrict max num chars maybe
-    Append % sign always ( i think flutter has support for this being always show.. like a 'virtual character')
-
-  When inputs are accepted (on editing done) replace the input with my interpretation of it.
-   So user understands that I understand what they input.
-
-  Red box on invalid input
-
 Options ### see BUILD CUSTOMIZATIONS section above for more details about options
-
-meh lets not do implants
-
-Costs
-    Reaction system cost index [ ] // min is .1%
-    Manufacturing system cost index [ ] // min is .1%
-    Sales tax [ ]
-
-Structures
-    Manufacturing: [ v ]   Rigs: [ v ] x5
-    Reaction: [ v ]        Rigs: [ v ] x5
-
-App Settings
-    Language [ v ]
-    [ theme widget, list of circular widgets ]
-
-Structures (basic dropdown lists)
-  System Cost Indices for Rtn & Mfg
-    Minimum system cost index is .001 (that is .1%)
-
 Optimize - desktop // MEDIUM PRIORITY
   Optimization stats
     Percent reduction (of total build time) from approximation 1-sched/ub
@@ -263,15 +202,6 @@ Optimize - desktop // MEDIUM PRIORITY
     start
     stop
     discard optimization
-
-Targets // HIGH PRIORITY
-  Items the user has 'added' to the build
-    (x, name, runs, profit, cost, %, cost/u, sell/u, out m3, BpOptions)
-    If maxBps & maxRunsPerBp are not set then those values are set to the global values
-
-Inputs
-    raw/purchased materials (including fuel blocks)
-    (name, cost, cost/u)
 ----------------------------------------------------------------------------------------------------------------------
 
 REMINDER--------------------------------------------------------------------------------------------------------------

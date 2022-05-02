@@ -156,6 +156,8 @@ class MarketController with ChangeNotifier {
 
   Map<int, double> avgBuyFromSell(Map<int, int> bom) => _market.avgBuyFromSell(bom);
 
+  double avgBuyFromSellItem(int id, int quantity) => _market.avgBuyFromSellItem(id,quantity);
+
   double avgSellToBuyItem(int tid, int quantity) => _market.avgSellToBuyItem(tid, quantity);
 
   void setOrderFilter(OrderFilter newFilter) {
