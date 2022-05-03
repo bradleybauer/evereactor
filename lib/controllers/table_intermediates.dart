@@ -53,16 +53,33 @@ class IntermediatesTableController with ChangeNotifier {
 
     // To help reduce by amount that items jump around when clicked
     _data.sort((a, b) {
-      int comp = (a.value > 0 && b.value > 0 ? 0 : (a.value < 0 && b.value < 0 ? 0 : (a.value < 0 ? -1 : 1)));
-      if (comp == 0) {
-        comp = SD.enName(a.tid).compareTo(SD.enName(b.tid));
+      int comp = a.value.sign.compareTo(b.value.sign);
+      if (comp == 0 && materials(a.tid).contains(b.tid)) {
+        comp = -1;
       }
+      if (comp == 0 && materials(b.tid).contains(a.tid)) {
+        comp = 1;
+      }
+      // if (comp == 0) {
+      //   comp = SD.enName(a.tid).compareTo(SD.enName(b.tid));
+      // }
       return comp;
     });
     // _data.sort((a, b) => a.value.compareTo(b.value));
     // TODO sort data
 
     notifyListeners();
+  }
+
+  Set<int> materials(int pid) {
+    final result = <int>{};
+    for (int cid in SD.materials(pid).keys) {
+      if (!SD.isWrongIndyType(pid, cid) && SD.isBuildable(cid)) {
+        result.add(cid);
+        result.addAll(materials(cid));
+      }
+    }
+    return result;
   }
 
   double getCost(Map<int, int> bom) {
