@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/industry_type.dart';
 import '../../controllers/build_items.dart';
+import '../../models/industry_type.dart';
 import '../../sde.dart';
 import '../my_theme.dart';
 import 'flyout.dart';
+import 'flyout_controller.dart';
+import 'hover_button.dart';
 import 'table_text_field.dart';
 
-class BpOptionsTableWidget extends StatelessWidget {
+class BpOptionsTableWidget extends StatefulWidget {
   const BpOptionsTableWidget({
     required this.tid,
     required this.controller,
@@ -19,31 +21,62 @@ class BpOptionsTableWidget extends StatelessWidget {
   final BuildItemsController controller;
 
   @override
+  State<BpOptionsTableWidget> createState() => _BpOptionsTableWidgetState();
+}
+
+class _BpOptionsTableWidgetState extends State<BpOptionsTableWidget> {
+  final flyoutController = FlyoutController(const Duration(), maxVotes: 1);
+
+  @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<MyTheme>(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
+      padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding / 2),
       child: Flyout(
-        sideOffset: 0,
-        openMode: FlyoutOpenMode.hover,
+        sideOffset: -2,
+        openMode: FlyoutOpenMode.custom,
+        controller: flyoutController,
         align: FlyoutAlign.childLeftCenter,
-        content: (ctx) => BpOptionsFlyoutContent(controller: controller, tid: tid),
-        closeTimeout: const Duration(),
+        content: (ctx) => BpOptionsFlyoutContent(controller: widget.controller, tid: widget.tid),
+        // closeTimeout: const Duration(),
         maxVotes: 1,
-        child: const Padding(
-          padding: EdgeInsets.fromLTRB(MyTheme.appBarPadding, 0, 0, 0),
-          // padding: EdgeInsets.symmetric(horizontal:MyTheme.appBarPadding),
-          child: RotatedBox(
-            quarterTurns: 2,
-            child: Icon(
-              // Icons.settings,
-              // Icons.keyboard_double_arrow_left,
-              // Icons.label_important_outline,
-              Icons.menu,
-              // Icons.check_box_outline_blank_sharp,
-              size: 14,
-            ),
-          ),
+        child: HoverButton(
+          builder: (hovered) {
+            return Padding(
+              padding: const EdgeInsets.all(MyTheme.appBarPadding / 3),
+              // padding: EdgeInsets.symmetric(horizontal:MyTheme.appBarPadding),
+              child: Icon(
+                // Icons.settings,
+                // Icons.keyboard_double_arrow_left,
+                // Icons.label_important_outline,
+                Icons.menu,
+                // Icons.check_box_outline_blank_sharp,
+                size: 14,
+                color: hovered ? theme.onPrimary : theme.onBackground,
+              ),
+            );
+          },
+          borderRadius: 3,
+          hoveredElevation: 0,
+          onTap: () => flyoutController.open(),
+          color: theme.background,
+          hoveredColor: theme.primary,
         ),
+        // Padding(
+        //   padding: EdgeInsets.fromLTRB(MyTheme.appBarPadding, 0, 0, 0),
+        //   // padding: EdgeInsets.symmetric(horizontal:MyTheme.appBarPadding),
+        //   child: RotatedBox(
+        //     quarterTurns: 2,
+        //     child: Icon(
+        //       // Icons.settings,
+        //       // Icons.keyboard_double_arrow_left,
+        //       // Icons.label_important_outline,
+        //       Icons.menu,
+        //       // Icons.check_box_outline_blank_sharp,
+        //       size: 14,
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }
@@ -133,7 +166,7 @@ class BpOptionsFlyoutContent extends StatelessWidget {
       ];
     }
     return Container(
-      padding: const EdgeInsets.all(padding / 2),
+      padding: const EdgeInsets.all(padding),
       decoration: BoxDecoration(color: theme.surfaceVariant, borderRadius: BorderRadius.circular(4)),
       child: Wrap(
         spacing: padding,

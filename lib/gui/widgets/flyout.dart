@@ -138,8 +138,10 @@ class _FlyoutState extends State<Flyout> {
             targetAnchor: targetAnchor,
             child: MouseRegion(
               // opaque: false, // must be false, otherwise nested overlays will close each other
-              onEnter: (event) => controller.open(),
-              onExit: (event) => controller.startCloseTimer(),
+              onEnter: (_) => controller.open(),
+              onExit: (_) {
+                print('exit content');
+                controller.startCloseTimer();},
               child: Material(
                 color: Colors.transparent,
                 child: widget.content(ctx),

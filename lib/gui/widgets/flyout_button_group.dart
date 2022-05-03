@@ -1,3 +1,4 @@
+import 'package:EveIndy/gui/widgets/hover_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -5,7 +6,6 @@ import '../my_theme.dart';
 import 'flyout.dart';
 import 'flyout_controller.dart';
 import 'flyout_options.dart';
-import 'my_animated_container.dart';
 
 const int NUMBUTTONS = 4;
 
@@ -17,7 +17,7 @@ class FooterFlyoutGroup extends StatefulWidget {
 }
 
 class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
-  final FlyoutController controller = FlyoutController(MyTheme.buttonFocusDuration, maxVotes: 1);
+  final FlyoutController controller = FlyoutController(MyTheme.buttonFocusDuration * 2, maxVotes: 1);
   int current = 0;
 
   @override
@@ -42,18 +42,27 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
   Widget button(int i, IconData icon, MyTheme theme) {
     bool selected = current == i && controller.isOpen;
     return MouseRegion(
-      child: MyAnimatedContainer(
-        color: selected ? theme.primary : theme.secondaryContainer,
-        elevation: selected ? 3 : 0,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: MyTheme.appBarButtonHeight * .1),
-          child: Icon(icon,
-              size: MyTheme.appBarButtonHeight * .8, color: selected ? theme.onPrimary : theme.onSecondaryContainer),
-        ),
-        borderRadius: 4,
+      child: HoverButton(
+        builder: (hovered) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: MyTheme.appBarButtonHeight * .1),
+            child: Icon(icon,
+                size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.onPrimary : selected ? theme.onSecondary : theme.onSecondaryContainer),
+          );
+        },
+        onTap: () => _open(i),
+        color: selected ? theme.secondary : theme.secondaryContainer,
+        borderRadius: 3,
+        hoveredColor: theme.primary,
+        hoveredElevation: 3,
       ),
-      onEnter: (e) => _open(i),
-      onExit: (e) => controller.startCloseTimer(),
+      opaque: false,
+      onEnter: (_) {
+        if (selected) {
+          _open(i);
+        }
+      },
+      onExit: (_) => controller.startCloseTimer(),
     );
   }
 
@@ -72,7 +81,7 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
       child: Row(mainAxisSize: MainAxisSize.min, children: buttons),
       content: (ctx) {
         if (current == 0) {
-          final theme = Provider.of<MyTheme>(context);
+          final theme = Provider.of<MyTheme>(ctx);
           final color = theme.secondaryContainer;
           final base = theme.secondary;
           final headerStyle = TextStyle(
@@ -90,7 +99,7 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
             width: 160,
             height: 160,
             color: Colors.blue,
-            child: Center(child: Text(['_','QA', 'Copy', 'Optimizer'][current] + ' content')),
+            child: Center(child: Text(['_', 'QA', 'Copy', 'Optimizer'][current] + ' content')),
           ),
         );
       },

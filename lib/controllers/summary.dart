@@ -6,7 +6,6 @@ import '../math.dart';
 import '../industry.dart';
 import '../sde_extra.dart';
 import '../strings.dart';
-import 'build.dart';
 
 class SummaryController with ChangeNotifier {
   final MarketController _market;
