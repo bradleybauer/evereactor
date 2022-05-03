@@ -240,7 +240,6 @@ class StructuresSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: itemPadding),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -539,6 +538,7 @@ class SkillSection extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, itemPadding / 3, 6, itemPadding / 3),
             child: TableTextField(
+              allowOverwrite: true,
               initialText: skills[j].level.toString(),
               textColor: theme.on(color),
               activeBorderColor: theme.primary,
@@ -600,10 +600,11 @@ class SkillSection extends StatelessWidget {
 }
 
 class ColorChanger extends StatefulWidget {
-  ColorChanger(this.controller, this.color, this.base, {Key? key}) : super(key: key);
-  FlyoutController controller;
-  Color color;
-  Color base;
+  const ColorChanger(this.controller, this.color, this.base, {Key? key}) : super(key: key);
+
+  final FlyoutController controller;
+  final Color color;
+  final Color base;
 
   @override
   State<ColorChanger> createState() => _ColorChangerState();
@@ -682,7 +683,7 @@ class _ColorChangerContentState extends State<ColorChangerContent> {
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: theme.outline),
       ),
-      constraints: const BoxConstraints.tightFor(width: 180, height: 30),
+      constraints: const BoxConstraints.tightFor(width: 200, height: 30),
       child: Slider(
         value: hue,
         mouseCursor: MouseCursor.defer,

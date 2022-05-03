@@ -19,6 +19,7 @@ class TableTextField extends StatefulWidget {
     this.textAlign = TextAlign.right,
     this.allowEmptyString = false,
     this.floatingPoint = false,
+    this.allowOverwrite = false,
     this.hintStyle,
     this.focusNode,
     // this.formKey,
@@ -40,6 +41,7 @@ class TableTextField extends StatefulWidget {
   final void Function(String) onChanged;
   final bool allowEmptyString;
   final bool floatingPoint;
+  final bool allowOverwrite;
 
   @override
   State<TableTextField> createState() => _TableTextFieldState();
@@ -93,6 +95,9 @@ class _TableTextFieldState extends State<TableTextField> {
   TextEditingValue intFormatter(TextEditingValue oldValue, TextEditingValue newValue) {
     if (widget.allowEmptyString && newValue.text == '') {
       return newValue;
+    }
+    if (!widget.allowOverwrite && newValue.text.length > widget.maxNumDigits) {
+      return oldValue;
     }
     try {
       final text = newValue.text;

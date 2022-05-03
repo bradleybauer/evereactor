@@ -42,7 +42,7 @@ class SearchBarFlyoutContent extends StatelessWidget {
         color: theme.tertiaryContainer,
         elevation: 2,
         borderRadius: 4,
-        header: const SearchListHeader(),
+        header: SearchListHeader(controller: searchController),
         listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onTertiaryContainer),
         listView: listContent,
       ),
@@ -53,9 +53,12 @@ class SearchBarFlyoutContent extends StatelessWidget {
 class SearchListHeader extends StatelessWidget {
   const SearchListHeader({
     Key? key,
+    required this.controller,
   }) : super(key: key);
 
   static const double height = 35;
+
+  final SearchController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +83,7 @@ class SearchListHeader extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
             align: Alignment.centerRight,
             child: const Text('Profit %'),
-            onTap: () {},
+            onTap: () =>controller.advSortDir(),
           ),
         ],
       ),
@@ -138,7 +141,7 @@ class SearchListItem extends StatelessWidget {
             Container(
               width: SearchBarFlyoutContent.columnWidths[1] - columnWidthFudgeFactor,
               alignment: Alignment.centerRight,
-              child: Text(rowData.percent + '%'),
+              child: Text(rowData.percent),
             )
           ],
         ),

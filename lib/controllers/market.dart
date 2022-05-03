@@ -160,6 +160,8 @@ class MarketController with ChangeNotifier {
 
   double avgSellToBuyItem(int tid, int quantity) => _market.avgSellToBuyItem(tid, quantity);
 
+  int halfBuyVolume(int tid) => _market.halfBuyVolume(tid);
+
   void setOrderFilter(OrderFilter newFilter) {
     if (newFilter.getSystems().isEmpty) {
       newFilter = OrderFilter.acceptAll();
@@ -179,6 +181,8 @@ class MarketController with ChangeNotifier {
   Set<int> getOrderFilterSystems() => _market.getOrderFilter().getSystems();
 
   Map<int, double> getAdustedPrices() => _market.getAdjustedPrices();
+
+  double? getAdustedPrice(int tid) => _market.getAdjustedPrice(tid);
 
 // Future<void> loadFromCache() async {
 // }

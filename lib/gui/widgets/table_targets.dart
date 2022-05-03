@@ -35,7 +35,7 @@ class _TargetsTableState extends State<TargetsTable> {
         child: SizedBox(
             height: TargetsTable.itemHeight,
             child: Center(
-              child: Text("Use the search bar to find and add items to the build.",
+              child: Text("Click the 'Get Market Data' button then use the search bar to find and add items to the build.",
                   style: TextStyle(fontFamily: '', fontSize: 15, color: theme.primary)),
             )),
       );
@@ -82,7 +82,7 @@ class TargetsTableHeader extends StatelessWidget {
             align: Alignment.centerLeft),
         TableContainer.getCol(TargetsTable.colFlexs[1], child: const Text('Runs')),
         TableContainer.getCol(TargetsTable.colFlexs[2],
-            child: const Text('Profit'), onTap: () => controller.sortProfit()),
+            child: const Text('Net'), onTap: () => controller.sortProfit()),
         TableContainer.getCol(TargetsTable.colFlexs[3], child: const Text('Cost'), onTap: () => controller.sortCost()),
         TableContainer.getCol(TargetsTable.colFlexs[4], child: const Text('%'), onTap: () => controller.sortPercent()),
         TableContainer.getCol(TargetsTable.colFlexs[5],
@@ -146,6 +146,8 @@ class TargetsTableItem extends StatelessWidget {
             MyTableCell(TargetsTable.colFlexs[1],
                 child: TableTextField(
                   focusNode:focusNode,
+                    width: 45,
+                    maxNumDigits: 6,
                     initialText: row.runs.toString(),
                     activeBorderColor: theme.primary,
                     textColor: theme.onBackground,

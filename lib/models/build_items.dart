@@ -76,6 +76,17 @@ class BuildItems {
     }
   }
 
+  int? _getDefaultME(int tid) {
+    if (!SD.isTech1(tid)) {
+      if (SD.isTech2(tid)) {
+        return 3;
+      } else {
+        return 0;
+      }
+    }
+    return null;
+  }
+
   int getNumberOfTargets() => _tid2runs.length;
 
   Set<int> getTargetsIDs() => _tid2runs.keys.toSet();
@@ -153,7 +164,7 @@ class BuildItems {
     _tid2bpOps[tid] = _tid2bpOps[tid]!.copyWithBPs(maxBPs);
   }
 
-  int? getME(int tid) => _tid2bpOps[tid]?.ME;
+  int? getME(int tid) => _tid2bpOps[tid]?.ME ?? _getDefaultME(tid);
 
   int? getTE(int tid) => _tid2bpOps[tid]?.TE;
 

@@ -26,7 +26,6 @@ double getApproxNumNeeded(int runs, int childPerParent, Fraction bonus) {
   return max(runs.toDouble(), (childPerParent * runs * bonus.numerator / bonus.denominator));
 }
 
-// int x = 0;
 Fraction getMaterialBonusMemoized(
     int tid, OptionsController options, BuildItemsController buildItems, Map<int, Fraction> memo) {
   if (memo.containsKey(tid)) {

@@ -120,6 +120,16 @@ class Market {
 
   Map<int,double> getAdjustedPrices() => {..._adjustedPrices};
 
+  int halfBuyVolume(int tid) {
+    int units = 0;
+    if (_filteredMarket.containsKey(tid)) {
+      for (var order in _filteredMarket[tid]!.buys) {
+        units += order.volumeRemaining;
+      }
+    }
+    return units ~/ 2;
+  }
+
 // double maxBuy(int id) {
 //   if (_filteredMarket[id]!.buys.isEmpty) {
 //     return double.negativeInfinity;

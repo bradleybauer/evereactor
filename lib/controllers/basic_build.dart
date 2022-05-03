@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fraction/fraction.dart';
 
 import '../industry.dart';
-import '../sde_extra.dart';
 import '../math.dart';
+import '../sde_extra.dart';
 import 'build_items.dart';
 import 'options.dart';
 
@@ -23,18 +23,19 @@ class BasicBuild with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<int, int> getBOM(Map<int, int> runs, {int toggleTid = -1}) {
+  Map<int, int> getBOM(Map<int, int> items, {int toggleTid = -1, bool useBuildItems = true}) {
     final bom = <int, int>{};
-    while (runs.isNotEmpty) {
+    while (items.isNotEmpty) {
       var next = <int, int>{};
       var numNeededForEachChild = <int, int>{};
-      runs.forEach((tid, runs) {
+      items.forEach((tid, runs) {
         final bonus = getMaterialBonusMemoized(tid, _options, _buildItems, materialEfficiencyMemo);
         SD.materials(tid).forEach((cid, qtyPerRun) {
           final numNeeded = getNumNeeded(runs, 1, qtyPerRun, bonus);
           if (!SD.isWrongIndyType(tid, cid) &&
               SD.isBuildable(cid) &&
-              (cid == toggleTid ? !_buildItems.getShouldBuild(cid) : _buildItems.getShouldBuild(cid))) {
+              (!useBuildItems ||
+                  (cid == toggleTid ? !_buildItems.getShouldBuild(cid) : _buildItems.getShouldBuild(cid)))) {
             numNeededForEachChild.update(cid, (value) => value + numNeeded, ifAbsent: () => numNeeded);
           } else {
             bom.update(cid, (value) => value + numNeeded, ifAbsent: () => numNeeded);
@@ -44,7 +45,7 @@ class BasicBuild with ChangeNotifier {
       numNeededForEachChild.forEach((cid, numNeeded) {
         next[cid] = ceilDiv(numNeeded, SD.numProducedPerRun(cid));
       });
-      runs = next;
+      items = next;
     }
     return bom;
   }

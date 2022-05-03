@@ -209,6 +209,10 @@ class SDE_Extractor:
             # add meta level to bp
             if 'sofFactionName' in self.sde.typeIDs[productID] and self.sde.typeIDs[productID]['sofFactionName'] == 'upwell-defence':
                 bp['techLevel'] = -1
+            elif 'sofFactionName' in self.sde.typeIDs[productID] and self.sde.typeIDs[productID]['sofFactionName'] == 'concordcivilian':
+                bp['techLevel'] = -1
+            elif 'sofFactionName' in self.sde.typeIDs[productID] and ('tournament' in self.sde.typeIDs[productID]['sofFactionName']):
+                bp['techLevel'] = -1
             elif 'metaGroupID' in self.sde.typeIDs[productID]:
                 bp['techLevel'] = self.sde.typeIDs[productID]['metaGroupID']
             elif 'raceID' in self.sde.typeIDs[productID] and self.sde.typeIDs[productID]['raceID']==135: # 't1' trig ships, not availabe as bpos
