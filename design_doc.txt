@@ -1,4 +1,3 @@
-Should have the profit column from the search window be in the intermediates table as well.
 Perfect is the enemy of the good
 
 How does inventory work?
@@ -31,8 +30,6 @@ What items go into the intermediates table? (build/buy table)
     BpOps
         an item has BpOps iff it is not also in the targets table
 
-TODO show warning if no orders were found for certain tid in build?
-
 TODO don't forget about dart super parameters.
 
 TODO unicode normalize search strings in search bar?
@@ -40,10 +37,6 @@ TODO unicode normalize search strings in search bar?
 TODO app name is in web/persistenceWebWorker.dart and in lib\persistence\cache_adapter.dart
 
 TODO update the SDE data due to eve's new game update... need an automatic way to do this.
-
-TODO not sure about the EveIndy name...
-How about EveIndustry? EveScheduler?
-Or EveProsperity... lol
 
 add a fuckin terry davis easter egg in here somewhere
 
@@ -53,62 +46,17 @@ Automate the "code generation" for drift.
 use canvaskit webrenderer
 https://docs.flutter.dev/development/tools/web-renderers
 
-GOAL------------------------------------------------------------------------------------------------------------------
-One thing I want to be true about this app is that the scenario where it gives the exact answer is very well defined and thought out ahead of time
-  I do mfg and rtns in wormhole space using 1 raitaru and 1 tatara.
-  All my toons have Reactions V, Indy V, Adv Indy IV, all Science IV
-  I have x number of mfg lines and y number of rtn lines
-  All my bp's have certain ME/TE levels which I've set either directly per bp or by a global ME/TE option
-  All my toons have the same beancounter industry 2% implant
-  All my market toons have acounting V
-  (mfg tax, rtn tax, cost indices) are all given
-  All market data has been fetched within the past half hour for the market hub I am buying from.
-
-  Given all this info, the app should calculate pretty gosh darn exact numbers
-----------------------------------------------------------------------------------------------------------------------
-
 RESTRICTIONS----------------------------------------------------------------------------------------------------------
 Never build any MFG item that is input to RTN item (fuel blocks)
 
 Assumes structures are located where the rigs give the best bonuses. (LS for thukker rigs)
 
-I am not supporting arbitrary systems. Why?
-  1: Jita & Amarr are the two best high sec trade hubs.
-     If a person does high volume industry for profit (purpose of my app) then they probably are trading in Amarr & Jita.
-     They are probably, at least, buying in Amarr & Jita.
-     Except possibly they are trading in a large nullsec trade hub.
-
-  2: Supporting private trade hubs would require esi credentials which is something I do not want to do atm.
-
 Note - Large 'Sheriff' Shield Extender Blueprint can drop with 20% ME
   https://cdn.discordapp.com/attachments/492765138760237056/932976232474222622/unknown.png
-
-*** It is practically impossible to get everything perfect ***
-Time Efficiency
-    Not possible to get perfect times unless you specifiy EVERYTHING which requires too much coding for me and too much configuration for the user.
-    And to get perfect timing would require having different bonuses PER LINE in the solver which is impossible with the solver as it is written now.
-    Honestly, any solver that optimizes makespan and which uses CP-SAT to do it would be too slow (probably) if coded to have different properties per line.
-    Think about it, the number of lines would likely be high, I will have at least 50 mfg lines, many people have more than that.
-    Even if I group the lines according to skill/bonuses applied, there is still the worst case of having a lot of groups.
-    If I did group by skills/bonuses then I probably would have a lot more coding on my hands (in the GUI and in the solver/approximator)
-    In any case, taking ALL skills/bonuses into consideration means asking the user for skills for each toon, asking for blueprint TE levels, asking 
-    (potentially) which toons can mfg/react at which structures, asking for each structure what the system cost index is or where it is located.
-    Then users would complain that they do not want to type in blueprint TE levels, and so I would code something that automatically fetches all the users blueprints and uses them.
-    Then some users would complain that they do not want to use a particular blueprint and that it should be excluded.
-    Then other users would want to manually specify TE levels of some blueprints and use those instead of the ones I automatically fetched for them.
-
-    Shit gets fucked if I try to cover every possible scenario.
-
-Material Efficiency
-    the above applies here too
 ----------------------------------------------------------------------------------------------------------------------
 
 MARKET DATA-----------------------------------------------------------------------------------------------------------
-Apparently indexeddb can hold a lot of data https://stackoverflow.com/questions/5692820/maximum-item-size-in-indexeddb
-
 Application X - Contact 'Dark808bb'
-
-Now pretty reasonable to add a market data age clock thingy - LOW PRIORITY
 ----------------------------------------------------------------------------------------------------------------------
 
 LOOKS-----------------------------------------------------------------------------------------------------------------
@@ -144,36 +92,8 @@ Have blueprints in inventory (and missing in multibuy)? just for calculating how
   Interesting, if I did this then I'd want to have a blueprintID to itemID map.
   I guess I would need friggin blueprint names as well...
 
-Multiple Multibuys??? No, better to just link / mention different website that does this.
-
 Add hints to different UI elements to help explain things a bit.
 Have a QA section?
-----------------------------------------------------------------------------------------------------------------------
-
-BUILD CUSTOMIZATIONS--------------------------------------------------------------------------------------------------
-I cannot make this program so flexible that it does every calculation perfect for every possible industry scenario.
-
-Instead my strategy is to optimize for the simple case (hopefully common case, I will setup my indy like this).
-  ME/TE levels for BPO can be set globally by the user (or take a sensible default)
-  ME/TE can be set per bp type.
-  Skills are set globally by the user
-    science (one option ?), production (one option for each with mat/time bonuses), the reactions skill
-  Number of lines for mfg and for rtns are set globally
-  Rtn & Mfg system cost indices are set globally.
-  There is only one rig for each bonus but more than three rigs can be applied to a build.
-    This simulates multiple structures (to a degree). Maybe I do all my equipment mfg in one structure and all my ship mfg in another.
-    To make sure the build IRL works exactly as the solver describes it is my responsibility to do (among other things) the correct production in the correct facility.
-    If two rigs give the same bonus to the same item, then the best bonus is applied? It's just easier this way.
-
-It is possible to buy intermediates things that are in Target Items.
-  If something is in target items then it is always built, but any amount of it used for building other items
-  may be bought. Just like how inventory and everything works in the solver.
-
-option to never build rams, fuel blocks, t1 ships, ...???
-----------------------------------------------------------------------------------------------------------------------
-
-ERROR HANDLING--------------------------------------------------------------------------------------------------------
-mega sad face
 ----------------------------------------------------------------------------------------------------------------------
 
 GUI/UX----------------------------------------------------------------------------------------------------------------
@@ -183,8 +103,6 @@ TODO Tooltips
   Cost/u : build price per unit
   Sell/u : sale price per unit
   % : Profit percent
-
-TODO have a + sign for positive values in intermediates table so it is more clear that doing the build "Adds" value
 
 Options ### see BUILD CUSTOMIZATIONS section above for more details about options
 Optimize - desktop // MEDIUM PRIORITY
@@ -209,26 +127,6 @@ Don't forget you wrote code for multiple multibuys
     lol i did forget. would be nice to have a 'better' evepraisal that takes into consideration volume and gives best buy/sell hubs with (multimultibuy)
 
 You can use corporation orders. maybe it's like corp reactions
-----------------------------------------------------------------------------------------------------------------------
-
-STRUCTURE/SKILL BONUSES-----------------------------------------------------------------------------------------------
-read this https://eve-industry.org/export/IndustryFormulas.pdf
-
-// The following comments are WRONG! but only by a little bit.
-//// t2s converts a time to seconds
-//// t computes the bonused time with proper rounding
-//// so, the total amount of time is independent of how many lines the runs are spread across
-//// t2s(t(r,basetime)) == sum_over_any_partition_p_of(r): t2s(t(p,basetime))
-//// except, that's not true, its an approximation, not equality
-def t(r, b):
-    s = r * b * (1 - .2) * (1 - .22)
-    d = int(s / (3600 * 24))
-    s -= d * 3600 * 24
-    h = int(s / 3600)
-    s -= h * 3600
-    m = int(s / 60)
-    s -= m * 60
-    return d, h, m, round(s)
 ----------------------------------------------------------------------------------------------------------------------
 
 ADDITIONAL PROFIT-----------------------------------------------------------------------------------------------------
