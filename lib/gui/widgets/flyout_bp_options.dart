@@ -31,7 +31,7 @@ class _BpOptionsTableWidgetState extends State<BpOptionsTableWidget> {
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding / 2),
+      padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding*1.5),
       child: Flyout(
         sideOffset: -2,
         openMode: FlyoutOpenMode.custom,

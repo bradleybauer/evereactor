@@ -91,12 +91,7 @@ class TargetsTableHeader extends StatelessWidget {
             child: const Text('Sell/u'), onTap: () => controller.sortSellPerUnit()),
         TableContainer.getCol(TargetsTable.colFlexs[7],
             child: const Text('Out m3'), onTap: () => controller.sortOutM3()),
-        TableContainer.getCol(
-          TargetsTable.colFlexs[8],
-          align: Alignment.centerRight,
-          child: const Text('BP'),
-          padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
-        ),
+        TableContainer.getCol(TargetsTable.colFlexs[8])
       ],
     );
   }
