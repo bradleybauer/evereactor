@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'controllers.dart';
-import '../misc.dart';
-import '../math.dart';
 import '../industry.dart';
+import '../math.dart';
+import '../misc.dart';
 import '../sde_extra.dart';
 import '../strings.dart';
+import 'controllers.dart';
 
 class SummaryController with ChangeNotifier {
   final MarketController _market;
@@ -13,7 +13,7 @@ class SummaryController with ChangeNotifier {
   final OptionsController _options;
   final Build _build;
 
-  SummaryData data = const SummaryData('', '', '', '', '','');
+  SummaryData data = const SummaryData('', '', '', '', '', '');
 
   SummaryController(this._market, this._buildItems, this._build, this._options, Strings strings) {
     _market.addListener(_handleModelChange);
@@ -23,7 +23,7 @@ class SummaryController with ChangeNotifier {
     });
   }
 
-  void _handleModelChange({notify = true}) {
+  void _handleModelChange() {
     final bom = _build.getBOM();
     final bomCostsPerUnit = _market.avgBuyFromSell(bom);
     final bomCosts = prod(bom, bomCostsPerUnit);
@@ -35,20 +35,16 @@ class SummaryController with ChangeNotifier {
       return p + _market.avgSellToBuyItem(tid, qty) * qty;
     });
     final cost = bomCosts.values.fold(0.0, (double p, e) => p + e);
-    final jobCost = getCostOfJobs(
-        _build.getSchedule(), _market.getAdustedPrices(), _options.getManufacturingSystemCostIndex(),
+    final jobCost = getCostOfJobs(_build.getSchedule(), _market.getAdustedPrices(), _options.getManufacturingSystemCostIndex(),
         _options.getReactionSystemCostIndex(), _options.getManufacturingCostBonus() ?? 0);
     final profit = (1 - _options.getSalesTaxPercent() / 100) * totalSellValue - cost - jobCost;
-    final outm3 = target2runs.entries.fold(0.0,(double p, e) => p+SD.m3(e.key, e.value*SD.numProducedPerRun(e.key)));
-    final inm3 = bom.entries.fold(0.0, (double p, e) => p+SD.m3(e.key, e.value));
+    final outm3 = target2runs.entries.fold(0.0, (double p, e) => p + SD.m3(e.key, e.value * SD.numProducedPerRun(e.key)));
+    final inm3 = bom.entries.fold(0.0, (double p, e) => p + SD.m3(e.key, e.value));
     final time = prettyPrintSecondsToDH(_build.getTime());
-    data = SummaryData(currencyFormatNumber(profit), currencyFormatNumber(cost), currencyFormatNumber(jobCost), volumeNumberFormat(inm3), volumeNumberFormat(outm3), time);
+    data = SummaryData(currencyFormatNumber(profit), currencyFormatNumber(cost), currencyFormatNumber(jobCost), volumeNumberFormat(inm3),
+        volumeNumberFormat(outm3), time);
 
-    // TODO sort the data
-
-    if (notify) {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 
   SummaryData getData() => data;
@@ -62,5 +58,5 @@ class SummaryData {
   final String outm3;
   final String time;
 
-  const SummaryData(this.profit, this.cost, this.jobCost,this.inm3, this.outm3, this.time);
+  const SummaryData(this.profit, this.cost, this.jobCost, this.inm3, this.outm3, this.time);
 }

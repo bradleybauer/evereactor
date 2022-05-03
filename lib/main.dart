@@ -11,9 +11,6 @@ Future<void> main() async {
   // final cacheDbController = Persistence
 
   // Make models
-  // final market = Market();
-  // await market.loadAdjustedPricesFromESI();
-
   // Make controllers & load model data from cache through them
   // Info loaded from cache is market, orderfilter, context, lines&runs, inventory
   // final market = MarketController(market, cacheDbContro
@@ -36,8 +33,7 @@ Future<void> main() async {
   final build = Build(inventory, options, buildItems);
   final basicBuild = BasicBuild(options, buildItems);
   final targetsTableController = TargetsTableController(market, build, buildItems, options, strings);
-  final intermediatesTableController =
-      IntermediatesTableController(market, buildItems, options, basicBuild, strings);
+  final intermediatesTableController = IntermediatesTableController(market, buildItems, options, basicBuild, strings);
   final inputsTableController = InputsTableController(market, build, strings);
   final searchController = SearchController(market, buildItems, basicBuild, options, strings);
   final summaryController = SummaryController(market, buildItems, build, options, strings);
