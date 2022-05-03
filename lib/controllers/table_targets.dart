@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'controllers.dart';
 import '../math.dart';
 import '../misc.dart';
 import '../sde.dart';
 import '../sde_extra.dart';
 import '../strings.dart';
-import 'build.dart';
+import 'controllers.dart';
 
 enum _SortColumn {
   DEFAULT,
@@ -30,6 +29,7 @@ class TargetsTableController with ChangeNotifier {
   final BuildItemsController _buildItems;
 
   final _data = <_Data>[];
+  final _focusNodes = <int, FocusNode>{};
 
   var _sortColumn = _SortColumn.DEFAULT;
   var _sortDir = _SortDir.DESC;
@@ -62,8 +62,18 @@ class TargetsTableController with ChangeNotifier {
       final profit = (1 - _options.getSalesTaxPercent() / 100) * sellValue - cost;
       final percent = profit / cost;
       final outM3 = SD.m3(tid, qty);
-      _data.add(_Data(tid, runs, profit, cost, percent, costPerUnit, sellPerUnit, outM3));
+      if (!_focusNodes.containsKey(tid)) {
+        _focusNodes[tid] = FocusNode(debugLabel: SD.enName(tid));
+      }
+      _data.add(_Data(tid, runs, profit, cost, percent, costPerUnit, sellPerUnit, outM3, _focusNodes[tid]!));
     }
+
+    _focusNodes.keys.toList().forEach((tid) {
+      if (!targetIds.contains(tid)) {
+        _focusNodes[tid]!.dispose();
+        _focusNodes.remove(tid);
+      }
+    });
 
     _resort();
 
@@ -108,14 +118,15 @@ class TargetsTableController with ChangeNotifier {
     String name = Strings.get(SDE.items[x.tid]!.nameLocalizations);
     int runs = _buildItems.getTargetRuns(x.tid);
     String profit = currencyFormatNumber(x.profit);
-    String cost = currencyFormatNumber(x.cost);
+    String cost = currencyFormatNumber(x.cost, removeFraction: true, roundIfOverMillion: true);
     String percent = percentFormat(x.percent);
     bool percentPositive = x.percent >= 0.0;
-    String costPerUnit =
-        currencyFormatNumber(x.costPerUnit, removeFraction: false, roundFraction: false, roundBigIskToMillions: false);
-    String sellPerUnit = currencyFormatNumber(x.sellPerUnit, removeFraction: false, roundFraction: false);
+    String costPerUnit = currencyFormatNumber(x.costPerUnit);
+    String sellPerUnit = currencyFormatNumber(x.sellPerUnit);
     String outM3 = volumeNumberFormat(x.outM3);
-    return TargetsRowData(x.tid, name, runs, profit, cost, percent, percentPositive, costPerUnit, sellPerUnit, outM3);
+    FocusNode focusNode = x.focusNode;
+    return TargetsRowData(
+        x.tid, name, runs, profit, cost, percent, percentPositive, costPerUnit, sellPerUnit, outM3, focusNode);
   }
 
   void _advanceSortState(_SortColumn col) {
@@ -155,9 +166,10 @@ class _Data {
   final double costPerUnit;
   final double sellPerUnit;
   final double outM3;
+  final FocusNode focusNode;
 
-  const _Data(
-      this.tid, this.runs, this.profit, this.cost, this.percent, this.costPerUnit, this.sellPerUnit, this.outM3);
+  const _Data(this.tid, this.runs, this.profit, this.cost, this.percent, this.costPerUnit, this.sellPerUnit, this.outM3,
+      this.focusNode);
 }
 
 class TargetsRowData {
@@ -171,6 +183,7 @@ class TargetsRowData {
   final String costPerUnit;
   final String sellPerUnit;
   final String outM3;
+  final FocusNode focusNode;
 
   const TargetsRowData(
     this.tid,
@@ -183,5 +196,6 @@ class TargetsRowData {
     this.costPerUnit,
     this.sellPerUnit,
     this.outM3,
+    this.focusNode,
   );
 }

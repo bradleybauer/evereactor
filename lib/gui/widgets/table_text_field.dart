@@ -20,8 +20,12 @@ class TableTextField extends StatefulWidget {
     this.allowEmptyString = false,
     this.floatingPoint = false,
     this.hintStyle,
+    this.focusNode,
+    // this.formKey,
   }) : super(key: key);
 
+  // final GlobalKey<FormState>? formKey;
+  final FocusNode? focusNode;
   final double height;
 
   final double width;
@@ -48,6 +52,8 @@ class _TableTextFieldState extends State<TableTextField> {
   void initState() {
     super.initState();
     controller.text = widget.initialText;
+    controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+    controller.notifyListeners();
   }
 
   @override
@@ -138,6 +144,7 @@ class _TableTextFieldState extends State<TableTextField> {
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     return TextField(
+      focusNode: widget.focusNode,
       onChanged: widget.onChanged,
       controller: controller,
       textAlign: widget.textAlign,
@@ -145,9 +152,11 @@ class _TableTextFieldState extends State<TableTextField> {
         hintText: widget.hintText,
         hintStyle: widget.hintStyle,
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: widget.activeBorderColor)),
+            borderRadius: BorderRadius.circular(3),
+            borderSide: BorderSide(width: 0.0, color: widget.activeBorderColor)),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(3), borderSide: BorderSide(width: 0.0, color: widget.activeBorderColor)),
+            borderRadius: BorderRadius.circular(3),
+            borderSide: BorderSide(width: 0.0, color: widget.activeBorderColor)),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(3),
             borderSide: BorderSide(width: 0.0, color: theme.outline.withOpacity(.2))),
@@ -157,7 +166,6 @@ class _TableTextFieldState extends State<TableTextField> {
         contentPadding: const EdgeInsets.all(2.0),
       ),
       style: TextStyle(fontSize: 11, fontFamily: 'NotoSans', color: widget.textColor),
-      keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false),
       inputFormatters: [
         FilteringTextInputFormatter.allow(RegExp(widget.floatingPoint ? r"[0-9.]" : r"[0-9]")),
         TextInputFormatter.withFunction(widget.floatingPoint ? floatFormatter : intFormatter),

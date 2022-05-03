@@ -10,7 +10,7 @@ import 'table.dart';
 import 'table_add_del_hover_button.dart';
 import 'table_text_field.dart';
 
-class TargetsTable extends StatelessWidget {
+class TargetsTable extends StatefulWidget {
   const TargetsTable({Key? key}) : super(key: key);
 
   static const colFlexs = [35, 8, 10, 10, 7, 10, 10, 7, 6];
@@ -19,6 +19,11 @@ class TargetsTable extends StatelessWidget {
   static const double padding = 8;
 
   @override
+  State<TargetsTable> createState() => _TargetsTableState();
+}
+
+class _TargetsTableState extends State<TargetsTable> {
+  @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     final controller = Provider.of<TargetsTableController>(context);
@@ -26,9 +31,9 @@ class TargetsTable extends StatelessWidget {
     Widget list;
     if (numItems == 0) {
       list = Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, TargetsTable.padding),
         child: SizedBox(
-            height: itemHeight,
+            height: TargetsTable.itemHeight,
             child: Center(
               child: Text("Use the search bar to find and add items to the build.",
                   style: TextStyle(fontFamily: '', fontSize: 15, color: theme.primary)),
@@ -37,10 +42,13 @@ class TargetsTable extends StatelessWidget {
     } else {
       list = ListView.builder(
         shrinkWrap: true,
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, padding),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, TargetsTable.padding),
         itemCount: numItems,
-        itemExtent: itemHeight,
-        itemBuilder: (_, index) => TargetsTableItem(row: controller.getRowData(index)),
+        itemExtent: TargetsTable.itemHeight,
+        itemBuilder: (_, index) => TargetsTableItem(
+          focusNode:controller.getRowData(index).focusNode,
+          key:ValueKey(controller.getRowData(index).tid),
+            row: controller.getRowData(index)),
       );
     }
     return TableContainer(
@@ -95,9 +103,10 @@ class TargetsTableHeader extends StatelessWidget {
 }
 
 class TargetsTableItem extends StatelessWidget {
-  const TargetsTableItem({required this.row, Key? key}) : super(key: key);
+  const TargetsTableItem({required this.row, Key? key, required this.focusNode}) : super(key: key);
 
   final TargetsRowData row;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +145,7 @@ class TargetsTableItem extends StatelessWidget {
             // wrap(1, child: TableTextField(activeBorderColor: theme.primary, onChanged: (int runs){})),
             MyTableCell(TargetsTable.colFlexs[1],
                 child: TableTextField(
+                  focusNode:focusNode,
                     initialText: row.runs.toString(),
                     activeBorderColor: theme.primary,
                     textColor: theme.onBackground,
