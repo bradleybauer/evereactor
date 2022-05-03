@@ -52,11 +52,11 @@ class SearchController with ChangeNotifier {
 
     // update profits
     for (int tid in _filteredIds) {
-      final halfVolume = _market.halfBuyVolume(tid);
-      final unitPrice = _market.avgSellToBuyItem(tid, halfVolume);
+      final volume = _market.buyVolume25Percent(tid);
+      final unitPrice = _market.avgSellToBuyItem(tid, volume);
       if (unitPrice >= 1) {
         final approximateRuns = min(100000, ceilDiv(200000000, SD.numProducedPerRun(tid)*unitPrice.ceil()));
-        final numProduced = min(halfVolume, SD.numProducedPerRun(tid) * approximateRuns);
+        final numProduced = min(volume, SD.numProducedPerRun(tid) * approximateRuns);
         int runs = ceilDiv(numProduced, SD.numProducedPerRun(tid));
 
         final totalSellValue =
@@ -66,8 +66,6 @@ class SearchController with ChangeNotifier {
         final profit = totalSellValue - cost;
         double percent = profit / cost;
         if ((!SD.isTech2(tid) && !SD.isTech1(tid)) || percent > 10 || !percent.isFinite || percent <= .009) {
-          if (SD.enName(tid).contains('Photonic Metamaterials'))
-            print('photonic:' + profit.toString());
           percent = double.negativeInfinity;
           runs = 1;
         }

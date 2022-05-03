@@ -160,7 +160,7 @@ class MarketController with ChangeNotifier {
 
   double avgSellToBuyItem(int tid, int quantity) => _market.avgSellToBuyItem(tid, quantity);
 
-  int halfBuyVolume(int tid) => _market.halfBuyVolume(tid);
+  int buyVolume25Percent(int tid) => _market.buyVolume25Percent(tid);
 
   void setOrderFilter(OrderFilter newFilter) {
     if (newFilter.getSystems().isEmpty) {
