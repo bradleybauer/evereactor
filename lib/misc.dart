@@ -93,36 +93,31 @@ String currencyFormatNumber(
   num isk, {
   bool roundFraction = true,
   bool removeZeroFractionFromString = true,
-  bool roundBigIskToMillions = true,
+  bool roundIfOverMillion = true,
+  bool roundIfOverHundredThousand = true,
   bool removeFraction = true,
 }) {
   if (!isk.isFinite) {
     return isk.toString();
   }
   String ret = '';
-  if (roundBigIskToMillions && isk.abs() > 0 && log10(isk.abs()).floor() >= 6) {
+  if (roundIfOverMillion && isk.abs() > 0 && log10(isk.abs()).floor() >= 6) {
     int rounded = (isk / pow(10, 6)).round().abs();
     ret = commaFormat(rounded) + 'm';
-  // } else if (roundBigIskToMillions && isk.abs() > 0) {
-  //   if (isk.abs() < 49999) {
-  //     return '0';
-  //   }
-  //   int rounded = (isk / pow(10, 6) * 10).round().abs();
-  //   String roundedStr = rounded.toString();
-  //   if (roundedStr.endsWith('0')) {
-  //     roundedStr = roundedStr[0];
-  //   }
-  //   ret = '0.' + roundedStr + 'm';
+  } else if (roundIfOverHundredThousand && isk.abs() > 0 && log10(isk.abs()).floor() >= 4) {
+    int rounded = (isk / pow(10, 3)).round().abs();
+    ret = commaFormat(rounded) + 'k';
   } else {
-    final fractionInt = roundFraction ? 0 : ((isk.abs() - isk.abs().truncate()) * 100).round();
+    final fractionInt = (roundFraction && isk.abs() >= 100) ? 0 : ((isk.abs() - isk.abs().truncate()) * 100).round();
     final fraction = fractionInt >= 10
         ? fractionInt.toString()
-        : fractionInt == 0 && removeZeroFractionFromString
+        : fractionInt == 0 && (removeZeroFractionFromString  && isk.abs() >= 100)
             ? ''
             : '0' + fractionInt.toString();
-    final whole = roundFraction ? isk.abs().round() : isk.abs().truncate();
+    final whole = (roundFraction && isk.abs() >= 100) ? isk.abs().round() : isk.abs().truncate();
     ret = commaFormat(whole);
-    if (fraction != '' && !removeFraction) {
+    if (fraction != '' && !(removeFraction && isk.abs() >=100)) {
+
       ret = ret + '.' + fraction;
     }
   }

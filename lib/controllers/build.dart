@@ -44,7 +44,7 @@ class Build with ChangeNotifier {
       _target2costShare = _getShares(tid2runs, problem);
 
       print(_schedule.toString());
-      print((_schedule!.time.toDouble() / (3600 * 24)));
+      print((_schedule.time.toDouble() / (3600 * 24)));
       // print('----------------------- BOM -------------------------');
       // _totalBOM.forEach((int tid, int needed) {
       //   print(SD.enName(tid) + ' : ' + needed.toString());

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../misc.dart';
 import '../math.dart';
+import '../misc.dart';
 import '../sde.dart';
 import '../sde_extra.dart';
 import '../strings.dart';
@@ -49,7 +49,7 @@ class InputsTableController with ChangeNotifier {
     }
 
     // TODO sort the data
-    _data.sort((a,b)=>b.totalCost.compareTo(a.totalCost));
+    _data.sort((a, b) => b.totalCost.compareTo(a.totalCost));
 
     if (notify) {
       notifyListeners();
@@ -62,8 +62,7 @@ class InputsTableController with ChangeNotifier {
     _Data x = _data[listIndex];
     final name = Strings.get(SDE.items[x.tid]!.nameLocalizations);
     final totalCost = currencyFormatNumber(x.totalCost);
-    final costPerUnit = currencyFormatNumber(x.costPerUnit,
-        roundBigIskToMillions: false, roundFraction: false, removeFraction: false, removeZeroFractionFromString: true);
+    final costPerUnit = currencyFormatNumber(x.costPerUnit);
     return InputsRowData(name, totalCost, costPerUnit);
   }
 }
