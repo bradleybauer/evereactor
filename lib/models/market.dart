@@ -12,15 +12,18 @@ class Market {
   Map<int, List<Order>> _orders = {};
   Map<int, _BuysSells> _filteredMarket = {};
   Map<int, double> _adjustedPrices = {};
-  DateTime? _orderFetchTime;
   OrderFilter _orderFilter = OrderFilter.acceptAll();
-
-  OrderFilter getOrderFilter() => _orderFilter;
 
   double? getAdjustedPrice(int tid) => _adjustedPrices[tid];
 
   void setAdjustedPrices(Map<int, double> prices) => _adjustedPrices = prices;
 
+  OrderFilter getOrderFilter() => _orderFilter;
+
+  void setOrderFilter(OrderFilter filter) {
+    _orderFilter = filter;
+    _filterMarket();
+  }
   void setOrders(Map<int, List<Order>> orders) {
     _orders = orders;
     _filterMarket();
@@ -44,13 +47,6 @@ class Market {
       _filteredMarket[id]!.sells.sort((a, b) => a.price.compareTo(b.price));
     }
   }
-
-  void setMarketFilter(OrderFilter filter) {
-    _orderFilter = filter;
-    _filterMarket();
-  }
-
-  void setOrderFetchTime(DateTime dateTime) => _orderFetchTime = dateTime;
 
   // returns infinity if quantity of id is not available on market
   double avgBuyFromSellItem(int id, int quantity) {
@@ -118,7 +114,7 @@ class Market {
     return avgPrices;
   }
 
-  Map<int,double> getAdjustedPrices() => {..._adjustedPrices};
+  Map<int, double> getAdjustedPrices() => {..._adjustedPrices};
 
   int buyVolume25Percent(int tid) {
     int units = 0;
@@ -129,18 +125,4 @@ class Market {
     }
     return units ~/ 4;
   }
-
-// double maxBuy(int id) {
-//   if (_filteredMarket[id]!.buys.isEmpty) {
-//     return double.negativeInfinity;
-//   }
-//   return _filteredMarket[id]!.buys[0].price;
-// }
-//
-// double minSell(int id) {
-//   if (_filteredMarket[id]!.sells.isEmpty) {
-//     return double.infinity;
-//   }
-//   return _filteredMarket[id]!.sells[0].price;
-// }
 }

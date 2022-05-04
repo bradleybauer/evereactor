@@ -37,7 +37,6 @@ class TargetsTableController with ChangeNotifier {
   TargetsTableController(this._market, this._build, this._buildItems, this._options, Strings strings) {
     _market.addListener(_handleModelChange);
     _build.addListener(_handleModelChange);
-    // _options.addListener(_handleModelChange);
     strings.addListener(notifyListeners);
 
     _handleModelChange(notify: false);
@@ -50,7 +49,6 @@ class TargetsTableController with ChangeNotifier {
     final bom = _build.getBOM();
     final bomCostsPerUnit = _market.avgBuyFromSell(bom);
     final bomCosts = prod(bom, bomCostsPerUnit);
-    // so how do i share job cost between items? grrr.
     for (int tid in targetIds) {
       final runs = _buildItems.getTargetRuns(tid);
       final qty = runs * SD.numProducedPerRun(tid);

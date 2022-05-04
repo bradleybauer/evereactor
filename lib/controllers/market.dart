@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import '../models/market.dart';
 import '../models/market_order.dart';
 import '../models/order_filter.dart';
+import '../persistence/persistence.dart';
 import '../sde.dart';
 
 enum EsiState {
@@ -15,13 +16,22 @@ enum EsiState {
 }
 
 class MarketController with ChangeNotifier {
-  // final CacheDatabaseController _cache;
-
+  final Persistence _persistence;
   final Market _market = Market();
 
   EsiState _esiState = EsiState.Idle;
 
-  // MarketController(this._cache);
+  MarketController(this._persistence);
+
+  Future<void> loadFromCache() async {
+    final adjustedPrices = await _persistence.getAdjustedPrices();
+    final orders = await _persistence.getOrders();
+    final orderFilter = await _persistence.getOrderFilter();
+    _market.setAdjustedPrices(adjustedPrices);
+    _market.setOrders(orders);
+    _market.setOrderFilter(orderFilter);
+    notifyListeners();
+  }
 
   Future<void> updateMarketData({required void Function(double) progressCallback}) async {
     _esiState = EsiState.CurrentlyFetchingData;
@@ -31,14 +41,15 @@ class MarketController with ChangeNotifier {
     Map<int, double> adjustedPrices = await _fetchAdjustedPrices();
 
     _market.setAdjustedPrices(adjustedPrices);
+    _persistence.setAdjustedPrices(adjustedPrices);
     _market.setOrders(orders);
+    _persistence.setOrders(orders);
 
     // TODO market data is cached every 300 seconds on esi server... so only allow updating once every 300 seconds.
     // _market.setOrderFetchTime(DateTime.now());
 
-    // _cache.setMarket(market);
-
     _esiState = EsiState.Idle;
+
     notifyListeners();
   }
 
@@ -156,7 +167,7 @@ class MarketController with ChangeNotifier {
 
   Map<int, double> avgBuyFromSell(Map<int, int> bom) => _market.avgBuyFromSell(bom);
 
-  double avgBuyFromSellItem(int id, int quantity) => _market.avgBuyFromSellItem(id,quantity);
+  double avgBuyFromSellItem(int id, int quantity) => _market.avgBuyFromSellItem(id, quantity);
 
   double avgSellToBuyItem(int tid, int quantity) => _market.avgSellToBuyItem(tid, quantity);
 
@@ -166,7 +177,8 @@ class MarketController with ChangeNotifier {
     if (newFilter.getSystems().isEmpty) {
       newFilter = OrderFilter.acceptAll();
     }
-    _market.setMarketFilter(newFilter);
+    _persistence.setOrderFilter(newFilter);
+    _market.setOrderFilter(newFilter);
     notifyListeners();
   }
 

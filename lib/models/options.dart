@@ -1,5 +1,5 @@
-import 'industry_type.dart';
 import '../sde.dart';
+import 'industry_type.dart';
 
 class Options {
   int _reactionSlots = 60;
@@ -10,15 +10,12 @@ class Options {
   double _reactionsSystemCostIndex = .1;
   double _manufacturingSystemCostIndex = .1;
   double _salesTaxPercent = 0;
-  int _manufacturingStructure =
-      SDE.structures.entries.where((e) => e.value.industryType == IndustryType.MANUFACTURING).first.key;
-  int _reactionStructure =
-      SDE.structures.entries.where((e) => e.value.industryType == IndustryType.REACTION).first.key;
+  int _manufacturingStructure = SDE.structures.entries.where((e) => e.value.industryType == IndustryType.MANUFACTURING).first.key;
+  int _reactionStructure = SDE.structures.entries.where((e) => e.value.industryType == IndustryType.REACTION).first.key;
 
   final Map<int, int> _skill2level = {};
   final List<int> _manufacturingRigs = [];
   final List<int> _reactionRigs = [];
-  final Set<int> _systems = {};
 
   void setAllSkillLevels(int level) => SDE.skills.keys.forEach((int tid) => _skill2level[tid] = level);
 
@@ -30,6 +27,8 @@ class Options {
     }
     return _skill2level[tid]!;
   }
+
+  Map<int, int> getSkill2LevelCopy() => {..._skill2level};
 
   int getReactionSlots() => _reactionSlots;
 
@@ -61,7 +60,7 @@ class Options {
 
   double getSalesTaxPercent() => _salesTaxPercent;
 
-  void setSalesTax(double tax) => _salesTaxPercent = tax;
+  void setSalesTaxPercent(double tax) => _salesTaxPercent = tax;
 
   int getManufacturingStructure() => _manufacturingStructure;
 
@@ -84,6 +83,7 @@ class Options {
   void removeReactionRig(int i) => _reactionRigs.removeAt(i);
 
   int getNumSelectedManufacturingRigs() => _manufacturingRigs.length;
+
   int getNumSelectedReactionRigs() => _reactionRigs.length;
 
 }

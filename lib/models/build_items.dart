@@ -130,8 +130,7 @@ class BuildItems {
   }
 
   // Return ids of all items that could be built in the build. (inventory may still elide building of items)
-  Set<int> getItemsInBuild() =>
-      _tid2shouldBuild.keys.where((k) => _tid2shouldBuild[k]!).toSet().union(_tid2runs.keys.toSet());
+  Set<int> getItemsInBuild() => _tid2shouldBuild.keys.where((k) => _tid2shouldBuild[k]!).toSet().union(_tid2runs.keys.toSet());
 
   void setRuns(int tid, int runs) => _tid2runs[tid] = runs;
 
@@ -182,4 +181,6 @@ class BuildItems {
   bool getShouldBuild(int tid) => !_tid2shouldBuild.containsKey(tid) || _tid2shouldBuild[tid]!;
 
   Map<int, bool> getAllShouldBuildCopy() => {..._tid2shouldBuild};
+
+  Map<int, BpOptions> getBpOptionsCopy() => {..._tid2bpOps};
 }

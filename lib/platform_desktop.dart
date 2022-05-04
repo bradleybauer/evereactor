@@ -11,6 +11,7 @@ import '../gui/my_theme.dart';
 
 class Platform {
   static QueryExecutor createDatabaseConnection(String databaseName) {
+    print('desktop code wtf');
     return LazyDatabase(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       // for (var folder in await dbFolder.list().toList()) {
@@ -29,7 +30,7 @@ class Platform {
     doWhenWindowReady(() {
       final win = appWindow;
       win.alignment = Alignment.centerRight;
-      win.title = "EveIndy";
+      win.title = "My Little Reactor";
       // TODO(desktop) I am pretty sure this has to do with resize handle sizes in bitsdojo_window.
       // If it is not added then the app (according to DevTools) has width < MyTheme.appWidth.
       // TODO(desktop) if display reduces during runtime then the widgets overflow. Has something

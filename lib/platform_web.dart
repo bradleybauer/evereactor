@@ -9,13 +9,16 @@ import 'package:flutter/widgets.dart';
 
 class Platform {
   static QueryExecutor createDatabaseConnection(String databaseName) {
+    print('statically creating database connection');
     return LazyDatabase(() async {
       return _connectToWorker(databaseName).executor;
     });
   }
 
   static DatabaseConnection _connectToWorker(String databaseName) {
-    final worker = SharedWorker(kReleaseMode ? 'cacheDbWorker.dart.min.js' : 'cacheDbWorker.dart.js', databaseName);
+    final script = kReleaseMode ? 'persistenceWorker.dart.min.js' : 'persistenceWorker.dart.js';
+    print('connect to database:' + databaseName + ' script:' +script);
+    final worker = SharedWorker(script, databaseName);
     return remote(worker.port!.channel());
   }
 

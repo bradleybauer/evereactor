@@ -43,8 +43,8 @@ class Build with ChangeNotifier {
       _totalBOM = _getTotalBOM(tid2runs, problem);
       _target2costShare = _getShares(tid2runs, problem);
 
-      print(_schedule.toString());
-      print((_schedule.time.toDouble() / (3600 * 24)));
+      // print(_schedule.toString());
+      // print((_schedule.time.toDouble() / (3600 * 24)));
       // print('----------------------- BOM -------------------------');
       // _totalBOM.forEach((int tid, int needed) {
       //   print(SD.enName(tid) + ' : ' + needed.toString());
@@ -229,52 +229,3 @@ class Build with ChangeNotifier {
   double getTime() => _schedule.time;
 }
 
-/*
-class ChainProcessor {
-  var _arg = '';
-  var didUpdateArg = false;
-  bool isComputing = false;
-
-  Future<void> _computation(arg) async {
-    print('Computation('+arg+') start');
-    await Future.delayed(const Duration(seconds: 3));
-    print('Computation('+arg+') done');
-  }
-
-  void chain() async {
-    do {
-      didUpdateArg = false;
-      await _computation(_arg);
-    } while (didUpdateArg);
-    isComputing = false;
-  }
-
-  void compute(nextarg) {
-    _arg = nextarg;
-    if (!isComputing) {
-      isComputing = true;
-      chain();
-    } else {
-      didUpdateArg = true;
-    }
-  }
-}
-
-Future<void> main() async {
-  final processor = ChainProcessor();
-
-  // initial computation request
-  processor.compute('1');
-
-  // new computation requests with different arguments
-  Future.delayed(const Duration(seconds: 1), () => processor.compute('2'));
-  Future.delayed(const Duration(milliseconds: 1500), () => processor.compute('3'));
-
-  // but only the argument in the most recent request is computed
-  Future.delayed(const Duration(milliseconds: 1600), () => processor.compute('4'));
-
-  // when no computation is being done, more chains can be started
-  Future.delayed(const Duration(seconds: 11), () => processor.compute('5'));
-  Future.delayed(const Duration(seconds: 12), () => processor.compute('6'));
-}
- */

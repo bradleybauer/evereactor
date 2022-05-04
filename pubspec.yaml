@@ -59,8 +59,7 @@ dev_dependencies:
     sdk: flutter
 
   build_runner: ^2.1.8
-  build_web_compilers: ^3.2.2
-
+  build_web_compilers: ^3.2.1
   drift_dev: ^1.5.1
 
   # The "flutter_lints" package below contains a set of recommended lints to

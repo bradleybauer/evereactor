@@ -120,7 +120,7 @@ class AppSection extends StatelessWidget {
         const SizedBox(width: itemPadding),
         Text('Colors', style: style),
         const SizedBox(width: itemPadding),
-        LightDarkModeButtons(light: !theme.isDark, color: color, base: base, onTap: theme.toggleLightDark),
+        LightDarkModeButtons(light: !theme.isDark(), color: color, base: base, onTap: theme.toggleDarkMode),
         const SizedBox(width: itemPadding),
         ColorChanger(flyoutController, color, base),
       ],
@@ -380,7 +380,7 @@ class CostsSection extends StatelessWidget {
           floatingPoint: true,
           maxNumDigits: 4,
           width: 32,
-          onChanged: (t) => controller.setSalesTax(t == '' ? 0 : double.parse(t)),
+          onChanged: (t) => controller.setSalesTaxPercent(t == '' ? 0 : double.parse(t)),
         ),
       ],
     );
@@ -629,7 +629,7 @@ class _ColorChangerState extends State<ColorChanger> {
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     return Flyout(
-        content: (ctx) => ColorChangerContent((Color c) => Provider.of<MyTheme>(ctx, listen: false).setColor(c)),
+        content: (ctx) => ColorChangerContent((Color c) => Provider.of<MyTheme>(ctx, listen: false).updateColors(c)),
         child: MouseRegion(
           onExit: (_) => controller.startCloseTimer(),
           child: HoverButton(

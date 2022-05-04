@@ -1,21 +1,46 @@
 import 'package:flutter/material.dart';
 
+import '../chain_processor.dart';
+import '../pair.dart';
+import '../persistence/persistence.dart';
+
 // https://m3.material.io/styles/color/the-color-system/key-colors-tones
 class MyTheme with ChangeNotifier {
-  MyTheme() {
-    setColor(const Color.fromARGB(255, 184, 91, 91), notify:false);
+  final Persistence _persistence;
+  final ChainProcessor _chainProcessor;
+
+  MyTheme(this._persistence)
+      : _chainProcessor = ChainProcessor((pair) async {
+          final inDarkMode = pair.first;
+          final seedColor = pair.second;
+          await _persistence.setIsDarkMode(inDarkMode);
+          await _persistence.setColor(seedColor);
+        }, maxFrequency: const Duration(milliseconds: 500)) {
+    updateColors(_seedColor, notify: false,updateCache: false);
+  }
+
+  Future<void> loadFromCache() async {
+    print('load from cache');
+    _inDarkMode = await _persistence.getIsDarkMode();
+    print('dark mode');
+    updateColors(await _persistence.getColor(), updateCache: false);
+    print('update colors');
   }
 
   bool _inDarkMode = true;
-  late Color _seedColor;
+
+  bool isDark() => _inDarkMode;
+
+  late Color _seedColor = Color.fromARGB(255, 184, 91, 91);
+
+  Color getColor() => _seedColor;
+
   // Return the Material Design 3 color scheme generated from [_seedColor].
   // static ColorScheme get colors => ColorScheme.fromSeed(seedColor: _seedColor, brightness: _inDarkMode ? Brightness.dark : Brightness.light);
   late ColorScheme _colors;
 
   // This one line is why the TextField outline border changes to a nice color when clicked. Nice!
   ThemeData theme = ThemeData.from(colorScheme: ColorScheme.fromSeed(seedColor: Colors.black)).copyWith(useMaterial3: true);
-
-  get isDark => _inDarkMode;
 
   Color primary = Colors.black;
   Color onPrimary = Colors.black;
@@ -42,18 +67,15 @@ class MyTheme with ChangeNotifier {
   Color outline = Colors.black;
   Color shadow = Colors.black;
 
-  void toggleLightDark() {
+  void toggleDarkMode() {
     _inDarkMode = !_inDarkMode;
-    setColor(_seedColor);
+    updateColors(_seedColor, updateCache: false);
+    _chainProcessor.compute(Pair(first: _inDarkMode, second: _seedColor));
   }
 
-  Color getColor() => _seedColor;
-
-  void setColor(Color color,{bool notify=true}) {
-    // _inDarkMode = !_inDarkMode;
+  void updateColors(Color color, {bool notify = true, updateCache = true}) {
     _seedColor = color;
-    _colors =
-        ColorScheme.fromSeed(seedColor: _seedColor, brightness: _inDarkMode ? Brightness.dark : Brightness.light);
+    _colors = ColorScheme.fromSeed(seedColor: _seedColor, brightness: _inDarkMode ? Brightness.dark : Brightness.light);
     theme = ThemeData.from(colorScheme: _colors).copyWith(useMaterial3: true);
     primary = _colors.primary;
     onPrimary = _colors.onPrimary;
@@ -81,6 +103,9 @@ class MyTheme with ChangeNotifier {
     shadow = _colors.shadow;
     if (notify) {
       notifyListeners();
+    }
+    if (updateCache) {
+      _chainProcessor.compute(Pair(first: _inDarkMode, second: _seedColor));
     }
   }
 

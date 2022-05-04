@@ -1,19 +1,62 @@
 import 'dart:math';
 
+import 'package:EveIndy/chain_processor.dart';
 import 'package:flutter/material.dart';
 
 import '../models/bonus_type.dart';
 import '../models/industry_type.dart';
 import '../models/options.dart';
+import '../persistence/persistence.dart';
 import '../sde.dart';
 import '../strings.dart';
 
 class OptionsController extends Options with ChangeNotifier {
-  OptionsController(Strings strings) {
+  final Persistence _persistence;
+
+  OptionsController(this._persistence, Strings strings) {
+    chainProcessor = ChainProcessor((_) async => await _updateCache(), maxFrequency: const Duration(milliseconds: 500));
     strings.addListener(notify);
   }
 
-  void notify() => notifyListeners();
+  Future<void> loadFromCache() async {
+    Options? options = await _persistence.getOptions();
+    if (options != null) {
+      super.setReactionSlots(options.getReactionSlots());
+      super.setManufacturingSlots(options.getManufacturingSlots());
+      super.setME(options.getME());
+      super.setTE(options.getTE());
+      super.setMaxNumBlueprints(options.getMaxNumBlueprints());
+      super.setReactionSystemCostIndex(options.getReactionSystemCostIndex());
+      super.setManufacturingSystemCostIndex(options.getManufacturingSystemCostIndex());
+      super.setSalesTaxPercent(options.getSalesTaxPercent());
+      super.setManufacturingStructure(options.getManufacturingStructure());
+      super.setReactionStructure(options.getReactionStructure());
+    }
+    (await _persistence.getSkills2Level()).forEach((tid, level) {
+      super.setSkillLevel(tid, level);
+    });
+    (await _persistence.getManufacturingRigs()).forEach((tid) {
+      super.addManufacturingRig(tid);
+    });
+    (await _persistence.getReactionRigs()).forEach((tid) {
+      super.addReactionRig(tid);
+    });
+    notifyListeners();
+  }
+
+  late final ChainProcessor chainProcessor;
+
+  Future<void> _updateCache() async {
+    await _persistence.setOptions(this);
+    await _persistence.setSkills2Level(getSkill2LevelCopy());
+    await _persistence.setManufacturingRigs(getSelectedManufacturingRigs().map((e) => e.tid).toSet());
+    await _persistence.setReactionRigs(getSelectedReactionRigs().map((e) => e.tid).toSet());
+  }
+
+  void notify() {
+    chainProcessor.compute();
+    notifyListeners();
+  }
 
   @override
   void setAllSkillLevels(int level) {
@@ -35,9 +78,7 @@ class OptionsController extends Options with ChangeNotifier {
                         : 1)
                 : 1);
       });
-    return skills
-        .map((e) => SkillsData(e.key, Strings.get(e.value.nameLocalizations), super.getSkillLevel(e.key)))
-        .toList();
+    return skills.map((e) => SkillsData(e.key, Strings.get(e.value.nameLocalizations), super.getSkillLevel(e.key))).toList();
   }
 
   @override
@@ -97,9 +138,9 @@ class OptionsController extends Options with ChangeNotifier {
   }
 
   @override
-  void setSalesTax(double tax) {
+  void setSalesTaxPercent(double tax) {
     tax = min(10, max(0, tax));
-    super.setSalesTax(tax);
+    super.setSalesTaxPercent(tax);
     notify();
   }
 
@@ -111,8 +152,7 @@ class OptionsController extends Options with ChangeNotifier {
       .where((e) => e.value.industryType == IndustryType.REACTION)
       .map((e) => StructureData(e.key, Strings.get(e.value.nameLocalizations)));
 
-  String getSelectedManufacturingStructureName() =>
-      Strings.get(SDE.structures[super.getManufacturingStructure()]!.nameLocalizations);
+  String getSelectedManufacturingStructureName() => Strings.get(SDE.structures[super.getManufacturingStructure()]!.nameLocalizations);
 
   int getSelectedManufacturingStructureTid() => super.getManufacturingStructure();
 
@@ -122,10 +162,9 @@ class OptionsController extends Options with ChangeNotifier {
     notify();
   }
 
-  String getSelectedReactionStructureName() =>
-      Strings.get(SDE.structures[super.getReactionStructure()]!.nameLocalizations);
+  String getSelectedReactionStructureName() => Strings.get(SDE.structures[super.getReactionStructure()]!.nameLocalizations);
 
-  int getSelectedReactionStructureTid() =>super.getReactionStructure();
+  int getSelectedReactionStructureTid() => super.getReactionStructure();
 
   @override
   void setReactionStructure(int tid) {
@@ -183,8 +222,7 @@ class OptionsController extends Options with ChangeNotifier {
 
   double? getManufacturingCostBonus() => SDE.structures[super.getManufacturingStructure()]!.bonuses[BonusType.COST];
 
-  List<LangData> getLangs() =>
-      Strings.langNames.entries.map((e) => LangData(e.key, Strings.get(Strings.langNames[e.key]!))).toList();
+  List<LangData> getLangs() => Strings.langNames.entries.map((e) => LangData(e.key, Strings.get(Strings.langNames[e.key]!))).toList();
 
   String getLangName() => Strings.get(Strings.langNames[Strings.getLang()]!);
 }

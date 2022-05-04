@@ -4,32 +4,21 @@ import 'package:provider/provider.dart';
 import 'controllers/controllers.dart';
 import 'gui/main.dart';
 import 'gui/my_theme.dart';
+import 'persistence/persistence.dart';
 import 'platform.dart';
 import 'strings.dart';
 
 Future<void> main() async {
-  // final cacheDbController = Persistence
+  print('in dart code');
+  final persistence = Persistence();
 
-  // Make models
-  // Make controllers & load model data from cache through them
-  // Info loaded from cache is market, orderfilter, context, lines&runs, inventory
-  // final market = MarketController(market, cacheDbContro
-  // await marketController.loadFromCache
-
-  // final buildController = BuildController(Build(eveBuildContext), cacheDbCon
-  // await buildController.loadFromCache
-
-  // final eveBuildContextController = EveBuildContextController(eveBuildContext, cacheDbCon
-  // await eveBuildContextController.loadFromCache(buildContro
-
-  // Some change notifiers and widgets want to be notified when the language changes
-  final MyTheme myTheme = MyTheme();
+  final MyTheme myTheme = MyTheme(persistence);
   final Strings strings = Strings();
 
-  final market = MarketController();
+  final market = MarketController(persistence);
   final inventory = InventoryController();
-  final options = OptionsController(strings);
-  final buildItems = BuildItemsController();
+  final options = OptionsController(persistence, strings);
+  final buildItems = BuildItemsController(persistence);
   final build = Build(inventory, options, buildItems);
   final basicBuild = BasicBuild(options, buildItems);
   final targetsTableController = TargetsTableController(market, build, buildItems, options, strings);
@@ -37,6 +26,15 @@ Future<void> main() async {
   final inputsTableController = InputsTableController(market, build, strings);
   final searchController = SearchController(market, buildItems, basicBuild, options, strings);
   final summaryController = SummaryController(market, buildItems, build, options, strings);
+
+  print('finished building everything');
+
+  print('attempting to access database');
+  await myTheme.loadFromCache();
+  print('yay');
+  await options.loadFromCache();
+  await market.loadFromCache();
+  await buildItems.loadFromCache();
 
   Platform.appReadyHook();
 

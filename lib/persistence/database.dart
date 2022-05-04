@@ -4,19 +4,37 @@ import 'package:drift/drift.dart';
 // but it's needed for drift to know about the generated code
 part 'database.g.dart';
 
-@DataClassName("ReactionsCacheEntry")
-class ReactionsCache extends Table {
+@DataClassName("TargetsCacheEntry")
+class TargetsCache extends Table {
   IntColumn get id => integer()();
+
   IntColumn get runs => integer()();
-  IntColumn get lines => integer()();
 
   @override
   Set<Column> get primaryKey => {id};
 }
 
-@DataClassName("IntermediatesToBuyCacheEntry")
-class IntermediatesToBuyCache extends Table {
+@DataClassName("ItemBpOptionsCacheEntry")
+class ItemBpOptionsCache extends Table {
   IntColumn get id => integer()();
+
+  IntColumn get ME => integer().nullable()();
+
+  IntColumn get TE => integer().nullable()();
+
+  IntColumn get MaxRuns => integer().nullable()();
+
+  IntColumn get MaxBps => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName("ShouldBuildCacheEntry")
+class ShouldBuildCache extends Table {
+  IntColumn get id => integer()();
+
+  BoolColumn get shouldBuild => boolean()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -25,6 +43,7 @@ class IntermediatesToBuyCache extends Table {
 @DataClassName("InventoryCacheEntry")
 class InventoryCache extends Table {
   IntColumn get id => integer()();
+
   IntColumn get quantity => integer()();
 
   @override
@@ -34,44 +53,118 @@ class InventoryCache extends Table {
 @DataClassName("MarketOrdersCacheEntry")
 class MarketOrdersCache extends Table {
   IntColumn get id => integer().autoIncrement()();
+
   IntColumn get typeID => integer()();
+
   IntColumn get systemID => integer()();
+
   IntColumn get regionID => integer()();
+
   BoolColumn get isBuy => boolean()();
+
   RealColumn get price => real()();
+
   IntColumn get volumeRemaining => integer()();
 }
 
-@DataClassName("BuyOrderFilterCacheEntry")
-class BuyOrderFilterCache extends Table {
+@DataClassName("AdjustedPricesCacheEntry")
+class AdjustedPricesCache extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get systemId => integer()();
+
+  IntColumn get typeID => integer()();
+
+  RealColumn get price => real()();
 }
 
-@DataClassName("SellOrderFilterCacheEntry")
-class SellOrderFilterCache extends Table {
+@DataClassName("OptionsCacheEntry")
+class OptionsCache extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get systemId => integer()();
-}
 
-@DataClassName("EveBuildContextCacheEntry")
-class EveBuildContextCache extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get reactionsSkillLevel => integer()();
-  RealColumn get structureMaterialBonus => real()();
-  RealColumn get structureTimeBonus => real()();
-  RealColumn get systemCostIndex => real()();
+  IntColumn get reactionJobs => integer()();
+
+  IntColumn get manufacturingJobs => integer()();
+
+  IntColumn get ME => integer()();
+
+  IntColumn get TE => integer()();
+
+  IntColumn get MaxBps => integer()();
+
+  IntColumn get manufacturingStructure => integer()();
+
+  IntColumn get reactionStructure => integer()();
+
+  RealColumn get reactionCostIndex => real()();
+
+  RealColumn get manufacturingCostIndex => real()();
+
   RealColumn get salesTaxPercent => real()();
 }
 
+@DataClassName("SkillsLevelCacheEntry")
+class SkillsLevelCache extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get skillId => integer()();
+
+  IntColumn get level => integer()();
+}
+
+@DataClassName("ManufacturingRigsCacheEntry")
+class ManufacturingRigsCache extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get tid => integer()();
+}
+
+@DataClassName("ReactionRigsCacheEntry")
+class ReactionRigsCache extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get tid => integer()();
+}
+
+@DataClassName("OrderFilterCacheEntry")
+class OrderFilterCache extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get systemId => integer()();
+}
+
+// @DataClassName("SelectedLanguageCache")
+// class SelectedLanguageCache extends Table {
+//   IntColumn get id => integer().autoIncrement()();
+//   IntColumn get selectedLanguage => integer()();
+// }
+
+@DataClassName("DarkModeCacheEntry")
+class DarkModeCache extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  BoolColumn get isDarkMode => boolean()();
+}
+
+@DataClassName("ColorCacheEntry")
+class ColorCache extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get color => integer()();
+}
+
 @DriftDatabase(tables: [
-  ReactionsCache,
-  IntermediatesToBuyCache,
+  TargetsCache,
+  ItemBpOptionsCache,
+  ShouldBuildCache,
   InventoryCache,
   MarketOrdersCache,
-  BuyOrderFilterCache,
-  SellOrderFilterCache,
-  EveBuildContextCache
+  AdjustedPricesCache,
+  OrderFilterCache,
+  OptionsCache,
+  SkillsLevelCache,
+  ManufacturingRigsCache,
+  ReactionRigsCache,
+  DarkModeCache,
+  ColorCache,
 ])
 class CacheDatabase extends _$CacheDatabase {
   CacheDatabase(QueryExecutor e) : super(e);
