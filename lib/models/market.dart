@@ -21,6 +21,9 @@ class Market {
   OrderFilter getOrderFilter() => _orderFilter;
 
   void setOrderFilter(OrderFilter filter) {
+    if (filter.getSystems().isEmpty) {
+      filter = OrderFilter.acceptAll();
+    }
     _orderFilter = filter;
     _filterMarket();
   }
