@@ -1,1 +1,0 @@
-flutter run -d chrome --web-renderer canvaskit --release

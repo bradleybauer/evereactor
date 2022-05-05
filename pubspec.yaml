@@ -24,13 +24,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  drift: ^1.5.0
+  drift: ^1.6.0
   http: ^0.13.4
   path: ^1.8.0
   path_provider: ^2.0.9
   provider: ^6.0.2
   sqlite3_flutter_libs: ^0.5.4
-  tuple: ^2.0.0
   bitsdojo_window:
     git:
       url: https://github.com/TFSThiagoBR98/bitsdojo_window.git

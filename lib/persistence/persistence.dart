@@ -9,7 +9,7 @@ import '../platform_stub.dart' if (dart.library.io) '../platform_desktop.dart' i
 import 'database.dart';
 
 class Persistence {
-  final CacheDatabase cache = CacheDatabase(Platform.createDatabaseConnection('MyLittleReactorCache'));
+  final CacheDatabase cache = CacheDatabase(Platform.createDatabaseConnection('EveReactorCache'));
 
   Future<void> _clearCache(table) async {
     await cache.delete(table).go();
@@ -213,7 +213,8 @@ class Persistence {
   }
 
   Future<bool> getIsDarkMode() async {
-    final rows = await cache.select(cache.darkModeCache).get();
+    final statement = cache.select(cache.darkModeCache);
+    final rows = await statement.get();
     if (rows.isEmpty) {
       return false;
     }

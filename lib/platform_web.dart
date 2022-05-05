@@ -2,33 +2,31 @@
 import 'dart:html';
 
 import 'package:drift/drift.dart';
-import 'package:drift/remote.dart';
-import 'package:drift/web.dart';
-import 'package:flutter/foundation.dart';
+import 'package:drift/wasm.dart';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
+import 'package:sqlite3/wasm.dart';
 
 class Platform {
   static QueryExecutor createDatabaseConnection(String databaseName) {
-    print('statically creating database connection');
     return LazyDatabase(() async {
-      return _connectToWorker(databaseName).executor;
-    });
-  }
+      // Load wasm bundle
+      final response = await http.get(Uri.parse('sqlite3.wasm'));
+      // Create a virtual file system backed by IndexedDb with everything in
+      // `/drift/my_app/` being persisted.
+      final fs = await IndexedDbFileSystem.open(dbName: databaseName);
+      final sqlite3 = await WasmSqlite3.load(
+        response.bodyBytes,
+        SqliteEnvironment(fileSystem: fs),
+      );
 
-  static DatabaseConnection _connectToWorker(String databaseName) {
-    final script = kReleaseMode ? 'persistenceWorker.dart.min.js' : 'persistenceWorker.dart.js';
-    print('connect to database:' + databaseName + ' script:' +script);
-    final worker = SharedWorker(script, databaseName);
-    return remote(worker.port!.channel());
+      // Then, open a database inside that persisted folder.
+      return WasmDatabase(sqlite3: sqlite3, path: '/drift/evereactor/' + databaseName + '.db');
+    });
   }
 
   static void appReadyHook() {
     querySelector("#loader")?.remove();
-    // or
-    // Future.delayed(const Duration(seconds: 2), () {
-    //   // remove loader
-    //   querySelector("#loader")?.remove();
-    // });
   }
 
   static void closeWindow() {}

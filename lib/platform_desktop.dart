@@ -11,7 +11,6 @@ import '../gui/my_theme.dart';
 
 class Platform {
   static QueryExecutor createDatabaseConnection(String databaseName) {
-    print('desktop code wtf');
     return LazyDatabase(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       // for (var folder in await dbFolder.list().toList()) {

@@ -170,10 +170,17 @@ class CacheDatabase extends _$CacheDatabase {
   CacheDatabase(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
-  MigrationStrategy get migration => MigrationStrategy(onCreate: (m) async {
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
         await m.createAll(); // create all tables
-      });
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        await m.createAll();
+      }
+    );
+  }
 }
