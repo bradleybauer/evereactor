@@ -133,6 +133,7 @@ class MarketController with ChangeNotifier {
         (page ?? 1).toString());
   }
 
+  // static int xxx = 0; // there are about 161k orders that I accept
   Map<int, List<Order>> _getOrdersFromPage(int region, data) {
     final ret = <int, List<Order>>{};
     for (var x in data) {
@@ -147,9 +148,22 @@ class MarketController with ChangeNotifier {
         continue;
       }
 
-      if (!ret.containsKey(tid)) ret[tid] = [];
-      ret[tid]!.add(Order(tid, system, region, x['is_buy_order'], x['price'], x['volume_remain']));
+      final volume = x['volume_remain'] as int;
+      if (volume == 0) {
+        continue;
+      }
+      final price = x['price'] as double;
+      if (price == 0.0) {
+        continue;
+      }
+      final isBuy = x['is_buy_order'] as bool;
+      if (!ret.containsKey(tid)) {
+        ret[tid] = [];
+      }
+      // xxx += 1;
+      ret[tid]!.add(Order(tid, system, region, isBuy, price, volume));
     }
+    // print(xxx);
     return ret;
   }
 
