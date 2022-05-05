@@ -170,7 +170,7 @@ class CacheDatabase extends _$CacheDatabase {
   CacheDatabase(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration {
