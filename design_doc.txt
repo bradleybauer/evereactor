@@ -34,14 +34,7 @@ TODO don't forget about dart super parameters.
 
 TODO unicode normalize search strings in search bar?
 
-TODO app name is in web/persistenceWebWorker.dart and in lib\persistence\cache_adapter.dart
-
 TODO update the SDE data due to eve's new game update... need an automatic way to do this.
-
-add a fuckin terry davis easter egg in here somewhere
-
-What is build.yaml again? How does that work?
-Automate the "code generation" for drift.
 
 use canvaskit webrenderer
 https://docs.flutter.dev/development/tools/web-renderers

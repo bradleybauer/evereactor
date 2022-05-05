@@ -1,6 +1,6 @@
 {
-    "name": "EveIndy",
-    "short_name": "EveIndy",
+    "name": "EveReactor",
+    "short_name": "EveReactor",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
