@@ -9,7 +9,6 @@ import 'platform.dart';
 import 'strings.dart';
 
 Future<void> main() async {
-  print('in dart code');
   final persistence = Persistence();
 
   final MyTheme myTheme = MyTheme(persistence);
@@ -27,11 +26,7 @@ Future<void> main() async {
   final searchController = SearchController(market, buildItems, basicBuild, options, strings);
   final summaryController = SummaryController(market, buildItems, build, options, strings);
 
-  print('finished building everything');
-
-  print('attempting to access database');
   await myTheme.loadFromCache();
-  print('yay');
   await options.loadFromCache();
   await market.loadFromCache();
   await buildItems.loadFromCache();

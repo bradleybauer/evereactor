@@ -1,48 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <base href="$FLUTTER_BASE_HREF">
+    <base href="$FLUTTER_BASE_HREF">
 
-  <link rel="stylesheet" type="text/css" href="loader.css">
+    <link rel="stylesheet" type="text/css" href="loader.css">
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A reaction calculator for eve online.">
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="A reaction calculator for eve online.">
 
-  <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="My Little Reactor">
-  
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="My Little Reactor">
 
-  <!-- Main Favicon -->
-  <link rel="icon" type="image/pg" href="favicon/png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
 
-  <title>My Little Reactor</title>
-  <link rel="manifest" href="manifest.json">
+    <!-- Main Favicon -->
+    <link rel="icon" type="image/pg" href="favicon/png"/>
 
-  <!-- <script src="https://unpkg.com/canvaskit-wasm@0.33.0/bin/canvaskit.js"></script>
-  <link rel="preload" href="/canvaskit.wasm" as="fetch" crossOrigin="anonymous"> -->
+    <title>EveReactor</title>
+    <link rel="manifest" href="manifest.json">
+    <!-- <script src="https://unpkg.com/canvaskit-wasm@0.33.0/bin/canvaskit.js"></script>
+    <link rel="preload" href="/canvaskit.wasm" as="fetch" crossOrigin="anonymous"> -->
 </head>
 <body>
 
-  <div id="loader" class="animated fadeIn">
-  <!-- <h1 class="header">Eve Reactor</h1> -->
-  <div class="lds-grid">
-  <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-  </div>
+<div id="loader" class="animated fadeIn">
+    <!-- <h1 class="header">Eve Reactor</h1> -->
+    <div class="lds-grid">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
 
-  <!-- This script installs service_worker.js to provide PWA functionality to
-       application. For more information, see:
-       https://developers.google.com/web/fundamentals/primers/service-workers -->
-  <script>
+<!-- This script installs service_worker.js to provide PWA functionality to
+     application. For more information, see:
+     https://developers.google.com/web/fundamentals/primers/service-workers -->
+<script>
     var serviceWorkerVersion = null;
     var scriptLoaded = false;
     function loadMainDartJs() {
       if (scriptLoaded) {
-        console.log('main dart js already loaded returning');
         return;
       }
       console.log('Loading main dart js');
@@ -103,7 +110,8 @@
       // Service workers not supported. Just drop the <script> tag.
       loadMainDartJs();
     }
-  </script>
+
+</script>
 
 </body>
 </html>

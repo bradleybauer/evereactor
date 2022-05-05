@@ -20,11 +20,8 @@ class MyTheme with ChangeNotifier {
   }
 
   Future<void> loadFromCache() async {
-    print('load from cache');
     _inDarkMode = await _persistence.getIsDarkMode();
-    print('dark mode');
     updateColors(await _persistence.getColor(), updateCache: false);
-    print('update colors');
   }
 
   bool _inDarkMode = true;
