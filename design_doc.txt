@@ -90,6 +90,9 @@ Have a QA section?
 ----------------------------------------------------------------------------------------------------------------------
 
 GUI/UX----------------------------------------------------------------------------------------------------------------
+TODO do not http language font characters on web. on desktop fonts load instantly from the font file.
+    but on web, non english characters load through a http request despite having the whole font file available in the assets directory
+
 TODO Tooltips
   Get Market Data : Loads market data from the ESI.
   Value: Profit if built i.e. (Profit if Build) - (Profit if Buy)
