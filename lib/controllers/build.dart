@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:EveIndy/solver/advanced_solver.dart';
+import 'package:EveIndy/solver/basic_solver.dart';
 import 'package:flutter/material.dart';
 
 import '../industry.dart';
@@ -7,7 +9,6 @@ import '../models/industry_type.dart';
 import '../sde_extra.dart';
 import '../solver/problem.dart';
 import '../solver/schedule.dart';
-import '../solver/solver.dart';
 import 'build_items.dart';
 import 'inventory.dart';
 import 'options.dart';
@@ -16,35 +17,54 @@ class Build with ChangeNotifier {
   final InventoryController _inventory;
   final OptionsController _options;
   final BuildItemsController _buildItems;
+  final AdvancedSolver _advancedSolver;
 
   var _totalBOM = <int, int>{};
   var _target2costShare = <int, Map<int, double>>{};
 
-  Schedule _schedule = Schedule();
+  Schedule _schedule = Schedule.empty();
 
-  Build(this._inventory, this._options, this._buildItems) {
+  Build(this._inventory, this._options, this._buildItems, this._advancedSolver) {
     _buildItems.addListener(_handleBuildChanged);
     _options.addListener(_handleBuildChanged);
     _inventory.addListener(_handleBuildChanged);
-
-    _handleBuildChanged(notify: false);
+    _advancedSolver.addListener(_advancedSolverChanged);
+    _handleBuildChanged();
   }
 
-  // TODO this is getting a bit performance intensive... might be worth it to try my ChainProcessor here.
-  void _handleBuildChanged({bool notify = true}) {
+  void _advancedSolverChanged() {
+    final tid2runs = _buildItems.getTarget2RunsCopy();
+    final problem = _advancedSolver.getProblemSolved();
+    final schedule = _advancedSolver.getSchedule();
+    _onNewSchedule(schedule, problem, tid2runs);
+  }
+
+  void optimizeSchedule() {
     final tid2runs = _buildItems.getTarget2RunsCopy();
     final allBuiltItems = _buildItems.getItemsInBuild();
-
     final problem = _getOptimizationProblem(tid2runs, allBuiltItems);
-    final schedule = Approximator.get(problem);
+    problem.approximation = _schedule;
+    _advancedSolver.solve(problem);
+  }
+
+  void _handleBuildChanged() {
+    final tid2runs = _buildItems.getTarget2RunsCopy();
+    final allBuiltItems = _buildItems.getItemsInBuild();
+    final problem = _getOptimizationProblem(tid2runs, allBuiltItems);
+    final schedule = BasicSolver.getSchedule(problem);
+    _onNewSchedule(schedule, problem, tid2runs);
+  }
+
+  void _onNewSchedule(Schedule? schedule, Problem? problem, Map<int, int> tid2runs) {
     // TODO handle errors!
     if (schedule != null) {
       _schedule = schedule;
-      _totalBOM = _getTotalBOM(tid2runs, problem);
+      _totalBOM = _getTotalBOM(tid2runs, problem!);
       _target2costShare = _getShares(tid2runs, problem);
 
       // print(_schedule.toString());
       // print((_schedule.time.toDouble() / (3600 * 24)));
+
       // print('----------------------- BOM -------------------------');
       // _totalBOM.forEach((int tid, int needed) {
       //   print(SD.enName(tid) + ' : ' + needed.toString());
@@ -56,9 +76,7 @@ class Build with ChangeNotifier {
       //     print('\t' + SD.enName(mid) + ' : ' + qty.toString());
       //   });
       // });
-    }
 
-    if (notify) {
       notifyListeners();
     }
   }
@@ -125,8 +143,8 @@ class Build with ChangeNotifier {
             if (!mid2numNeeded.containsKey(mid)) mid2numNeeded[mid] = {};
             if (!mid2numNeeded[mid]!.containsKey(tid)) mid2numNeeded[mid]![tid] = 0;
             // parent wants numNeeded more of child
-            mid2numNeeded[mid]![tid] = mid2numNeeded[mid]![tid]! +
-                getNumNeeded(batchItem.runs, batchItem.slots, qtyPerRun, problem.jobMaterialBonus[tid]!);
+            mid2numNeeded[mid]![tid] =
+                mid2numNeeded[mid]![tid]! + getNumNeeded(batchItem.runs, batchItem.slots, qtyPerRun, problem.jobMaterialBonus[tid]!);
           });
         });
       }
@@ -186,10 +204,8 @@ class Build with ChangeNotifier {
       IndustryType.MANUFACTURING: _options.getManufacturingSlots(),
       IndustryType.REACTION: _options.getReactionSlots()
     };
-    final maxNumSlotsOfJob =
-        allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
-    final maxNumRunsPerSlotOfJob =
-        allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 9007199254740991));
+    final maxNumSlotsOfJob = allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
+    final maxNumRunsPerSlotOfJob = allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 9007199254740991));
     final jobMaterialBonus = allBuiltItems.map((tid) => MapEntry(tid, getMaterialBonus(tid, _options, _buildItems)));
     final jobTimeBonus = allBuiltItems.map((tid) => MapEntry(tid, getTimeBonus(tid, _options, _buildItems)));
     return Problem(
@@ -213,10 +229,8 @@ class Build with ChangeNotifier {
     return deps;
   }
 
-  Map<int, int> _getBuildDependenciesForItem(int pid) => Map.fromEntries(SD
-      .materials(pid)
-      .entries
-      .where((e) => _buildItems.getShouldBuildChildOfParent(pid, e.key, excludeItemsSetToBuy: true)));
+  Map<int, int> _getBuildDependenciesForItem(int pid) =>
+      Map.fromEntries(SD.materials(pid).entries.where((e) => _buildItems.getShouldBuildChildOfParent(pid, e.key, excludeItemsSetToBuy: true)));
 
   List<int> getInputIds() => _totalBOM.keys.toList();
 
@@ -228,4 +242,3 @@ class Build with ChangeNotifier {
 
   double getTime() => _schedule.time;
 }
-

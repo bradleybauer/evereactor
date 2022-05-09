@@ -61,23 +61,18 @@ class Batch {
 }
 
 class Schedule {
-  final _machine2batches = <IndustryType, List<Batch>>{};
+  Map<IndustryType,List<Batch>> _machine2batches;
   double time = 0.0;
+  bool isOptimized = false;
+
+  Schedule(Map<IndustryType, List<Batch>> machine2batches) : _machine2batches = machine2batches;
+
+  Schedule.empty() : _machine2batches = {};
 
   void addBatches(IndustryType machine, List<Batch> batches) => _machine2batches[machine] = batches;
 
   Map<IndustryType,List<Batch>> getBatches() => _machine2batches;
 
-//     for machine in sorted(schedule):
-//         print()
-//         print(machine)
-//         for b, batch in enumerate(schedule[machine]):
-//             t = 0
-//             for k, (r, s, tt) in batch.items():
-//                 t = max(t, tt)
-//             print('Batch ', b, ' ', t / 3600)
-//             for k, (r, s, tt) in sorted(batch.items()):
-//                 print(k, '\tr:', r, '   \tl:', s, '\tt:', tt / 3600)
   @override
   String toString() {
     var str = "";

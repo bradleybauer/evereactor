@@ -11,9 +11,62 @@ import 'schedule.dart';
 
 const thirtyDays = 30 * 24 * 3600;
 
-abstract class Approximator {
+class BasicSolver {
   // if there are more than 100 batches, then the user has probably entered some stupid combination of settings
   static const MAX_NUM_BATCHES = 100;
+
+  static Schedule? getSchedule(Problem prob) {
+    Map<int, int> needed = _getNumProducedFromRuns(prob.runsExcess);
+    Inventory inventoryCopy = Inventory.cloneOf(prob.inventory);
+    final schedule = Schedule.empty();
+    for (var machine in [IndustryType.MANUFACTURING, IndustryType.REACTION]) {
+      // Schedule manufacturing first, if possible
+      if (!prob.machines.contains(machine)) {
+        continue;
+      }
+      final batches = <Batch>[];
+      Map<int, int> neededOfMachineType = Map.fromEntries(needed.entries.where((entry) => prob.job2machine[entry.key]! == machine));
+      while (neededOfMachineType.isNotEmpty) {
+        final batch = _getBatch(neededOfMachineType, machine, prob);
+        _setOptimalLineAlloc(batch, machine, prob);
+        batches.insert(0, batch);
+
+        // sanity check
+        if (batches.length > MAX_NUM_BATCHES) {
+          return null;
+        }
+
+        _updateNeededUsingProduced(batch, needed);
+        _updateNeededUsingConsumed(batch, needed, machine, prob, inventoryCopy);
+
+        neededOfMachineType = Map.fromEntries(needed.entries.where((entry) => prob.job2machine[entry.key]! == machine));
+      }
+      // for (Batch batch in batches) { // TODO need this here?
+      //   _minimizeSlotsWithoutIncreasingMaxTime(batch, machine, prob);
+      // }
+
+      schedule.addBatches(machine, batches);
+
+      // TODO need a more accurate way to get minimum schedule time here
+      if (prob.M2DependsOnM1) {
+        schedule.time += Batch.getTimeForBatches(batches);
+      } else {
+        final machineTime = Batch.getTimeForBatches(batches);
+        if (schedule.time < machineTime) {
+          schedule.time = machineTime;
+        }
+      }
+    }
+    return schedule;
+  }
+
+  static Map<int, int> _getNumProducedFromRuns(Map<int, int> tid2runs) {
+    final tid2numProduced = {...tid2runs};
+    for (int tid in tid2numProduced.keys) {
+      tid2numProduced.update(tid, (value) => value * SD.numProducedPerRun(tid));
+    }
+    return tid2numProduced;
+  }
 
   /// Forms a batch using the [available] jobs where each job is scheduled on one line.
   static Batch _getBatch(Map<int, int> available, IndustryType machine, Problem prob) {
@@ -37,8 +90,7 @@ abstract class Approximator {
       // int maxNumRunsPerSlot = (thirtyDays / (SD.timePerRun(tid) * prob.jobTimeBonus[tid]!)).ceil();
 
       // thirtyDays / (base * bonus)
-      int maxNumRunsPerSlot = ceilDiv(
-          thirtyDays * prob.jobTimeBonus[tid]!.denominator, SD.timePerRun(tid) * prob.jobTimeBonus[tid]!.numerator);
+      int maxNumRunsPerSlot = ceilDiv(thirtyDays * prob.jobTimeBonus[tid]!.denominator, SD.timePerRun(tid) * prob.jobTimeBonus[tid]!.numerator);
 
       // can not have more runs on a slot than the user requested max
       maxNumRunsPerSlot = min(maxNumRunsPerSlot, prob.maxNumRunsPerSlotOfJob[tid]!);
@@ -65,31 +117,10 @@ abstract class Approximator {
     return batch;
   }
 
-  static Map<int, int> _getBatchDependencies(Batch batch, IndustryType machine, Problem prob) {
-    Map<int, int> batchDependencies = <int, int>{};
-    for (int tid in batch.tids) {
-      int runs = batch[tid].runs;
-      int slots = batch[tid].slots;
-      if (prob.dependencies.containsKey(tid)) {
-        final int remainder = runs % slots;
-        final int runsFloor = runs ~/ slots;
-        final int runsCeil = runsFloor + 1;
-        prob.dependencies[tid]!.forEach((int child, int childPerParent) {
-          int needed = max(
-                  runsFloor,
-                  ceilDiv(childPerParent * runsFloor * prob.jobMaterialBonus[tid]!.numerator,
-                      prob.jobMaterialBonus[tid]!.denominator)) *
-              (slots - remainder);
-          needed += max(
-                  runsCeil,
-                  ceilDiv(childPerParent * runsCeil * prob.jobMaterialBonus[tid]!.numerator,
-                      prob.jobMaterialBonus[tid]!.denominator)) *
-              remainder;
-          batchDependencies.update(child, (value) => value + needed, ifAbsent: () => needed);
-        });
-      }
-    }
-    return batchDependencies;
+  static void _setOptimalLineAlloc(Batch batch, IndustryType machine, Problem prob) {
+    _maximizeMinTime(batch, machine, prob);
+    _minimizeMaxTimeUsingSpareSlots(batch, machine, prob);
+    _minimizeSlotsWithoutIncreasingMaxTime(batch, machine, prob);
   }
 
   // Maximize the minimum job time on the batch.
@@ -109,7 +140,7 @@ abstract class Approximator {
 
       // can not queue up more than 30 days worth of runs on one slot.
       // newMaxRunsPerSlot = min(newMaxRunsPerSlot, ceilDiv(thirtyDays * timePerRun.denominator, timePerRun.numerator));
-      final tmp2 = Fraction(thirtyDays,timePerRun.numerator).reduce();
+      final tmp2 = Fraction(thirtyDays, timePerRun.numerator).reduce();
       newMaxRunsPerSlot = min(newMaxRunsPerSlot, ceilDiv(tmp2.numerator * timePerRun.denominator, tmp2.denominator));
       newMaxRunsPerSlot = min(newMaxRunsPerSlot, prob.maxNumRunsPerSlotOfJob[tid]!);
       int newNumSlots = ceilDiv(runs, newMaxRunsPerSlot);
@@ -206,8 +237,7 @@ abstract class Approximator {
     }
   }
 
-  static void _updateNeededUsingConsumed(
-      Batch batch, Map<int, int> needed, IndustryType machine, Problem prob, Inventory inventoryCopy) {
+  static void _updateNeededUsingConsumed(Batch batch, Map<int, int> needed, IndustryType machine, Problem prob, Inventory inventoryCopy) {
     // how much did we consume with this batch?
     final batchDependencies = _getBatchDependencies(batch, machine, prob);
     batchDependencies.forEach((tid, deps) {
@@ -224,63 +254,26 @@ abstract class Approximator {
     });
   }
 
-  static void _setOptimalLineAlloc(Batch batch, IndustryType machine, Problem prob) {
-    _maximizeMinTime(batch, machine, prob);
-    _minimizeMaxTimeUsingSpareSlots(batch, machine, prob);
-    _minimizeSlotsWithoutIncreasingMaxTime(batch, machine, prob);
-  }
-
-  static Map<int, int> _getNumProducedFromRuns(Map<int, int> tid2runs) {
-    final tid2numProduced = {...tid2runs};
-    for (int tid in tid2numProduced.keys) {
-      tid2numProduced.update(tid, (value) => value * SD.numProducedPerRun(tid));
-    }
-    return tid2numProduced;
-  }
-
-  static Schedule? get(Problem prob) {
-    Map<int, int> needed = _getNumProducedFromRuns(prob.runsExcess);
-    Inventory inventoryCopy = Inventory.cloneOf(prob.inventory);
-    final schedule = Schedule();
-    for (var machine in [IndustryType.MANUFACTURING, IndustryType.REACTION]) {
-      // Schedule manufacturing first, if possible
-      if (!prob.machines.contains(machine)) {
-        continue;
-      }
-      final batches = <Batch>[];
-      Map<int, int> neededOfMachineType =
-          Map.fromEntries(needed.entries.where((entry) => prob.job2machine[entry.key]! == machine));
-      while (neededOfMachineType.isNotEmpty) {
-        final batch = _getBatch(neededOfMachineType, machine, prob);
-        _setOptimalLineAlloc(batch, machine, prob);
-        batches.insert(0, batch);
-
-        // sanity check
-        if (batches.length > MAX_NUM_BATCHES) {
-          return null;
-        }
-
-        _updateNeededUsingProduced(batch, needed);
-        _updateNeededUsingConsumed(batch, needed, machine, prob, inventoryCopy);
-
-        neededOfMachineType = Map.fromEntries(needed.entries.where((entry) => prob.job2machine[entry.key]! == machine));
-      }
-      // for (Batch batch in batches) { // TODO need this here?
-      //   _minimizeSlotsWithoutIncreasingMaxTime(batch, machine, prob);
-      // }
-
-      schedule.addBatches(machine, batches);
-
-      // TODO need a more accurate way to get minimum schedule time here
-      if (prob.M2DependsOnM1) {
-        schedule.time += Batch.getTimeForBatches(batches);
-      } else {
-        final machineTime = Batch.getTimeForBatches(batches);
-        if (schedule.time < machineTime) {
-          schedule.time = machineTime;
-        }
+  static Map<int, int> _getBatchDependencies(Batch batch, IndustryType machine, Problem prob) {
+    Map<int, int> batchDependencies = <int, int>{};
+    for (int tid in batch.tids) {
+      int runs = batch[tid].runs;
+      int slots = batch[tid].slots;
+      if (prob.dependencies.containsKey(tid)) {
+        final int remainder = runs % slots;
+        final int runsFloor = runs ~/ slots;
+        final int runsCeil = runsFloor + 1;
+        prob.dependencies[tid]!.forEach((int child, int childPerParent) {
+          int needed = max(runsFloor,
+                  ceilDiv(childPerParent * runsFloor * prob.jobMaterialBonus[tid]!.numerator, prob.jobMaterialBonus[tid]!.denominator)) *
+              (slots - remainder);
+          needed += max(runsCeil,
+                  ceilDiv(childPerParent * runsCeil * prob.jobMaterialBonus[tid]!.numerator, prob.jobMaterialBonus[tid]!.denominator)) *
+              remainder;
+          batchDependencies.update(child, (value) => value + needed, ifAbsent: () => needed);
+        });
       }
     }
-    return schedule;
+    return batchDependencies;
   }
 }
