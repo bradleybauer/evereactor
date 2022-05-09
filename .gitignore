@@ -57,3 +57,13 @@ lib/sde.dart
 *vpp.lck
 
 *.dll
+advanced_solver_cpp/.vscode
+advanced_solver_cpp/.vscode/*
+advanced_solver_cpp/Release
+advanced_solver_cpp/Release/*
+advanced_solver_cpp/.vs
+advanced_solver_cpp/.vs/*
+advanced_solver_cpp/x64
+advanced_solver_cpp/x64/*
+advanced_solver_cpp/*.filters
+advanced_solver_cpp/*.user
