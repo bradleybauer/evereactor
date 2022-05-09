@@ -37,6 +37,8 @@ EXPORT void startWorker(void (*submitSchedule)(struct FfiSchedule x),
                         struct FfiProblem problem) {
     std::cout << "in startWorker" << std::endl;
     Problem p = ffi2cpp_problem(problem);
+    p.print();
+    std::this_thread::sleep_for(std::chrono::minutes(12211));
   event_loop.start(p,
                    [&](Schedule schedule) {
                        submitSchedule(*make_schedule(schedule));

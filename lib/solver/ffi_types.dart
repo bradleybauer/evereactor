@@ -170,8 +170,6 @@ class FfiSchedule extends ffi.Struct {
 class FfiProblem extends ffi.Struct {
   external i2i runsExcess;
 
-  external ffi.Pointer<ffi.Int32> tids;
-
   external i2i madePerRun;
 
   external i2i timePerRun;

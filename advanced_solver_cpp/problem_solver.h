@@ -94,7 +94,7 @@ private:
   std::atomic<int64_t> num_solutions = 0;
 
   void reduceJobTimeWithGCD() {
-    vector<int> times;
+    vector<int64_t> times;
     for (const auto& [k, v] : p.timePerRun) {
       times.push_back(v);
     }
@@ -130,13 +130,13 @@ private:
     p.completionTimeUpperBound = round(p.approximation.time);
     std::cout << "completionTimeUpperBound:" << p.completionTimeUpperBound << std::endl;
 
-    int lb = 0;
+    int64_t lb = 0;
     for (int k : p.jobTypes) {
-      lb = max(lb, (p.minNumRuns[k] * p.timePerRun[k]) / min(max(1, p.minNumRuns[k]), p.maxNumSlotsOfJob[k]));
+      lb = max(lb, int64_t((p.minNumRuns[k] * p.timePerRun[k]) / min(max(1ll, p.minNumRuns[k]), p.maxNumSlotsOfJob[k])));
     }
 
     for (auto machine : p.machines) {
-      int sum = 0;
+      int64_t sum = 0;
       for (int k : p.jobTypes) {
         if (p.job2machine[k] == machine) {
           sum += p.minNumRuns[k] * p.timePerRun[k];
@@ -148,6 +148,10 @@ private:
 
     p.completionTimeLowerBound = lb;
     std::cout << "completionTimeLowerBound:" << p.completionTimeLowerBound << std::endl;
+    if (p.completionTimeUpperBound < p.completionTimeLowerBound) {
+        std::cout << "Inverted upper/lower completion time bounds" << std::endl;
+        exit(1);
+    }
   }
 
   void getFloat2Int() {
@@ -348,10 +352,18 @@ private:
   void numChildNeededVars() {
     for (auto& [parent, child2qty] : p.dependencies) {
       for (auto& [child, childPerParent] : child2qty) {
-        int bonusedChildPerParent = Util::roundMul(childPerParent, p.materialBonus[parent]);
-        bonusedChildPerParent = max(int(p.float2int), bonusedChildPerParent);
-        int maxNumNeededPerSlot = max(1, min(p.maxNumRuns[parent], p.maxNumRunsPerSlotOfJob[parent])) * childPerParent;
-        int maxNumNeeded = max(1, p.maxNumRuns[parent]) * childPerParent;
+        std::cout << "cpp:" << childPerParent << std::endl;
+        int64_t bonusedChildPerParent = Util::roundMul(childPerParent, p.materialBonus[parent]);
+        std::cout << "bcpp:" << bonusedChildPerParent << std::endl;
+        bonusedChildPerParent = max(p.float2int, bonusedChildPerParent);
+        std::cout << "bcpp:" << bonusedChildPerParent << std::endl;
+        std::cout << "mnr:" << p.maxNumRuns[parent] << std::endl;
+        std::cout << "mnrpsoj:" << p.maxNumRunsPerSlotOfJob[parent] << std::endl;
+        int64_t maxNumNeededPerSlot = max(1ll, min(int64_t(p.maxNumRuns[parent]), int64_t(p.maxNumRunsPerSlotOfJob[parent]))) * childPerParent;
+        std::cout << "mnr:" << p.maxNumRuns[parent] << std::endl;
+        std::cout << "mnnps:" << maxNumNeededPerSlot << std::endl;
+        int64_t maxNumNeeded = max(1ll, int64_t(p.maxNumRuns[parent])) * childPerParent;
+        std::cout << "mnn:" << maxNumNeeded << std::endl;
         for (int b = 0; b < p.maxNumBatches[p.job2machine[parent]]; ++b) {
           const auto index = {parent, child, b};
           auto numChildNeededPerSlotFloor = vm.i("numChildNeededPerSlotFloor", index, 0, maxNumNeededPerSlot);
@@ -386,13 +398,13 @@ private:
     for (auto& [child, parents] : p.inverseDependencies) {
       LinearExpr built = 0;
       LinearExpr consumed = 0;
-      const int inventory = p.inventory.contains(child) ? p.inventory[child] : 0;
+      const int64_t inventory = p.inventory.contains(child) ? p.inventory[child] : 0;
       for (int b = 0; b < p.maxNumBatches[p.job2machine[child]]; ++b) {
         if (0 < b) {
           built += vm.i("runs", {child, b - 1}) * p.madePerRun[child];
         }
         for (int parent : parents) {
-          const int maxNumNeeded = p.maxNumRuns[parent] * p.dependencies[parent][child];
+          const int64_t maxNumNeeded = p.maxNumRuns[parent] * p.dependencies[parent][child];
           if (p.job2machine[parent] == p.job2machine[child]) {
             consumed += vm.e("totalNumChildNeeded", {parent, child, b});
           } else if (p.job2machine[parent] == IndustryType::MANUFACTURING) {
@@ -453,7 +465,7 @@ private:
     for (auto& [k, runs] : p.runsExcess) {
       if (p.inverseDependencies.contains(k)) {
         auto excess = vm.e("excess", {k});
-        const int required = runs * p.madePerRun[k];
+        const int64_t required = runs * p.madePerRun[k];
         m.AddGreaterOrEqual(excess, required);
         m.AddLessThan(excess, required + p.madePerRun[k]);
       } else {

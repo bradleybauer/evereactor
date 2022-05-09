@@ -75,7 +75,6 @@ struct FfiSchedule {
 // Problem
 struct FfiProblem {
   struct i2i runsExcess;
-  int* tids; // num tids == num madePerRuns?
   struct i2i madePerRun;
   struct i2i timePerRun;
   struct i2i job2machine;
@@ -90,5 +89,6 @@ struct FfiProblem {
   struct FfiSchedule* approximation; // pointer since this is optional
 };
 
-// void startWorker(void (*submitSchedule)(struct FfiSchedule x), void (*notifyStopped)(), struct FfiProblem problem);
-// void stopWorker();
+// before using ffigen you need to uncomment these lines. then recomment them to enable building of the dll with visual studio.
+//void startWorker(void (*submitSchedule)(struct FfiSchedule x), void (*notifyStopped)(), struct FfiProblem problem);
+//void stopWorker();

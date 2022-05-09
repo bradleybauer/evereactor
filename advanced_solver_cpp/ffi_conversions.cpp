@@ -45,8 +45,8 @@ Schedule ffi2cpp_schedule(FfiSchedule schedule) {
   return result;
 }
 
-map<int, int> ffi2cpp_i2i(i2i& element) {
-  auto result = map<int, int>{};
+map<int, int64_t> ffi2cpp_i2i(i2i& element) {
+  auto result = map<int, int64_t>{};
   for (int i = 0; i < element.size; ++i) {
     auto& entry = element.entries[i];
     result[entry.key] = entry.value;
@@ -54,8 +54,8 @@ map<int, int> ffi2cpp_i2i(i2i& element) {
   return result;
 }
 
-map<int, map<int, int>> ffi2cpp_i2i2i(i2i2i& element) {
-  auto result = map<int, map<int, int>>{};
+map<int, map<int, int64_t>> ffi2cpp_i2i2i(i2i2i& element) {
+  auto result = map<int, map<int, int64_t>>{};
   for (int i = 0; i < element.size; ++i) {
     auto& entry = element.entries[i];
     result[entry.key] = ffi2cpp_i2i(entry.value);
@@ -81,8 +81,8 @@ map<int, IndustryType> ffi2cpp_i2indy(i2i& element) {
   return result;
 }
 
-map<IndustryType, int> ffi2cpp_indy2i(i2i& element) {
-  auto result = map<IndustryType, int>{};
+map<IndustryType, int64_t> ffi2cpp_indy2i(i2i& element) {
+  auto result = map<IndustryType, int64_t>{};
   for (int i = 0; i < element.size; ++i) {
     auto& entry = element.entries[i];
     result[entry.key == 0 ? IndustryType::REACTION : IndustryType::MANUFACTURING] = entry.value;
@@ -109,6 +109,10 @@ Problem ffi2cpp_problem(struct FfiProblem p) {
 }
 
 void make_fraction(FfiFraction& frac, Fraction data) {
+  if (data.num > 2147483647 || data.den > 2147483647) {
+      std::cout << "overflow in make_fraction" << std::endl;
+      exit(1);
+  }
   frac.numerator = data.num;
   frac.denominator = data.den;
 }
@@ -120,7 +124,7 @@ void make_batchItem(batchItem& item, BatchItem data) {
 }
 
 void make_batch(batch& b, Batch data) {
-  b.size = data.items.size();
+  b.size = int(data.items.size());
   b.entries = (i2batchItemEntry*)calloc(data.items.size(), sizeof(i2batchItemEntry));
   int i = 0;
   for (auto& [k, v] : data.items) {
@@ -132,7 +136,7 @@ void make_batch(batch& b, Batch data) {
 }
 
 void make_batchList(batchList& element, vector<Batch> data) {
-  element.size = data.size();
+  element.size = int(data.size());
   element.entries = (batch*)calloc(data.size(), sizeof(batch));
   for (int i = 0; i < data.size(); ++i) {
     auto& entry = element.entries[i];
@@ -141,7 +145,7 @@ void make_batchList(batchList& element, vector<Batch> data) {
 }
 
 void make_k2batches(k2batches& element, map<IndustryType, vector<Batch>> data) {
-  element.size = data.size();
+  element.size = int(data.size());
   element.entries = (k2batchesEntry*)calloc(data.size(), sizeof(k2batchesEntry));
   int i = 0;
   for (auto& [k, v] : data) {

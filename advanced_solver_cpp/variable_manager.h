@@ -47,36 +47,36 @@ template <typename T> struct VariableArray {
 class VariableManager {
   CpModelBuilder& m;
 
-  VariableArray<IntVar> intarrays = {};
+  VariableArray<IntVar> int64_tarrays = {};
   VariableArray<BoolVar> boolarrays = {};
   VariableArray<LinearExpr> exprarrays = {};
 
-  IntVar& getIntVar(string name, vector<int> index) { return intarrays.getVar(name, index); }
+  IntVar& getIntVar(string name, vector<int> index) { return int64_tarrays.getVar(name, index); }
   BoolVar& getBoolVar(string name, vector<int> index) { return boolarrays.getVar(name, index); }
   LinearExpr& getExpr(string name, vector<int> index) { return exprarrays.getVar(name, index); }
 
 public:
   VariableManager(CpModelBuilder& m) : m(m) {}
-  IntVar i(string arrayName, vector<int> index, const int lb, const int ub) {
-    if (intarrays.contains(arrayName, index)) {
-      return intarrays.getVar(arrayName, index);
+  IntVar i(string arrayName, vector<int> index, const int64_t lb, const int64_t ub) {
+    if (int64_tarrays.contains(arrayName, index)) {
+      return int64_tarrays.getVar(arrayName, index);
     }
     if (lb > ub) {
         std::cout << "error using vm.i(.,.,.,.) : lb > ub " << lb << ">" << ub << std::endl;
         exit(1);
     }
     auto var = m.NewIntVar(Domain(lb, ub));
-    //std::cout << "in vm after new int var" << std::endl;
-    intarrays.setVar(arrayName, index, var);
+    //std::cout << "in vm after new int64_t var" << std::endl;
+    int64_tarrays.setVar(arrayName, index, var);
     return var;
   }
   IntVar i(string arrayName, vector<int> index) {
       //std::cout << "in vm i(x,x)" << std::endl;
-      if (!intarrays.contains(arrayName, index)) {
+      if (!int64_tarrays.contains(arrayName, index)) {
           std::cout << "error using vm.i(.,.)" << std::endl;
           exit(1);
       }
-      auto result = intarrays.getVar(arrayName, index);
+      auto result = int64_tarrays.getVar(arrayName, index);
       //std::cout << "in vm i(x,x) after" << std::endl;
       return result;
   }

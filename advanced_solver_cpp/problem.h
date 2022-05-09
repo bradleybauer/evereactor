@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -17,16 +18,15 @@ using std::unordered_set;
 using std::vector;
 
 struct Problem {
-  map<int, int> runsExcess;
-  unordered_set<int> tids;
-  map<int, int> madePerRun;
-  map<int, int> timePerRun;
+  map<int, int64_t> runsExcess;
+  map<int, int64_t> madePerRun;
+  map<int, int64_t> timePerRun;
   map<int, IndustryType> job2machine;
-  map<int, map<int, int>> dependencies;
-  map<int, int> inventory;
-  map<IndustryType, int> maxNumSlotsOfMachine;
-  map<int, int> maxNumSlotsOfJob;
-  map<int, int> maxNumRunsPerSlotOfJob;
+  map<int, map<int, int64_t>> dependencies;
+  map<int, int64_t> inventory;
+  map<IndustryType, int64_t> maxNumSlotsOfMachine;
+  map<int, int64_t> maxNumSlotsOfJob;
+  map<int, int64_t> maxNumRunsPerSlotOfJob;
   map<int, Fraction> materialBonus;
   map<int, Fraction> timeBonus;
   int64_t float2int;
@@ -40,14 +40,14 @@ struct Problem {
   // to be computed later
   map<IndustryType, int> minNumBatches;
   map<IndustryType, int> maxNumBatches;
-  map<int, int> maxNumRuns;
-  map<int, int> minNumRuns;
-  int completionTimeUpperBound = -1;
-  int completionTimeLowerBound = -1;
+  map<int, int64_t> maxNumRuns;
+  map<int, int64_t> minNumRuns;
+  int64_t completionTimeUpperBound = -1;
+  int64_t completionTimeLowerBound = -1;
   map<int, vector<int>> inverseDependencies;
-  int timesGCD = -1;
+  int64_t timesGCD = -1;
 
-  void printi2i(string name, map<int, int> m) {
+  void print_i2i(string name, map<int, int64_t> m) {
     std::cout << name <<".size()=" << m.size() << std::endl;
     for (auto& [k, v] : m) {
         std::cout << k << " " << v << std::endl;
@@ -55,13 +55,9 @@ struct Problem {
   }
 
   void print() {
-    printi2i("runsExcess", runsExcess);
-    std::cout << "tids.size()=" << tids.size() << std::endl;
-    for (auto& k : tids) {
-        std::cout << k << std::endl;
-    }
-    printi2i("madePerRun", madePerRun);
-    printi2i("timePerRun", timePerRun);
+    print_i2i("runsExcess", runsExcess);
+    print_i2i("madePerRun", madePerRun);
+    print_i2i("timePerRun", timePerRun);
     std::cout << "job2machine.size()=" << job2machine.size() << std::endl;
     for (auto& [k, v] : job2machine) {
         std::cout << k << " " << (v==IndustryType::MANUFACTURING?"mfg":"rtn") << std::endl;
@@ -73,37 +69,39 @@ struct Problem {
             std::cout << "\t" << kk << " " << vv << std::endl;
         }
     }
-    printi2i("inventory", inventory);
+    print_i2i("inventory", inventory);
     std::cout << "maxNumSlotsOfMachine.size()=" << maxNumSlotsOfMachine.size() << std::endl;
     for (auto& [k, v] : maxNumSlotsOfMachine) {
         std::cout << (k ==IndustryType::MANUFACTURING?"mfg":"rtn") << " " << v << std::endl;
     }
-    printi2i("maxNumSlotsOfJob", maxNumSlotsOfJob);
-    printi2i("maxNumRunsPerSlotOfJob", maxNumRunsPerSlotOfJob);
+    print_i2i("maxNumSlotsOfJob", maxNumSlotsOfJob);
+    print_i2i("maxNumRunsPerSlotOfJob", maxNumRunsPerSlotOfJob);
+    std::cout << "materialBonus.size()" << materialBonus.size() << std::endl;
     for (auto& [k, v] : materialBonus) {
         std::cout << k << " " << v.num << "/" << v.den << std::endl;
     }
+    std::cout << "timeBonus.size()" << timeBonus.size() << std::endl;
     for (auto& [k, v] : timeBonus) {
         std::cout << k << " " << v.num << "/" << v.den << std::endl;
     }
-    std::cout << float2int << std::endl;
-    //schedule.print();
+    std::cout << "float2int:" << float2int << std::endl;
+    approximation.print();
   }
 
   // clang-format off
-  Problem(map<int, int> runsExcess,
-          map<int, int> madePerRun,
-          map<int, int> timePerRun,
+  Problem(map<int, int64_t> runsExcess,
+          map<int, int64_t> madePerRun,
+          map<int, int64_t> timePerRun,
           map<int, IndustryType> job2machine,
-          map<int, map<int, int>> dependencies,
-          map<int, int> inventory,
-          map<IndustryType, int> maxNumSlotsOfMachine,
-          map<int, int> maxNumSlotsOfJob,
-          map<int, int> maxNumRunsPerSlotOfJob,
+          map<int, map<int, int64_t>> dependencies,
+          map<int, int64_t> inventory,
+          map<IndustryType, int64_t> maxNumSlotsOfMachine,
+          map<int, int64_t> maxNumSlotsOfJob,
+          map<int, int64_t> maxNumRunsPerSlotOfJob,
           map<int, Fraction> materialBonus,
           map<int, Fraction> timeBonus,
           Schedule approximation,
-          int float2int = 1000)
+          int64_t float2int = 1000)
       // clang-format on
       : runsExcess(runsExcess),
         madePerRun(madePerRun),
@@ -116,7 +114,8 @@ struct Problem {
         maxNumRunsPerSlotOfJob(maxNumRunsPerSlotOfJob),
         materialBonus(materialBonus),
         timeBonus(timeBonus),
-        approximation(approximation) {
+        approximation(approximation),
+        float2int(float2int) {
 
     for (auto [k, v] : madePerRun) {
       jobTypes.push_back(k);

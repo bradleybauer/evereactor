@@ -8,7 +8,7 @@ import 'ffi_conversions.dart';
 import 'ffi_types.dart';
 import 'problem.dart';
 
-NativeLibrary _library = NativeLibrary(DynamicLibrary.open(path.join(Directory.current.path, '../or-tools_VisualStudio2019-64bit_v9.3.10497/WINDOWSISCOOL/x64/Release/WINDOWSISCOOL.dll')));
+NativeLibrary _library = NativeLibrary(DynamicLibrary.open(path.join(Directory.current.path, 'advanced_solver_cpp/x64/Release/WINDOWSISCOOL.dll')));
 
 // c++ message thread will call into dart and use sendPort to send a msg to the ui isolate
 SendPort? _sendPort;

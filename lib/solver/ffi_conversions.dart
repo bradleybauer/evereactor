@@ -182,16 +182,6 @@ void make_i2i2i(i2i2i element, Map<int, Map<int, int>> data) {
   }
 }
 
-Pointer<Int32> make_ilist(List<int> data) {
-  final result = calloc.allocate(sizeOf<Int32>() * data.length).cast<Int32>();
-  for (int i = 0; i < data.length; ++i) {
-    result
-        .elementAt(i)
-        .value = data[i];
-  }
-  return result;
-}
-
 void destroy_i2frac(i2frac element) => calloc.free(element.entries);
 
 void destroy_i2i(i2i element) => calloc.free(element.entries);
@@ -204,10 +194,6 @@ void destroy_i2i2i(i2i2i element) {
     destroy_i2i(entry.value);
   }
   calloc.free(element.entries);
-}
-
-void destroy_ilist(Pointer<Int32> ptr) {
-  calloc.free(ptr);
 }
 
 Pointer<FfiProblem> make_problem(Problem problem) {
@@ -224,7 +210,6 @@ Pointer<FfiProblem> make_problem(Problem problem) {
   make_i2i(result.ref.runsExcess, problem.runsExcess);
   make_i2i(result.ref.job2machine,
       problem.job2machine.map((k, v) => MapEntry(k, v == IndustryType.MANUFACTURING ? 1 : 0)));
-  result.ref.tids = make_ilist(problem.tids.toList());
   result.ref.float2int = problem.float2int;
   make_i2i2i(result.ref.dependencies, problem.dependencies);
   if (problem.approximation != null) {
@@ -244,7 +229,6 @@ void destroy_problem(Pointer<FfiProblem> p) {
   destroy_i2i(p.ref.maxNumSlotsOfJob);
   destroy_i2i(p.ref.runsExcess);
   destroy_i2i(p.ref.job2machine);
-  destroy_ilist(p.ref.tids);
   destroy_i2i2i(p.ref.dependencies);
   if (p.ref.approximation.address != 0) {
     destroy_schedule(p.ref.approximation);

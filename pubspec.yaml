@@ -107,4 +107,4 @@ ffigen:
   output: 'lib/solver/ffi_types.dart'
   headers:
     entry-points:
-      - '../or-tools_VisualStudio2019-64bit_v9.3.10497/WINDOWSISCOOL/ffi_types.h'
+      - 'advanced_solver_cpp/ffi_types.h'

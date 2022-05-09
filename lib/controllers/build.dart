@@ -205,7 +205,7 @@ class Build with ChangeNotifier {
       IndustryType.REACTION: _options.getReactionSlots()
     };
     final maxNumSlotsOfJob = allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
-    final maxNumRunsPerSlotOfJob = allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 9007199254740991));
+    final maxNumRunsPerSlotOfJob = allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 10000000));
     final jobMaterialBonus = allBuiltItems.map((tid) => MapEntry(tid, getMaterialBonus(tid, _options, _buildItems)));
     final jobTimeBonus = allBuiltItems.map((tid) => MapEntry(tid, getTimeBonus(tid, _options, _buildItems)));
     return Problem(
@@ -224,7 +224,10 @@ class Build with ChangeNotifier {
   Map<int, Map<int, int>> _getBuildDependencies(Iterable<int> tids) {
     final deps = <int, Map<int, int>>{};
     for (int tid in tids) {
-      deps[tid] = _getBuildDependenciesForItem(tid);
+      final temp = _getBuildDependenciesForItem(tid);
+      if (temp.isNotEmpty) {
+        deps[tid] = temp;
+      }
     }
     return deps;
   }
