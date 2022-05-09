@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../platform.dart';
 import '../../controllers/build_items.dart';
 import '../../controllers/table_intermediates.dart';
+import '../../platform.dart';
 import '../my_theme.dart';
 import 'flyout_bp_options.dart';
 import 'table.dart';
@@ -52,11 +52,11 @@ class IntermediatesTableHeader extends StatelessWidget {
       items: [
         TableContainer.getCol(
           IntermediatesTable.colFlexs[0],
-          child: Text('Intermediates'),
+          child: const Text('Intermediates'),
           align: Alignment.centerLeft,
           padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
         ),
-        TableContainer.getCol(IntermediatesTable.colFlexs[1], child: Text('Build Value')),
+        TableContainer.getCol(IntermediatesTable.colFlexs[1], child: const Text('Build Value')),
         TableContainer.getCol(IntermediatesTable.colFlexs[2]),
         TableContainer.getCol(IntermediatesTable.colFlexs[3]),
       ],
@@ -74,9 +74,10 @@ class IntermediatesTableItem extends StatelessWidget {
     final theme = Provider.of<MyTheme>(context);
     final buildItems = Provider.of<BuildItemsController>(context, listen: false);
     final shouldBuild = buildItems.getShouldBuild(row.tid);
+    final style = TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground);
     return Material(
       color: Colors.transparent,
-      textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
+      textStyle: style,
       child: InkWell(
         onTap: () {},
         hoverColor: theme.outline.withOpacity(.1),
@@ -105,7 +106,17 @@ class IntermediatesTableItem extends StatelessWidget {
                 ],
               ),
             ),
-            MyTableCell(IntermediatesTable.colFlexs[1], child: Text(row.value)),
+            MyTableCell(IntermediatesTable.colFlexs[1],
+                child: Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: row.valuePositive ? Colors.transparent : theme.error,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      row.value,
+                      style: row.valuePositive ? style : style.copyWith(color: theme.onError),
+                    ))),
             MyTableCell(IntermediatesTable.colFlexs[2],
                 child: BuildBuyToggleButtons(
                   shouldBuild: shouldBuild,
