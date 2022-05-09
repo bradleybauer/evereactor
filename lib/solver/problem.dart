@@ -4,6 +4,8 @@ import '../models/industry_type.dart';
 import '../models/inventory.dart';
 import '../sde_extra.dart';
 
+import 'schedule.dart';
+
 class Problem {
   final Map<int, int> runsExcess; // buildItems
   final Set<int> tids; // buildItems
@@ -20,19 +22,19 @@ class Problem {
   late final Set<IndustryType> machines;
   late final Map<int, IndustryType> job2machine;
   late final bool M2DependsOnM1;
+  late final Map<int,int> timePerRun;
+  late final Map<int,int> madePerRun;
 
-  int? minNumBatches;
-  int? maxNumBatches;
-  int? maxNumRuns;
-  int? minNumRuns;
-  int? completionTimeUpperBound;
-  int? completionTimeLowerBound;
-  int? inverseDependencies;
-  int? timesGCD;
+  Map<IndustryType, int> minNumBatches = {};
+  Map<IndustryType, int> maxNumBatches = {};
+  Map<int,int> maxNumRuns = {};
+  Map<int,int> minNumRuns = {};
+  int completionTimeUpperBound = -1;
+  int completionTimeLowerBound = -1;
+  Map<int,List<int>> inverseDependencies = {};
+  int timesGCD = -1;
 
-  // int? scheduleCompletionTime;
-  // int? approximationBatches;
-  // int? approximationTime;
+  Schedule? approximation;
 
   Problem({
     required this.runsExcess,
@@ -52,5 +54,8 @@ class Problem {
     // for each item, not all its dependencies have the same machine as the item
     M2DependsOnM1 = !dependencies.entries
         .every((parent) => parent.value.entries.every((child) => job2machine[child.key] == job2machine[parent.key]));
+
+    timePerRun = Map.fromEntries(tids.map((e) => MapEntry(e, SD.timePerRun(e))));
+    madePerRun = Map.fromEntries(tids.map((e) => MapEntry(e, SD.numProducedPerRun(e))));
   }
 }
