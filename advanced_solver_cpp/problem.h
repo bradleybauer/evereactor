@@ -85,6 +85,8 @@ struct Problem {
         std::cout << k << " " << v.num << "/" << v.den << std::endl;
     }
     std::cout << "float2int:" << float2int << std::endl;
+    std::cout << "timesGCD:" << timesGCD << std::endl;
+    std::cout << "mfg depends on rtn:" << manufacturingDependsOnReaction << std::endl;
     approximation.print();
   }
 

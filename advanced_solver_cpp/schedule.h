@@ -35,19 +35,25 @@ struct Batch {
 };
 
 struct Schedule {
-    Schedule() {}
-    map<IndustryType, vector<Batch>> machine2batches{};
+  Schedule() {}
+  map<IndustryType, vector<Batch>> machine2batches{};
   double time = 0.0;
   bool optimal = false;
   bool infeasible = false;
+
+  std::string getSpacing(auto prev, int cells) {
+      auto str = std::to_string(prev);
+    return std::string(std::max(0,int(cells - str.size())), ' ');
+  }
+
 
   void print() {
     for (auto machine : {IndustryType::REACTION, IndustryType::MANUFACTURING}) {
       if (machine2batches.contains(machine)) {
         if (machine == IndustryType::REACTION) {
-          std::cout << "    Reactions";
+          std::cout << "  Reactions";
         } else {
-          std::cout << "    Manufacturing";
+          std::cout << "  Manufacturing";
         }
         const auto& batches = machine2batches[machine];
         for (int b = 0;  const Batch & batch : batches) {
@@ -55,7 +61,7 @@ struct Schedule {
           if (batchTime == 0) {
             std::cout << "\tBatch:" << b << "is empty" << std::endl;
           } else {
-              std::cout << "\tBatch:" << b << "\tDuration:" << batchTime << std::endl;
+              std::cout << "\tBatch:" << b << getSpacing(b,3) << "Duration:" << batchTime << std::endl;
           }
           for (const auto&[tid, batchItem] : batch.items) {
             int64_t s = batchItem.slots;
@@ -64,7 +70,7 @@ struct Schedule {
             }
             int64_t r = batchItem.runs;
             int64_t t = batchItem.time.toDouble();
-            std::cout << "\t" << tid << "\tr:" << r << "   \ts:" << s << "\tt:" << t << " tn: " << batchItem.time.num << " td: " << batchItem.time.den << std::endl;
+            std::cout << "\t" << tid << getSpacing(tid, 10) << "  r:" << r << getSpacing(r, 10) << "   s:" << s << getSpacing(s, 10) << "t:" << t << getSpacing(t, 16) << std::endl;
           }
         ++b;
         }

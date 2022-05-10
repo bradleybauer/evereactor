@@ -22,6 +22,7 @@ public:
   double toDouble() const { return num / double(den); }
 
   int64_t toIntCeil() const { return (num + den - 1) / den; }
+  int64_t toIntFloor() const { return num / den; }
 
   bool operator>(const Fraction& r) const { return toDouble() > r.toDouble(); }
   bool operator<(const Fraction& r) const { return toDouble() < r.toDouble(); }

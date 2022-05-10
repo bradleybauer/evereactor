@@ -11,7 +11,7 @@ import 'table_add_del_hover_button.dart';
 import 'table_text_field.dart';
 
 class TargetsTable extends StatefulWidget {
-  const TargetsTable({Key? key}) : super(key: key);
+  const TargetsTable({super.key});
 
   static const colFlexs = [35, 8, 10, 10, 7, 10, 10, 7, 6];
   static const double headerHeight = 35;
@@ -64,7 +64,7 @@ class _TargetsTableState extends State<TargetsTable> {
 }
 
 class TargetsTableHeader extends StatelessWidget {
-  const TargetsTableHeader({required this.controller, Key? key}) : super(key: key);
+  const TargetsTableHeader({required this.controller, super.key});
 
   final TargetsTableController controller;
 
@@ -98,7 +98,7 @@ class TargetsTableHeader extends StatelessWidget {
 }
 
 class TargetsTableItem extends StatelessWidget {
-  const TargetsTableItem({required this.row, Key? key, required this.focusNode}) : super(key: key);
+  const TargetsTableItem({required this.row,  required this.focusNode, super.key});
 
   final TargetsRowData row;
   final FocusNode focusNode;

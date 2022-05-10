@@ -1,3 +1,4 @@
+// TODO check all todos pls
 #include <atomic>
 #include <cmath>
 #include <iostream>
@@ -27,48 +28,55 @@ public:
   void solve() {
     std::cout << "in solve" << std::endl;
     // setup
-    reduceJobTimeWithGCD();
-    std::cout << "in solve after reduce time" << std::endl;
     getInverseDependencies();
+    //std::cout << "in solve after inv deps" << std::endl;
     getNumBatchBounds();
+    //std::cout << "in solve after num batch bounds" << std::endl;
     getNumRunsBounds();
-    getScheduleTimeBounds();
+    //std::cout << "in solve after num runs bounds" << std::endl;
     getFloat2Int();
-    // std::cout << "\n--------- Problem Description ---------" << std::endl;
-    // p.print();
     applyFloat2Int();
-    std::cout << "in solve after setup" << std::endl;
+    reduceJobTimeWithGCD();
+    getScheduleTimeBounds();
+    //std::cout << "\n--------- Problem Description ---------" << std::endl;
+    p.print();
+    //std::cout << "in solve after setup" << std::endl;
 
     // solve
     runsSlotsVars();
-    std::cout << "in solve after runsSlotsVars" << std::endl;
+    //std::cout << "in solve after runsSlotsVars" << std::endl;
     timeOfJobTypeOnBatch();
-    std::cout << "in solve after timeOfJobTypeOnBatch" << std::endl;
+    //std::cout << "in solve after timeOfJobTypeOnBatch" << std::endl;
     batchTimes();
-    std::cout << "in solve after batchTimes" << std::endl;
+    //std::cout << "in solve after batchTimes" << std::endl;
     batchOrderSymmetryConstraint();
-    std::cout << "in solve after batchOrderSymmetryConstraint" << std::endl;
+    //std::cout << "in solve after batchOrderSymmetryConstraint" << std::endl;
     balanceConstraint();
-    std::cout << "in solve after balanceConstraint" << std::endl;
+    //std::cout << "in solve after balanceConstraint" << std::endl;
     completionTimes();
-    std::cout << "in solve after completionTimes" << std::endl;
+    //std::cout << "in solve after completionTimes" << std::endl;
     startsWithVars();
-    std::cout << "in solve after startsWithVars" << std::endl;
+    //std::cout << "in solve after startsWithVars" << std::endl;
     numChildNeededVars();
-    std::cout << "in solve after numChildNeededVars" << std::endl;
+    //std::cout << "in solve after numChildNeededVars" << std::endl;
     enoughChildrenBuiltConstraint();
-    std::cout << "in solve after enoughChildrenBuiltConstraint" << std::endl;
+    //std::cout << "in solve after enoughChildrenBuiltConstraint" << std::endl;
     minMaxNumRunsConstraints();
-    std::cout << "in solve after minMaxNumRunsConstraints" << std::endl;
+    //std::cout << "in solve after minMaxNumRunsConstraints" << std::endl;
     numRunsConstraint();
-    std::cout << "in solve after numRunsConstraint" << std::endl;
+    //std::cout << "in solve after numRunsConstraint" << std::endl;
     numSlotsUsedConstraint();
-    std::cout << "in solve after numSlotsUsedConstraint" << std::endl;
+    //std::cout << "in solve after numSlotsUsedConstraint" << std::endl;
     numSlotsLessThanRunsConstraint();
-    std::cout << "in solve after numSlotsLessThanRunsConstraint" << std::endl;
+    //std::cout << "in solve after numSlotsLessThanRunsConstraint" << std::endl;
+
+    getHints();
+
+    m.Minimize(vm.i("scheduleCompletionTime", { 0 }));
 
     Model model;
     SatParameters parameters;
+    parameters.set_num_search_workers(16);
     parameters.set_log_search_progress(true);
     parameters.set_log_subsolver_statistics(true);
     model.Add(NewSatParameters(parameters));
@@ -114,32 +122,34 @@ private:
 
   void getNumBatchBounds() {
     for (auto machine : p.machines) {
-      p.minNumBatches[machine] = 0;
+      p.minNumBatches[machine] = -1+std::max(1ull,p.approximation.machine2batches[machine].size());
     }
     for (auto machine : p.machines) {
-      p.maxNumBatches[machine] = 2 * p.approximation.machine2batches[machine].size();
+      p.maxNumBatches[machine] = 1+p.approximation.machine2batches[machine].size();
     }
   }
 
   void getNumRunsBounds() {
     p.minNumRuns = Util::getMinRunsPerJob(p);
+    std::cout << "in getNumRunsBounds after min num runs per job" << std::endl;
     p.maxNumRuns = Util::getMaxRunsPerJob(p);
   }
 
   void getScheduleTimeBounds() {
-    p.completionTimeUpperBound = round(p.approximation.time);
+    // TODO
+    p.completionTimeUpperBound = 2 * ceil(p.approximation.time / p.timesGCD * (p.float2int/10));
     std::cout << "completionTimeUpperBound:" << p.completionTimeUpperBound << std::endl;
 
     int64_t lb = 0;
     for (int k : p.jobTypes) {
-      lb = max(lb, int64_t((p.minNumRuns[k] * p.timePerRun[k]) / min(max(1ll, p.minNumRuns[k]), p.maxNumSlotsOfJob[k])));
+      lb = max(lb, ((p.minNumRuns[k] * p.timePerRun[k]) / min(max(1ll, p.maxNumRuns[k]), min(p.maxNumSlotsOfJob[k], p.maxNumSlotsOfMachine[p.job2machine[k]]))));
     }
 
     for (auto machine : p.machines) {
       int64_t sum = 0;
       for (int k : p.jobTypes) {
         if (p.job2machine[k] == machine) {
-          sum += p.minNumRuns[k] * p.timePerRun[k];
+            sum += p.minNumRuns[k] * p.timePerRun[k];
         }
       }
       sum /= p.maxNumSlotsOfMachine[machine];
@@ -154,14 +164,19 @@ private:
     }
   }
 
+  // TODO
   void getFloat2Int() {
-    p.float2int = 1;
-    for (int k : p.jobTypes) {
-      p.float2int = max(p.float2int, p.materialBonus[k].den);
-    }
+    //p.float2int = 1;
+    //for (int k : p.jobTypes) {
+    //  p.float2int = max(p.float2int, p.materialBonus[k].den);
+    //}
+    p.float2int = 1000;
   }
 
   void applyFloat2Int() {
+    for (int k : p.jobTypes) {
+      p.timePerRun[k] =  (p.timeBonus[k]*(p.timePerRun[k] * (p.float2int/10))).toIntFloor();
+    }
     for (int k : p.jobTypes) {
       p.madePerRun[k] *= p.float2int;
     }
@@ -220,9 +235,9 @@ private:
   }
 
   void batchOrderSymmetryConstraint() {
-    std::cout << "in bos" << std::endl;
+    //std::cout << "in bos" << std::endl;
     for (auto machine : p.machines) {
-      std::cout << "in bos iter : "  << machine2str.at(machine) << std::endl;
+      //std::cout << "in bos iter : "  << machine2str.at(machine) << std::endl;
       BoolVar prevIsUsed;
       bool prevIsUsedIsNone = true;
       for (int b = 0; b < p.minNumBatches[machine]; ++b) {
@@ -235,40 +250,45 @@ private:
         m.AddGreaterThan(rs, 0);
         m.AddGreaterThan(vm.i(machine2str.at(machine) + "BatchTimes", {b}), 0);
       }
-      std::cout << "in bos after b1 "  << machine2str.at(machine) << std::endl;
+      //std::cout << "in bos after b1 "  << machine2str.at(machine) << std::endl;
       if (p.minNumBatches[machine] > 0) {
         prevIsUsed = m.TrueVar();
         prevIsUsedIsNone = false;
       }
-      std::cout << "in bos after b2 maxNumBatches[machine]=" << p.maxNumBatches[machine] << std::endl;
+      //std::cout << "in bos after b2 maxNumBatches[machine]=" << p.maxNumBatches[machine] << std::endl;
       for (int b = p.minNumBatches[machine]; b < p.maxNumBatches[machine]; ++b) {
         LinearExpr rs;
-        std::cout << "in bos in b2" << std::endl;
+        //std::cout << "in bos in b2" << std::endl;
         for (int k : p.jobTypes) {
           if (p.job2machine[k] == machine) {
             rs += vm.i("runs", {k, b});
           }
         }
-        std::cout << "in bos in b2 after b1" << std::endl;
+        //std::cout << "in bos in b2 after b1" << std::endl;
         BoolVar isUsed = vm.b(machine2str.at(machine) + "BatchIsUseds", {b});
         m.AddGreaterThan(rs, 0).OnlyEnforceIf(isUsed);
         m.AddEquality(rs, 0).OnlyEnforceIf(isUsed.Not());
-        std::cout << "a" << std::endl;
+        //std::cout << "a" << std::endl;
         m.AddGreaterThan(vm.i(machine2str.at(machine) + "BatchTimes", {b}), 0).OnlyEnforceIf(isUsed);
-        std::cout << "b" << std::endl;
+        //std::cout << "b" << std::endl;
         m.AddEquality(vm.i(machine2str.at(machine) + "BatchTimes", {b}), 0).OnlyEnforceIf(isUsed.Not());
-        std::cout << "c" << std::endl;
+        //std::cout << "c" << std::endl;
         if (!prevIsUsedIsNone) {
           m.AddImplication(prevIsUsed.Not(), isUsed.Not());
         }
         prevIsUsed = isUsed;
         prevIsUsedIsNone = false;
       }
-      std::cout << "in bos after b3 " << std::endl;
+      //std::cout << "in bos after b3 " << std::endl;
     }
   }
 
   void balanceConstraint() {
+//      map<IndustryType, int64_t> maxRunsPerSlotUpperBound{};
+//      for (int k : p.jobTypes) {
+//          auto machine = p.job2machine[k];
+//          maxRunsPerSlotUpperBound[machine] = max();
+//      }
     for (int k : p.jobTypes) {
       auto machine = p.job2machine[k];
       for (int b = 0; b < p.maxNumBatches[machine]; ++b) {
@@ -288,32 +308,32 @@ private:
       const auto arr = std::array<IndustryType, 2>{IndustryType::REACTION, IndustryType::MANUFACTURING};
       for (auto machine : arr) {
         LinearExpr initial = 0;
-        if (machine == IndustryType::MANUFACTURING and p.manufacturingDependsOnReaction) {
+        if (machine == IndustryType::MANUFACTURING && p.manufacturingDependsOnReaction) {
           initial = vm.i("InitialM2BatchStartTime", {0}, 0, p.completionTimeUpperBound);
-          std::cout << "in completionTimes after before vm.e" << std::endl;
+          //std::cout << "in completionTimes after before vm.e" << std::endl;
           m.AddLessOrEqual(initial, vm.e("M1EndTimes", {p.maxNumBatches[IndustryType::REACTION] - 1}));
-          std::cout << "in completionTimes after after vm.e" << std::endl;
+          //std::cout << "in completionTimes after after vm.e" << std::endl;
         }
         LinearExpr prevEnd;
         bool isPrevEndNone = true;
         for (int b = 0; b < p.maxNumBatches[machine]; ++b) {
             LinearExpr start;
-            if (!isPrevEndNone) {
-                start = vm.e(machine2str.at(machine) + "StartTimes", {b}, prevEnd);
+            if (isPrevEndNone) {
+                start = vm.e(machine2str.at(machine) + "StartTimes", {b}, initial);
             } else {
-                start = vm.e(machine2str.at(machine) + "StartTimes", { b }, initial);
+                start = vm.e(machine2str.at(machine) + "StartTimes", {b}, prevEnd);
             }
-            prevEnd = vm.e(machine2str.at(machine) + "EndTimes", { b }, start + vm.i(machine2str.at(machine) + "BatchTimes", { b }));
+            prevEnd = vm.e(machine2str.at(machine) + "EndTimes", {b}, start + vm.i(machine2str.at(machine) + "BatchTimes", {b}));
             isPrevEndNone = false;
         }
       }
-      std::cout << "in completionTimes after a" << std::endl;
+      //std::cout << "in completionTimes after a" << std::endl;
       auto completionTimeManufacturing = vm.e("M2EndTimes", {p.maxNumBatches[IndustryType::MANUFACTURING] - 1});
-      std::cout << "in completionTimes after b" << std::endl;
+      //std::cout << "in completionTimes after b" << std::endl;
       auto completionTimeReaction = vm.e("M1EndTimes", {p.maxNumBatches[IndustryType::REACTION] - 1});
-      std::cout << "in completionTimes after d" << std::endl;
+      //std::cout << "in completionTimes after d" << std::endl;
       auto scheduleCompletionTime = vm.i("scheduleCompletionTime", {0}, p.completionTimeLowerBound, p.completionTimeUpperBound);
-      std::cout << "in completionTimes after e" << std::endl;
+      //std::cout << "in completionTimes after e" << std::endl;
       m.AddMaxEquality(scheduleCompletionTime, {completionTimeManufacturing, completionTimeReaction});
     } else {
       for (auto machine : p.machines) {
@@ -322,7 +342,8 @@ private:
           vm.e(machine2str.at(machine) + "StartTimes", {b}, startTime);
           startTime += vm.i(machine2str.at(machine) + "BatchTimes", {b});
         }
-        auto scheduleCompletionTime = vm.e("scheduleCompletionTime", {0}, startTime);
+        auto scheduleCompletionTime = vm.i("scheduleCompletionTime", {0}, p.completionTimeLowerBound, p.completionTimeUpperBound);
+        m.AddEquality(scheduleCompletionTime, startTime);
         m.AddGreaterOrEqual(scheduleCompletionTime, p.completionTimeLowerBound);
         m.AddLessOrEqual(scheduleCompletionTime, p.completionTimeUpperBound);
       }
@@ -334,8 +355,8 @@ private:
       for (int b = 0; b < p.maxNumBatches[IndustryType::REACTION]; ++b) {
         for (int bb = 0; bb < p.maxNumBatches[IndustryType::MANUFACTURING]; ++bb) {
           auto pastStart = vm.b("M2BatchAfterM1BatchStart", {bb, b});
-          m.AddGreaterOrEqual(vm.e("M2StartTimes", {bb}), vm.b("M1StartTimes", {b})).OnlyEnforceIf(pastStart);
-          m.AddLessThan(vm.e("M2StartTimes", {bb}), vm.b("M1StartTimes", {b})).OnlyEnforceIf(pastStart.Not());
+          m.AddGreaterOrEqual(vm.e("M2StartTimes", {bb}), vm.e("M1StartTimes", {b})).OnlyEnforceIf(pastStart);
+          m.AddLessThan(vm.e("M2StartTimes", {bb}), vm.e("M1StartTimes", {b})).OnlyEnforceIf(pastStart.Not());
 
           auto beforeEnd = vm.b("M2BatchBeforeM1BatchEnd", {bb, b});
           m.AddLessThan(vm.e("M2StartTimes", {bb}), vm.e("M1EndTimes", {b})).OnlyEnforceIf(beforeEnd);
@@ -352,18 +373,10 @@ private:
   void numChildNeededVars() {
     for (auto& [parent, child2qty] : p.dependencies) {
       for (auto& [child, childPerParent] : child2qty) {
-        std::cout << "cpp:" << childPerParent << std::endl;
         int64_t bonusedChildPerParent = Util::roundMul(childPerParent, p.materialBonus[parent]);
-        std::cout << "bcpp:" << bonusedChildPerParent << std::endl;
         bonusedChildPerParent = max(p.float2int, bonusedChildPerParent);
-        std::cout << "bcpp:" << bonusedChildPerParent << std::endl;
-        std::cout << "mnr:" << p.maxNumRuns[parent] << std::endl;
-        std::cout << "mnrpsoj:" << p.maxNumRunsPerSlotOfJob[parent] << std::endl;
         int64_t maxNumNeededPerSlot = max(1ll, min(int64_t(p.maxNumRuns[parent]), int64_t(p.maxNumRunsPerSlotOfJob[parent]))) * childPerParent;
-        std::cout << "mnr:" << p.maxNumRuns[parent] << std::endl;
-        std::cout << "mnnps:" << maxNumNeededPerSlot << std::endl;
         int64_t maxNumNeeded = max(1ll, int64_t(p.maxNumRuns[parent])) * childPerParent;
-        std::cout << "mnn:" << maxNumNeeded << std::endl;
         for (int b = 0; b < p.maxNumBatches[p.job2machine[parent]]; ++b) {
           const auto index = {parent, child, b};
           auto numChildNeededPerSlotFloor = vm.i("numChildNeededPerSlotFloor", index, 0, maxNumNeededPerSlot);
@@ -386,9 +399,7 @@ private:
           m.AddMultiplicationEquality(totalNumNeededFloor, {numChildNeededPerSlotFloor, diff});
           m.AddMultiplicationEquality(totalNumNeededCeil, {numChildNeededPerSlotCeil, remainder});
           auto totalNumChildNeeded = vm.e("totalNumChildNeeded", index, totalNumNeededFloor + totalNumNeededCeil);
-          m.AddLessOrEqual(totalNumChildNeeded, maxNumNeeded);
-
-          m.AddLessOrEqual(vm.i("runs", {parent, b}) * bonusedChildPerParent, totalNumChildNeeded);
+          //m.AddLessOrEqual(totalNumChildNeeded, maxNumNeeded);
         }
       }
     }
@@ -441,11 +452,13 @@ private:
         }
       }
 
-      auto amountNotProvidedByInventory = vm.i("amountNotProvidedByInventory", {child}, 0, p.maxNumRuns[child] * p.madePerRun[child]);
-      m.AddMaxEquality(amountNotProvidedByInventory, {0, consumed - inventory});
-      auto excess = vm.e("excess", {child}, built - amountNotProvidedByInventory);
+      //auto amountNotProvidedByInventory = vm.i("amountNotProvidedByInventory", {child}, 0, p.maxNumRuns[child] * p.madePerRun[child]);
+      //m.AddMaxEquality(amountNotProvidedByInventory, {0, consumed - inventory});
+      //auto excess = vm.e("excess", {child}, built - amountNotProvidedByInventory);
+      auto excess = vm.e("excess", {child}, built - consumed);
       if (!p.runsExcess.contains(child)) {
-        m.AddLessThan(excess, p.madePerRun[child]);
+        // TODO
+        //m.AddLessThan(excess, p.madePerRun[child]);
       }
     }
   }
@@ -504,10 +517,59 @@ private:
     }
   }
 
+  void getHints() {
+    for (auto machine : p.machines) {
+      for (int b = 0; b < p.maxNumBatches[machine]; ++b) {
+        //vm.ihint(machine2str.at(machine) + "BatchTimes", { b }, 0);
+        if (b >= p.minNumBatches[machine]) {
+            vm.bhint(machine2str.at(machine) + "BatchIsUseds", { b }, 0);
+        }
+        for (int k : p.jobTypes) {
+            if (p.job2machine[k] == machine) {
+                vm.ihint("runs", { k,b }, 0);
+                vm.ihint("slots", { k,b }, 0);
+            }
+        }
+      }
+      for (int b = 0; auto batch : p.approximation.machine2batches[machine]) {
+          //vm.ihint(machine2str.at(machine) + "BatchTimes", { b }, (batch.getMaxTimeOfBatch() * (p.float2int/10)).toIntCeil());
+          if (b >= p.minNumBatches[machine]) {
+              vm.bhint(machine2str.at(machine) + "BatchIsUseds", { b }, 1);
+          }
+          for (auto & [k, item] : batch.items) {
+              vm.ihint("runs", { k,b }, item.runs);
+              vm.ihint("slots", { k,b }, item.slots);
+          }
+      }
+
+      for (int b = 0; b < p.maxNumBatches[machine]; ++b) {
+          //string v = machine2str.at(machine) + "BatchTimes";
+          auto i = { b };
+          //m.AddHint(vm.i(v,i), vm.getHint(v,i));
+          if (b >= p.minNumBatches[machine]) {
+              string v = machine2str.at(machine) + "BatchIsUseds";
+              m.AddHint(vm.b(v, i), vm.getHint(v, i));
+          }
+          for (int k : p.jobTypes) {
+              if (p.job2machine[k] == machine) {
+                  auto ii = { k,b };
+                  m.AddHint(vm.i("runs", ii), vm.getHint("runs", ii));
+                  m.AddHint(vm.i("slots", ii), vm.getHint("slots", ii));
+              }
+          }
+      }
+    }
+  }
+
+  std::string getSpacing(auto prev, int cells) {
+      auto str = std::to_string(prev);
+    return std::string(std::max(0,int(cells - str.size())), ' ');
+  }
+
   std::function<void(Model*)> getSolutionObserver() {
     return NewFeasibleSolutionObserver([&](const CpSolverResponse& r) {
       LOG(INFO) << "Solution " << num_solutions;
-      double scale = p.timesGCD / 3600.;
+      double scale = p.timesGCD / 3600. / (p.float2int/10);
       auto F = [&](auto x) { return round(100 * x * scale) / 100.; };
       auto Vi = [&](string a, vector<int> i) { return SolutionIntegerValue(r, vm.i(a, i)); };
       auto Vb = [&](string a, vector<int> i) { return SolutionIntegerValue(r, vm.b(a, i)); };
@@ -525,8 +587,8 @@ private:
             if (batchTime == 0) {
               LOG(INFO) << "\tBatch:" << b << "is empty" << endl;
             } else {
-              LOG(INFO) << "\tBatch:" << b << "\tStart:" << F(startTime) << "\tEnd:" << F(startTime + batchTime)
-                        << "\tDuration:" << F(batchTime) << endl;
+              LOG(INFO) << "\tBatch:" << b << getSpacing(b,4) << "Start:" << F(startTime) << getSpacing(F(startTime), 10) << "End:" << F(startTime + batchTime)
+                        << getSpacing(F(startTime+batchTime), 10)<< "Duration:" << F(batchTime) << endl;
             }
             for (int k : p.jobTypes) {
               if (p.job2machine[k] == machine) {
@@ -535,8 +597,8 @@ private:
                   continue;
                 }
                 int64_t r = Vi("runs", {k, b});
-                int64_t t = Vi("timeOfJobTypeOnBatch", {k, b});
-                LOG(INFO) << "\t" << k << "\tr:" << r << "   \ts:" << s << "\tt:" << F(t) << endl;
+                int64_t t = Ve("timeOfJobTypeOnBatch", {k, b});
+                LOG(INFO) << "\t" << k << getSpacing(k, 10) << "  r:" << r << getSpacing(r, 10) << "   s:" << s << getSpacing(s, 10) << "t:" << F(t) << getSpacing(F(t), 10) << std::endl;
               }
             }
           }
@@ -544,16 +606,17 @@ private:
         }
       }
       int64_t maxT = Vi("scheduleCompletionTime", {0});
-      int64_t ub = p.completionTimeUpperBound;
+      // TODO / 4
+      int64_t ub = p.completionTimeUpperBound / 2;
       int64_t lb = p.completionTimeLowerBound;
       LOG(INFO) << "\t  - upperbound : " << ub * scale << endl;
       LOG(INFO) << "\t  - sched time : " << maxT * scale << endl;
       LOG(INFO) << "\t  - lowerbound : " << lb * scale << endl;
       if (lb > 0) {
-        LOG(INFO) << "\t  - time/lb    : " << maxT / lb << endl;
+        LOG(INFO) << "\t  - time/lb    : " << (maxT / double(lb)) << endl;
       }
       if (ub > 0) {
-        LOG(INFO) << "\t  - 1-time/ub  : " << (1 - maxT / ub) << endl;
+        LOG(INFO) << "\t  - 1-time/ub  : " << (1.0 - maxT / double(ub)) << endl;
       }
       LOG(INFO) << "\t  - real time  : " << r.wall_time() << endl;
       LOG(INFO) << endl;
@@ -563,6 +626,4 @@ private:
       //callback(schedule);
     });
   }
-
-  //   void getHints(map<LinearExpr,int>)
 };

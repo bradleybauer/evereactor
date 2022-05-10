@@ -123,7 +123,7 @@ class BuildItems {
   bool getShouldBuildChildOfParent(int pid, int cid, {required bool excludeItemsSetToBuy}) {
     assert(SD.isBuildable(pid));
     if (excludeItemsSetToBuy) {
-      return SD.isBuildable(cid) && !SD.isWrongIndyType(pid, cid) && getShouldBuild(pid) && getShouldBuild(cid);
+      return SD.isBuildable(cid) && !SD.isWrongIndyType(pid, cid) && getShouldBuild(cid);
     } else {
       return SD.isBuildable(cid) && !SD.isWrongIndyType(pid, cid);
     }

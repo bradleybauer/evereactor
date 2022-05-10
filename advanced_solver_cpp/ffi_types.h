@@ -1,9 +1,10 @@
 #pragma once
+#include "stdint.h"
 
 // Fraction
 struct FfiFraction {
-  int numerator;
-  int denominator;
+  int64_t numerator;
+  int64_t denominator;
 };
 // Map<int,Fraction>
 struct i2fracEntry {
@@ -17,7 +18,7 @@ struct i2frac {
 // Map<int,int>
 struct i2iEntry {
   int key;
-  int value;
+  int64_t value;
 };
 struct i2i {
   int size;
@@ -85,10 +86,10 @@ struct FfiProblem {
   struct i2i maxNumRunsPerSlotOfJob;
   struct i2frac materialBonus;
   struct i2frac timeBonus;
-  int float2int;
+  int64_t float2int;
   struct FfiSchedule* approximation; // pointer since this is optional
 };
 
 // before using ffigen you need to uncomment these lines. then recomment them to enable building of the dll with visual studio.
-//void startWorker(void (*submitSchedule)(struct FfiSchedule x), void (*notifyStopped)(), struct FfiProblem problem);
-//void stopWorker();
+// void startWorker(void (*submitSchedule)(struct FfiSchedule x), void (*notifyStopped)(), struct FfiProblem problem);
+// void stopWorker();

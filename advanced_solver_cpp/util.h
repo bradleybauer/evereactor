@@ -80,7 +80,10 @@ public:
   static int64_t roundMul(int64_t x, const Fraction& y) { return (x * y.num + y.den / 2) / y.den; }
 
   static int64_t gcds(vector<int64_t> xs) {
-    int64_t gcd = 1;
+    if (xs.size() == 0) {
+      return 1;
+    }
+    int64_t gcd = xs.front();
     for (int64_t x : xs) {
       gcd = std::gcd(x, gcd);
     }

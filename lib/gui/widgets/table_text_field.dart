@@ -6,7 +6,6 @@ import '../my_theme.dart';
 
 class TableTextField extends StatefulWidget {
   const TableTextField({
-    Key? key,
     required this.onChanged,
     required this.textColor,
     required this.activeBorderColor,
@@ -23,7 +22,8 @@ class TableTextField extends StatefulWidget {
     this.hintStyle,
     this.focusNode,
     // this.formKey,
-  }) : super(key: key);
+    super.key,
+  });
 
   // final GlobalKey<FormState>? formKey;
   final FocusNode? focusNode;
