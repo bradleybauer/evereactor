@@ -14,25 +14,27 @@ class Util {
   static int64_t getNumNeeded(int node, map<int, int64_t>& inventory, map<int, int64_t>& numRuns, const bool getMax, Problem& p) {
     int64_t totalNumNeeded = 0;
     for (auto parent : p.inverseDependencies.at(node)) {
+      //const int64_t parentNumRuns = getNumRuns(parent, inventory, numRuns, getMax, p);
+      //const int64_t childPerParent = p.dependencies.at(parent).at(node);
+      //const Fraction pq = max(Fraction(1), p.materialBonus.at(parent) * childPerParent);
+      //int64_t numNeededByParent = 0;
+      //if (getMax) {
+      //  int64_t maxSlots = 0;
+      //  if (p.job2machine.at(parent) == p.job2machine.at(node)) {
+      //    maxSlots = min(parentNumRuns, (p.maxNumBatches.at(p.job2machine.at(parent)) - 1) * p.maxNumSlotsOfJob.at(parent));
+      //  } else {
+      //    maxSlots = min(parentNumRuns, p.maxNumBatches.at(p.job2machine.at(parent)) * p.maxNumSlotsOfJob.at(parent));
+      //  }
+      //  numNeededByParent = ceilMul(parentNumRuns - max(0ll, maxSlots - 1), pq);
+      //  numNeededByParent += max(0ll, maxSlots - 1) * pq.toIntCeil();
+      //} else {
+      //  numNeededByParent = ceilMul(parentNumRuns, pq);
+      //}
+      //totalNumNeeded += numNeededByParent;
+
       const int64_t parentNumRuns = getNumRuns(parent, inventory, numRuns, getMax, p);
       const int64_t childPerParent = p.dependencies.at(parent).at(node);
-      const Fraction pq = max(Fraction(1), p.materialBonus.at(parent) * childPerParent);
-
-      int64_t numNeededByParent = 0;
-      if (getMax) {
-        int64_t maxSlots = 0;
-        if (p.job2machine.at(parent) == p.job2machine.at(node)) {
-          maxSlots = min(parentNumRuns, (p.maxNumBatches.at(p.job2machine.at(parent)) - 1) * p.maxNumSlotsOfJob.at(parent));
-        } else {
-          maxSlots = min(parentNumRuns, p.maxNumBatches.at(p.job2machine.at(parent)) * p.maxNumSlotsOfJob.at(parent));
-        }
-        numNeededByParent = ceilMul(parentNumRuns - max(0ll, maxSlots - 1), pq);
-        numNeededByParent += max(0ll, maxSlots - 1) * pq.toIntCeil();
-      } else {
-        numNeededByParent = ceilMul(parentNumRuns, pq);
-      }
-
-      totalNumNeeded += numNeededByParent;
+      totalNumNeeded += parentNumRuns * childPerParent;
     }
     return totalNumNeeded;
   }
