@@ -21,9 +21,7 @@ class WorkerArg {
 }
 
 void startWorker(WorkerArg arg) {
-  print('startWorker called');
   Pointer<FfiProblem> ffiProblem = make_problem(arg.p);
-  print('made ffiProblem');
   _sendPort = arg.sp;
 
   // create function pointers using pointer.fromFunc to pass to cpp
@@ -36,18 +34,25 @@ void startWorker(WorkerArg arg) {
   // when cpp returns control flow we just exit
   destroy_problem(ffiProblem);
 
-  print('exiting startWorker');
+  print('exiting isolate');
   Isolate.exit();
 }
 
 void stopWorker() => _library.stopWorker();
 
-typedef _PublishSolutionNativeType = Void Function(FfiSchedule schedule);
-void _publishSolution(FfiSchedule schedule) {
-  _sendPort?.send('hai from cpp');
+typedef _PublishSolutionNativeType = Void Function(Pointer<FfiSchedule> schedule);
+void _publishSolution(Pointer<FfiSchedule> schedule) {
+  // notify adv solver we have a new solution
+  final dartSchedule = ffi2dart_schedule(schedule.ref);
+
+  // take ownership of the given schedule
+  destroy_schedule(schedule);
+
+  _sendPort?.send(dartSchedule);
 }
 
 typedef _NotifyStoppedNativeType = Void Function();
 void _notifyStopped() {
-  _sendPort?.send('please stop!');
+  // notify ui we stopped
+  _sendPort?.send(null);
 }

@@ -22,16 +22,17 @@ struct BatchItem {
 };
 
 struct Batch {
-    Batch(){}
-    map<int, BatchItem> items{};
+  Batch() {}
+  map<int, BatchItem> items{};
+  int64_t startTime = 0;
 
-    Fraction getMaxTimeOfBatch() const {
-      Fraction result = Fraction(0);
-      for (auto [tid, batch] : items) {
-        result = std::max(result, batch.time);
-      }
-      return result;
+  Fraction getMaxTimeOfBatch() const {
+    Fraction result = Fraction(0);
+    for (auto [tid, batch] : items) {
+      result = std::max(result, batch.time);
     }
+    return result;
+  }
 };
 
 struct Schedule {
@@ -42,10 +43,9 @@ struct Schedule {
   bool infeasible = false;
 
   std::string getSpacing(auto prev, int cells) {
-      auto str = std::to_string(prev);
-    return std::string(std::max(0,int(cells - str.size())), ' ');
+    auto str = std::to_string(prev);
+    return std::string(std::max(0, int(cells - str.size())), ' ');
   }
-
 
   void print() {
     for (auto machine : {IndustryType::REACTION, IndustryType::MANUFACTURING}) {
@@ -56,27 +56,27 @@ struct Schedule {
           std::cout << "  Manufacturing";
         }
         const auto& batches = machine2batches[machine];
-        for (int b = 0;  const Batch & batch : batches) {
+        for (int b = 0; const Batch& batch : batches) {
           double batchTime = batch.getMaxTimeOfBatch().toDouble();
           if (batchTime == 0) {
             std::cout << "\tBatch:" << b << "is empty" << std::endl;
           } else {
-              std::cout << "\tBatch:" << b << getSpacing(b,3) << "Duration:" << batchTime << std::endl;
+            std::cout << "\tBatch:" << b << getSpacing(b, 3) << "Duration:" << batchTime << std::endl;
           }
-          for (const auto&[tid, batchItem] : batch.items) {
+          for (const auto& [tid, batchItem] : batch.items) {
             int64_t s = batchItem.slots;
             if (s == 0) {
               continue;
             }
             int64_t r = batchItem.runs;
             int64_t t = batchItem.time.toDouble();
-            std::cout << "\t" << tid << getSpacing(tid, 10) << "  r:" << r << getSpacing(r, 10) << "   s:" << s << getSpacing(s, 10) << "t:" << t << getSpacing(t, 16) << std::endl;
+            std::cout << "\t" << tid << getSpacing(tid, 10) << "  r:" << r << getSpacing(r, 10) << "   s:" << s << getSpacing(s, 10)
+                      << "t:" << t << getSpacing(t, 16) << std::endl;
           }
-        ++b;
+          ++b;
         }
         std::cout << std::endl;
       }
     }
   }
-
 };

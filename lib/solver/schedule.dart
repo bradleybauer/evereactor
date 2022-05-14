@@ -15,6 +15,7 @@ class BatchItem {
 
 class Batch {
   final Map<int, BatchItem> _items = {};
+  int startTime = 0;
 
   Map<int, BatchItem> getItems() => _items;
 
@@ -27,11 +28,15 @@ class Batch {
       _items.entries.where((e) => e.value.time < time).map((e) => e.key);
 
   Fraction getMaxTime() => _items.values.fold(0.toFraction(), (previousValue, e) {
-        if (previousValue < e.time) {
-          return e.time;
-        }
-        return previousValue;
-      });
+    if (previousValue < e.time) {
+      return e.time;
+    }
+    return previousValue;
+  });
+
+  Fraction getEndTime() {
+    return startTime.toFraction() + getMaxTime();
+  }
 
   int getTidOfMaxTime() {
     Fraction maxTime = 0.toFraction();
@@ -61,25 +66,27 @@ class Batch {
 }
 
 class Schedule {
-  Map<IndustryType,List<Batch>> _machine2batches;
+  Map<IndustryType,List<Batch>> machine2batches;
   double time = 0.0;
+  bool isOptimal = false;
+  bool isInfeasible = false;
   bool isOptimized = false;
 
-  Schedule(Map<IndustryType, List<Batch>> machine2batches) : _machine2batches = machine2batches;
+  Schedule(Map<IndustryType, List<Batch>> machine2batches) : machine2batches = machine2batches;
 
-  Schedule.empty() : _machine2batches = {};
+  Schedule.empty() : machine2batches = {};
 
-  void addBatches(IndustryType machine, List<Batch> batches) => _machine2batches[machine] = batches;
+  void addBatches(IndustryType machine, List<Batch> batches) => machine2batches[machine] = batches;
 
-  Map<IndustryType,List<Batch>> getBatches() => _machine2batches;
+  Map<IndustryType,List<Batch>> getBatches() => machine2batches;
 
   @override
   String toString() {
     var str = "";
-    for (IndustryType machine in _machine2batches.keys) {
+    for (IndustryType machine in machine2batches.keys) {
       str += ('\n' + machine.toString() + '\n');
       Fraction b = 0.toFraction();
-      for (var batch in _machine2batches[machine]!) {
+      for (var batch in machine2batches[machine]!) {
         Fraction mt = batch.getMaxTime();
         str += ('Batch ' + b.toString() + ' ' + (mt / 3600.toFraction()).toDouble().toString() + '\n');
         for (int tid in batch.tids) {

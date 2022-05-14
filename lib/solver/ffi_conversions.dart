@@ -17,6 +17,7 @@ BatchItem ffi2dart_batchItem(batchItem item) {
 
 Batch ffi2dart_batch(batch element) {
   final result = Batch();
+  result.startTime = element.startTime;
   for (int i = 0; i < element.size; ++i) {
     final entry = element.entries
         .elementAt(i)
@@ -53,6 +54,8 @@ Schedule ffi2dart_schedule(FfiSchedule schedule) {
   Schedule result = Schedule(ffi2dart_machine2batches(schedule.machine2batches));
   result.time = schedule.time;
   result.isOptimized = true;
+  result.isOptimal = schedule.optimal > 0;
+  result.isInfeasible = schedule.infeasible > 0;
   return result;
 }
 

@@ -37,7 +37,6 @@ map<IndustryType, vector<Batch>> ffi2cpp_machine2batches(k2batches& element) {
   return result;
 }
 
-// We use this to parse schedules passed to us from c++
 Schedule ffi2cpp_schedule(FfiSchedule schedule) {
   Schedule result = Schedule();
   result.machine2batches = ffi2cpp_machine2batches(schedule.machine2batches);
@@ -109,9 +108,10 @@ Problem ffi2cpp_problem(struct FfiProblem p) {
 }
 
 void make_fraction(FfiFraction& frac, Fraction data) {
+  // TODO now that dart uses int64_t not sure if i need this check here!!!!
   if (data.num > 2147483647 || data.den > 2147483647) {
-      std::cout << "overflow in make_fraction" << std::endl;
-      exit(1);
+    std::cout << "overflow in make_fraction" << std::endl;
+    exit(1);
   }
   frac.numerator = data.num;
   frac.denominator = data.den;
@@ -124,6 +124,7 @@ void make_batchItem(batchItem& item, BatchItem data) {
 }
 
 void make_batch(batch& b, Batch data) {
+  b.startTime = data.startTime;
   b.size = int(data.items.size());
   b.entries = (i2batchItemEntry*)calloc(data.items.size(), sizeof(i2batchItemEntry));
   int i = 0;
@@ -160,6 +161,8 @@ void make_k2batches(k2batches& element, map<IndustryType, vector<Batch>> data) {
 FfiSchedule* make_schedule(Schedule schedule) {
   auto result = (FfiSchedule*)calloc(1, sizeof(FfiSchedule));
   result->time = schedule.time;
+  result->infeasible = schedule.infeasible;
+  result->optimal = schedule.optimal;
   make_k2batches(result->machine2batches, schedule.machine2batches);
   return result;
 }

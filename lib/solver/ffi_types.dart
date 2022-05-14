@@ -189,6 +189,9 @@ class i2batchItemEntry extends ffi.Struct {
 }
 
 class batch extends ffi.Struct {
+  @ffi.Int64()
+  external int startTime;
+
   @ffi.Int32()
   external int size;
 

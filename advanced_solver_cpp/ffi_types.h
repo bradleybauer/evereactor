@@ -50,6 +50,7 @@ struct i2batchItemEntry {
   struct batchItem value;
 };
 struct batch {
+  int64_t startTime;
   int size;
   struct i2batchItemEntry* entries;
 };
@@ -90,6 +91,6 @@ struct FfiProblem {
   struct FfiSchedule* approximation; // pointer since this is optional
 };
 
-// before using ffigen you need to uncomment these lines. then recomment them to enable building of the dll with visual studio.
-// void startWorker(void (*submitSchedule)(struct FfiSchedule x), void (*notifyStopped)(), struct FfiProblem problem);
-// void stopWorker();
+// before running 'flutter pub run ffigen' you need to uncomment these lines. then recomment them to enable building of the dll with visual studio.
+//void startWorker(void (*publishSolution)(struct FfiSchedule* x), void (*notifyStopped)(), struct FfiProblem problem);
+//void stopWorker();
