@@ -78,13 +78,13 @@ class NativeLibrary {
   set __security_cookie(int value) => ___security_cookie.value = value;
 
   void startWorker(
-    ffi.Pointer<ffi.NativeFunction<ffi.Void Function(FfiSchedule)>>
-        submitSchedule,
+    ffi.Pointer<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<FfiSchedule>)>>
+        publishSolution,
     ffi.Pointer<ffi.NativeFunction<ffi.Void Function()>> notifyStopped,
     FfiProblem problem,
   ) {
     return _startWorker(
-      submitSchedule,
+      publishSolution,
       notifyStopped,
       problem,
     );
@@ -93,12 +93,15 @@ class NativeLibrary {
   late final _startWorkerPtr = _lookup<
       ffi.NativeFunction<
           ffi.Void Function(
-              ffi.Pointer<ffi.NativeFunction<ffi.Void Function(FfiSchedule)>>,
+              ffi.Pointer<
+                  ffi.NativeFunction<
+                      ffi.Void Function(ffi.Pointer<FfiSchedule>)>>,
               ffi.Pointer<ffi.NativeFunction<ffi.Void Function()>>,
               FfiProblem)>>('startWorker');
   late final _startWorker = _startWorkerPtr.asFunction<
       void Function(
-          ffi.Pointer<ffi.NativeFunction<ffi.Void Function(FfiSchedule)>>,
+          ffi.Pointer<
+              ffi.NativeFunction<ffi.Void Function(ffi.Pointer<FfiSchedule>)>>,
           ffi.Pointer<ffi.NativeFunction<ffi.Void Function()>>,
           FfiProblem)>();
 
