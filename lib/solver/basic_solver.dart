@@ -11,7 +11,7 @@ import 'schedule.dart';
 
 const thirtyDays = 30 * 24 * 3600;
 
-class BasicSolver {
+abstract class BasicSolver {
   // if there are more than 100 batches, then the user has probably entered some stupid combination of settings
   static const MAX_NUM_BATCHES = 100;
 
@@ -28,7 +28,7 @@ class BasicSolver {
       Map<int, int> neededOfMachineType = Map.fromEntries(needed.entries.where((entry) => prob.job2machine[entry.key]! == machine));
       while (neededOfMachineType.isNotEmpty) {
         final batch = _getBatch(neededOfMachineType, machine, prob);
-        _setOptimalLineAlloc(batch, machine, prob);
+        setOptimalLineAlloc(batch, machine, prob);
         batches.insert(0, batch);
 
         // sanity check
@@ -72,7 +72,9 @@ class BasicSolver {
   static Batch _getBatch(Map<int, int> available, IndustryType machine, Problem prob) {
     final batch = Batch();
     int slotsUsedOnBatch = 0;
-    for (int tid in available.keys) {
+    final jobs = available.entries.toList();
+    for (final entry in jobs) {
+      final tid = entry.key;
       // what is the maximum number of slots we have remaining on this batch
       final slotsAvailable = min(prob.maxNumSlotsOfMachine[machine]! - slotsUsedOnBatch, prob.maxNumSlotsOfJob[tid]!);
 
@@ -81,7 +83,8 @@ class BasicSolver {
       }
 
       // number of units of this item needed by items built so far
-      final numUnits = available[tid]!;
+      //final numUnits = available[tid]!;
+      final numUnits = entry.value;
 
       // number of runs needed
       int runs = ceilDiv(numUnits, SD.numProducedPerRun(tid));
@@ -117,8 +120,8 @@ class BasicSolver {
     return batch;
   }
 
-  static void _setOptimalLineAlloc(Batch batch, IndustryType machine, Problem prob) {
-    _maximizeMinTime(batch, machine, prob);
+  static void setOptimalLineAlloc(Batch batch, IndustryType machine, Problem prob) {
+    _maximizeMinTime(batch, prob);
     _minimizeMaxTimeUsingSpareSlots(batch, machine, prob);
     _minimizeSlotsWithoutIncreasingMaxTime(batch, machine, prob);
   }
@@ -127,7 +130,7 @@ class BasicSolver {
   // If maxT is less than 30 days then the output schedule will have a maxT of less than 30 days.
   // So this function does not violate the 'runs cannot start after 30 days' constraint.
   // This function does not increase the number of slots a job is ran on.
-  static void _maximizeMinTime(Batch batch, IndustryType machine, Problem prob) {
+  static void _maximizeMinTime(Batch batch, Problem prob) {
     final maxT = batch.getMaxTime();
     final types = batch.getTypesWithTimeLessThan(maxT);
     for (int tid in types) {
@@ -143,7 +146,9 @@ class BasicSolver {
       final tmp2 = Fraction(thirtyDays, timePerRun.numerator).reduce();
       newMaxRunsPerSlot = min(newMaxRunsPerSlot, ceilDiv(tmp2.numerator * timePerRun.denominator, tmp2.denominator));
       newMaxRunsPerSlot = min(newMaxRunsPerSlot, prob.maxNumRunsPerSlotOfJob[tid]!);
+      //print('hai, r:' + runs.toString() + ' maxT:' + maxT.toDouble().toString() + '     tpr:' + timePerRun.toDouble().toString() + ' nmrps:' + newMaxRunsPerSlot.toString());
       int newNumSlots = ceilDiv(runs, newMaxRunsPerSlot);
+      //print('bye nns:' + newNumSlots.toString() + ' ns:' + slots.toString());
       // double newTime = SD.baseTime(runs, newNumSlots, SD.timePerRun(tid)) * prob.jobTimeBonus[tid]!;
       Fraction newTime = SD.baseTime(runs, newNumSlots, SD.timePerRun(tid)).toFraction() * prob.jobTimeBonus[tid]!;
       assert((newTime - SD.timePerRun(tid).toFraction()) <= thirtyDays.toFraction());

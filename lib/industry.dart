@@ -70,7 +70,6 @@ Fraction _getReactionMaterialBonus(int tid, Blueprint bp, OptionsController opti
     getRigBonus(tid, options.getSelectedReactionRigs().map((e) => e.tid), BonusType.MATERIAL).reduce();
 
 Fraction getTimeBonus(int tid, OptionsController options, BuildItemsController buildItems) {
-  // return 1.toFraction();
   final bp = SDE.blueprints[tid]!;
   switch (bp.industryType) {
     case IndustryType.REACTION:

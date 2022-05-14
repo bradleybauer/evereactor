@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -48,9 +47,9 @@ struct Problem {
   int64_t timesGCD = -1;
 
   void print_i2i(string name, map<int, int64_t> m) {
-    std::cout << name <<".size()=" << m.size() << std::endl;
+    std::cout << name << ".size()=" << m.size() << std::endl;
     for (auto& [k, v] : m) {
-        std::cout << k << " " << v << std::endl;
+      std::cout << k << " " << v << std::endl;
     }
   }
 
@@ -60,29 +59,29 @@ struct Problem {
     print_i2i("timePerRun", timePerRun);
     std::cout << "job2machine.size()=" << job2machine.size() << std::endl;
     for (auto& [k, v] : job2machine) {
-        std::cout << k << " " << (v==IndustryType::MANUFACTURING?"mfg":"rtn") << std::endl;
+      std::cout << k << " " << (v == IndustryType::MANUFACTURING ? "mfg" : "rtn") << std::endl;
     }
     std::cout << "dependencies.size()=" << dependencies.size() << std::endl;
     for (auto& [k, v] : dependencies) {
-        std::cout << k << std::endl;
-        for (auto& [kk, vv] : v) {
-            std::cout << "\t" << kk << " " << vv << std::endl;
-        }
+      std::cout << k << std::endl;
+      for (auto& [kk, vv] : v) {
+        std::cout << "\t" << kk << " " << vv << std::endl;
+      }
     }
     print_i2i("inventory", inventory);
     std::cout << "maxNumSlotsOfMachine.size()=" << maxNumSlotsOfMachine.size() << std::endl;
     for (auto& [k, v] : maxNumSlotsOfMachine) {
-        std::cout << (k ==IndustryType::MANUFACTURING?"mfg":"rtn") << " " << v << std::endl;
+      std::cout << (k == IndustryType::MANUFACTURING ? "mfg" : "rtn") << " " << v << std::endl;
     }
     print_i2i("maxNumSlotsOfJob", maxNumSlotsOfJob);
     print_i2i("maxNumRunsPerSlotOfJob", maxNumRunsPerSlotOfJob);
     std::cout << "materialBonus.size()" << materialBonus.size() << std::endl;
     for (auto& [k, v] : materialBonus) {
-        std::cout << k << " " << v.num << "/" << v.den << std::endl;
+      std::cout << k << " " << v.num << "/" << v.den << std::endl;
     }
     std::cout << "timeBonus.size()" << timeBonus.size() << std::endl;
     for (auto& [k, v] : timeBonus) {
-        std::cout << k << " " << v.num << "/" << v.den << std::endl;
+      std::cout << k << " " << v.num << "/" << v.den << std::endl;
     }
     std::cout << "float2int:" << float2int << std::endl;
     std::cout << "timesGCD:" << timesGCD << std::endl;

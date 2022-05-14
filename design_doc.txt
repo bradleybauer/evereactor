@@ -1,3 +1,9 @@
+TODO really should take jobcosts into consideration in heuristic list
+     maybe i am ? dont remember
+
+TODO I may be leaking memory in the dart<->c++ layer. need to delete ffi schedule&problem after done.
+     is it possible to, in dart, free memory allocated by c++ (calloc used in c++) ? not sure.
+
 Perfect is the enemy of the good
 
 How does inventory work?

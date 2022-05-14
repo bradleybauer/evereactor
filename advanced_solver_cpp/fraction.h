@@ -13,7 +13,7 @@ public:
     den /= gcd;
   }
   Fraction(int64_t num) : num(num), den(1) {}
-  Fraction() :num(0),den(1) {}
+  Fraction() : num(0), den(1) {}
 
   Fraction operator-(const Fraction& r) { return Fraction(num * r.den - den * r.num, den * r.den); }
 

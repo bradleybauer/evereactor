@@ -1,9 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
 
 #include "ortools/base/logging.h"
 #include "ortools/sat/cp_model.h"
@@ -20,7 +20,7 @@ using std::unordered_map;
 using std::vector;
 
 template <typename T> struct VariableArray {
-  unordered_map<string, unordered_map<string,T>> arrays = {};
+  unordered_map<string, unordered_map<string, T>> arrays = {};
 
   bool contains(string arrayName, vector<int> index) { return getArray(arrayName).contains(key(index)); }
 
@@ -36,7 +36,7 @@ template <typename T> struct VariableArray {
     return result;
   }
 
-  unordered_map<string,T>& getArray(string arrayName) {
+  unordered_map<string, T>& getArray(string arrayName) {
     if (arrays.contains(arrayName)) {
       return arrays[arrayName];
     }
@@ -64,41 +64,41 @@ public:
       return intarrays.getVar(arrayName, index);
     }
     if (lb > ub) {
-        std::cout << "error using vm.i(.,.,.,.) : lb > ub " << lb << ">" << ub << std::endl;
-        exit(1);
+      std::cout << "error using vm.i(.,.,.,.) : lb > ub " << lb << ">" << ub << std::endl;
+      exit(1);
     }
     auto var = m.NewIntVar(Domain(lb, ub));
-    //std::cout << "in vm after new int64_t var" << std::endl;
+    // std::cout << "in vm after new int64_t var" << std::endl;
     intarrays.setVar(arrayName, index, var);
     return var;
   }
   IntVar i(string arrayName, vector<int> index) {
-      //std::cout << "in vm i(x,x)" << std::endl;
-      if (!intarrays.contains(arrayName, index)) {
-          std::cout << "error using vm.i(.,.)" << std::endl;
-          exit(1);
-      }
-      auto result = intarrays.getVar(arrayName, index);
-      //std::cout << "in vm i(x,x) after" << std::endl;
-      return result;
+    // std::cout << "in vm i(x,x)" << std::endl;
+    if (!intarrays.contains(arrayName, index)) {
+      std::cout << "error using vm.i(.,.)" << std::endl;
+      exit(1);
+    }
+    auto result = intarrays.getVar(arrayName, index);
+    // std::cout << "in vm i(x,x) after" << std::endl;
+    return result;
   }
   void ihint(string arrayName, vector<int> index, int64_t value) {
-      //std::cout << "in vm i(x,x)" << std::endl;
-      if (!intarrays.contains(arrayName, index)) {
-          std::cout << "error using vm.ihint" << std::endl;
-          exit(1);
-      }
-      return hints.setVar(arrayName, index, value);
-      //std::cout << "in vm i(x,x) after" << std::endl;
+    // std::cout << "in vm i(x,x)" << std::endl;
+    if (!intarrays.contains(arrayName, index)) {
+      std::cout << "error using vm.ihint" << std::endl;
+      exit(1);
+    }
+    return hints.setVar(arrayName, index, value);
+    // std::cout << "in vm i(x,x) after" << std::endl;
   }
   int64_t getHint(string arrayName, vector<int> index) {
-      //std::cout << "in vm i(x,x)" << std::endl;
-      if (!hints.contains(arrayName, index)) {
-          std::cout << "error using vm.getHint" << std::endl;
-          exit(1);
-      }
-      return hints.getVar(arrayName, index);
-      //std::cout << "in vm i(x,x) after" << std::endl;
+    // std::cout << "in vm i(x,x)" << std::endl;
+    if (!hints.contains(arrayName, index)) {
+      std::cout << "error using vm.getHint" << std::endl;
+      exit(1);
+    }
+    return hints.getVar(arrayName, index);
+    // std::cout << "in vm i(x,x) after" << std::endl;
   }
   BoolVar b(string arrayName, vector<int> index) {
     if (boolarrays.contains(arrayName, index)) {
@@ -109,27 +109,24 @@ public:
     return var;
   }
   void bhint(string arrayName, vector<int> index, int64_t value) {
-      //std::cout << "in vm i(x,x)" << std::endl;
-      if (!boolarrays.contains(arrayName, index)) {
-          std::cout << "error using vm.bhint" << std::endl;
-          exit(1);
-      }
-      return hints.setVar(arrayName, index, value);
-      //std::cout << "in vm i(x,x) after" << std::endl;
+    // std::cout << "in vm i(x,x)" << std::endl;
+    if (!boolarrays.contains(arrayName, index)) {
+      std::cout << "error using vm.bhint" << std::endl;
+      exit(1);
+    }
+    return hints.setVar(arrayName, index, value);
+    // std::cout << "in vm i(x,x) after" << std::endl;
   }
   LinearExpr e(string arrayName, vector<int> index, const LinearExpr& expr) {
-    if (exprarrays.contains(arrayName, index)) {
-      return exprarrays.getVar(arrayName, index);
-    }
     exprarrays.setVar(arrayName, index, expr);
     return expr;
   }
   LinearExpr e(string arrayName, vector<int> index) {
-      if (!exprarrays.contains(arrayName, index)) {
-          std::cout << "error using vm.e(.,.)" << std::endl;
-          exit(1);
-      }
-      auto result = exprarrays.getVar(arrayName, index);
-      return result;
+    if (!exprarrays.contains(arrayName, index)) {
+      std::cout << "error using vm.e(.,.)" << std::endl;
+      exit(1);
+    }
+    auto result = exprarrays.getVar(arrayName, index);
+    return result;
   }
 };
