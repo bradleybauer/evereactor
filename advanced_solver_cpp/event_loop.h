@@ -17,20 +17,36 @@ struct Message {
 class EventLoop {
 public:
   // callers: dart messenger isolate
-  void start(Problem p, std::function<void(Schedule schedule)> submitSchedule, std::function<void()> notifyStopped) {
-    std::cout << "in EventLoop::start" << std::endl;
+  void start(Problem p, std::function<void(Schedule)> submitSchedule, std::function<void()> notifyStopped) {
+    //std::cout << "in EventLoop::start" << std::endl;
     // start worker
     workerThread = std::thread([&]() {
-      ProblemSolver solver(p, [&](std::optional<Schedule> schedule) {
-        const bool should_quit = !schedule.has_value() || schedule.value().optimal || schedule.value().infeasible;
+      solver = new ProblemSolver(p, [&](std::optional<Schedule> schedule) {
+        auto should_quit = !schedule.has_value() || schedule.value().optimal || schedule.value().infeasible;
         post({.schedule = schedule, .should_quit = should_quit});
       });
       // blocks until ortools solver finishes (finds the optimal solution or determines if the problem is infeasible)
-      solver.solve();
+      solver->solve();
     });
     workerThread.detach();
 
-    event_loop();
+    while (true) {
+      auto message = await_message();
+      if (message.schedule.has_value()) {
+        submitSchedule(message.schedule.value());
+      }
+      //std::cout << "event loop returned" << std::endl;
+      if (message.should_quit) {
+          std::cout << "shouldQuit" << std::endl;
+        notifyStopped();
+        break;
+      }
+    }
+
+    if (workerThread.joinable()) {
+      workerThread.join();
+    }
+    delete solver;
   }
 
   // callers: dart ui isolate & worker thread
@@ -39,10 +55,6 @@ public:
     schedules.push_front({.should_quit = true});
     mtx.unlock();
     cond.notify_all();
-    if (workerThread.joinable()) { // empty thread is not joinable
-      workerThread.join();
-    }
-    // TODO call into dart to notify stopped
   }
 
   // callers: worker thread
@@ -54,35 +66,31 @@ public:
   }
 
 private:
-  // void workerFunc() {}
-
-  void event_loop() {
-    std::cout << "in EventLoop::event_loop" << std::endl;
-    bool running = true;
+  Message await_message() {
+    bool shouldQuit = false;
     std::unique_lock lock{mtx}; // does not unlock on destruction
-    while (running) {
-      std::cout << "cond wait" << std::endl;
+    Message result;
+    while (true) {
       cond.wait(lock);
+      // only submit the most recent schedule
       while (schedules.size() > 0) {
-        const Message message = schedules.front();
+        result = schedules.front();
         schedules.pop_front();
-        if (message.schedule.has_value()) {
-          // TODO call into dart to deliver schedule data
-        }
-        if (message.should_quit) {
-          // at this point worker thread has been joined
-          running = false;
+        if (result.should_quit) {
           break;
         }
       }
+      if (result.schedule.has_value() || result.should_quit) {
+        break;
+      }
     }
     lock.unlock();
+    return result;
   }
 
+  ProblemSolver* solver;
   std::mutex mtx;
   std::condition_variable cond;
   std::deque<Message> schedules;
   std::thread workerThread;
-  std::function<void(Schedule schedule)> submitSchedule;
-  std::function<void()> notifyStopped;
 };
