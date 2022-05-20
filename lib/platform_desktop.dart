@@ -1,13 +1,22 @@
 import 'dart:io';
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:provider/provider.dart';
 
 import '../gui/my_theme.dart';
+import 'controllers/build_items.dart';
+import 'controllers/inventory.dart';
+import 'controllers/optimizer.dart';
+import 'controllers/options.dart';
+import 'controllers/schedule_provider.dart';
+import 'controllers/schedule_provider_desktop.dart';
+import 'gui/widgets/flyout_optimizer.dart';
+import 'solver/advanced_solver.dart';
 
 class Platform {
   static QueryExecutor createDatabaseConnection(String databaseName) {
@@ -55,4 +64,28 @@ class Platform {
   static Widget getWindowMoveWidget() => MoveWindow();
 
   static bool isWeb() => false;
+
+  // just a quick hack
+  static bool initialized = false;
+  static AdvancedSolver solver = AdvancedSolver();
+  static ScheduleProviderDesktop? provider;
+  static OptimizerController? optimizerController;
+
+  static ScheduleProvider getScheduleProvider(
+    InventoryController inv,
+    OptionsController ops,
+    BuildItemsController items,
+    // cache controller
+  ) {
+    assert(!initialized);
+    initialized = true;
+    provider = ScheduleProviderDesktop(inventory: inv, options: ops, buildItems: items);
+    optimizerController = OptimizerController(provider!);
+    return provider!;
+  }
+
+  static Widget getOptimizerPane() {
+
+    return ChangeNotifierProvider.value(builder: (_, __) => const OptimizerFlyout(), value: optimizerController!);
+  }
 }

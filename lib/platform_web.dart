@@ -7,6 +7,12 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqlite3/wasm.dart';
 
+import 'controllers/build_items.dart';
+import 'controllers/inventory.dart';
+import 'controllers/options.dart';
+import 'controllers/schedule_provider.dart';
+import 'controllers/schedule_provider_web.dart';
+
 class Platform {
   static QueryExecutor createDatabaseConnection(String databaseName) {
     return LazyDatabase(() async {
@@ -34,4 +40,8 @@ class Platform {
   static Widget getWindowMoveWidget() => const SizedBox();
 
   static bool isWeb() => true;
+
+  static ScheduleProvider getScheduleProvider(InventoryController inv, OptionsController ops, BuildItemsController items) => ScheduleProviderWeb(inventory: inv, options: ops, buildItems: items);
+
+  static Widget getOptimizerPane() => const SizedBox();
 }

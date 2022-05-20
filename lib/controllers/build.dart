@@ -1,83 +1,35 @@
 import 'dart:math';
 
-import 'package:EveIndy/solver/advanced_solver.dart';
-import 'package:EveIndy/solver/basic_solver.dart';
 import 'package:flutter/material.dart';
 
 import '../industry.dart';
-import '../models/industry_type.dart';
 import '../sde_extra.dart';
 import '../solver/problem.dart';
 import '../solver/schedule.dart';
-import 'build_items.dart';
-import 'inventory.dart';
-import 'options.dart';
+import 'schedule_provider.dart';
 
 class Build with ChangeNotifier {
-  final InventoryController _inventory;
-  final OptionsController _options;
-  final BuildItemsController _buildItems;
-  final AdvancedSolver _advancedSolver;
+  final ScheduleProvider _scheduleProvider;
 
   var _totalBOM = <int, int>{};
   var _target2costShare = <int, Map<int, double>>{};
 
   Schedule _schedule = Schedule.empty();
 
-  Build(this._inventory, this._options, this._buildItems, this._advancedSolver) {
-    _buildItems.addListener(_handleBuildChanged);
-    _options.addListener(_handleBuildChanged);
-    _inventory.addListener(_handleBuildChanged);
-    _advancedSolver.addListener(_advancedSolverChanged);
-    _handleBuildChanged();
+  Build(this._scheduleProvider) {
+    _scheduleProvider.addListener(_onNewSchedule);
   }
 
-  void _advancedSolverChanged() {
-    final tid2runs = _buildItems.getTarget2RunsCopy();
-    final problem = _advancedSolver.getProblemSolved();
-    final schedule = _advancedSolver.getSchedule();
-    _onNewSchedule(schedule, problem, tid2runs);
-  }
-
-  void optimizeSchedule() {
-    final tid2runs = _buildItems.getTarget2RunsCopy();
-    final allBuiltItems = _buildItems.getItemsInBuild();
-    final problem = _getOptimizationProblem(tid2runs, allBuiltItems);
-    problem.approximation = _schedule;
-    _advancedSolver.solve(problem);
-  }
-
-  void _handleBuildChanged() {
-    final tid2runs = _buildItems.getTarget2RunsCopy();
-    final allBuiltItems = _buildItems.getItemsInBuild();
-    final problem = _getOptimizationProblem(tid2runs, allBuiltItems);
-    final schedule = BasicSolver.getSchedule(problem);
-    _onNewSchedule(schedule, problem, tid2runs);
-  }
-
-  void _onNewSchedule(Schedule? schedule, Problem? problem, Map<int, int> tid2runs) {
+  void _onNewSchedule() {
+    final tid2runs = _scheduleProvider.getTid2Runs();
+    final schedule = _scheduleProvider.getSchedule();
+    final problem = _scheduleProvider.getProblem();
     // TODO handle errors!
     if (schedule != null) {
       _schedule = schedule;
       _totalBOM = _getTotalBOM(tid2runs, problem!);
       _target2costShare = _getShares(tid2runs, problem);
-
-      print(_schedule.toString());
-      print((_schedule.time.toDouble() / (3600 * 24)));
-
-      // print('----------------------- BOM -------------------------');
-      // _totalBOM.forEach((int tid, int needed) {
-      //   print(SD.enName(tid) + ' : ' + needed.toString());
-      // });
-      // print('----------------------- Shares -------------------------');
-      // _target2costShare.forEach((tid, share) {
-      //   print(SD.enName(tid));
-      //   share.forEach((mid, qty) {
-      //     print('\t' + SD.enName(mid) + ' : ' + qty.toString());
-      //   });
-      // });
-
-      notifyListeners();
+    notifyListeners();
     }
   }
 
@@ -87,7 +39,7 @@ class Build with ChangeNotifier {
   // [buildItems] is the item level build information
   // The BOM (Bill Of Materials) is whatever is required by produced that is not supplied by inventory
   Map<int, int> _getTotalBOM(Map<int, int> targets, Problem problem) {
-    final inventory = _inventory.getInventoryCopy();
+    final inventory = _scheduleProvider.getInventoryCopy();
 
     final produced = <int, int>{};
 
@@ -153,7 +105,7 @@ class Build with ChangeNotifier {
     for (var mid in mid2numNeeded.keys.toList()) {
       final pid2qty = mid2numNeeded[mid]!;
       for (var pid in pid2qty.keys.toList()) {
-        if (_buildItems.getTargetsIDs().contains(pid) && mid2numNeeded.containsKey(pid)) {
+        if (_scheduleProvider.getTargetsIDs().contains(pid) && mid2numNeeded.containsKey(pid)) {
           final fractionAsTarget = targets[pid]! / totalRuns[pid]!;
           // Creates a leaf in the tree since -pid is NOT in mid2numNeeded since it is not a mid (no material has negative id)
           mid2numNeeded[mid]![-pid] = mid2numNeeded[mid]![pid]! * fractionAsTarget;
@@ -198,42 +150,6 @@ class Build with ChangeNotifier {
     });
     return share;
   }
-
-  Problem _getOptimizationProblem(Map<int, int> tid2runs, Set<int> allBuiltItems) {
-    final maxNumSlotsOfMachine = {
-      IndustryType.MANUFACTURING: _options.getManufacturingSlots(),
-      IndustryType.REACTION: _options.getReactionSlots()
-    };
-    final maxNumSlotsOfJob = allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxBPs(tid) ?? _options.getMaxNumBlueprints()));
-    final maxNumRunsPerSlotOfJob = allBuiltItems.map((tid) => MapEntry(tid, _buildItems.getMaxRuns(tid) ?? 10000000));
-    final jobMaterialBonus = allBuiltItems.map((tid) => MapEntry(tid, getMaterialBonus(tid, _options, _buildItems)));
-    final jobTimeBonus = allBuiltItems.map((tid) => MapEntry(tid, getTimeBonus(tid, _options, _buildItems)));
-    return Problem(
-      runsExcess: tid2runs,
-      tids: allBuiltItems,
-      dependencies: _getBuildDependencies(allBuiltItems),
-      inventory: _inventory.getInventoryCopy(),
-      maxNumSlotsOfMachine: maxNumSlotsOfMachine,
-      maxNumSlotsOfJob: Map.fromEntries(maxNumSlotsOfJob),
-      maxNumRunsPerSlotOfJob: Map.fromEntries(maxNumRunsPerSlotOfJob),
-      jobMaterialBonus: Map.fromEntries(jobMaterialBonus),
-      jobTimeBonus: Map.fromEntries(jobTimeBonus),
-    );
-  }
-
-  Map<int, Map<int, int>> _getBuildDependencies(Iterable<int> tids) {
-    final deps = <int, Map<int, int>>{};
-    for (int tid in tids) {
-      final temp = _getBuildDependenciesForItem(tid);
-      if (temp.isNotEmpty) {
-        deps[tid] = temp;
-      }
-    }
-    return deps;
-  }
-
-  Map<int, int> _getBuildDependenciesForItem(int pid) =>
-      Map.fromEntries(SD.materials(pid).entries.where((e) => _buildItems.getShouldBuildChildOfParent(pid, e.key, excludeItemsSetToBuy: true)));
 
   List<int> getInputIds() => _totalBOM.keys.toList();
 

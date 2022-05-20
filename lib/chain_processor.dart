@@ -1,7 +1,11 @@
+// the primary use case of this app is to make sure that certain functions do not get called too many times per second.
+// a few users:
+//    color changer updates the color at like 60fps but should not update the persistence cache 60fps because that'd be too slow.
+//    not implemented yet but when adv solver updates the solver it updates the ui and does other computation. shouldn't do it to many times/s
 class ChainProcessor {
   var _arg;
-  var didUpdateArg = false;
-  bool isComputing = false;
+  var _didUpdateArg = false;
+  bool _isComputing = false;
 
   final Future<void> Function(dynamic) _computation;
   final Duration? maxFrequency;
@@ -10,21 +14,21 @@ class ChainProcessor {
 
   void _chain() async {
     do {
-      didUpdateArg = false;
+      _didUpdateArg = false;
       final delay = Future.delayed(maxFrequency ?? const Duration());
       await _computation(_arg);
       await delay;
-    } while (didUpdateArg);
-    isComputing = false;
+    } while (_didUpdateArg);
+    _isComputing = false;
   }
 
   void compute([arg]) {
     _arg = arg;
-    if (!isComputing) {
-      isComputing = true;
+    if (!_isComputing) {
+      _isComputing = true;
       _chain();
     } else {
-      didUpdateArg = true;
+      _didUpdateArg = true;
     }
   }
 }

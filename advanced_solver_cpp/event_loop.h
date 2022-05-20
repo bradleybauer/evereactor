@@ -18,7 +18,6 @@ class EventLoop {
 public:
   // callers: dart messenger isolate
   void start(Problem p, std::function<void(Schedule)> submitSchedule, std::function<void()> notifyStopped) {
-    //std::cout << "in EventLoop::start" << std::endl;
     // start worker
     workerThread = std::thread([&]() {
       solver = new ProblemSolver(p, [&](std::optional<Schedule> schedule) {
@@ -28,25 +27,25 @@ public:
       // blocks until ortools solver finishes (finds the optimal solution or determines if the problem is infeasible)
       solver->solve();
     });
-    workerThread.detach();
 
     while (true) {
       auto message = await_message();
       if (message.schedule.has_value()) {
         submitSchedule(message.schedule.value());
       }
-      //std::cout << "event loop returned" << std::endl;
       if (message.should_quit) {
-          std::cout << "shouldQuit" << std::endl;
-        notifyStopped();
+        std::cout << "shouldQuit" << std::endl;
         break;
       }
     }
+
+    solver->stop();
 
     if (workerThread.joinable()) {
       workerThread.join();
     }
     delete solver;
+    notifyStopped();
   }
 
   // callers: dart ui isolate & worker thread

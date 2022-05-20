@@ -51,7 +51,11 @@ class IntermediatesTableController with ChangeNotifier {
       _data.add(_Data(tid, value));
     }
 
-    // To help reduce by amount that items jump around when clicked
+    // TODO make this not suck
+    //      if a,b have a common ancestor A then a < b iff c_a < c_b where c_i is a direct child of A. Direct children of A are ordered by name.
+    //      else a < b iff root_a < root_b where roots are ordered by name.
+    //
+    //      i think that is the same as a<b iff uc_a<uc_b where uc's are the highest uncommon ancestors of a,b
     _data.sort((a, b) {
       if (materials(a.tid).contains(b.tid)) {
         return -1;
@@ -69,8 +73,6 @@ class IntermediatesTableController with ChangeNotifier {
       // }
       // return comp;
     });
-    // _data.sort((a, b) => a.value.compareTo(b.value));
-    // TODO sort data
 
     notifyListeners();
   }
@@ -101,6 +103,14 @@ class IntermediatesTableController with ChangeNotifier {
     final valuePositive = x.value > 0;
     return IntermediatesRowData(x.tid, name, value, valuePositive);
   }
+
+  String exportCSV() {
+    List<String> result = ['Name,Build Value'];
+    for (var data in _data) {
+      result.add(data.toCSVString());
+    }
+    return result.join('\n');
+  }
 }
 
 class _Data {
@@ -108,6 +118,11 @@ class _Data {
   final double value;
 
   _Data(this.tid, this.value);
+
+  String toCSVString() {
+    final name = Strings.get(SDE.items[tid]!.nameLocalizations);
+    return name + ',' + value.toString();
+  }
 }
 
 class IntermediatesRowData {

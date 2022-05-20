@@ -50,7 +50,7 @@ public:
     numSlotsUsedConstraint();
     numSlotsLessThanRunsConstraint();
 
-    getHints();
+    //getHints();
 
     LinearExpr obj = vm.i("scheduleCompletionTime", {0});
     for (auto machine : p.machines) {
@@ -92,6 +92,10 @@ public:
     callback(most_recent_schedule);
   }
 
+  void stop() {
+    stopped = true;
+  }
+
 private:
   CpModelBuilder m{};
   VariableManager vm{m};
@@ -124,7 +128,7 @@ private:
   void getNumBatchBounds() {
     for (auto machine : p.machines) {
       p.minNumBatches[machine] = p.approximation.machine2batches[machine].size();
-      p.maxNumBatches[machine] = p.minNumBatches[machine] + 4;
+      p.maxNumBatches[machine] = p.minNumBatches[machine] + 3;
     }
   }
 
@@ -136,7 +140,7 @@ private:
 
   void getScheduleTimeBounds() {
     // TODO
-    p.completionTimeUpperBound = 2 * ceil(p.approximation.time / p.timesGCD * p.float2int);
+    p.completionTimeUpperBound = 8 * ceil(p.approximation.time / p.timesGCD * p.float2int);
     int64_t lb = 0;
     for (int k : p.jobTypes) {
       lb = max(lb, ((p.minNumRuns[k] * p.timePerRun[k]) /
@@ -576,9 +580,9 @@ private:
       }
       int64_t maxT = Vi("scheduleCompletionTime", {0});
       schedule.time = double(Util::ceilDiv(maxT*p.timesGCD,p.float2int));
-      // TODO / 2
-      int64_t ub = p.completionTimeUpperBound / 2;
-      int64_t lb = p.completionTimeLowerBound;
+      // TODO / 8
+      //int64_t ub = p.completionTimeUpperBound / 8;
+      //int64_t lb = p.completionTimeLowerBound;
       //LOG(INFO) << "\t  - upperbound : " << ub * scale << endl;
       //LOG(INFO) << "\t  - sched time : " << maxT * scale << endl;
       //LOG(INFO) << "\t  - lowerbound : " << lb * scale << endl;
@@ -590,7 +594,7 @@ private:
       //}
       //LOG(INFO) << "\t  - real time  : " << r.wall_time() << endl;
       //LOG(INFO) << endl;
-      num_solutions++;
+      //num_solutions++;
 
       most_recent_schedule = schedule;
       callback(schedule);

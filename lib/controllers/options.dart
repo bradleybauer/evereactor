@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:EveIndy/chain_processor.dart';
 import 'package:flutter/material.dart';
 
+import '../chain_processor.dart';
 import '../models/bonus_type.dart';
 import '../models/industry_type.dart';
 import '../models/options.dart';

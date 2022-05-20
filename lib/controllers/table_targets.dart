@@ -153,6 +153,14 @@ class TargetsTableController with ChangeNotifier {
   void sortSellPerUnit() => _advanceSortState(_SortColumn.SELLPERUNIT);
 
   void sortOutM3() => _advanceSortState(_SortColumn.OUTM3);
+
+  String exportCSV() {
+    List<String> result = ['Name,Runs,Profit,Cost,Percent,Cost/Unit,Sell/Unit,OutM3'];
+    for (var data in _data) {
+      result.add(data.toCSVString());
+    }
+    return result.join('\n');
+  }
 }
 
 class _Data {
@@ -168,6 +176,11 @@ class _Data {
 
   const _Data(this.tid, this.runs, this.profit, this.cost, this.percent, this.costPerUnit, this.sellPerUnit, this.outM3,
       this.focusNode);
+
+  String toCSVString() {
+    final name = Strings.get(SDE.items[tid]!.nameLocalizations);
+    return [name, runs, profit, cost, percent*100, costPerUnit, sellPerUnit, outM3].map((e)=>e.toString()).join(',');
+  }
 }
 
 class TargetsRowData {

@@ -2,13 +2,16 @@ import 'dart:ffi';
 import 'dart:io' show Directory;
 import 'dart:isolate';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 
 import 'ffi_conversions.dart';
 import 'ffi_types.dart';
 import 'problem.dart';
 
-NativeLibrary _library = NativeLibrary(DynamicLibrary.open(path.join(Directory.current.path, 'advanced_solver_cpp/x64/Release/WINDOWSISCOOL.dll')));
+//NativeLibrary _library = NativeLibrary(DynamicLibrary.open(path.join(Directory.current.path, 'advanced_solver_cpp/x64/Release/WINDOWSISCOOL.dll')));
+NativeLibrary _library = NativeLibrary(DynamicLibrary.open(
+    path.join(Directory.current.path, kDebugMode ? 'advanced_solver_cpp/x64/Release/WINDOWSISCOOL.dll' : 'WINDOWSISCOOL.dll')));
 
 // c++ message thread will call into dart and use sendPort to send a msg to the ui isolate
 SendPort? _sendPort;
@@ -20,7 +23,7 @@ class WorkerArg {
   const WorkerArg(this.p, this.sp);
 }
 
-void startWorker(WorkerArg arg) {
+void startWorker(WorkerArg arg) async {
   Pointer<FfiProblem> ffiProblem = make_problem(arg.p);
   _sendPort = arg.sp;
 
@@ -41,6 +44,7 @@ void startWorker(WorkerArg arg) {
 void stopWorker() => _library.stopWorker();
 
 typedef _PublishSolutionNativeType = Void Function(Pointer<FfiSchedule> schedule);
+
 void _publishSolution(Pointer<FfiSchedule> schedule) {
   // notify adv solver we have a new solution
   final dartSchedule = ffi2dart_schedule(schedule.ref);
@@ -52,7 +56,9 @@ void _publishSolution(Pointer<FfiSchedule> schedule) {
 }
 
 typedef _NotifyStoppedNativeType = Void Function();
+
+// Allows cpp to notify ui that is has stopped
 void _notifyStopped() {
-  // notify ui we stopped
+  print('notifyStopped');
   _sendPort?.send(null);
 }

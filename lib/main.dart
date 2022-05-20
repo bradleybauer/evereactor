@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'solver/advanced_solver.dart';
 import 'controllers/controllers.dart';
 import 'gui/main.dart';
 import 'gui/my_theme.dart';
@@ -16,14 +15,15 @@ Future<void> main() async {
   final MyTheme myTheme = MyTheme(persistence);
   final Strings strings = Strings();
 
-  final solver = AdvancedSolver();
-
-  final market = MarketController(persistence);
   final inventory = InventoryController();
   final options = OptionsController(persistence, strings);
   final buildItems = BuildItemsController(persistence);
-  final build = Build(inventory, options, buildItems, solver);
+  final scheduleProvider = Platform.getScheduleProvider(inventory, options, buildItems);
+  final build = Build(scheduleProvider);
   final basicBuild = BasicBuild(options, buildItems);
+
+  final market = MarketController(persistence);
+
   final targetsTableController = TargetsTableController(market, build, buildItems, options, strings);
   final intermediatesTableController = IntermediatesTableController(market, buildItems, options, basicBuild, strings);
   final inputsTableController = InputsTableController(market, build, strings);
@@ -36,8 +36,6 @@ Future<void> main() async {
   await buildItems.loadFromCache();
 
   Platform.appReadyHook();
-
-  Future.delayed(const Duration(seconds:2), ()=>build.optimizeSchedule());
 
   runApp(MultiProvider(
     providers: [

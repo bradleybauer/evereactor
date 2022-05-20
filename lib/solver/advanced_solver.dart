@@ -1,20 +1,18 @@
 import 'dart:isolate';
 import 'dart:math';
 
-import 'package:EveIndy/industry.dart';
-import 'package:EveIndy/math.dart';
-import 'package:EveIndy/models/industry_type.dart';
-import 'package:EveIndy/solver/basic_solver.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/fraction.dart';
 
-import '../sde.dart';
+import '../industry.dart';
+import '../math.dart';
+import '../models/industry_type.dart';
 import '../sde_extra.dart';
 import 'problem.dart';
 import 'schedule.dart';
 import 'worker.dart';
 
-/*
+/* this is a bit innacurate i think
 (ui isolate)     (msgr isolate)            (solver thread)
 request start -> enters c++ event loop
                  starts                 -> stars solving
@@ -60,14 +58,12 @@ class AdvancedSolver extends ChangeNotifier {
   }
 
   void _handleReceiveMessage(msg) {
-    //print('in handle receive message');
     if (msg != null) {
       postProcessSchedule(msg!);
-    } else {
-      print('msg null!');
     }
+
     // else this is a stop message notify ui
-    //notifyListeners();
+    notifyListeners();
   }
 
   void solve(Problem prob) async {
@@ -88,95 +84,79 @@ class AdvancedSolver extends ChangeNotifier {
       _schedule = schedule;
       return;
     }
-
-    // TODO update batch start times
-
     final batchesByTime = _getBatchesByTime(schedule);
-    Map<int, int> excess = _getExcess(batchesByTime);
+    // We never have a deficit of runs of anything. This is also asserted _assertValid.
+    assert(_getExcess(batchesByTime).values.every((element) => element >= 0));
 
     // the given schedule is valid
-    _assertValid(batchesByTime, noExcess: false);
-
-    // iterate through batches backwards in time and remove excess runs
-    for (var batch in batchesByTime.reversed.toList()) {
-      final machine = SDE.blueprints[batch.items.entries.first.key]!.industryType;
-      // get an initial amount of children used then remove the excess runs
-      bool nothingChanged = true;
-      batch.items.entries.toList().forEach((e) {
-        final tid = e.key;
-        final item = e.value;
-        if (excess.containsKey(tid)) {
-          final excessRuns = (excess[tid]! / SD.numProducedPerRun(tid).toDouble()).floor();
-          if (excess[tid]! < 0) {
-            print('NEGATIVE EXCESS:' + excess[tid]!.toString() + '      excessRuns:' + excessRuns.toString() + '   oldER:' + (excess[tid]!~/SD.numProducedPerRun(tid)).toString());
-          }
-          if (excessRuns != 0) {
-            nothingChanged = false;
-            final newRuns = item.runs - excessRuns;
-            if (newRuns > 0) {
-              assert(item.slots >= 1);
-              // BasicSolver.setOptimalLineAlloc will reset slots and time, so exact values here are not hugely important.
-              // I could put BatchItem(newRuns, 1, timeOnOneSlot) into batch[tid] if I wanted but that could encourage the BasicSolver to produce
-              // an alloc that is more different from the original alloc than it otherwise needs to be.
-              int newSlots = min(newRuns, item.slots);
-              Fraction newTime = ((ceilDiv(newRuns, newSlots) * SD.timePerRun(tid)).toFraction() * _problem!.jobTimeBonus[tid]!).reduce();
-              batch[tid] = BatchItem(newRuns, newSlots, newTime);
-            } else if (newRuns <= 0) {
-              batch.items.remove(tid);
-            }
-          }
-        }
-      });
-
-      // After excess runs of tid are removed from this batch, we have less (possibly zero) excess runs in the build if we change nothing else.
-      // (we probably do change tings)
-      // However, items in earlier batches may depend on tid and so if those batches are changed (runs alloc or #runs of parent of tid) then
-      // the amount of tid required may increase which would mean that the excess could reduce. In the case we had zero excess, we could end up
-      // with a deficit.
-      //
-      // I think the solution is to allow the excess map to take negative values and then use those to actually increase the number of runs of
-      // tings if necessary.
-
-      if (nothingChanged) {
-        continue;
-      }
-
-      // after fixing the runs, reallocate runs to slots using BasicSolver
-      if (batch.items.isNotEmpty) {
-        // balance the lines
-        BasicSolver.setOptimalLineAlloc(batch, machine, _problem!);
-      } else {
-        // Remove empty batches from the schedule
-        print('Removing empty batch');
-        schedule.machine2batches[machine]!.remove(batch);
-        batchesByTime.remove(batch);
-      }
-
-      excess = _getExcess(batchesByTime);
+    if (kDebugMode) {
+      _assertValid(batchesByTime, noExcess: false);
     }
 
-    // excess = _getExcess(batchesByTime);
-    // final finalExcessLength = excess.length;
-    // print('initial excess length:' + initialExessLength.toString() +'    final excess length:' + finalExcessLength.toString());
-    // excess.forEach((key, value) {
-    //   print(SD.enName(key) + ' : ' + value.toString() + '<' + SD.numProducedPerRun(key).toString());
-    // });
+    // iterate backward to remove runs
+    // TODO BB explain this better
+    // Reducing the excess of item A can possibly increase the excess of it's children.
+    // So after removing runs of any item we restart the below loop....
+    // There are no cycles in dependencies so this should not be an infinite loop.
+    for (int i = batchesByTime.length - 1; i >= 0; --i) {
+      Map<int, int> excess = _getExcess(batchesByTime);
+      if (updateExcess(batchesByTime[i], excess)) {
+        i = batchesByTime.length - 1;
+      }
+    }
 
-    _assertValid(batchesByTime, noExcess: true);
+    // Remove any empty batches
+    for (var machine in schedule.machine2batches.keys) {
+      final batches = schedule.machine2batches[machine]!;
+      for (int i = batches.length - 1; i >= 0; --i) {
+        if (batches[i].items.isEmpty) {
+          //print("removing batch!!!!!!!!!!!!!!!!!!!");
+          batches.removeAt(i);
+        }
+      }
+    }
 
-    // TODO update batch start times
-    // Compute new schedule time
+    if (kDebugMode) {
+      _assertValid(batchesByTime, noExcess: true, schedule: schedule);
+    }
+
+    // Removing excess potentially changes schedule time so compute new schedule time.
     var maxEndingTime = 0.toFraction();
     for (var batch in batchesByTime) {
       final endTime = batch.getEndTime();
       maxEndingTime = endTime > maxEndingTime ? endTime : maxEndingTime;
     }
-    print('time:' +
-        (schedule.time / 3600.0).toStringAsFixed(2) +
-        '   new: ' +
-        maxEndingTime.toDouble().toString() +
-        's     ' +
-        (maxEndingTime.toDouble() / 3600.0).toStringAsFixed(2));
+
+    _schedule = schedule;
+  }
+
+  bool updateExcess(final Batch batch, final Map<int, int> excess) {
+    bool itemChanged = false;
+    for (final entry in batch.items.entries) {
+      final tid = entry.key;
+      final item = entry.value;
+      if (excess.containsKey(tid)) {
+        final excessRuns = (excess[tid]! / SD.numProducedPerRun(tid).toDouble()).floor();
+        assert(excess[tid]! >= 0);
+        if (excessRuns > 0) {
+          itemChanged = true;
+
+          final newRuns = item.runs - excessRuns;
+          if (newRuns > 0) {
+            assert(item.slots >= 1);
+            final newSlots = min(newRuns, item.slots);
+            Fraction newTime = ((ceilDiv(newRuns, newSlots) * SD.timePerRun(tid)).toFraction() * _problem!.jobTimeBonus[tid]!).reduce();
+            batch[tid] = BatchItem(newRuns, newSlots, newTime);
+          } else {
+            batch.items.remove(tid);
+          }
+
+          return itemChanged;
+        }
+      }
+    }
+
+    return itemChanged;
   }
 
   void _assertValid(List<Batch> batches, {required bool noExcess, Schedule? schedule}) {
@@ -204,7 +184,9 @@ class AdvancedSolver extends ChangeNotifier {
         assert(produced.containsKey(cid));
         final numProducedOnPrevBatches = produced[cid]!;
         if (numConsumed > numProducedOnPrevBatches) {
-          print("InvalidSchedule noExcess:" +
+          print("InvalidSchedule batch:" +
+              batchIndex.toString() +
+              " noExcess:" +
               noExcess.toString() +
               " " +
               SD.enName(cid) +
@@ -232,7 +214,8 @@ class AdvancedSolver extends ChangeNotifier {
       if (noExcess) {
         int numBuiltForSale = (_problem!.runsExcess[cid] ?? 0) * SD.numProducedPerRun(cid);
         if (numProduced - numBuiltForSale - numConsumed >= SD.numProducedPerRun(cid)) {
-          print(SD.enName(cid) +
+          print(' Too much excess: ' +
+              SD.enName(cid) +
               ' : ' +
               (numProduced - numBuiltForSale - numConsumed).toString() +
               ' >= ' +
@@ -246,7 +229,6 @@ class AdvancedSolver extends ChangeNotifier {
   Map<int, int> _getExcess(List<Batch> batches) {
     // Calculate excess
     final Map<int, int> excess = {};
-    int batchIndex = 0;
     for (var batch in batches) {
       batch.items.forEach((tid, item) {
         int numProduced = item.runs * SD.numProducedPerRun(tid);
@@ -254,19 +236,14 @@ class AdvancedSolver extends ChangeNotifier {
         _problem!.dependencies[tid]?.forEach((cid, childPerParent) {
           int numConsumed = getNumNeeded(item.runs, item.slots, childPerParent, _problem!.jobMaterialBonus[tid]!);
           excess.update(cid, (value) => value - numConsumed, ifAbsent: () => -numConsumed);
-          if (excess[cid]! < 0) {
-            print(SD.enName(cid) + ' has negative excess batch ' + batchIndex.toString() + '/' +batches.length.toString());
-          }
         });
       });
-      batchIndex += 1;
     }
 
     // Take runsExcess into consideration
     _problem!.runsExcess.forEach((tid, qty) {
-      if (excess.containsKey(tid)) {
-        excess.update(tid, (v) => v - qty * SD.numProducedPerRun(tid), ifAbsent: () => -qty * SD.numProducedPerRun(tid));
-      }
+      assert(excess.containsKey(tid));
+      excess.update(tid, (v) => v - qty * SD.numProducedPerRun(tid));
     });
 
     // Apply inventory

@@ -1,6 +1,10 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 
-import 'package:drift/drift.dart';
+import 'controllers/build_items.dart';
+import 'controllers/inventory.dart';
+import 'controllers/options.dart';
+import 'controllers/schedule_provider.dart';
 
 class Platform {
   // Connect to the cache database.
@@ -17,4 +21,8 @@ class Platform {
 
   // Whether the app is running in the browser or not.
   static bool isWeb() => throw Error();
+
+  static ScheduleProvider getScheduleProvider(InventoryController inv, OptionsController ops, BuildItemsController items) => throw Error();
+
+  static Widget getOptimizerPane() => throw Error();
 }

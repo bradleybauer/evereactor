@@ -30,10 +30,10 @@ EventLoop event_loop{};
 EXPORT void startWorker(void (*publishSolution)(struct FfiSchedule* x),
                         void (*notifyStopped)(),
                         struct FfiProblem problem) {
-  std::cout << "in startWorker : " << publishSolution << std::endl;
+  //std::cout << "in startWorker : " << publishSolution << std::endl;
+  // dart free's this FfiSchedule
   Problem p = ffi2cpp_problem(problem);
-  //p.print();
-  //std::this_thread::sleep_for(std::chrono::minutes(12211));
+  //std::this_thread::sleep_for(std::chrono::hours(12211));
   event_loop.start(p,
                    [&](Schedule schedule) { publishSolution(make_schedule(schedule)); },
                    // dart will free the schedule created here.. i think.

@@ -1,9 +1,9 @@
-import 'package:EveIndy/misc.dart';
 import 'package:fraction/fraction.dart';
 
-import '../math.dart';
 import '../models/industry_type.dart';
+import '../sde.dart';
 import '../sde_extra.dart';
+import '../strings.dart';
 
 class BatchItem {
   final int runs;
@@ -24,15 +24,14 @@ class Batch {
     return _items.keys.where((tid) => _items[tid]!.time == maxT);
   }
 
-  Iterable<int> getTypesWithTimeLessThan(Fraction time) =>
-      _items.entries.where((e) => e.value.time < time).map((e) => e.key);
+  Iterable<int> getTypesWithTimeLessThan(Fraction time) => _items.entries.where((e) => e.value.time < time).map((e) => e.key);
 
   Fraction getMaxTime() => _items.values.fold(0.toFraction(), (previousValue, e) {
-    if (previousValue < e.time) {
-      return e.time;
-    }
-    return previousValue;
-  });
+        if (previousValue < e.time) {
+          return e.time;
+        }
+        return previousValue;
+      });
 
   Fraction getEndTime() {
     return startTime.toFraction() + getMaxTime();
@@ -55,6 +54,7 @@ class Batch {
   Iterable<int> get tids => _items.keys;
 
   Iterable<MapEntry<int, BatchItem>> get entries => _items.entries;
+
   Map<int, BatchItem> get items => _items;
 
   operator [](int i) => _items[i]!;
@@ -66,48 +66,65 @@ class Batch {
 }
 
 class Schedule {
-  Map<IndustryType,List<Batch>> machine2batches;
+  Map<IndustryType, List<Batch>> machine2batches;
   double time = 0.0;
   bool isOptimal = false;
   bool isInfeasible = false;
   bool isOptimized = false;
 
-  Schedule(Map<IndustryType, List<Batch>> machine2batches) : machine2batches = machine2batches;
+  Schedule(this.machine2batches);
 
   Schedule.empty() : machine2batches = {};
 
   void addBatches(IndustryType machine, List<Batch> batches) => machine2batches[machine] = batches;
 
-  Map<IndustryType,List<Batch>> getBatches() => machine2batches;
+  Map<IndustryType, List<Batch>> getBatches() => machine2batches;
 
   @override
   String toString() {
-    var str = "";
-    for (IndustryType machine in machine2batches.keys) {
-      str += ('\n' + machine.toString() + '\n');
-      Fraction b = 0.toFraction();
+    var str = ",Item,Runs,Lines,Runs/Line,Remainder\n";
+    for (final machine in [IndustryType.REACTION, IndustryType.MANUFACTURING]) {
+      if (!machine2batches.containsKey(machine)) {
+        continue;
+      }
+      final machineStr = machine == IndustryType.MANUFACTURING ? 'Manufacturing' : 'Reactions';
+      int b = 1;
       for (var batch in machine2batches[machine]!) {
+        var tids = [...batch.tids];
+        tids.sort((a, b) {
+          final comp = SDE.items[b]!.groupID.compareTo(SDE.items[a]!.groupID);
+          if (comp == 0) {
+            return SD.enName(a).compareTo(SD.enName(b));
+          }
+          return comp;
+        });
         Fraction mt = batch.getMaxTime();
-        str += ('Batch ' + b.toString() + ' ' + (mt / 3600.toFraction()).toDouble().toString() + '\n');
-        for (int tid in batch.tids) {
+        str += machineStr +
+            ' Batch:' +
+            b.toString() +
+            ' Start:' +
+            (batch.startTime / 3600.0).toStringAsFixed(1) +
+            ' Duration:' +
+            (mt / 3600.toFraction()).toDouble().toStringAsFixed(1) +
+            '\n';
+        for (int tid in tids) {
           int runs = batch[tid].runs;
           int slots = batch[tid].slots;
-          Fraction tt = batch[tid].time;
-          String name = SD.enName(tid);
-          str += ('\t' +
+          String name = Strings.get(SDE.items[tid]!.nameLocalizations);
+          str += ',' +
               name +
-              ' ' * (60 - name.length) +
-              'r:' +
+              ',' +
               runs.toString() +
-              (' ' * (10 - log10(runs).ceil())) +
-              '\ts:' +
+              ',' +
               slots.toString() +
-              (' ' * (7 - log10(slots).ceil())) +
-              '\tt:' +
-              (tt / 3600.toFraction()).toDouble().toString() +
-              '\n');
+              ',' +
+              (runs ~/ slots).toString() +
+              ',' +
+              ((runs % slots) == 0 ? "" : (runs % slots).toString()) +
+              '\n';
         }
-        b += 1.toFraction();
+        str += "\n";
+        b += 1;
       }
     }
     return str;

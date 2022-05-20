@@ -9,7 +9,7 @@ import 'table.dart';
 class InputsTable extends StatelessWidget {
   const InputsTable({Key? key}) : super(key: key);
 
-  static const colFlexs = [52, 17, 20];
+  static const colFlexs = [52, 17, 20, 17, 24];
   static const double headerHeight = 35;
   static const double itemHeight = 30;
   static const double padding = 8;
@@ -42,6 +42,7 @@ class InputsTableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
+    final controller = Provider.of<InputsTableController>(context);
     return TableHeader(
       height: InputsTable.headerHeight,
       textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
@@ -49,9 +50,13 @@ class InputsTableHeader extends StatelessWidget {
         TableContainer.getCol(InputsTable.colFlexs[0],
             child: Text('Inputs'), align: Alignment.centerLeft, padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0)),
         TableContainer.getCol(InputsTable.colFlexs[1],
-            child: Text('Cost'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0)),
+            child: Text('Cost'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortTotalCost()),
         TableContainer.getCol(InputsTable.colFlexs[2],
-            child: Text('Cost/u'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0)),
+            child: Text('Cost/u'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortCostPerUnit()),
+        TableContainer.getCol(InputsTable.colFlexs[3],
+            child: Text('m3'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortM3()),
+        TableContainer.getCol(InputsTable.colFlexs[4],
+            child: Text('isk/m3'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortIskPerM3()),
       ],
     );
   }
@@ -82,7 +87,9 @@ class InputsTableItem extends StatelessWidget {
                 align: Alignment.centerLeft,
                 child: Text(row.name, style: style)),
             MyTableCell(InputsTable.colFlexs[1], child: Text(row.totalCost, style: style)),
-            MyTableCell(InputsTable.colFlexs[2], padding: const EdgeInsets.fromLTRB(0, 0, 12, 0), child: Text(row.costPerUnit, style: style)),
+            MyTableCell(InputsTable.colFlexs[2], child: Text(row.costPerUnit, style: style)),
+            MyTableCell(InputsTable.colFlexs[3], child: Text(row.m3, style: style)),
+            MyTableCell(InputsTable.colFlexs[4], padding: const EdgeInsets.fromLTRB(0, 0, 12, 0), child: Text(row.iskPerM3, style: style)),
           ],
         ),
       ),
