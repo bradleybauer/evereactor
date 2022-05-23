@@ -99,7 +99,10 @@ flutter:
         - asset: fonts/NotoSans-Bold.ttf
           weight: 700
         - asset: fonts/NotoSans-Regular.ttf
-  
+    - family: ZenDots
+      fonts:
+        - asset: fonts/ZenDots-Regular.ttf
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'paste_clear_button.dart';
+import '../../platform.dart';
+import '../my_theme.dart';
 import 'get_market_data_button.dart';
 import 'hover_button.dart';
-import '../my_theme.dart';
-import '../../platform.dart';
 
 class Header extends StatelessWidget {
   const Header({this.height, this.width, Key? key}) : super(key: key);
@@ -16,10 +15,10 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
-    var rowButtons = [
+    var rowButtons = <Widget>[
       const GetMarketDataButton(),
-      SizedBox(width: MyTheme.appBarPadding),
-      const PasteClearButton(),
+      // SizedBox(width: MyTheme.appBarPadding),
+      // const PasteClearButton(),
     ];
 
     // Add a close button on windows.
@@ -49,8 +48,10 @@ class Header extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
           child: Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: theme.primary),
+            alignment: Alignment.center,
             width: 180,
             height: MyTheme.appBarButtonHeight,
+            child: Text('Eve Reactor', style: TextStyle(fontFamily: 'ZenDots', fontSize: 18, color: theme.onPrimary)),
           ),
         ),
       )
