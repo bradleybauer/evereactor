@@ -8,13 +8,13 @@ I have put a lot of effort into building this application and also into playing 
 
 Eve Reactor calculates cost & profit of building a set of items and also automatically schedules the build. Materials are bought from sell orders and products are sold to buy orders. Only the best orders from a set of systems (user specified) are used. Outputs are copy-pastable into a spreadsheet.
 
-The automatic scheduler is the most important function of the app. It tells you exactly what jobs to start and when to start them. Note, I do not claim the output schedules are the most optimal way to do the builds in all situations. But, I think the scheduler is pretty good.
+The automatic scheduler (not available on web) is the most important function of the app. It tells you exactly what jobs to start and when to start them. Note, I do not claim the output schedules are the most optimal in all situations. But, I think the scheduler is pretty good. I run the scheduler until I am happy with the time of the resulting schedule. If the scheduler runs for more than 1 hour without finding a good scheduler then I usually change the build slightly and try again.
 
 Currently, the web version does not work due to a bug in the persistence library I am using.
 
 **Building**
 
-This project is built with flutter and ortools.
+This project is built with flutter (master channel as of 5/2022) and ortools (latest stable release).
 
 To build and run the app use
 `flutter run -d windows`
@@ -30,11 +30,13 @@ Here are a few notes on that.
 
 So how does it work? The solver schedules jobs into **batches**. This is intended to give the user only a few login timepoints for restarting jobs and also it is intended to reduce the computational complexity of the problem. The general scheduling problem (for minimizing completion time) where jobs can start and end at arbitrary times is way too difficult computationally.
 
-Two issues prevent this from being a straight forward scheduling problem. First, frame each run as a job and the input materials as dependent jobs, then you have a basic scheduling problem. But the issue is in the excess and reuse of excess. For example, A needs 1 C, B needs 1 C, C is produced in quantities of 2. So if A is built with or before B then only A has a dependent C job, B uses the excess C. The issue is that the job dependencies change based on how they are scheduled, I do not know any scheduling algorithms that can handle that kind of detail. Second, how do you optimally convert runs into jobs so that a general job scheduling algorithm can be used? If you use 1 job = 1 run, then you make a scheduling problem with a *large* amount of jobs. Which is not good because scheduling problems with tree like dependencies and parallel machines is NP-Hard. Thus the ortools and the custom algorithm.
+Two issues prevent this from being a straight forward scheduling problem. First, frame each run as a job and the input materials as dependent jobs, then you have a "basic" scheduling problem. But the issue is in the excess and reuse of excess. For example, A needs 1 C, B needs 1 C, C is produced in quantities of 2. So if A is built with or before B then only A has a dependent C job, B uses the excess C. The issue is that the job dependencies change based on how they are scheduled, I do not know any scheduling algorithms that can handle that kind of detail. Second, how do you optimally convert runs into jobs so that a general job scheduling algorithm can be used? If you use 1 job = 1 run, then you make a scheduling problem with a *large* amount of jobs. Which is not good because scheduling problems with tree like dependencies and parallel machines is NP-Hard. Thus the ortools and the custom algorithm. (who knows, maybe there is a fast algorithm for solving this problem optimally... but, i do not think there is)
+
+The solver is programmed to use all available threads. So your computer probably will be slow while the solver is running.
 
 If you start the solver while it is already solving then it restarts (stops/starts again).
 
-If you start/stop the solver (or spam click start) very quickly then the threading code can get fucked up. This could be worked around but, meh, just don't do it....
+If you start/stop the solver (or spam click start) very quickly then the threading code can get messed up. This could be worked around but, meh, just don't do it....
 
 Also, if you change any settings in the options pane then the solver stops.
 

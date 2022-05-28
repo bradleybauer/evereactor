@@ -78,7 +78,6 @@ public:
 
     Model model;
     SatParameters parameters;
-    parameters.set_num_search_workers(16);
     // parameters.set_log_search_progress(true);
     // parameters.set_log_subsolver_statistics(true);
     model.Add(NewSatParameters(parameters));
