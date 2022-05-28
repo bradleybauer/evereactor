@@ -60,7 +60,7 @@ If you add ten thousand avatar runs and only have 1 reaction line and 1 manufact
 
 **UX quirks**
 
-When the orders for items to be bought or sold at market are not available then the market module returns infinity for the cost or profit. So, if you add 999999 runs of **Paladin** to the build then you will see that the profit and cost are both negative.
+When the orders for items to be bought or sold at market are not available then the market module returns infinity for the cost or profit. So, if you add 999999 runs of **Paladin** to the build then you will see that the profit and cost are both infinite.
 
 Unfortunately the table headers do not have an indicator to show whether they are sorted ascending/descending or not sorted.
 

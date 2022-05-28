@@ -11,7 +11,7 @@ import 'problem.dart';
 
 //NativeLibrary _library = NativeLibrary(DynamicLibrary.open(path.join(Directory.current.path, 'advanced_solver_cpp/x64/Release/WINDOWSISCOOL.dll')));
 NativeLibrary _library = NativeLibrary(DynamicLibrary.open(
-    path.join(Directory.current.path, kDebugMode ? 'advanced_solver_cpp/x64/Release/WINDOWSISCOOL.dll' : 'WINDOWSISCOOL.dll')));
+    path.join(Directory.current.path, kDebugMode ? 'advanced_solver_cpp/x64/Release/WINDOWSISCOOL.dll' : 'solver.dll')));
 
 // c++ message thread will call into dart and use sendPort to send a msg to the ui isolate
 SendPort? _sendPort;
