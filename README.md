@@ -12,6 +12,10 @@ The automatic scheduler (not available on web) is the most important function of
 
 Currently, the web version does not work due to a bug in the persistence library I am using.
 
+Also, the "Build Value" in the intermediates table does not take into consideration the job costs. I would like this to be different but meh.
+
+So, like why? Why did I build this? idk. Could I have done this entirely in excel? Maybe. I am not an excel wizard.
+
 **Building**
 
 This project is built with flutter (master channel as of 5/2022) and ortools (latest stable release).
@@ -23,7 +27,11 @@ or
 
 The scheduler uses google's ortools. To recompile the dll you must first install ortools then use visual studio >= 2019 to build the project in the directory `advanced_solver_cpp`. Yes the output DLL is called `WINDOWSISCOOL.dll`. That started as just a temporary name for testing but I am too lazy to change it now.
 
-**Automatic scheduling solver**
+**Updating SDE**
+
+To update the sde go to the sde folder and read the README...
+
+**Automatic scheduling**
 
 On windows the advanced solver for automatic planning of industry jobs is available.
 Here are a few notes on that.
