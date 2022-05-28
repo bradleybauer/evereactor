@@ -55,7 +55,7 @@ lib/sde.dart
 *vpp.bak_*
 *vpp.lck
 
-*.dll
+
 advanced_solver_cpp/.vscode
 advanced_solver_cpp/.vscode/*
 advanced_solver_cpp/Release

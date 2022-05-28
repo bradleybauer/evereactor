@@ -12,41 +12,6 @@ import 'problem.dart';
 import 'schedule.dart';
 import 'worker.dart';
 
-/* this is a bit innacurate i think
-(ui isolate)     (msgr isolate)            (solver thread)
-request start -> enters c++ event loop
-                 starts                 -> stars solving
-                 sleeps
-                 ...
-                 wakes                  <- solver thread provides schedule
-                 returns to dart
-                 gets sch (2c++)
-updates ui    <- msgs ui of new sch
-                 enters c++ event loop
-                 sleeps
-                 ...
-                 wakes                  <- solver thread provides schedule
-                 returns to dart
-                 gets sch (2c++)
-updates ui    <- msgs ui of new sch
-                 enters c++ event loop
-                 sleeps
-                 ...
---------------------------------------------------------------------------------------
-request stop  -> wakes
-(2c++)           stops solver thread
-                 returns to dart
-                 Isolate.exit()
---------------------------------------------------------------------------------------
-or
---------------------------------------------------------------------------------------
-                 wakes                  <- solver finishes optimization
-                 stops solver thread
-                 returns to dart
-                 Isolate.exit()
---------------------------------------------------------------------------------------
-*/
-
 class AdvancedSolver extends ChangeNotifier {
   Isolate? _currentWorker;
 

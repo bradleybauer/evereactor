@@ -1,8 +1,6 @@
 TODO really should take jobcosts into consideration in heuristic list
-     maybe i am ? dont remember
 
-TODO I may be leaking memory in the dart<->c++ layer. need to delete ffi schedule&problem after done.
-     is it possible to, in dart, free memory allocated by c++ (calloc used in c++) ? not sure.
+TODO double check that I am not leaking memory in the cpp<->dart layer
 
 Perfect is the enemy of the good
 
@@ -36,14 +34,7 @@ What items go into the intermediates table? (build/buy table)
     BpOps
         an item has BpOps iff it is not also in the targets table
 
-TODO don't forget about dart super parameters.
-
 TODO unicode normalize search strings in search bar?
-
-TODO update the SDE data due to eve's new game update... need an automatic way to do this.
-
-use canvaskit webrenderer
-https://docs.flutter.dev/development/tools/web-renderers
 
 RESTRICTIONS----------------------------------------------------------------------------------------------------------
 Never build any MFG item that is input to RTN item (fuel blocks)
@@ -59,7 +50,7 @@ Application X - Contact 'Dark808bb'
 ----------------------------------------------------------------------------------------------------------------------
 
 LOOKS-----------------------------------------------------------------------------------------------------------------
-I am using flutter master channel because according to a reddit post, material 3 components are only available on the master channel
+I am using flutter master channel because material 3 components are only available on the master channel
 
 use defaulttextstyle? or have a list of text style's in my_theme?
 
@@ -105,30 +96,6 @@ TODO Tooltips
   Cost/u : build price per unit
   Sell/u : sale price per unit
   % : Profit percent
-
-Options ### see BUILD CUSTOMIZATIONS section above for more details about options
-Optimize - desktop // MEDIUM PRIORITY
-  Optimization stats
-    Percent reduction (of total build time) from approximation 1-sched/ub
-    Is running
-    Optimizer running time (do a percent graph? low priority lol)
-    Number solutions found
-    Solution status [infeasible, feasible, optimal, unknown]
-
-  Optimizer log?
-    should be available
-
-  Optimizer controls
-    start
-    stop
-    discard optimization
-----------------------------------------------------------------------------------------------------------------------
-
-REMINDER--------------------------------------------------------------------------------------------------------------
-Don't forget you wrote code for multiple multibuys
-    lol i did forget. would be nice to have a 'better' evepraisal that takes into consideration volume and gives best buy/sell hubs with (multimultibuy)
-
-You can use corporation orders. maybe it's like corp reactions
 ----------------------------------------------------------------------------------------------------------------------
 
 ADDITIONAL PROFIT-----------------------------------------------------------------------------------------------------
