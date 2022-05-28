@@ -21,9 +21,20 @@ So, like why? Why did I build this? idk. Could I have done this entirely in exce
 This project is built with flutter (master channel as of 5/2022) and ortools (latest stable release).
 
 To build and run the app use
-`flutter run -d windows`
-or
-`flutter run -d chrome`
+```
+flutter pub get
+
+# generate code for persistence
+flutter pub run build_runner build --release --delete-conflicting-outputs
+
+# create the sde conversion
+cd sde
+python convert.py
+cd ../
+
+# run
+flutter run -d windows
+```
 
 The scheduler uses google's ortools. To recompile the dll you must first install ortools then use visual studio >= 2019 to build the project in the directory `advanced_solver_cpp`. Yes the output DLL is called `WINDOWSISCOOL.dll`. That started as just a temporary name for testing but I am too lazy to change it now.
 
