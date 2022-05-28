@@ -155,7 +155,7 @@ class Py2Dart:
         # marketGroupGraph = ex.getMarketGroupGraph(blueprints)
         marketGroupNames = ex.getMarketGroupNames(items, productionSkills)
         group2category = ex.getGroup2Category(blueprints)
-        region2systems, system2name = ex.getTradeHubs()
+        region2systems, system2name, region2name = ex.getTradeHubs()
         marketGroup2parent = ex.getMarketGroup2Parent(blueprints)
         item2marketGroupAncestors = ex.getItem2marketGroupAncestors(items, blueprints)
         # buildableItemIDs = ex.getBuildableItemIDs(blueprints)
@@ -189,6 +189,7 @@ class Py2Dart:
         code += self._dict2map('group2category', 'int', 'int', group2category, self._int)
         code += self._dict2map('region2systems', 'int', 'Set<int>', region2systems, self._intset)
         code += self._dict2map('system2name', 'int', 'Map<String,String>', system2name, self._str2str)
+        code += self._dict2map('region2name', 'int', 'Map<String,String>', region2name, self._str2str)
         code += self._dict2map('item2marketGroupAncestors', 'int', 'Set<int>', item2marketGroupAncestors, self._intset)
         code += '}'
 

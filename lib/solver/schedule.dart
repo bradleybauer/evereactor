@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fraction/fraction.dart';
 
 import '../models/industry_type.dart';
@@ -80,6 +82,18 @@ class Schedule {
 
   Map<IndustryType, List<Batch>> getBatches() => machine2batches;
 
+  Map<int, int> getNumBlueprintsNeeded() {
+    final result = <int, int>{};
+    machine2batches.values.forEach((batches) {
+      batches.forEach((batch) {
+        batch.items.forEach((tid, item) {
+          result.update(tid, (value) => max(item.slots, value), ifAbsent: () => item.slots);
+        });
+      });
+    });
+    return result;
+  }
+
   @override
   String toString() {
     var str = ",Item,Runs,Lines,Runs/Line,Remainder\n";
@@ -104,8 +118,8 @@ class Schedule {
             b.toString() +
             ' Start:' +
             (batch.startTime / 3600.0).toStringAsFixed(1) +
-            ' Duration:' +
-            (mt / 3600.toFraction()).toDouble().toStringAsFixed(1) +
+            ' End:' +
+            (batch.startTime / 3600.0 + (mt / 3600.toFraction()).toDouble()).toDouble().toStringAsFixed(1) +
             '\n';
         for (int tid in tids) {
           int runs = batch[tid].runs;

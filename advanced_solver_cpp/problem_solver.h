@@ -41,6 +41,7 @@ public:
     batchTimes();
     batchOrderSymmetryConstraint();
     // balanceConstraint();
+    maxRunPerSlotConstraint();
     completionTimes();
     startsWithVars();
     numChildNeededVars();
@@ -64,6 +65,13 @@ public:
         auto maxSlots = vm.i("maxSlotsUsed", {b}, 0, p.maxNumSlotsOfMachine[machine]);
         m.AddMaxEquality(maxSlots, slots);
         obj += maxSlots;
+      }
+    }
+
+    for (int k : p.jobTypes) {
+      auto machine = p.job2machine[k];
+      for (int b = 0; b < p.maxNumBatches[machine]; ++b) {
+        obj += vm.i("slots", { k, b });
       }
     }
     m.Minimize(obj);
@@ -268,6 +276,22 @@ private:
       }
     }
   }
+
+  void maxRunPerSlotConstraint() {
+    for (int k : p.jobTypes) {
+      auto machine = p.job2machine[k];
+      for (int b = 0; b < p.maxNumBatches[machine]; ++b) {
+        auto denominator = vm.i("mrpl_denom", { k,b }, 1, p.maxNumSlotsOfJob[k]);
+        m.AddMaxEquality(denominator, { 1, vm.i("slots",{k,b}) });
+        auto numerator = vm.i("mrpl_num", {k, b}, 0, p.maxNumRuns[k] + p.maxNumSlotsOfJob[k] - 1);
+        m.AddEquality(numerator, vm.i("runs", {k, b}) + denominator - 1);
+        auto div = vm.i("mrpl_div", { k,b }, 0, p.maxNumRuns[k]);
+        m.AddDivisionEquality(div, numerator, denominator);
+        m.AddLessOrEqual(div, p.maxNumRunsPerSlotOfJob[k]);
+      }
+    }
+  }
+
 
   void completionTimes() {
     if (p.machines.contains(IndustryType::MANUFACTURING) && p.machines.contains(IndustryType::REACTION)) {

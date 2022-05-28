@@ -33,7 +33,7 @@ class CopyFlyout extends StatelessWidget {
           HoverButton(
             builder: (hovered) => Padding(
                 padding: const EdgeInsets.all(8),
-                child: Text('Copy Targets Table', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
+                child: Text('Copy Targets', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
             color: color,
             hoveredColor: hoveredColor,
             hoveredElevation: 0,
@@ -47,7 +47,7 @@ class CopyFlyout extends StatelessWidget {
           HoverButton(
             builder: (hovered) => Padding(
                 padding: const EdgeInsets.all(8),
-                child: Text('Copy Intermediates Table', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
+                child: Text('Copy Intermediates', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
             color: color,
             hoveredColor: hoveredColor,
             hoveredElevation: 0,
@@ -61,7 +61,7 @@ class CopyFlyout extends StatelessWidget {
           HoverButton(
             builder: (hovered) => Padding(
                 padding: const EdgeInsets.all(8),
-                child: Text('Copy Inputs Table', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
+                child: Text('Copy Inputs', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
             onTap: () {
               final txt = inputs.exportCSV();
               print(txt);

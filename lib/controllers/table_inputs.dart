@@ -26,6 +26,8 @@ class InputsTableController with ChangeNotifier {
 
   final _data = <_Data>[];
 
+  final _dataPerRegion = <int, List<_Data>>{};
+
   var _sortColumn = _SortColumn.DEFAULT;
   var _sortDir = _SortDir.DESC;
 
@@ -39,6 +41,7 @@ class InputsTableController with ChangeNotifier {
 
   void _handleModelChange({notify = true}) {
     _data.clear();
+    _dataPerRegion.clear();
 
     final inputIds = _build.getInputIds()
       ..sort((a, b) {
@@ -62,8 +65,24 @@ class InputsTableController with ChangeNotifier {
     for (int tid in inputIds) {
       final m3 = SD.m3(tid, bom[tid] ?? 0);
       final double iskPerM3 = m3 > 0 ? bomCosts[tid]! / m3 : 0.0;
-      _data.add(_Data(tid, bomCosts[tid]!, bomCostsPerUnit[tid]!, m3, iskPerM3));
+      _data.add(_Data(tid, bom[tid]!, bomCosts[tid]!, bomCostsPerUnit[tid]!, m3, iskPerM3));
     }
+
+    final bomPerRegion = _market.splitBuyFromSellPerRegion(bom);
+    bomPerRegion.forEach((region, bom) {
+      final bomCostsPerUnit = _market.avgBuyFromSell(bom);
+      final bomCosts = prod(bom, bomCostsPerUnit);
+      for (int tid in inputIds) {
+        if (bom.containsKey(tid)) {
+          final m3 = SD.m3(tid, bom[tid] ?? 0);
+          final double iskPerM3 = m3 > 0 ? bomCosts[tid]! / m3 : 0.0;
+          if (!_dataPerRegion.containsKey(region)) {
+            _dataPerRegion[region] = [];
+          }
+          _dataPerRegion[region]!.add(_Data(tid, bom[tid]!, bomCosts[tid]!, bomCostsPerUnit[tid]!, m3, iskPerM3));
+        }
+      }
+    });
 
     _resort();
 
@@ -129,26 +148,66 @@ class InputsTableController with ChangeNotifier {
   }
 
   String exportCSV() {
-    List<String> result = ['Name,Total Cost,Cost/Unit,M3,Isk/M3'];
+    List<String> result = ['Totals', 'Name,Num Units,Total Cost,Cost/Unit,M3,Isk/M3'];
     for (var data in _data) {
       result.add(data.toCSVString());
     }
+
+    if (_dataPerRegion.length == 1) {
+      return result.join('\n');
+    }
+    result += [''];
+
+    // get trade hub specific info
+    _dataPerRegion.forEach((region, datas) {
+      double totalm3 = 0;
+      double totalcost = 0;
+      result += [Strings.get(SDE.region2name[region]!)];
+      for (var data in datas) {
+        totalm3 += data.m3;
+        totalcost += data.totalCost;
+      }
+
+      result += ['Total m3,'+totalm3.toInt().toString()+',Total value,'+totalcost.toString()];
+      for (var data in datas) {
+        result.add(data.toCSVString());
+      }
+      result += [''];
+    });
+
+    result += ['', 'Max number of blueprints needed'];
+    final numBpsNeeded = _build.getSchedule().getNumBlueprintsNeeded();
+    numBpsNeeded.forEach((tid, numBpsNeeded) {
+      result += [Strings.get(SDE.items[tid]!.nameLocalizations) + ',' + numBpsNeeded.toString()];
+    });
+
     return result.join('\n');
   }
 }
 
 class _Data {
   final int tid;
+  final int numUnits;
   final double totalCost;
   final double costPerUnit;
   final double m3;
   final double iskPerM3;
 
-  const _Data(this.tid, this.totalCost, this.costPerUnit, this.m3, this.iskPerM3);
+  const _Data(this.tid, this.numUnits, this.totalCost, this.costPerUnit, this.m3, this.iskPerM3);
 
   String toCSVString() {
     final name = Strings.get(SDE.items[tid]!.nameLocalizations);
-    return name + ',' + totalCost.toString() + ',' + costPerUnit.toString() + ',' + m3.toString() + ',' + iskPerM3.toString();
+    return name +
+        ',' +
+        numUnits.toString() +
+        ',' +
+        totalCost.toString() +
+        ',' +
+        costPerUnit.toString() +
+        ',' +
+        m3.toString() +
+        ',' +
+        iskPerM3.toString();
   }
 }
 

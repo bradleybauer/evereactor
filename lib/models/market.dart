@@ -1,3 +1,4 @@
+import '../sde.dart';
 import 'market_order.dart';
 import 'order_filter.dart';
 
@@ -27,6 +28,7 @@ class Market {
     _orderFilter = filter;
     _filterMarket();
   }
+
   void setOrders(Map<int, List<Order>> orders) {
     _orders = orders;
     _filterMarket();
@@ -127,5 +129,75 @@ class Market {
       }
     }
     return units ~/ 4;
+  }
+
+  Map<int, Map<int, int>> splitBuyFromSellPerRegion(Map<int, int> bom) {
+    final region2bom = <int, Map<int, int>>{};
+
+    // which regions do we care about
+    for (final system in getOrderFilter().getSystems()) {
+      SDE.region2systems.forEach((region, systems) {
+        if (systems.contains(system) && !region2bom.containsKey(region)) {
+          region2bom[region] = {};
+        }
+      });
+    }
+
+    bom.forEach((tid, qty) {
+      if (qty != 0 && _filteredMarket.containsKey(tid)) {
+        int quantityRemaining = qty;
+        for (var order in _filteredMarket[tid]!.sells) {
+          int quantityUsed = 0;
+          if (quantityRemaining <= order.volumeRemaining) {
+            quantityUsed = quantityRemaining;
+          } else {
+            quantityUsed = order.volumeRemaining;
+          }
+
+          if (quantityUsed > 0 && quantityRemaining > 0) {
+            region2bom[order.regionID]!.update(tid, (value) => value + quantityUsed, ifAbsent: () => quantityUsed);
+          }
+
+          quantityRemaining -= quantityUsed;
+        }
+      }
+    });
+
+    return region2bom;
+  }
+
+  Map<int, Map<int, int>> splitSellToBuyPerRegion(Map<int, int> bom) {
+    final region2bom = <int, Map<int, int>>{};
+
+    // which regions do we care about
+    for (final system in getOrderFilter().getSystems()) {
+      SDE.region2systems.forEach((region, systems) {
+        if (systems.contains(system) && !region2bom.containsKey(region)) {
+          region2bom[region] = {};
+        }
+      });
+    }
+
+    bom.forEach((tid, qty) {
+      if (qty != 0 && _filteredMarket.containsKey(tid)) {
+        int quantityRemaining = qty;
+        for (var order in _filteredMarket[tid]!.buys) {
+          int quantityUsed = 0;
+          if (quantityRemaining <= order.volumeRemaining) {
+            quantityUsed = quantityRemaining;
+          } else {
+            quantityUsed = order.volumeRemaining;
+          }
+
+          if (quantityUsed > 0 && quantityRemaining > 0) {
+            region2bom[order.regionID]!.update(tid, (value) => value + quantityUsed, ifAbsent: () => quantityUsed);
+          }
+
+          quantityRemaining -= quantityUsed;
+        }
+      }
+    });
+
+    return region2bom;
   }
 }

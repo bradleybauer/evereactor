@@ -206,10 +206,13 @@ class MarketController with ChangeNotifier {
 
   Set<int> getOrderFilterSystems() => _market.getOrderFilter().getSystems();
 
-  Map<int, double> getAdustedPrices() => _market.getAdjustedPrices();
+  Map<int, double> getAdjustedPrices() => _market.getAdjustedPrices();
 
-  double? getAdustedPrice(int tid) => _market.getAdjustedPrice(tid);
+  double? getAdjustedPrice(int tid) => _market.getAdjustedPrice(tid);
 
-// Future<void> loadFromCache() async {
-// }
+  Map<int, Map<int, int>> splitBuyFromSellPerRegion(Map<int, int> bom) => _market.splitBuyFromSellPerRegion(bom);
+
+  Map<int, Map<int, int>> splitSellToBuyPerRegion(Map<int, int> bom) => _market.splitSellToBuyPerRegion(bom);
+
+  Map<int,double> avgSellToBuy(Map<int, int> bom) => _market.avgSellToBuy(bom);
 }

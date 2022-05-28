@@ -35,7 +35,7 @@ class SummaryController with ChangeNotifier {
       return p + _market.avgSellToBuyItem(tid, qty) * qty;
     });
     final cost = bomCosts.values.fold(0.0, (double p, e) => p + e);
-    final jobCost = getCostOfJobs(_build.getSchedule(), _market.getAdustedPrices(), _options.getManufacturingSystemCostIndex(),
+    final jobCost = getCostOfJobs(_build.getSchedule(), _market.getAdjustedPrices(), _options.getManufacturingSystemCostIndex(),
         _options.getReactionSystemCostIndex(), _options.getManufacturingCostBonus() ?? 0);
     final profit = (1 - _options.getSalesTaxPercent() / 100) * totalSellValue - cost - jobCost;
     final outm3 = target2runs.entries.fold(0.0, (double p, e) => p + SD.m3(e.key, e.value * SD.numProducedPerRun(e.key)));

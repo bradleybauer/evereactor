@@ -527,16 +527,19 @@ class SDE_Extractor:
 
         region2systems = {theForgeID: [jitaID, perimeterID], domainID: [amarrID, ashabID]}
         system2name = {}
+        region2name = {}
 
         # get localizations for system names
-        def getUrl(i, l):
+        def getSystemUrl(i, l):
             return "https://esi.evetech.net/latest/universe/systems/{}/?datasource=tranquility&language={}".format(i, l)
+        def getRegionUrl(i, l):
+            return "https://esi.evetech.net/latest/universe/regions/{}/?datasource=tranquility&language={}".format(i, l)
 
         languages = {'en', 'en-us', 'de', 'fr', 'ru', 'ja', 'zh', 'ko', 'es'}
         urls = []
         for language in languages:
             for system in [jitaID, perimeterID, amarrID, ashabID]:
-                urls.append(getUrl(system, language))
+                urls.append(getSystemUrl(system, language))
         req = ParallelRequest(urls)
         for result in req.go():
             language = result.headers['content-language']
@@ -547,7 +550,21 @@ class SDE_Extractor:
                 system2name[systemID] = {}
             system2name[systemID][language] = name
 
-        return region2systems, system2name
+        urls = []
+        for language in languages:
+            for region in [theForgeID, domainID]:
+                urls.append(getRegionUrl(region, language))
+        req = ParallelRequest(urls)
+        for result in req.go():
+            language = result.headers['content-language']
+            dic = json.loads(result.content)
+            name = dic['name']
+            regionID = dic['region_id']
+            if regionID not in region2name:
+                region2name[regionID] = {}
+            region2name[regionID][language] = name
+
+        return region2systems, system2name, region2name
 
     def getBuildableItemIDs(self, blueprints):
         return list(blueprints.keys())
@@ -632,7 +649,7 @@ def __test():
     marketGroup2Parent = extractor.getMarketGroup2Parent(blueprints)
 
     # print('\n\nTrade hubs')
-    region2systems, system2name = extractor.getTradeHubs()
+    region2systems, system2name, region2name = extractor.getTradeHubs()
     # print(region2systems, system2name)
 
     # # there are bad translations in the eve sde
