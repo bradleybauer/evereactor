@@ -28,9 +28,7 @@ flutter pub get
 flutter pub run build_runner build --release --delete-conflicting-outputs
 
 # create the sde conversion
-cd sde
-python convert.py
-cd ../
+python .\sde\convert.py
 
 # run
 flutter run -d windows
@@ -53,7 +51,7 @@ So how does it work? The solver schedules jobs into **batches**. This is intende
 
 Two issues prevent this from being a straight forward scheduling problem. First, frame each run as a job and the input materials as dependent jobs, then you have a "basic" scheduling problem. But the issue is in the excess and reuse of excess. For example, A needs 1 C, B needs 1 C, C is produced in quantities of 2. So if A is built with or before B then only A has a dependent C job, B uses the excess C. The issue is that the job dependencies change based on how the jobs are scheduled, I do not know any scheduling algorithms that can handle that kind of detail. Second, how do you optimally convert runs into jobs so that a general job scheduling algorithm can be used? If you use 1 job = 1 run, then you make a scheduling problem with a *large* amount of jobs. Which is not good because scheduling problems with tree like dependencies and parallel batching machines is NP-Hard(?). Thus the ortools and the custom algorithm. (who knows, maybe there is a fast algorithm for solving this problem optimally... but, i do not think there is)
 
-The solver is programmed to use all available threads. So your computer probably will be slow while the solver is running.
+The solver uses all available threads. So your computer probably will be slow while the solver is running.
 
 If you start the solver while it is already solving then it restarts (stops/starts again).
 

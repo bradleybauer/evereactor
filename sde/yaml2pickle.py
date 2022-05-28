@@ -5,8 +5,9 @@ import os
 
 from unicode_normalizer import normalizeStringsInMap
 
-sde = "sde/fsd/"
-sdePkl = "pickled/"
+sde = "sde/sde/fsd/"
+sdePkl = "sde/pickled/"
+
 
 def yaml2pickle():
     for fileName in os.listdir(sde):
@@ -37,5 +38,6 @@ def yaml2pickle():
             with open(dumpPath, 'wb') as handle:
                 pkl.dump(fileContent, handle, protocol=pkl.HIGHEST_PROTOCOL)
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     yaml2pickle()
