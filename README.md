@@ -27,6 +27,8 @@ or
 
 The scheduler uses google's ortools. To recompile the dll you must first install ortools then use visual studio >= 2019 to build the project in the directory `advanced_solver_cpp`. Yes the output DLL is called `WINDOWSISCOOL.dll`. That started as just a temporary name for testing but I am too lazy to change it now.
 
+I think there may be a way to have github build the project entirely in the cloud (github actions?) and automatically release a binary.. But I am not sure how to do that. Though I would like to do that to help people trust that the binary is legit.
+
 **Updating SDE**
 
 To update the sde go to the sde folder and read the README...
