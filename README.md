@@ -66,4 +66,6 @@ Changing the number of runs of an item while the targets table is sorted will ca
 
 Setting the build/buy option on intermediates naturally causes the contents of the intermediates table to change. This can be disorienting so I suggest to toggle build/buy from bottom to top!
 
+When lots of items are added to the build the tables become large and scrolling can be sort of a pain when the app window is not enlarged to fill the height of the screen.
+
 ![](img.jpg?raw=true)
