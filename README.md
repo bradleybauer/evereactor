@@ -31,7 +31,7 @@ flutter pub run build_runner build --release --delete-conflicting-outputs
 python .\sde\convert.py
 
 # run
-flutter run -d windows
+flutter run -d windows --release
 ```
 
 The scheduler uses google's ortools. To recompile the dll you must first install ortools then use visual studio >= 2019 to build the project in the directory `advanced_solver_cpp`. Yes the output DLL is called `WINDOWSISCOOL.dll`. That started as just a temporary name for testing but I am too lazy to change it now.
@@ -78,5 +78,7 @@ Changing the number of runs of an item while the targets table is sorted will ca
 Setting the build/buy option on intermediates naturally causes the contents of the intermediates table to change. This can be disorienting so I suggest to toggle build/buy from bottom to top!
 
 When lots of items are added to the build the tables become large and scrolling can be sort of a pain when the app window is not enlarged to fill the height of the screen.
+
+Different languages are not fully supported yet.
 
 ![](img.jpg?raw=true)
