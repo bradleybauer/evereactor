@@ -193,6 +193,9 @@ class TargetsTableController with ChangeNotifier {
   void sortOutM3() => _advanceSortState(_SortColumn.OUTM3);
 
   String exportCSV() {
+    if (_data.isEmpty) {
+      return "";
+    }
     List<String> result = ['Name,Runs,Profit,Cost,Percent,Cost/Unit,Sell/Unit,OutM3'];
     for (var data in _data) {
       result.add(data.toCSVString());

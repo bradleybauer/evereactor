@@ -148,6 +148,9 @@ class InputsTableController with ChangeNotifier {
   }
 
   String exportCSV() {
+    if (_data.isEmpty) {
+      return "";
+    }
     List<String> result = ['Totals', 'Name,Num Units,Total Cost,Cost/Unit,M3,Isk/M3'];
     for (var data in _data) {
       result.add(data.toCSVString());

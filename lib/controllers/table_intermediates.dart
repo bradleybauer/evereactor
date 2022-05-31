@@ -105,6 +105,9 @@ class IntermediatesTableController with ChangeNotifier {
   }
 
   String exportCSV() {
+    if (_data.isEmpty) {
+      return "";
+    }
     List<String> result = ['Name,Build Value'];
     for (var data in _data) {
       result.add(data.toCSVString());

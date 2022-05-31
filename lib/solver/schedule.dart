@@ -96,6 +96,9 @@ class Schedule {
 
   @override
   String toString() {
+    if (machine2batches.isEmpty) {
+      return "";
+    }
     var str = ",Item,Runs,Lines,Runs/Line,Remainder\n";
     for (final machine in [IndustryType.REACTION, IndustryType.MANUFACTURING]) {
       if (!machine2batches.containsKey(machine)) {
