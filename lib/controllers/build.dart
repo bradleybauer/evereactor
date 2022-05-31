@@ -31,6 +31,7 @@ class Build with ChangeNotifier {
       _totalBOM = _getTotalBOM(tid2runs, problem!);
       _target2costShare = _getShares(tid2runs, problem);
     } else {
+      _schedule = Schedule.empty();
       _totalBOM.clear();
       _target2costShare.clear();
     }
