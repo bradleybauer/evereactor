@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:fraction/fraction.dart';
 
 import '../industry.dart';
 import '../sde_extra.dart';
@@ -61,7 +62,7 @@ class Build with ChangeNotifier {
           SD.materials(tid).forEach((mid, qtyPerRun) {
             final slots = batchItem.slots;
             if (!needed.containsKey(mid)) needed[mid] = 0;
-            needed[mid] = needed[mid]! + getNumNeeded(runs, slots, qtyPerRun, problem.jobMaterialBonus[tid]!);
+            needed[mid] = needed[mid]! + getNumNeeded(runs, slots, qtyPerRun, problem.jobMaterialBonus[tid] ?? 1.toFraction());
           });
         });
       }
