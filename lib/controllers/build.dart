@@ -29,8 +29,11 @@ class Build with ChangeNotifier {
       _schedule = schedule;
       _totalBOM = _getTotalBOM(tid2runs, problem!);
       _target2costShare = _getShares(tid2runs, problem);
-    notifyListeners();
+    } else {
+      _totalBOM.clear();
+      _target2costShare.clear();
     }
+    notifyListeners();
   }
 
   // get map tid -> quantity where quantity is the amount of tid that needs to be purchased in order to do the build.

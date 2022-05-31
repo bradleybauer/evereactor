@@ -25,24 +25,31 @@ class SummaryController with ChangeNotifier {
 
   void _handleModelChange() {
     final bom = _build.getBOM();
-    final bomCostsPerUnit = _market.avgBuyFromSell(bom);
-    final bomCosts = prod(bom, bomCostsPerUnit);
-    final target2runs = _buildItems.getTarget2RunsCopy();
-    final totalSellValue = target2runs.entries.fold(0.0, (double p, e) {
-      final tid = e.key;
-      final runs = e.value;
-      final qty = SD.numProducedPerRun(tid) * runs;
-      return p + _market.avgSellToBuyItem(tid, qty) * qty;
-    });
-    final cost = bomCosts.values.fold(0.0, (double p, e) => p + e);
-    final jobCost = getCostOfJobs(_build.getSchedule(), _market.getAdjustedPrices(), _options.getManufacturingSystemCostIndex(),
-        _options.getReactionSystemCostIndex(), _options.getManufacturingCostBonus() ?? 0);
-    final profit = (1 - _options.getSalesTaxPercent() / 100) * totalSellValue - cost - jobCost;
-    final outm3 = target2runs.entries.fold(0.0, (double p, e) => p + SD.m3(e.key, e.value * SD.numProducedPerRun(e.key)));
-    final inm3 = bom.entries.fold(0.0, (double p, e) => p + SD.m3(e.key, e.value));
-    final time = prettyPrintSecondsToDH(_build.getTime());
-    data = SummaryData(currencyFormatNumber(profit), currencyFormatNumber(cost), currencyFormatNumber(jobCost), volumeNumberFormat(inm3),
-        volumeNumberFormat(outm3), time);
+
+    if (bom.isNotEmpty) {
+      final bomCostsPerUnit = _market.avgBuyFromSell(bom);
+      final bomCosts = prod(bom, bomCostsPerUnit);
+      final target2runs = _buildItems.getTarget2RunsCopy();
+      final totalSellValue = target2runs.entries.fold(0.0, (double p, e) {
+        final tid = e.key;
+        final runs = e.value;
+        final qty = SD.numProducedPerRun(tid) * runs;
+        return p + _market.avgSellToBuyItem(tid, qty) * qty;
+      });
+      final cost = bomCosts.values.fold(0.0, (double p, e) => p + e);
+      final jobCost = getCostOfJobs(_build.getSchedule(), _market.getAdjustedPrices(), _options.getManufacturingSystemCostIndex(),
+          _options.getReactionSystemCostIndex(), _options.getManufacturingCostBonus() ?? 0);
+      final profit = (1 - _options.getSalesTaxPercent() / 100) * totalSellValue - cost - jobCost;
+      final outm3 = target2runs.entries.fold(0.0, (double p, e) => p + SD.m3(e.key, e.value * SD.numProducedPerRun(e.key)));
+      final inm3 = bom.entries.fold(0.0, (double p, e) => p + SD.m3(e.key, e.value));
+      final time = prettyPrintSecondsToDH(_build.getTime());
+      data = SummaryData(currencyFormatNumber(profit), currencyFormatNumber(cost), currencyFormatNumber(jobCost), volumeNumberFormat(inm3),
+          volumeNumberFormat(outm3), time);
+    } else {
+
+      data = SummaryData(currencyFormatNumber(0), currencyFormatNumber(0), currencyFormatNumber(0), volumeNumberFormat(0),
+          volumeNumberFormat(0), "");
+    }
 
     notifyListeners();
   }

@@ -49,46 +49,70 @@ class TargetsTableController with ChangeNotifier {
     _dataPerRegion.clear();
     final targetIds = _buildItems.getTargetsIDs();
 
-    final bom = _build.getBOM();
-    final bomCostsPerUnit = _market.avgBuyFromSell(bom);
-    final bomCosts = prod(bom, bomCostsPerUnit);
-    for (int tid in targetIds) {
-      final runs = _buildItems.getTargetRuns(tid);
-      final qty = runs * SD.numProducedPerRun(tid);
-      final bomShare = _build.getCostShare(tid);
-      final cost = dot(bomCosts, bomShare);
-      final costPerUnit = cost / qty;
-      final sellPerUnit = _market.avgSellToBuyItem(tid, qty);
-      final sellValue = sellPerUnit * qty;
-      final profit = (1 - _options.getSalesTaxPercent() / 100) * sellValue - cost;
-      final percent = profit / cost;
-      final outM3 = SD.m3(tid, qty);
-      if (!_focusNodes.containsKey(tid)) {
-        _focusNodes[tid] = FocusNode(debugLabel: SD.enName(tid));
+    if (targetIds.isNotEmpty) {
+      final bom = _build.getBOM();
+      final bomCostsPerUnit = _market.avgBuyFromSell(bom);
+      final bomCosts = prod(bom, bomCostsPerUnit);
+      for (int tid in targetIds) {
+        final runs = _buildItems.getTargetRuns(tid);
+        final qty = runs * SD.numProducedPerRun(tid);
+        final bomShare = _build.getCostShare(tid);
+        final cost = dot(bomCosts, bomShare);
+        final costPerUnit = cost / qty;
+        final sellPerUnit = _market.avgSellToBuyItem(tid, qty);
+        final sellValue = sellPerUnit * qty;
+        final profit = (1 - _options.getSalesTaxPercent() / 100) * sellValue - cost;
+        final percent = profit / cost;
+        final outM3 = SD.m3(tid, qty);
+        if (!_focusNodes.containsKey(tid)) {
+          _focusNodes[tid] = FocusNode(debugLabel: SD.enName(tid));
+        }
+        _data.add(_Data(
+            tid,
+            runs * SD.numProducedPerRun(tid),
+            0,
+            runs,
+            profit,
+            cost,
+            percent,
+            costPerUnit,
+            sellPerUnit,
+            outM3,
+            _focusNodes[tid]!));
       }
-      _data.add(_Data(tid, runs*SD.numProducedPerRun(tid), 0, runs, profit, cost, percent, costPerUnit, sellPerUnit, outM3, _focusNodes[tid]!));
-    }
 
-    _focusNodes.keys.toList().forEach((tid) {
-      if (!targetIds.contains(tid)) {
-        _focusNodes[tid]!.dispose();
-        _focusNodes.remove(tid);
-      }
-    });
-
-    final perRegion =
-        _market.splitSellToBuyPerRegion(_buildItems.getTarget2RunsCopy().map((key, value) => MapEntry(key, value * SD.numProducedPerRun(key))));
-    perRegion.forEach((region, target2qty) {
-      if (!_dataPerRegion.containsKey(region)) {
-        _dataPerRegion[region] = [];
-      }
-      _market.avgSellToBuy(target2qty).forEach((tid, avg) {
-        int qty = target2qty[tid]!;
-        _dataPerRegion[region]!.add(_Data(tid, qty, avg * qty, 0, 0, 0.0, 0.0, 0.0, avg, SD.m3(tid, qty), _focusNodes[tid]!));
+      _focusNodes.keys.toList().forEach((tid) {
+        if (!targetIds.contains(tid)) {
+          _focusNodes[tid]!.dispose();
+          _focusNodes.remove(tid);
+        }
       });
-    });
 
-    _resort();
+      final perRegion =
+      _market.splitSellToBuyPerRegion(_buildItems.getTarget2RunsCopy().map((key, value) => MapEntry(key, value * SD.numProducedPerRun(key))));
+      perRegion.forEach((region, target2qty) {
+        if (!_dataPerRegion.containsKey(region)) {
+          _dataPerRegion[region] = [];
+        }
+        _market.avgSellToBuy(target2qty).forEach((tid, avg) {
+          int qty = target2qty[tid]!;
+          _dataPerRegion[region]!.add(_Data(
+              tid,
+              qty,
+              avg * qty,
+              0,
+              0,
+              0.0,
+              0.0,
+              0.0,
+              avg,
+              SD.m3(tid, qty),
+              _focusNodes[tid]!));
+        });
+      });
+
+      _resort();
+    }
 
     if (notify) {
       notifyListeners();
