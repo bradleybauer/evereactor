@@ -36,8 +36,14 @@ class ScheduleProviderDesktop extends ScheduleProviderWeb {
 
   void startAdvancedSolver() {
     super.computeNewBasicSchedule();
-    super.getProblem()!.approximation = super.getSchedule();
-    _advancedSolver.solve(super.getProblem()!);
+    var problem = super.getProblem()!;
+    problem.approximation = super.getSchedule();
+    if (problem.approximation != null) {
+      _advancedSolver.solve(problem);
+    } else {
+      _advSchedule = null;
+      notifyListeners();
+    }
   }
 
   void _advancedSolverFoundNewSolution() {
