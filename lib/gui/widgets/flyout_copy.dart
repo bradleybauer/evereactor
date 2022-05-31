@@ -1,5 +1,5 @@
-import 'package:EveIndy/controllers/controllers.dart';
-import 'package:EveIndy/controllers/schedule_provider.dart';
+import 'package:eve_reactor/controllers/controllers.dart';
+import 'package:eve_reactor/controllers/schedule_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +41,7 @@ class CopyFlyout extends StatelessWidget {
             onTap: () {
               final txt = targets.exportCSV();
               print(txt);
-              Clipboard.setData(ClipboardData(text:txt));
+              Clipboard.setData(ClipboardData(text: txt));
             },
           ),
           HoverButton(
@@ -55,7 +55,7 @@ class CopyFlyout extends StatelessWidget {
             onTap: () {
               final txt = intermediates.exportCSV();
               print(txt);
-              Clipboard.setData(ClipboardData(text:txt));
+              Clipboard.setData(ClipboardData(text: txt));
             },
           ),
           HoverButton(
@@ -65,7 +65,7 @@ class CopyFlyout extends StatelessWidget {
             onTap: () {
               final txt = inputs.exportCSV();
               print(txt);
-              Clipboard.setData(ClipboardData(text:txt));
+              Clipboard.setData(ClipboardData(text: txt));
             },
             color: color,
             hoveredColor: hoveredColor,
@@ -79,7 +79,7 @@ class CopyFlyout extends StatelessWidget {
             onTap: () {
               final txt = schedule.toString();
               print(txt);
-              Clipboard.setData(ClipboardData(text:txt));
+              Clipboard.setData(ClipboardData(text: txt));
             },
             color: color,
             hoveredColor: hoveredColor,

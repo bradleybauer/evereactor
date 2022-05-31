@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:EveIndy/chain_processor.dart';
+import 'package:eve_reactor/chain_processor.dart';
 import 'package:flutter/material.dart';
 
 import '../models/build_items.dart';
@@ -16,7 +16,7 @@ class BuildItemsController extends BuildItems with ChangeNotifier {
   }
 
   Future<void> loadFromCache() async {
-    _shouldNotifyAndSetCache=false;
+    _shouldNotifyAndSetCache = false;
     final targets2runs = await _persistence.getTargets2Runs();
     for (var entry in targets2runs.entries) {
       addTarget(entry.key, entry.value);
@@ -32,7 +32,7 @@ class BuildItemsController extends BuildItems with ChangeNotifier {
       setMaxRuns(entry.key, entry.value.maxNumRuns);
       setMaxBPs(entry.key, entry.value.maxNumBPs);
     }
-    _shouldNotifyAndSetCache=true;
+    _shouldNotifyAndSetCache = true;
     notifyListeners();
   }
 

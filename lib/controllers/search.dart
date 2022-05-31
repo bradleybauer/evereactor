@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:EveIndy/math.dart';
-import 'package:EveIndy/misc.dart';
+import 'package:eve_reactor/math.dart';
+import 'package:eve_reactor/misc.dart';
 import 'package:flutter/material.dart';
 
 import '../sde.dart';
@@ -55,12 +55,11 @@ class SearchController with ChangeNotifier {
       final volume = _market.buyVolume25Percent(tid);
       final unitPrice = _market.avgSellToBuyItem(tid, volume);
       if (unitPrice >= 1) {
-        final approximateRuns = min(100000, ceilDiv(200000000, SD.numProducedPerRun(tid)*unitPrice.ceil()));
+        final approximateRuns = min(100000, ceilDiv(200000000, SD.numProducedPerRun(tid) * unitPrice.ceil()));
         final numProduced = min(volume, SD.numProducedPerRun(tid) * approximateRuns);
         int runs = ceilDiv(numProduced, SD.numProducedPerRun(tid));
 
-        final totalSellValue =
-            (1 - _options.getSalesTaxPercent() / 100) * numProduced * _market.avgSellToBuyItem(tid, numProduced);
+        final totalSellValue = (1 - _options.getSalesTaxPercent() / 100) * numProduced * _market.avgSellToBuyItem(tid, numProduced);
         final bom = _basicBuild.getBOM({tid: runs}, useBuildItems: false);
         final cost = getCost(bom);
         final profit = totalSellValue - cost;

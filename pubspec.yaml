@@ -1,4 +1,4 @@
-name: EveIndy
+name: eve_reactor
 description: An industry calculator for Eve Online.
 
 # The following line prevents the package from being accidentally published to

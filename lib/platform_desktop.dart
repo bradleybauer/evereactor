@@ -38,7 +38,7 @@ class Platform {
     doWhenWindowReady(() {
       final win = appWindow;
       win.alignment = Alignment.centerRight;
-      win.title = "My Little Reactor";
+      win.title = "Eve Reactor";
       // TODO(desktop) I am pretty sure this has to do with resize handle sizes in bitsdojo_window.
       // If it is not added then the app (according to DevTools) has width < MyTheme.appWidth.
       // TODO(desktop) if display reduces during runtime then the widgets overflow. Has something
@@ -85,7 +85,6 @@ class Platform {
   }
 
   static Widget getOptimizerPane() {
-
     return ChangeNotifierProvider.value(builder: (_, __) => const OptimizerFlyout(), value: optimizerController!);
   }
 }
