@@ -83,12 +83,18 @@ class BuildItemsController extends BuildItems with ChangeNotifier {
 
   @override
   void setMaxRuns(int tid, int? maxRuns) {
+    if (maxRuns == 0) {
+      maxRuns = null;
+    }
     super.setMaxRuns(tid, maxRuns);
     _notify();
   }
 
   @override
   void setMaxBPs(int tid, int? maxBPs) {
+    if (maxBPs == 0) {
+      maxBPs = null;
+    }
     super.setMaxBPs(tid, maxBPs);
     _notify();
   }
