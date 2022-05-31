@@ -12,10 +12,13 @@ import 'schedule.dart';
 const thirtyDays = 30 * 24 * 3600;
 
 abstract class BasicSolver {
-  // if there are more than 100 batches, then the user has probably entered some stupid combination of settings
+  // if there are more than 100 batches, then the user has probably entered some bad combination of settings
   static const MAX_NUM_BATCHES = 100;
 
   static Schedule? getSchedule(Problem prob) {
+    if (prob.runsExcess.isEmpty) {
+      return null;
+    }
     Map<int, int> needed = _getNumProducedFromRuns(prob.runsExcess);
     Inventory inventoryCopy = Inventory.cloneOf(prob.inventory);
     final schedule = Schedule.empty();
@@ -41,21 +44,32 @@ abstract class BasicSolver {
 
         neededOfMachineType = Map.fromEntries(needed.entries.where((entry) => prob.job2machine[entry.key]! == machine));
       }
-      // for (Batch batch in batches) { // TODO need this here?
-      //   _minimizeSlotsWithoutIncreasingMaxTime(batch, machine, prob);
-      // }
 
       schedule.addBatches(machine, batches);
+    }
 
-      // TODO need a more accurate way to get minimum schedule time here
-      if (prob.M2DependsOnM1) {
-        schedule.time += Batch.getTimeForBatches(batches);
-      } else {
+    // TODO need a more accurate way to get minimum schedule time here
+    if (prob.M2DependsOnM1) {
+      var batches = schedule.machine2batches[IndustryType.REACTION]!;
+      batches[0].startTime = 0;
+      for (int i = 1; i < batches.length; ++i) {
+        batches[i].startTime = batches[i - 1].startTime + batches[i - 1].getMaxTime().toDouble().toInt();
+      }
+      schedule.time += Batch.getTimeForBatches(batches);
+
+      batches = schedule.machine2batches[IndustryType.MANUFACTURING]!;
+      batches[0].startTime = schedule.time.toInt();
+      for (int i = 1; i < batches.length; ++i) {
+        batches[i].startTime = batches[i - 1].startTime + batches[i - 1].getMaxTime().toDouble().toInt();
+      }
+      schedule.time += Batch.getTimeForBatches(batches);
+    } else {
+      schedule.machine2batches.forEach((key, batches) {
         final machineTime = Batch.getTimeForBatches(batches);
         if (schedule.time < machineTime) {
           schedule.time = machineTime;
         }
-      }
+      });
     }
     return schedule;
   }

@@ -21,7 +21,7 @@ class Problem {
   // functions of constructor args
   late final Set<IndustryType> machines;
   late final Map<int, IndustryType> job2machine;
-  late final bool M2DependsOnM1;
+  bool M2DependsOnM1 = false;
   late final Map<int,int> timePerRun;
   late final Map<int,int> madePerRun;
 
@@ -52,8 +52,13 @@ class Problem {
     machines = tids.map((tid) => SD.industryType(tid)).toSet();
 
     // for each item, not all its dependencies have the same machine as the item
-    M2DependsOnM1 = !dependencies.entries
-        .every((parent) => parent.value.entries.every((child) => job2machine[child.key] == job2machine[parent.key]));
+    dependencies.forEach((pid, child2qty) {
+      child2qty.forEach((cid, value) {
+        if (job2machine[pid] != job2machine[cid]) {
+          M2DependsOnM1 = true;
+        }
+      });
+    });
 
     timePerRun = Map.fromEntries(tids.map((e) => MapEntry(e, SD.timePerRun(e))));
     madePerRun = Map.fromEntries(tids.map((e) => MapEntry(e, SD.numProducedPerRun(e))));
