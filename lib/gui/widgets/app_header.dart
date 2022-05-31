@@ -1,3 +1,4 @@
+import 'package:eve_reactor/gui/widgets/summary_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,13 +47,7 @@ class Header extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
-          child: Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: theme.primary),
-            alignment: Alignment.center,
-            width: 180,
-            height: MyTheme.appBarButtonHeight,
-            child: Text('Eve Reactor', style: TextStyle(fontFamily: 'ZenDots', fontSize: 18, color: theme.onPrimary)),
-          ),
+          child:SummaryBar(),
         ),
       )
     ];

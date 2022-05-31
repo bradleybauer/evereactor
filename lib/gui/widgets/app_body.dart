@@ -28,11 +28,6 @@ class Body extends StatelessWidget {
               children: [
                 Container(
                   width: width,
-                  height: SummaryBar.height + 4 * MyTheme.appBarPadding,
-                  color: theme.surfaceVariant.withOpacity(.25),
-                ),
-                Container(
-                  width: width,
                   color: theme.surfaceVariant.withOpacity(.75),
                   padding: EdgeInsets.all(MyTheme.appBarPadding * 2),
                   child: const TargetsTable(),
@@ -60,14 +55,6 @@ class Body extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ),
-        Align(
-          // Summary Box
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0, MyTheme.appBarPadding * 2 + verticalPadding!, 0, 0),
-            child: const SummaryBar(),
           ),
         ),
       ],

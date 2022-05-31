@@ -6,7 +6,7 @@ import '../my_theme.dart';
 
 class SummaryBar extends StatelessWidget {
   static const double width = 650;
-  static const double height = 35;
+  static const double height = 28;
 
   const SummaryBar({Key? key}) : super(key: key);
 
@@ -18,7 +18,7 @@ class SummaryBar extends StatelessWidget {
       color: Colors.transparent,
       elevation: 2,
       shadowColor: theme.shadow,
-      borderRadius: const BorderRadius.all(Radius.circular(8)),
+      borderRadius: const BorderRadius.all(Radius.circular(4)),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Container(
           width: width,
