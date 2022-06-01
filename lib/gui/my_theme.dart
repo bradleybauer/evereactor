@@ -153,5 +153,5 @@ class MyTheme with ChangeNotifier {
   static const double appBarHeight = 48;
   static const double appBarPadding = 10;
   static const double webTableHeight = 560;
-  static const double desktopTableHeight = 590;
+  static const double desktopTableHeight = 630;
 }
