@@ -151,7 +151,7 @@ class InputsTableController with ChangeNotifier {
     if (_data.isEmpty) {
       return "";
     }
-    List<String> result = ['Totals', 'Name,Num Units,Total Cost,Cost/Unit,M3,Isk/M3'];
+    List<String> result = ['Totals,Num Units,Total Cost,Cost/Unit,M3,Isk/M3'];
     for (var data in _data) {
       result.add(data.toCSVString());
     }
@@ -165,17 +165,18 @@ class InputsTableController with ChangeNotifier {
     _dataPerRegion.forEach((region, datas) {
       double totalm3 = 0;
       double totalcost = 0;
-      result += [Strings.get(SDE.region2name[region]!)];
       for (var data in datas) {
         totalm3 += data.m3;
         totalcost += data.totalCost;
       }
-
-      result += ['Total m3,'+totalm3.toInt().toString()+',Total value,'+totalcost.toString()];
-      for (var data in datas) {
-        result.add(data.toCSVString());
+      if (totalm3 > 0 && totalcost > 0) {
+        result += [Strings.get(SDE.region2name[region]!) + ',Num Units,Total Cost,Cost/Unit,M3,Isk/M3'];
+        for (var data in datas) {
+          result.add(data.toCSVString());
+        }
+        result += [',,,,,,Total m3,' + totalm3.toInt().toString() + ',Total value,' + totalcost.toString()];
+        result += [''];
       }
-      result += [''];
     });
 
     result += ['', 'Max number of blueprints needed'];
