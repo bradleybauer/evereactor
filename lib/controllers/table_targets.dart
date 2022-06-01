@@ -205,7 +205,6 @@ class TargetsTableController with ChangeNotifier {
       return result.join('\n');
     }
 
-    bool shownHeader =false;
     _dataPerRegion.forEach((region, datas) {
       double totalm3 = 0;
       double totalvalue = 0;
@@ -213,17 +212,14 @@ class TargetsTableController with ChangeNotifier {
         totalm3 += data.outM3;
         totalvalue += data.value;
       }
-      if (!shownHeader) {
-        result += ['', ',Num Units,Isk,Isk/Unit,m3', Strings.get(SDE.region2name[region]!)];
-        shownHeader=true;
-      } else {
-        result += ['', Strings.get(SDE.region2name[region]!)];
+      if (totalm3 > 0.0 && totalvalue > 0.0) {
+        result += ['', Strings.get(SDE.region2name[region]!)+',Num Units,Isk,Isk/Unit,m3'];
+        for (var data in datas) {
+          final name = Strings.get(SDE.items[data.tid]!.nameLocalizations);
+          result.add([name, data.numUnits, data.value, data.sellPerUnit, data.outM3].map((e) => e.toString()).join(','));
+        }
+        result += [',,,,,Total m3,' + totalm3.toInt().toString() + ',Total value,' + totalvalue.toString()];
       }
-      for (var data in datas) {
-        final name = Strings.get(SDE.items[data.tid]!.nameLocalizations);
-        result.add([name, data.numUnits, data.value, data.sellPerUnit, data.outM3].map((e) => e.toString()).join(','));
-      }
-      result += [',,,,,Total m3,'+totalm3.toInt().toString()+',Total value,'+totalvalue.toString()];
     });
 
     return result.join('\n');
