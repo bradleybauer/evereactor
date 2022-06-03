@@ -68,12 +68,12 @@ public:
       }
     }
 
-    for (int k : p.jobTypes) {
-      auto machine = p.job2machine[k];
-      for (int b = 0; b < p.maxNumBatches[machine]; ++b) {
-        obj += vm.i("slots", {k, b});
-      }
-    }
+//    for (int k : p.jobTypes) {
+//      auto machine = p.job2machine[k];
+//      for (int b = 0; b < p.maxNumBatches[machine]; ++b) {
+//        obj += vm.i("slots", {k, b});
+//      }
+//    }
     m.Minimize(obj);
 
     Model model;
