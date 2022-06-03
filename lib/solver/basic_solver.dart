@@ -17,7 +17,7 @@ abstract class BasicSolver {
 
   static Schedule? getSchedule(Problem prob) {
     if (prob.runsExcess.isEmpty) {
-      return null;
+      return Schedule.empty();
     }
     Map<int, int> needed = _getNumProducedFromRuns(prob.runsExcess);
     Inventory inventoryCopy = Inventory.cloneOf(prob.inventory);
@@ -48,29 +48,28 @@ abstract class BasicSolver {
       schedule.addBatches(machine, batches);
     }
 
-    // TODO need a more accurate way to get minimum schedule time here
-    if (prob.M2DependsOnM1) {
-      var batches = schedule.machine2batches[IndustryType.REACTION]!;
-      batches[0].startTime = 0;
-      for (int i = 1; i < batches.length; ++i) {
-        batches[i].startTime = batches[i - 1].startTime + batches[i - 1].getMaxTime().toDouble().toInt();
-      }
-      schedule.time += Batch.getTimeForBatches(batches);
-
-      batches = schedule.machine2batches[IndustryType.MANUFACTURING]!;
-      batches[0].startTime = schedule.time.toInt();
-      for (int i = 1; i < batches.length; ++i) {
-        batches[i].startTime = batches[i - 1].startTime + batches[i - 1].getMaxTime().toDouble().toInt();
-      }
-      schedule.time += Batch.getTimeForBatches(batches);
-    } else {
-      schedule.machine2batches.forEach((key, batches) {
-        final machineTime = Batch.getTimeForBatches(batches);
-        if (schedule.time < machineTime) {
-          schedule.time = machineTime;
+    // calculate batch start times and schedule time
+    for (final machineType in [IndustryType.REACTION, IndustryType.MANUFACTURING]) {
+      double machineTime = 0.0;
+      if (schedule.machine2batches.containsKey(machineType)) {
+        final batches = schedule.machine2batches[machineType]!;
+        if (prob.M2DependsOnM1) {
+          batches[0].startTime = schedule.time.toInt();
+        } else {
+          batches[0].startTime = 0;
         }
-      });
+        for (int i = 1; i < batches.length; ++i) {
+          batches[i].startTime = batches[i - 1].startTime + batches[i - 1].getMaxTime().toDouble().toInt();
+        }
+        machineTime = Batch.getTimeForBatches(batches);
+      }
+      if (prob.M2DependsOnM1) {
+        schedule.time += machineTime;
+      } else {
+        schedule.time = max(schedule.time, machineTime);
+      }
     }
+
     return schedule;
   }
 
