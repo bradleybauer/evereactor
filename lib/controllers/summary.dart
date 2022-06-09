@@ -13,7 +13,7 @@ class SummaryController with ChangeNotifier {
   final OptionsController _options;
   final Build _build;
 
-  SummaryData data = const SummaryData('', '', '', '', '', '');
+  SummaryData data = const SummaryData('', '', '', '', '','', '');
 
   SummaryController(this._market, this._buildItems, this._build, this._options, Strings strings) {
     _market.addListener(_handleModelChange);
@@ -44,11 +44,11 @@ class SummaryController with ChangeNotifier {
       final inm3 = bom.entries.fold(0.0, (double p, e) => p + SD.m3(e.key, e.value));
       final time = prettyPrintSecondsToDH(_build.getTime());
       data = SummaryData(currencyFormatNumber(profit), currencyFormatNumber(cost), currencyFormatNumber(jobCost), volumeNumberFormat(inm3),
-          volumeNumberFormat(outm3), time);
+          volumeNumberFormat(outm3), currencyFormatNumber(totalSellValue), time);
     } else {
 
       data = SummaryData(currencyFormatNumber(0), currencyFormatNumber(0), currencyFormatNumber(0), volumeNumberFormat(0),
-          volumeNumberFormat(0), "");
+          volumeNumberFormat(0),currencyFormatNumber(0), "");
     }
 
     notifyListeners();
@@ -64,6 +64,7 @@ class SummaryData {
   final String inm3;
   final String outm3;
   final String time;
+  final String sellValue;
 
-  const SummaryData(this.profit, this.cost, this.jobCost, this.inm3, this.outm3, this.time);
+  const SummaryData(this.profit, this.cost, this.jobCost, this.inm3, this.outm3, this.sellValue, this.time);
 }

@@ -5,7 +5,7 @@ import '../../controllers/summary.dart';
 import '../my_theme.dart';
 
 class SummaryBar extends StatelessWidget {
-  static const double width = 650;
+  static const double width = 700;
   static const double height = 28;
 
   const SummaryBar({Key? key}) : super(key: key);
@@ -26,7 +26,7 @@ class SummaryBar extends StatelessWidget {
           alignment: Alignment.center,
           color: theme.tertiary,
           child: Text(
-            'Profit  ' + controller.getData().profit + '       Cost  ' + controller.getData().cost + '        Jobs  '+controller.getData().jobCost + '        In m3  ' + controller.getData().inm3+'       Out m3  ' + controller.getData().outm3 + '      Time ' + controller.getData().time,
+            'Profit  ' + controller.getData().profit + '       Cost  ' + controller.getData().cost + '        Jobs  '+controller.getData().jobCost + '        In m3  ' + controller.getData().inm3+'       Out m3  ' + controller.getData().outm3 + '      Sell  ' + controller.getData().sellValue + '      Time  ' + controller.getData().time,
             style: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.onTertiary),
           )),
     );
