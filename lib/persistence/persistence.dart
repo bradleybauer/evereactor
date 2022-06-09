@@ -89,19 +89,19 @@ class Persistence {
     return orders;
   }
 
-  Future<void> setOrders(Map<int, List<Order>> orders) async {
+  Future<void> setOrders(Map<int, List<Order>> allOrders) async {
     await _clearCache(cache.marketOrdersCache);
-    List<MarketOrdersCacheCompanion> inserts = [];
-    for (int id in orders.keys) {
-      inserts.addAll(orders[id]!.map((o) => MarketOrdersCacheCompanion.insert(
-            typeID: o.typeID,
-            systemID: o.systemID,
-            regionID: o.regionID,
-            isBuy: o.isBuy,
-            price: o.price,
-            volumeRemaining: o.volumeRemaining,
-          )));
-    }
+    final inserts = <MarketOrdersCacheCompanion>[];
+    allOrders.forEach((_, orders) {
+      inserts.addAll(orders.map((o) => MarketOrdersCacheCompanion.insert(
+        typeID: o.typeID,
+        systemID: o.systemID,
+        regionID: o.regionID,
+        isBuy: o.isBuy,
+        price: o.price,
+        volumeRemaining: o.volumeRemaining,
+      )));
+    });
     await cache.batch((batch) {
       batch.insertAll(cache.marketOrdersCache, inserts);
     });
