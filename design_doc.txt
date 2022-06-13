@@ -10,6 +10,8 @@ TODO New Features
 
       This would add a checkbox for scheduling separately and a text box for setting max job duration
 
+      I guess this could be done with a simple greater than constraint in the adv solver.
+
     2) Caching of the build for later reference.
       Many times through the week I am curious how much building certain items cost.
       To use my app to check I must clear the data from the previous build.
