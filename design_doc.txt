@@ -1,3 +1,33 @@
+TODO New Features
+    1) Separate scheduling for rtn/mfg
+      So today I realized that I want to be able to set a maximum duration for a batch. This is for security against evictions.
+      Doing this causes poor scheduling performance of the basic_solver.
+      So... solution? use the advanced solver.
+      And that works for just reactions or just manufacturing.
+      But for the builds with reactions and manufacturing the advanced solver produces a schedule that cannot be stacked
+      with schedules of other builds.. this may be undesirable for certain people.
+      So i need the option to apply the advanced scheduler to reactions & manufacturing separately..
+
+      This would add a checkbox for scheduling separately and a text box for setting max job duration
+
+    2) Caching of the build for later reference.
+      Many times through the week I am curious how much building certain items cost.
+      To use my app to check I must clear the data from the previous build.
+      I usually do not want to do that because I will want to check prices for my previous build many times
+      throughout the week.
+      So I need to store the previous build so I can clear the 'current working' data and load it back later.
+      This is probably a whole new pane with a table of builds and other information/buttons.
+
+    3) Calculate prices for current build assuming that previous build buy orders have been sold to.
+      Often I want to schedule the next build before I finish selling off the items from the previous build.
+      If I do so now then the app can use buy orders for the current build that will be completely gone when
+      the previous build is sold. Which can cause very bad inaccuracies in the profit calculations for the
+      curren build.
+
+    4) finish implementing inventory
+
+
+
 TODO really should take jobcosts into consideration in heuristic list
 
 TODO double check that I am not leaking memory in the cpp<->dart layer
