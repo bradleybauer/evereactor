@@ -11,6 +11,18 @@ TODO New Features
       This would add a checkbox for scheduling separately and a text box for setting max job duration
 
       I guess this could be done with a simple greater than constraint in the adv solver.
+      ...
+
+      Update: Given the structure type and the structure location you can work out the max duration for a batch
+      given previous durations and assuming that the first batch was started soon after the structure reinforcement
+      time (18:00 for Sugar). For the tatara it's roughly 2 days since it is in wh space and is a large structure.
+      see https://support.eveonline.com/hc/en-us/articles/208289385-Upwell-Structures-Vulnerability-States
+      and https://wiki.eveuniversity.org/Vulnerability
+
+      To implement this in the advanced solver all I need to do is make sure that the start&end time of each batch
+      has the same quotient by 2days (ie each batch starts and ends in the same block of 2days)?? Yes and no. This
+      allows gaps between batches of same machine type then right? that breaks assumptions i made pretty much everywhere.
+      so have to deal with that somehow.
 
     2) Caching of the build for later reference.
       Many times through the week I am curious how much building certain items cost.
