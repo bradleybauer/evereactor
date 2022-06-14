@@ -9,7 +9,10 @@ import '../platform_stub.dart' if (dart.library.io) '../platform_desktop.dart' i
 import 'database.dart';
 
 class Persistence {
-  final CacheDatabase cache = CacheDatabase(Platform.createDatabaseConnection('EveReactorCache'));
+  late CacheDatabase cache;
+  Future<void> setup() async {
+     cache = CacheDatabase(await Platform.createDatabaseConnection('EveReactorCache'));
+  }
 
   Future<void> _clearCache(table) async {
     await cache.delete(table).go();

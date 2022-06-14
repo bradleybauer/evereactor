@@ -19,7 +19,7 @@ import 'gui/widgets/flyout_optimizer.dart';
 import 'solver/advanced_solver.dart';
 
 class Platform {
-  static QueryExecutor createDatabaseConnection(String databaseName) {
+  static Future<QueryExecutor> createDatabaseConnection(String databaseName) async {
     return LazyDatabase(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       // for (var folder in await dbFolder.list().toList()) {

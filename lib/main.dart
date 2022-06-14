@@ -11,6 +11,7 @@ import 'strings.dart';
 
 Future<void> main() async {
   final persistence = Persistence();
+  await persistence.setup();
 
   final MyTheme myTheme = MyTheme(persistence);
   final Strings strings = Strings();

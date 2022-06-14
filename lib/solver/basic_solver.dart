@@ -105,8 +105,11 @@ abstract class BasicSolver {
       // can not have more than this number of runs on a slot due to 30 day constraint
       // int maxNumRunsPerSlot = (thirtyDays / (SD.timePerRun(tid) * prob.jobTimeBonus[tid]!)).ceil();
 
+      // int maxTime = 48 * 3600 - 2 * 3600; // TODO ... this probalby will only work on desktop
+      int maxTime = thirtyDays;
+
       // thirtyDays / (base * bonus)
-      int maxNumRunsPerSlot = ceilDiv(thirtyDays * prob.jobTimeBonus[tid]!.denominator, SD.timePerRun(tid) * prob.jobTimeBonus[tid]!.numerator);
+      int maxNumRunsPerSlot = ceilDiv(maxTime * prob.jobTimeBonus[tid]!.denominator, SD.timePerRun(tid) * prob.jobTimeBonus[tid]!.numerator);
 
       // can not have more runs on a slot than the user requested max
       maxNumRunsPerSlot = min(maxNumRunsPerSlot, prob.maxNumRunsPerSlotOfJob[tid]!);

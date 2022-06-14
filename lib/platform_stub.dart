@@ -8,7 +8,7 @@ import 'controllers/schedule_provider.dart';
 
 class Platform {
   // Connect to the cache database.
-  static QueryExecutor createDatabaseConnection(String databaseName) => throw Error();
+  static Future<QueryExecutor> createDatabaseConnection(String databaseName) => throw Error();
 
   // On web cancels the app loading animation. On desktop sets the window parameters (size bounds, transparency, ...).
   static void appReadyHook() => throw Error();

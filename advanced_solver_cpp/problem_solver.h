@@ -40,7 +40,7 @@ public:
     timeOfJobTypeOnBatch();
     batchTimes();
     batchOrderSymmetryConstraint();
-    // balanceConstraint();
+    //balanceConstraint();
     maxRunPerSlotConstraint();
     completionTimes();
     startsWithVars();
@@ -214,6 +214,8 @@ private:
         }
         auto batchTime = vm.i(machine2str.at(machine) + "BatchTimes", {b}, 0, p.completionTimeUpperBound);
         m.AddMaxEquality(batchTime, jobTimesOnBatch);
+        // TODO the below does not work see design doc
+        m.AddLessThan(batchTime, (48 * 3600 - 2*3600) * 1000 / p.timesGCD);
       }
     }
   }

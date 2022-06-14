@@ -41,9 +41,9 @@ class MarketController with ChangeNotifier {
     Map<int, double> adjustedPrices = await _fetchAdjustedPrices();
 
     _market.setAdjustedPrices(adjustedPrices);
-    _persistence.setAdjustedPrices(adjustedPrices);
+    await _persistence.setAdjustedPrices(adjustedPrices);
     _market.setOrders(orders);
-    _persistence.setOrders(orders);
+    await _persistence.setOrders(orders);
 
     // TODO market data is cached every 300 seconds on esi server... so only allow updating once every 300 seconds.
     // _market.setOrderFetchTime(DateTime.now());

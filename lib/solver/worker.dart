@@ -28,6 +28,8 @@ void startWorker(WorkerArg arg) async {
   _sendPort = arg.sp;
 
   // create function pointers using pointer.fromFunc to pass to cpp
+  // Reminder: ptrs from Pointer.fromFunction can only be used from the thread that Pointer.fromFunction was called on.
+  //           Thus this isolate.
   final publishSolutionPtr = Pointer.fromFunction<_PublishSolutionNativeType>(_publishSolution);
   final notifyStoppedPtr = Pointer.fromFunction<_NotifyStoppedNativeType>(_notifyStopped);
 
