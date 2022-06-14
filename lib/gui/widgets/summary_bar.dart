@@ -20,15 +20,23 @@ class SummaryBar extends StatelessWidget {
       shadowColor: theme.shadow,
       borderRadius: const BorderRadius.all(Radius.circular(4)),
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Container(
-          width: width,
-          height: height,
-          alignment: Alignment.center,
-          color: theme.tertiary,
-          child: Text(
-            'Profit  ' + controller.getData().profit + '       Cost  ' + controller.getData().cost + '        Jobs  '+controller.getData().jobCost + '        In m3  ' + controller.getData().inm3+'       Out m3  ' + controller.getData().outm3 + '      Sell  ' + controller.getData().sellValue + '      Time  ' + controller.getData().time,
-            style: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.onTertiary),
-          )),
+      child: DefaultTextStyle(
+        style: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.onTertiary),
+        child: Container(
+            width: width,
+            height: height,
+            alignment: Alignment.center,
+            color: theme.tertiary,
+            child: Wrap(spacing: 20, children: [
+              Text('Profit  ' + controller.getData().profit),
+              Text('Cost  ' + controller.getData().cost),
+              Text('Value  ' + controller.getData().sellValue),
+              Text('Jobs  ' + controller.getData().jobCost),
+              Text('In m3  ' + controller.getData().inm3),
+              Text('Out m3  ' + controller.getData().outm3),
+              Text('Time  ' + controller.getData().time)
+            ])),
+      ),
     );
   }
 }
