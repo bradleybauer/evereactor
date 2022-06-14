@@ -89,22 +89,7 @@ class IntermediatesTableItem extends StatelessWidget {
               IntermediatesTable.colFlexs[0],
               align: Alignment.centerLeft,
               padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding, 0, 0, 0),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  TableAddDelButton(
-                    onTap: () => buildItems.addTarget(row.tid, 1),
-                    closeButton: false,
-                    color: theme.background,
-                    hoveredColor: theme.tertiaryContainer,
-                    splashColor: theme.onTertiaryContainer.withOpacity(.35),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(IntermediatesTable.padding, 0, 0, 0),
-                    child: Text(row.name),
-                  ),
-                ],
-              ),
+              child: Text(row.name),
             ),
             MyTableCell(IntermediatesTable.colFlexs[1],
                 child: Container(
