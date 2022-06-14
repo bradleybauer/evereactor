@@ -67,18 +67,8 @@ class TargetsTableController with ChangeNotifier {
         if (!_focusNodes.containsKey(tid)) {
           _focusNodes[tid] = FocusNode(debugLabel: SD.enName(tid));
         }
-        _data.add(_Data(
-            tid,
-            runs * SD.numProducedPerRun(tid),
-            0,
-            runs,
-            profit,
-            cost,
-            percent,
-            costPerUnit,
-            sellPerUnit,
-            outM3,
-            _focusNodes[tid]!));
+        _data.add(
+            _Data(tid, runs * SD.numProducedPerRun(tid), 0, runs, profit, cost, percent, costPerUnit, sellPerUnit, outM3, _focusNodes[tid]!));
       }
 
       _focusNodes.keys.toList().forEach((tid) {
@@ -88,26 +78,15 @@ class TargetsTableController with ChangeNotifier {
         }
       });
 
-      final perRegion =
-      _market.splitSellToBuyPerRegion(_buildItems.getTarget2RunsCopy().map((key, value) => MapEntry(key, value * SD.numProducedPerRun(key))));
+      final perRegion = _market
+          .splitSellToBuyPerRegion(_buildItems.getTarget2RunsCopy().map((key, value) => MapEntry(key, value * SD.numProducedPerRun(key))));
       perRegion.forEach((region, target2qty) {
         if (!_dataPerRegion.containsKey(region)) {
           _dataPerRegion[region] = [];
         }
         _market.avgSellToBuy(target2qty).forEach((tid, avg) {
           int qty = target2qty[tid]!;
-          _dataPerRegion[region]!.add(_Data(
-              tid,
-              qty,
-              avg * qty,
-              0,
-              0,
-              0.0,
-              0.0,
-              0.0,
-              avg,
-              SD.m3(tid, qty),
-              _focusNodes[tid]!));
+          _dataPerRegion[region]!.add(_Data(tid, qty, avg * qty, 0, 0, 0.0, 0.0, 0.0, avg, SD.m3(tid, qty), _focusNodes[tid]!));
         });
       });
 
@@ -196,7 +175,7 @@ class TargetsTableController with ChangeNotifier {
     if (_data.isEmpty) {
       return "";
     }
-    List<String> result = ['Name,Runs,Profit,Cost,Percent,Cost/Unit,Sell/Unit,OutM3'];
+    List<String> result = ['Name,Num Units,Runs,Profit,Cost,Percent,Cost/Unit,Sell/Unit,OutM3'];
     for (var data in _data) {
       result.add(data.toCSVString());
     }
@@ -213,7 +192,7 @@ class TargetsTableController with ChangeNotifier {
         totalvalue += data.value;
       }
       if (totalm3 > 0.0 && totalvalue > 0.0) {
-        result += ['', Strings.get(SDE.region2name[region]!)+',Num Units,Isk,Isk/Unit,m3'];
+        result += ['', Strings.get(SDE.region2name[region]!) + ',Num Units,Isk,Isk/Unit,m3'];
         for (var data in datas) {
           final name = Strings.get(SDE.items[data.tid]!.nameLocalizations);
           result.add([name, data.numUnits, data.value, data.sellPerUnit, data.outM3].map((e) => e.toString()).join(','));
@@ -239,12 +218,14 @@ class _Data {
   final double outM3;
   final FocusNode focusNode;
 
-  const _Data(
-      this.tid, this.numUnits, this.value, this.runs, this.profit, this.cost, this.percent, this.costPerUnit, this.sellPerUnit, this.outM3, this.focusNode);
+  const _Data(this.tid, this.numUnits, this.value, this.runs, this.profit, this.cost, this.percent, this.costPerUnit, this.sellPerUnit,
+      this.outM3, this.focusNode);
 
   String toCSVString() {
     final name = Strings.get(SDE.items[tid]!.nameLocalizations);
-    return [name, runs, profit, cost, percent * 100, costPerUnit, sellPerUnit, outM3].map((e) => e.toString()).join(',');
+    return [name, SD.numProducedPerRun(tid) * runs, runs, profit, cost, percent * 100, costPerUnit, sellPerUnit, outM3]
+        .map((e) => e.toString())
+        .join(',');
   }
 }
 
