@@ -50,7 +50,7 @@ sde/sde/*
 sde/pickled/*
 sde/hoboleaks/*
 lib/persistence/*.g.dart
-lib/sde.dart
+#lib/sde.dart
 
 *vpp.bak_*
 *vpp.lck
