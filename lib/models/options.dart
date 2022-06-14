@@ -9,7 +9,7 @@ class Options {
   int _maxNumBps = 30;
   double _reactionsSystemCostIndex = .1;
   double _manufacturingSystemCostIndex = .1;
-  double _salesTaxPercent = 0;
+  double _salesTaxPercent = 3.6;
   int _manufacturingStructure = SDE.structures.entries.where((e) => e.value.industryType == IndustryType.MANUFACTURING).first.key;
   int _reactionStructure = SDE.structures.entries.where((e) => e.value.industryType == IndustryType.REACTION).first.key;
 
