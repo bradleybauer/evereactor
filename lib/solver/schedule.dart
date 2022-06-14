@@ -144,6 +144,6 @@ class Schedule {
         b += 1;
       }
     }
-    return str;
+    return str.replaceAll(',', '\t');
   }
 }

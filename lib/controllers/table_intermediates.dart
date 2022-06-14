@@ -112,7 +112,7 @@ class IntermediatesTableController with ChangeNotifier {
     for (var data in _data) {
       result.add(data.toCSVString());
     }
-    return result.join('\n');
+    return result.join('\n').replaceAll(',', '\t');
   }
 }
 

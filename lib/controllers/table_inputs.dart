@@ -185,7 +185,7 @@ class InputsTableController with ChangeNotifier {
       result += [Strings.get(SDE.items[tid]!.nameLocalizations) + ',' + numBpsNeeded.toString()];
     });
 
-    return result.join('\n');
+    return result.join('\n').replaceAll(',', '\t');
   }
 }
 

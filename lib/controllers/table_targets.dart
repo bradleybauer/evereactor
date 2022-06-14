@@ -201,7 +201,7 @@ class TargetsTableController with ChangeNotifier {
       }
     });
 
-    return result.join('\n');
+    return result.join('\n').replaceAll(',', '\t');
   }
 }
 
