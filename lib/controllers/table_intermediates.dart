@@ -110,7 +110,7 @@ class IntermediatesTableController with ChangeNotifier {
     }
     List<String> result = ['Name,Build Value'];
     for (var data in _data) {
-      result.add(data.toCSVString());
+      result.add(data.toExcelTableString());
     }
     return result.join('\n').replaceAll(',', '\t');
   }
@@ -122,7 +122,7 @@ class _Data {
 
   _Data(this.tid, this.value);
 
-  String toCSVString() {
+  String toExcelTableString() {
     final name = Strings.get(SDE.items[tid]!.nameLocalizations);
     return name + ',' + value.toString();
   }

@@ -177,7 +177,7 @@ class TargetsTableController with ChangeNotifier {
     }
     List<String> result = ['Name,Num Units,Runs,Profit,Cost,Percent,Cost/Unit,Sell/Unit,OutM3'];
     for (var data in _data) {
-      result.add(data.toCSVString());
+      result.add(data.toExcelTableString());
     }
 
     if (_dataPerRegion.length == 1) {
@@ -195,9 +195,11 @@ class TargetsTableController with ChangeNotifier {
         result += ['', Strings.get(SDE.region2name[region]!) + ',Num Units,Isk,Isk/Unit,m3'];
         for (var data in datas) {
           final name = Strings.get(SDE.items[data.tid]!.nameLocalizations);
-          result.add([name, data.numUnits, data.value, data.sellPerUnit, data.outM3].map((e) => e.toString()).join(','));
+          result.add([name, data.numUnits, data.value.toStringAsFixed(2), data.sellPerUnit.toStringAsFixed(2), data.outM3]
+              .map((e) => e.toString())
+              .join(','));
         }
-        result += [',,,,,Total m3,' + totalm3.toInt().toString() + ',Total value,' + totalvalue.toString()];
+        result += [',,,,,Total m3,' + totalm3.toInt().toString() + ',Total value,' + totalvalue.toStringAsFixed(2)];
       }
     });
 
@@ -221,11 +223,19 @@ class _Data {
   const _Data(this.tid, this.numUnits, this.value, this.runs, this.profit, this.cost, this.percent, this.costPerUnit, this.sellPerUnit,
       this.outM3, this.focusNode);
 
-  String toCSVString() {
+  String toExcelTableString() {
     final name = Strings.get(SDE.items[tid]!.nameLocalizations);
-    return [name, SD.numProducedPerRun(tid) * runs, runs, profit, cost, percent * 100, costPerUnit, sellPerUnit, outM3]
-        .map((e) => e.toString())
-        .join(',');
+    return [
+      name,
+      SD.numProducedPerRun(tid) * runs,
+      runs,
+      profit.toStringAsFixed(2),
+      cost.toStringAsFixed(2),
+      (percent * 100).toStringAsFixed(2),
+      costPerUnit.toStringAsFixed(2),
+      sellPerUnit.toStringAsFixed(2),
+      outM3
+    ].map((e) => e.toString()).join(',');
   }
 }
 
