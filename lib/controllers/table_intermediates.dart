@@ -104,13 +104,13 @@ class IntermediatesTableController with ChangeNotifier {
     return IntermediatesRowData(x.tid, name, value, valuePositive);
   }
 
-  String exportCSV() {
+  String exportSpreadSheet() {
     if (_data.isEmpty) {
       return "";
     }
     List<String> result = ['Name,Build Value'];
     for (var data in _data) {
-      result.add(data.toExcelTableString());
+      result.add(data.toSpreadSheetString());
     }
     return result.join('\n').replaceAll(',', '\t');
   }
@@ -122,7 +122,7 @@ class _Data {
 
   _Data(this.tid, this.value);
 
-  String toExcelTableString() {
+  String toSpreadSheetString() {
     final name = Strings.get(SDE.items[tid]!.nameLocalizations);
     return name + ',' + value.toString();
   }

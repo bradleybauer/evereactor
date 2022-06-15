@@ -147,13 +147,13 @@ class InputsTableController with ChangeNotifier {
     return InputsRowData(name, totalCost, costPerUnit, m3, iskPerM3);
   }
 
-  String exportCSV() {
+  String exportSpreadSheet() {
     if (_data.isEmpty) {
       return "";
     }
     List<String> result = ['Totals,Num Units,Total Cost,Cost/Unit,M3,Isk/M3'];
     for (var data in _data) {
-      result.add(data.toExcelTableString());
+      result.add(data.toSpreadSheetString());
     }
 
     if (_dataPerRegion.length == 1) {
@@ -172,7 +172,7 @@ class InputsTableController with ChangeNotifier {
       if (totalm3 > 0 && totalcost > 0) {
         result += [Strings.get(SDE.region2name[region]!) + ',Num Units,Total Cost,Cost/Unit,M3,Isk/M3'];
         for (var data in datas) {
-          result.add(data.toExcelTableString());
+          result.add(data.toSpreadSheetString());
         }
         result += [',,,,,,Total m3,' + totalm3.toInt().toString() + ',Total value,' + totalcost.toString()];
         result += [''];
@@ -199,7 +199,7 @@ class _Data {
 
   const _Data(this.tid, this.numUnits, this.totalCost, this.costPerUnit, this.m3, this.iskPerM3);
 
-  String toExcelTableString() {
+  String toSpreadSheetString() {
     final name = Strings.get(SDE.items[tid]!.nameLocalizations);
     return name +
         ',' +

@@ -39,7 +39,7 @@ class CopyFlyout extends StatelessWidget {
             hoveredElevation: 0,
             borderRadius: 3,
             onTap: () {
-              final txt = targets.exportCSV();
+              final txt = targets.exportSpreadSheet();
               Clipboard.setData(ClipboardData(text: txt));
             },
           ),
@@ -52,7 +52,7 @@ class CopyFlyout extends StatelessWidget {
             hoveredElevation: 0,
             borderRadius: 3,
             onTap: () {
-              final txt = intermediates.exportCSV();
+              final txt = intermediates.exportSpreadSheet();
               Clipboard.setData(ClipboardData(text: txt));
             },
           ),
@@ -61,7 +61,7 @@ class CopyFlyout extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: Text('Copy Inputs', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
             onTap: () {
-              final txt = inputs.exportCSV();
+              final txt = inputs.exportSpreadSheet();
               Clipboard.setData(ClipboardData(text: txt));
             },
             color: color,

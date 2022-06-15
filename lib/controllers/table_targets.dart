@@ -171,13 +171,13 @@ class TargetsTableController with ChangeNotifier {
 
   void sortOutM3() => _advanceSortState(_SortColumn.OUTM3);
 
-  String exportCSV() {
+  String exportSpreadSheet() {
     if (_data.isEmpty) {
       return "";
     }
-    List<String> result = ['Name,Num Units,Runs,Profit,Cost,Percent,Cost/Unit,Sell/Unit,OutM3'];
+    List<String> result = ['Name,Num Units,Runs,Profit,Cost,Percent,Cost/Unit,Sell/Unit,m3'];
     for (var data in _data) {
-      result.add(data.toExcelTableString());
+      result.add(data.toSpreadSheetString());
     }
 
     if (_dataPerRegion.length == 1) {
@@ -223,7 +223,7 @@ class _Data {
   const _Data(this.tid, this.numUnits, this.value, this.runs, this.profit, this.cost, this.percent, this.costPerUnit, this.sellPerUnit,
       this.outM3, this.focusNode);
 
-  String toExcelTableString() {
+  String toSpreadSheetString() {
     final name = Strings.get(SDE.items[tid]!.nameLocalizations);
     return [
       name,
