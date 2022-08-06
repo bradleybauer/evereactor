@@ -157,7 +157,7 @@ class InputsTableController with ChangeNotifier {
     }
 
     if (_dataPerRegion.length == 1) {
-      return result.join('\n');
+      return result.join('\n').replaceAll(',', '\t');
     }
     result += [''];
 

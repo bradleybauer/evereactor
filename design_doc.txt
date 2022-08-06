@@ -1,5 +1,3 @@
-BUG: If different trade hubs are selected then the copy commands do not work right!? weird.
-
 TODO add "Reaction Formula" to blueprint name in outputs
 
 Note: The annoying modifier key bug only happens in debug builds!!!
