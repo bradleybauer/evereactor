@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../my_theme.dart';
 import 'flyout_button_group.dart';
+import 'get_market_data_button.dart';
 import 'search_bar.dart';
 
 class Footer extends StatelessWidget {
@@ -19,7 +20,14 @@ class Footer extends StatelessWidget {
         alignment: Alignment.centerRight,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
-          child: const FooterFlyoutGroup(),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              GetMarketDataButton(),
+              SizedBox(width:10),
+              FooterFlyoutGroup(),
+            ],
+          ),
         ),
       ),
       Align(

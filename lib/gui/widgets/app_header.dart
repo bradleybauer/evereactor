@@ -17,7 +17,7 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     var rowButtons = <Widget>[
-      const GetMarketDataButton(),
+      // const GetMarketDataButton(),
       // SizedBox(width: MyTheme.appBarPadding),
       // const PasteClearButton(),
     ];
@@ -42,10 +42,11 @@ class Header extends StatelessWidget {
       ];
     }
 
+    final summaryAlign = Platform.isWeb() ? Alignment.center: Alignment.centerLeft;
     var stackWidgets = <Widget>[
       Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
+        alignment: summaryAlign,
+        child: const Padding(
           padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
           child:SummaryBar(),
         ),
@@ -58,7 +59,7 @@ class Header extends StatelessWidget {
       Align(
         alignment: Alignment.centerRight,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
+          padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: rowButtons,

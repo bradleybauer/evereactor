@@ -5,7 +5,7 @@ import '../../controllers/summary.dart';
 import '../my_theme.dart';
 
 class SummaryBar extends StatelessWidget {
-  static const double width = 788;
+  static const double width = 888;
   static const double height = 28;
 
   const SummaryBar({Key? key}) : super(key: key);
