@@ -43,19 +43,19 @@ class CopyFlyout extends StatelessWidget {
               Clipboard.setData(ClipboardData(text: txt));
             },
           ),
-          HoverButton(
-            builder: (hovered) => Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text('Copy Intermediates', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
-            color: color,
-            hoveredColor: hoveredColor,
-            hoveredElevation: 0,
-            borderRadius: 3,
-            onTap: () {
-              final txt = intermediates.exportSpreadSheet();
-              Clipboard.setData(ClipboardData(text: txt));
-            },
-          ),
+          // HoverButton(
+          //   builder: (hovered) => Padding(
+          //       padding: const EdgeInsets.all(8),
+          //       child: Text('Copy Intermediates', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
+          //   color: color,
+          //   hoveredColor: hoveredColor,
+          //   hoveredElevation: 0,
+          //   borderRadius: 3,
+          //   onTap: () {
+          //     final txt = intermediates.exportSpreadSheet();
+          //     Clipboard.setData(ClipboardData(text: txt));
+          //   },
+          // ),
           HoverButton(
             builder: (hovered) => Padding(
                 padding: const EdgeInsets.all(8),
