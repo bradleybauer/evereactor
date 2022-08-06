@@ -7,6 +7,7 @@ import '../sde_extra.dart';
 import 'build_items.dart';
 import 'options.dart';
 
+// Does a basic calculation of the bill of materials for the given list of items to build.
 class BasicBuild with ChangeNotifier {
   final BuildItemsController _buildItems;
   final OptionsController _options;
@@ -21,6 +22,32 @@ class BasicBuild with ChangeNotifier {
   void _handleModelChanged() {
     materialEfficiencyMemo.clear();
     notifyListeners();
+  }
+
+  int getMachineTime(Map<int, int> items, {int toggleTid = -1, bool useBuildItems = true}) {
+    int time = 0;
+    while (items.isNotEmpty) {
+      var next = <int, int>{};
+      var numNeededForEachChild = <int, int>{};
+      items.forEach((tid, runs) {
+        final bonus = getMaterialBonusMemoized(tid, _options, _buildItems, materialEfficiencyMemo);
+        time += runs * SD.timePerRun(tid);
+        SD.materials(tid).forEach((cid, qtyPerRun) {
+          final numNeeded = getNumNeeded(runs, 1, qtyPerRun, bonus);
+          if (!SD.isWrongIndyType(tid, cid) &&
+              SD.isBuildable(cid) &&
+              (!useBuildItems ||
+                  (cid == toggleTid ? !_buildItems.getShouldBuild(cid) : _buildItems.getShouldBuild(cid)))) {
+            numNeededForEachChild.update(cid, (value) => value + numNeeded, ifAbsent: () => numNeeded);
+          }
+        });
+      });
+      numNeededForEachChild.forEach((cid, numNeeded) {
+        next[cid] = ceilDiv(numNeeded, SD.numProducedPerRun(cid));
+      });
+      items = next;
+    }
+    return time;
   }
 
   Map<int, int> getBOM(Map<int, int> items, {int toggleTid = -1, bool useBuildItems = true}) {

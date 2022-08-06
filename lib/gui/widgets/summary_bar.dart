@@ -5,7 +5,7 @@ import '../../controllers/summary.dart';
 import '../my_theme.dart';
 
 class SummaryBar extends StatelessWidget {
-  static const double width = 700;
+  static const double width = 788;
   static const double height = 28;
 
   const SummaryBar({Key? key}) : super(key: key);
@@ -28,6 +28,7 @@ class SummaryBar extends StatelessWidget {
             alignment: Alignment.center,
             color: theme.tertiary,
             child: Wrap(spacing: 20, children: [
+              Text('IPH  ' + controller.getData().iph),
               Text('Profit  ' + controller.getData().profit),
               Text('Cost  ' + controller.getData().cost),
               Text('Value  ' + controller.getData().sellValue),

@@ -8,9 +8,9 @@ import 'table_add_del_hover_button.dart';
 
 class SearchBarFlyoutContent extends StatelessWidget {
   // static const maxNumEntries = 4000;
-  static const Size size = Size(400, 600);
-  static const colFlexs = [125, 30];
-  static const List<double> columnWidths = [320, 80];
+  static const Size size = Size(480, 600);
+  static const colFlexs = [125, 30, 30];
+  static const List<double> columnWidths = [320, 80, 80];
 
   const SearchBarFlyoutContent({Key? key}) : super(key: key);
 
@@ -82,8 +82,15 @@ class SearchListHeader extends StatelessWidget {
             SearchBarFlyoutContent.colFlexs[1],
             padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
             align: Alignment.centerRight,
+            child: const Text('IPH'),
+            onTap: () =>controller.sortIPH(),
+          ),
+          TableContainer.getCol(
+            SearchBarFlyoutContent.colFlexs[2],
+            padding: const EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
+            align: Alignment.centerRight,
             child: const Text('Profit %'),
-            onTap: () =>controller.advSortDir(),
+            onTap: () =>controller.sortProfit(),
           ),
         ],
       ),
@@ -133,15 +140,23 @@ class SearchListItem extends StatelessWidget {
               waitDuration: const Duration(milliseconds: 600),
               message: rowData.category,
               child: Container(
-                width: SearchBarFlyoutContent.columnWidths[0] - TableAddDelButton.width - buttonPadding * 2 + columnWidthFudgeFactor,
+                width: SearchBarFlyoutContent.columnWidths[0] - TableAddDelButton.width - buttonPadding * 2 + columnWidthFudgeFactor - columnWidthFudgeFactor,
                 padding: const EdgeInsets.symmetric(horizontal: buttonPadding),
                 child: Text(rowData.name),
               ),
             ),
             Container(
-              width: SearchBarFlyoutContent.columnWidths[1] - columnWidthFudgeFactor,
+              width: SearchBarFlyoutContent.columnWidths[1],
               alignment: Alignment.centerRight,
-              child: Text(rowData.percent),
+              child: Text(rowData.iph),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(columnWidthFudgeFactor,0,0,0),
+              child: Container(
+                width: SearchBarFlyoutContent.columnWidths[2] - columnWidthFudgeFactor,
+                alignment: Alignment.centerRight,
+                child: Text(rowData.percent),
+              ),
             )
           ],
         ),

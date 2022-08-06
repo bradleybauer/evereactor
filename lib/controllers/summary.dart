@@ -13,7 +13,7 @@ class SummaryController with ChangeNotifier {
   final OptionsController _options;
   final Build _build;
 
-  SummaryData data = const SummaryData('', '', '', '', '','', '');
+  SummaryData data = const SummaryData('','', '', '', '', '', '', '');
 
   SummaryController(this._market, this._buildItems, this._build, this._options, Strings strings) {
     _market.addListener(_handleModelChange);
@@ -42,13 +42,14 @@ class SummaryController with ChangeNotifier {
       final profit = (1 - _options.getSalesTaxPercent() / 100) * totalSellValue - cost - jobCost;
       final outm3 = target2runs.entries.fold(0.0, (double p, e) => p + SD.m3(e.key, e.value * SD.numProducedPerRun(e.key)));
       final inm3 = bom.entries.fold(0.0, (double p, e) => p + SD.m3(e.key, e.value));
-      final time = prettyPrintSecondsToDH(_build.getTime());
-      data = SummaryData(currencyFormatNumber(profit), currencyFormatNumber(cost), currencyFormatNumber(jobCost), volumeNumberFormat(inm3),
-          volumeNumberFormat(outm3), currencyFormatNumber(totalSellValue), time);
+      final time = _build.getTime();
+      final timeStr = prettyPrintSecondsToDH(time);
+      final iph = profit / (time / 3600);
+      data = SummaryData(currencyFormatNumber(iph), currencyFormatNumber(profit), currencyFormatNumber(cost), currencyFormatNumber(jobCost),
+          volumeNumberFormat(inm3), volumeNumberFormat(outm3), currencyFormatNumber(totalSellValue), timeStr);
     } else {
-
-      data = SummaryData(currencyFormatNumber(0), currencyFormatNumber(0), currencyFormatNumber(0), volumeNumberFormat(0),
-          volumeNumberFormat(0),currencyFormatNumber(0), "");
+      final zeroStr = currencyFormatNumber(0);
+      data = SummaryData(zeroStr, zeroStr, zeroStr, zeroStr, volumeNumberFormat(0), volumeNumberFormat(0), zeroStr, "");
     }
 
     notifyListeners();
@@ -58,6 +59,7 @@ class SummaryController with ChangeNotifier {
 }
 
 class SummaryData {
+  final String iph;
   final String profit;
   final String cost;
   final String jobCost;
@@ -66,5 +68,5 @@ class SummaryData {
   final String time;
   final String sellValue;
 
-  const SummaryData(this.profit, this.cost, this.jobCost, this.inm3, this.outm3, this.sellValue, this.time);
+  const SummaryData(this.iph, this.profit, this.cost, this.jobCost, this.inm3, this.outm3, this.sellValue, this.time);
 }

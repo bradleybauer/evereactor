@@ -11,9 +11,14 @@ import '../strings.dart';
 import 'controllers.dart';
 
 enum _SortDir {
-  DEFAULT,
   ASC,
   DESC,
+}
+
+enum _SortColumn {
+  DEFAULT,
+  IPH,
+  PROFIT,
 }
 
 class SearchController with ChangeNotifier {
@@ -31,23 +36,24 @@ class SearchController with ChangeNotifier {
   List<int> _filteredIds = _ids;
   final _data = <_Data>[];
 
+  var _sortColumn = _SortColumn.DEFAULT;
   var _sortDir = _SortDir.DESC;
 
   SearchController(this._market, this._buildItems, this._basicBuild, this._options, Strings strings) {
     _initSearchCandidates();
 
-    _basicBuild.addListener(_handleChange);
-    _market.addListener(_handleChange);
+    _basicBuild.addListener(_handleModelChange);
+    _market.addListener(_handleModelChange);
 
     strings.addListener(() {
       notifyListeners();
       _initSearchCandidates();
     });
 
-    _handleChange();
+    _handleModelChange();
   }
 
-  void _handleChange() {
+  void _handleModelChange() {
     _data.clear();
 
     // update profits
@@ -63,22 +69,22 @@ class SearchController with ChangeNotifier {
         final bom = _basicBuild.getBOM({tid: runs}, useBuildItems: false);
         final cost = getCost(bom);
         final profit = totalSellValue - cost;
+        final totalMachineTime = _basicBuild.getMachineTime({tid: runs}, useBuildItems: false);
+        final approxTime = totalMachineTime / _options.getReactionSlots();
+        double iph = profit / (approxTime / 3600);
         double percent = profit / cost;
         if ((!SD.isTech2(tid) && !SD.isTech1(tid)) || percent > 10 || !percent.isFinite || percent <= .009) {
           percent = double.negativeInfinity;
+          iph = double.negativeInfinity;
           runs = 1;
         }
-        _data.add(_Data(tid, percent, runs));
+        _data.add(_Data(tid, percent, iph, runs));
       } else {
-        _data.add(_Data(tid, double.negativeInfinity, 1));
+        _data.add(_Data(tid, double.negativeInfinity, double.negativeInfinity, 1));
       }
     }
 
-    if (_sortDir == _SortDir.ASC) {
-      _data.sort((a, b) => a.percent.compareTo(b.percent));
-    } else if (_sortDir == _SortDir.DESC) {
-      _data.sort((a, b) => b.percent.compareTo(a.percent));
-    }
+    _resort();
 
     notifyListeners();
   }
@@ -112,7 +118,7 @@ class SearchController with ChangeNotifier {
     } else {
       _filteredIds = _ids;
     }
-    _handleChange();
+    _handleModelChange();
   }
 
   int getNumberOfSearchResults() => _data.length;
@@ -122,35 +128,64 @@ class SearchController with ChangeNotifier {
     final name = Strings.get(SDE.items[x.tid]!.nameLocalizations);
     final percent = x.percent.isFinite ? percentFormat(x.percent) : '';
     final percentPositive = x.percent.isFinite ? x.percent > 0 : false;
+    final iph = x.iph.isFinite ? currencyFormatNumber(x.iph) : '';
     final category = _getCategoryNames(x.tid).join(' > ');
-    return SearchTableRowData(name, percent, percentPositive, category);
+    return SearchTableRowData(name, percent, percentPositive, iph, category);
   }
 
-  void advSortDir() {
-    if (_sortDir == _SortDir.ASC) {
-      _sortDir = _SortDir.DESC;
-    } else if (_sortDir == _SortDir.DESC) {
-      _sortDir = _SortDir.DEFAULT;
-    } else {
-      _sortDir = _SortDir.ASC;
+  void _resort() {
+    switch (_sortColumn) {
+      case _SortColumn.DEFAULT:
+        _data.sort((a, b) => _sortFunc(a.percent, b.percent));
+        break;
+      case _SortColumn.IPH:
+        _data.sort((a, b) => _sortFunc(a.iph, b.iph));
+        break;
+      case _SortColumn.PROFIT:
+        _data.sort((a, b) => _sortFunc(a.percent, b.percent));
+        break;
     }
-    _handleChange();
   }
+
+  int _sortFunc(num a, num b) {
+    return _sortDir == _SortDir.ASC ? a.compareTo(b) : b.compareTo(a);
+  }
+
+  void _advanceSortState(_SortColumn col) {
+    if (_sortColumn == col) {
+      if (_sortDir == _SortDir.DESC) {
+        _sortDir = _SortDir.ASC;
+      } else {
+        _sortColumn = _SortColumn.DEFAULT;
+        _sortDir = _SortDir.DESC;
+      }
+    } else {
+      _sortColumn = col;
+      _sortDir = _SortDir.DESC;
+    }
+    _handleModelChange();
+  }
+
+  void sortProfit() => _advanceSortState(_SortColumn.PROFIT);
+
+  void sortIPH() => _advanceSortState(_SortColumn.IPH);
 }
 
 class _Data {
   final int tid;
   final double percent;
+  final double iph;
   final int runs;
 
-  const _Data(this.tid, this.percent, this.runs);
+  const _Data(this.tid, this.percent, this.iph, this.runs);
 }
 
 class SearchTableRowData {
   final String name;
   final String percent;
+  final String iph;
   final bool percentPositive;
   final String category;
 
-  const SearchTableRowData(this.name, this.percent, this.percentPositive, this.category);
+  const SearchTableRowData(this.name, this.percent, this.percentPositive, this.iph, this.category);
 }
