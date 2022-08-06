@@ -1,3 +1,25 @@
+BUG: If different trade hubs are selected then the copy commands do not work right!? weird.
+
+TODO add "Reaction Formula" to blueprint name in outputs
+
+Note: The annoying modifier key bug only happens in debug builds!!!
+
+TODO write good notes for how to deploy to windows & web
+    web: need to update the scriptVersion & serviceWorkerVersion in index.html
+         flutter build web
+         cd build/web dir
+         init (if needed) a git repo with remote https://github.com/caldaricitizen31341/evereactornew
+         push
+    desktop: recompile dll if needed
+         flutter build windows
+         cd build\windows\runner
+         copy the Release folder to desktop
+         rename the Release folder to EveReactor
+         cd EveReactor
+         rename test.exe to EveReactor.exe
+         copy advanced_solver_cpp/x64/Release/WINDOWSISCOOL.dll to EveReactor/solver.dll
+         zip
+
 TODO New Features
     1) Separate scheduling for rtn/mfg
       So today I realized that I want to be able to set a maximum duration for a batch. This is for security against evictions.

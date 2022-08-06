@@ -47,7 +47,8 @@
      application. For more information, see:
      https://developers.google.com/web/fundamentals/primers/service-workers -->
 <script>
-    var serviceWorkerVersion = null;
+    var serviceWorkerVersion = "1_0_0";
+    var scriptVersion = "1.0.0";
     var scriptLoaded = false;
     function loadMainDartJs() {
       if (scriptLoaded) {
@@ -57,7 +58,7 @@
       // document.getElementById('loader').remove();
       scriptLoaded = true;
       var scriptTag = document.createElement('script');
-      scriptTag.src = 'main.dart.js';
+      scriptTag.src = 'main.dart.js?version=' + scriptVersion;
       scriptTag.type = 'application/javascript';
       document.body.append(scriptTag);
     }
