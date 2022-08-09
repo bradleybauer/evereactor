@@ -22,7 +22,7 @@ enum _SortDir {
   DESC,
 }
 
-class TargetsTableController with ChangeNotifier {
+class ProductsTableController with ChangeNotifier {
   final MarketController _market;
   final Build _build;
   final OptionsController _options;
@@ -36,7 +36,7 @@ class TargetsTableController with ChangeNotifier {
   var _sortColumn = _SortColumn.DEFAULT;
   var _sortDir = _SortDir.DESC;
 
-  TargetsTableController(this._market, this._build, this._buildItems, this._options, Strings strings) {
+  ProductsTableController(this._market, this._build, this._buildItems, this._options, Strings strings) {
     _market.addListener(_handleModelChange);
     _build.addListener(_handleModelChange);
     strings.addListener(notifyListeners);
@@ -129,7 +129,7 @@ class TargetsTableController with ChangeNotifier {
 
   int getNumberOfItems() => _data.length;
 
-  TargetsRowData getRowData(int listIndex) {
+  ProductsRowData getRowData(int listIndex) {
     _Data x = _data[listIndex];
     String name = Strings.get(SDE.items[x.tid]!.nameLocalizations);
     int runs = _buildItems.getTargetRuns(x.tid);
@@ -141,7 +141,7 @@ class TargetsTableController with ChangeNotifier {
     String sellPerUnit = currencyFormatNumber(x.sellPerUnit);
     String outM3 = volumeNumberFormat(x.outM3);
     FocusNode focusNode = x.focusNode;
-    return TargetsRowData(x.tid, name, runs, profit, cost, percent, percentPositive, costPerUnit, sellPerUnit, outM3, focusNode);
+    return ProductsRowData(x.tid, name, runs, profit, cost, percent, percentPositive, costPerUnit, sellPerUnit, outM3, focusNode);
   }
 
   void _advanceSortState(_SortColumn col) {
@@ -239,7 +239,7 @@ class _Data {
   }
 }
 
-class TargetsRowData {
+class ProductsRowData {
   final int tid;
   final String name;
   final int runs;
@@ -252,7 +252,7 @@ class TargetsRowData {
   final String outM3;
   final FocusNode focusNode;
 
-  const TargetsRowData(
+  const ProductsRowData(
     this.tid,
     this.name,
     this.runs,

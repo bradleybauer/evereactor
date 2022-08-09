@@ -13,7 +13,7 @@ class CopyFlyout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final inputs = Provider.of<InputsTableController>(context);
-    final targets = Provider.of<TargetsTableController>(context);
+    final targets = Provider.of<ProductsTableController>(context);
     final schedule = Provider.of<Build>(context).getSchedule();
     final theme = Provider.of<MyTheme>(context);
     final color = theme.surface;
@@ -32,7 +32,7 @@ class CopyFlyout extends StatelessWidget {
           HoverButton(
             builder: (hovered) => Padding(
                 padding: const EdgeInsets.all(8),
-                child: Text('Copy Targets', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
+                child: Text('Copy Products', style: textStyle.copyWith(color: hovered ? theme.on(hoveredColor) : theme.on(color)))),
             color: color,
             hoveredColor: hoveredColor,
             hoveredElevation: 0,

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'table_intermediates.dart';
 import 'table_inputs.dart';
-import 'table_targets.dart';
+import 'table_products.dart';
 import '../my_theme.dart';
 
 class Body extends StatelessWidget {
@@ -27,7 +27,7 @@ class Body extends StatelessWidget {
                   width: width,
                   color: theme.surfaceVariant.withOpacity(.75),
                   padding: EdgeInsets.all(MyTheme.appBarPadding * 2),
-                  child: const TargetsTable(),
+                  child: const ProductsTable(),
                 ),
                 Container(
                   width: width,

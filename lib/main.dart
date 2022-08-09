@@ -25,7 +25,7 @@ Future<void> main() async {
 
   final market = MarketController(persistence);
 
-  final targetsTableController = TargetsTableController(market, build, buildItems, options, strings);
+  final targetsTableController = ProductsTableController(market, build, buildItems, options, strings);
   final intermediatesTableController = IntermediatesTableController(market, buildItems, options, basicBuild, strings);
   final inputsTableController = InputsTableController(market, build, strings);
   final searchController = SearchController(market, buildItems, basicBuild, options, strings);

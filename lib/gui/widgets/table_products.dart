@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/build_items.dart';
-import '../../controllers/table_targets.dart';
+import '../../controllers/table_products.dart';
 import '../../platform.dart';
 import '../my_theme.dart';
 import 'flyout_bp_options.dart';
@@ -10,8 +10,8 @@ import 'table.dart';
 import 'table_add_del_hover_button.dart';
 import 'table_text_field.dart';
 
-class TargetsTable extends StatefulWidget {
-  const TargetsTable({super.key});
+class ProductsTable extends StatefulWidget {
+  const ProductsTable({super.key});
 
   static const colFlexs = [35, 8, 10, 10, 7, 10, 10, 7, 6];
   static const double headerHeight = 35;
@@ -19,21 +19,21 @@ class TargetsTable extends StatefulWidget {
   static const double padding = 8;
 
   @override
-  State<TargetsTable> createState() => _TargetsTableState();
+  State<ProductsTable> createState() => _ProductsTableState();
 }
 
-class _TargetsTableState extends State<TargetsTable> {
+class _ProductsTableState extends State<ProductsTable> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
-    final controller = Provider.of<TargetsTableController>(context);
+    final controller = Provider.of<ProductsTableController>(context);
     final int numItems = controller.getNumberOfItems();
     Widget list;
     if (numItems == 0) {
       list = Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, TargetsTable.padding),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, ProductsTable.padding),
         child: SizedBox(
-            height: TargetsTable.itemHeight,
+            height: ProductsTable.itemHeight,
             child: Center(
               child: Text("Click the 'Get Market Data' button then use the search bar to find and add items to the build.",
                   style: TextStyle(fontFamily: '', fontSize: 15, color: theme.primary)),
@@ -42,9 +42,9 @@ class _TargetsTableState extends State<TargetsTable> {
     } else {
       list = ListView.builder(
         shrinkWrap: true,
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, TargetsTable.padding),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, ProductsTable.padding),
         itemCount: numItems,
-        itemExtent: TargetsTable.itemHeight,
+        itemExtent: ProductsTable.itemHeight,
         itemBuilder: (_, index) => TargetsTableItem(
           focusNode:controller.getRowData(index).focusNode,
           key:ValueKey(controller.getRowData(index).tid),
@@ -56,42 +56,42 @@ class _TargetsTableState extends State<TargetsTable> {
       maxHeight: (Platform.isWeb() ? MyTheme.webTableHeight : MyTheme.desktopTableHeight),
       borderColor: theme.outline,
       color: theme.background,
-      header: TargetsTableHeader(controller: controller),
+      header: ProductsTableHeader(controller: controller),
       listTextStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 11, color: theme.onBackground),
       listView: list,
     );
   }
 }
 
-class TargetsTableHeader extends StatelessWidget {
-  const TargetsTableHeader({required this.controller, super.key});
+class ProductsTableHeader extends StatelessWidget {
+  const ProductsTableHeader({required this.controller, super.key});
 
-  final TargetsTableController controller;
+  final ProductsTableController controller;
 
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     return TableHeader(
-      height: TargetsTable.headerHeight,
+      height: ProductsTable.headerHeight,
       textStyle:
           TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
-        TableContainer.getCol(TargetsTable.colFlexs[0],
-            child: const Text('Targets'),
-            padding: const EdgeInsets.fromLTRB(TargetsTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
+        TableContainer.getCol(ProductsTable.colFlexs[0],
+            child: const Text('Products'),
+            padding: const EdgeInsets.fromLTRB(ProductsTable.padding + TableAddDelButton.innerPadding, 0, 0, 0),
             align: Alignment.centerLeft),
-        TableContainer.getCol(TargetsTable.colFlexs[1], child: const Text('Runs')),
-        TableContainer.getCol(TargetsTable.colFlexs[2],
+        TableContainer.getCol(ProductsTable.colFlexs[1], child: const Text('Runs')),
+        TableContainer.getCol(ProductsTable.colFlexs[2],
             child: const Text('Net'), onTap: () => controller.sortProfit()),
-        TableContainer.getCol(TargetsTable.colFlexs[3], child: const Text('Cost'), onTap: () => controller.sortCost()),
-        TableContainer.getCol(TargetsTable.colFlexs[4], child: const Text('%'), onTap: () => controller.sortPercent()),
-        TableContainer.getCol(TargetsTable.colFlexs[5],
+        TableContainer.getCol(ProductsTable.colFlexs[3], child: const Text('Cost'), onTap: () => controller.sortCost()),
+        TableContainer.getCol(ProductsTable.colFlexs[4], child: const Text('%'), onTap: () => controller.sortPercent()),
+        TableContainer.getCol(ProductsTable.colFlexs[5],
             child: const Text('Cost/u'), onTap: () => controller.sortCostPerUnit()),
-        TableContainer.getCol(TargetsTable.colFlexs[6],
+        TableContainer.getCol(ProductsTable.colFlexs[6],
             child: const Text('Sell/u'), onTap: () => controller.sortSellPerUnit()),
-        TableContainer.getCol(TargetsTable.colFlexs[7],
+        TableContainer.getCol(ProductsTable.colFlexs[7],
             child: const Text('Out m3'), onTap: () => controller.sortOutM3()),
-        TableContainer.getCol(TargetsTable.colFlexs[8])
+        TableContainer.getCol(ProductsTable.colFlexs[8])
       ],
     );
   }
@@ -100,7 +100,7 @@ class TargetsTableHeader extends StatelessWidget {
 class TargetsTableItem extends StatelessWidget {
   const TargetsTableItem({required this.row,  required this.focusNode, super.key});
 
-  final TargetsRowData row;
+  final ProductsRowData row;
   final FocusNode focusNode;
 
   @override
@@ -119,12 +119,12 @@ class TargetsTableItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             MyTableCell(
-              TargetsTable.colFlexs[0],
+              ProductsTable.colFlexs[0],
               align: Alignment.centerLeft,
               child: Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: TargetsTable.padding),
+                    padding: const EdgeInsets.symmetric(horizontal: ProductsTable.padding),
                     child: TableAddDelButton(
                       onTap: () => buildItems.removeTarget(row.tid),
                       closeButton: true,
@@ -138,7 +138,7 @@ class TargetsTableItem extends StatelessWidget {
               ),
             ),
             // wrap(1, child: TableTextField(activeBorderColor: theme.primary, onChanged: (int runs){})),
-            MyTableCell(TargetsTable.colFlexs[1],
+            MyTableCell(ProductsTable.colFlexs[1],
                 child: TableTextField(
                   focusNode:focusNode,
                     width: 45,
@@ -151,13 +151,13 @@ class TargetsTableItem extends StatelessWidget {
                         buildItems.setRuns(row.tid, int.parse(runs));
                       }
                     })),
-            MyTableCell(TargetsTable.colFlexs[2], child: Text(row.profit)),
-            MyTableCell(TargetsTable.colFlexs[3], child: Text(row.cost)),
-            MyTableCell(TargetsTable.colFlexs[4], child: Text(row.percent)),
-            MyTableCell(TargetsTable.colFlexs[5], child: Text(row.costPerUnit)),
-            MyTableCell(TargetsTable.colFlexs[6], child: Text(row.sellPerUnit)),
-            MyTableCell(TargetsTable.colFlexs[7], child: Text(row.outM3)),
-            MyTableCell(TargetsTable.colFlexs[8], child: BpOptionsTableWidget(controller: buildItems, tid: row.tid)),
+            MyTableCell(ProductsTable.colFlexs[2], child: Text(row.profit)),
+            MyTableCell(ProductsTable.colFlexs[3], child: Text(row.cost)),
+            MyTableCell(ProductsTable.colFlexs[4], child: Text(row.percent)),
+            MyTableCell(ProductsTable.colFlexs[5], child: Text(row.costPerUnit)),
+            MyTableCell(ProductsTable.colFlexs[6], child: Text(row.sellPerUnit)),
+            MyTableCell(ProductsTable.colFlexs[7], child: Text(row.outM3)),
+            MyTableCell(ProductsTable.colFlexs[8], child: BpOptionsTableWidget(controller: buildItems, tid: row.tid)),
           ],
         ),
       ),
