@@ -1,6 +1,6 @@
 **Eve Reactor**
 
-Welcome to Eve Reactor my Eve Online industry calculator.
+Welcome to the repository for [evereactor.com](evereactor.com) an Eve Online industry calculator.
 
 I have put a lot of effort into building this application and also into playing eve online. But the time has come for me to move on in life and stop putting 40 hours of work/play every week into video games. So I am going to share this app even in it's unfinished state.
 
