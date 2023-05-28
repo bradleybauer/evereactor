@@ -5,8 +5,8 @@ import os
 
 from unicode_normalizer import normalizeStringsInMap
 
-sde = "sde/sde/fsd/"
-sdePkl = "sde/pickled/"
+sde = "sde/sde/sde/fsd/"
+sdePkl = "sde/sde/pickled/"
 
 
 def yaml2pickle():

@@ -630,6 +630,9 @@ class _ColorChangerState extends State<ColorChanger> {
     final theme = Provider.of<MyTheme>(context);
     return Flyout(
         content: (ctx) => ColorChangerContent((Color c) => Provider.of<MyTheme>(ctx, listen: false).updateColors(c)),
+        openMode: FlyoutOpenMode.custom,
+        align: FlyoutAlign.childRightCenter,
+        controller: controller,
         child: MouseRegion(
           onExit: (_) => controller.startCloseTimer(),
           child: HoverButton(
@@ -644,10 +647,7 @@ class _ColorChangerState extends State<ColorChanger> {
             borderRadius: 3,
             hoveredElevation: 0,
           ),
-        ),
-        openMode: FlyoutOpenMode.custom,
-        align: FlyoutAlign.childRightCenter,
-        controller: controller);
+        ));
   }
 }
 

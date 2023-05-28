@@ -10,6 +10,7 @@ class TargetsCache extends Table {
 
   IntColumn get runs => integer()();
 
+
   @override
   Set<Column> get primaryKey => {id};
 }

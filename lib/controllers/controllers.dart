@@ -8,5 +8,4 @@ export 'table_intermediates.dart';
 export 'table_products.dart';
 export 'basic_build.dart';
 export 'summary.dart';
-export 'inventory.dart';
 export 'build.dart';

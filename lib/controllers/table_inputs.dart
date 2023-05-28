@@ -46,13 +46,13 @@ class InputsTableController with ChangeNotifier {
     final inputIds = _build.getInputIds()
       ..sort((a, b) {
         // Could write a List compare alg here but... this works,is already written and is easy...
-        String a_cat = SDE.item2marketGroupAncestors[a]!.map((int marketGroupID) {
+        String aCat = SDE.item2marketGroupAncestors[a]!.map((int marketGroupID) {
           return SDE.marketGroupNames[marketGroupID]!['en'];
         }).join('');
-        String b_cat = SDE.item2marketGroupAncestors[b]!.map((int marketGroupID) {
+        String bCat = SDE.item2marketGroupAncestors[b]!.map((int marketGroupID) {
           return SDE.marketGroupNames[marketGroupID]!['en'];
         }).join('');
-        int comp = b_cat.compareTo(a_cat);
+        int comp = bCat.compareTo(aCat);
         if (comp == 0) {
           return SD.enName(a).compareTo(SD.enName(b));
         }
@@ -170,11 +170,11 @@ class InputsTableController with ChangeNotifier {
         totalcost += data.totalCost;
       }
       if (totalm3 > 0 && totalcost > 0) {
-        result += [Strings.get(SDE.region2name[region]!) + ',Num Units,Total Cost,Cost/Unit,M3,Isk/M3'];
+        result += ['${Strings.get(SDE.region2name[region]!)},Num Units,Total Cost,Cost/Unit,M3,Isk/M3'];
         for (var data in datas) {
           result.add(data.toSpreadSheetString());
         }
-        result += [',,,,,,Total m3,' + totalm3.toInt().toString() + ',Total value,' + totalcost.toString()];
+        result += [',,,,,,Total m3,${totalm3.toInt()},Total value,$totalcost'];
         result += [''];
       }
     });
@@ -182,7 +182,7 @@ class InputsTableController with ChangeNotifier {
     result += ['', 'Max number of blueprints needed'];
     final numBpsNeeded = _build.getSchedule().getNumBlueprintsNeeded();
     numBpsNeeded.forEach((tid, numBpsNeeded) {
-      result += [Strings.get(SDE.items[tid]!.nameLocalizations) + ',' + numBpsNeeded.toString()];
+      result += ['${Strings.get(SDE.items[tid]!.nameLocalizations)},$numBpsNeeded'];
     });
 
     return result.join('\n').replaceAll(',', '\t');
@@ -201,17 +201,7 @@ class _Data {
 
   String toSpreadSheetString() {
     final name = Strings.get(SDE.items[tid]!.nameLocalizations);
-    return name +
-        ',' +
-        numUnits.toString() +
-        ',' +
-        totalCost.toStringAsFixed(2) +
-        ',' +
-        costPerUnit.toStringAsFixed(2) +
-        ',' +
-        m3.toString() +
-        ',' +
-        iskPerM3.toStringAsFixed(2);
+    return '$name,$numUnits,${totalCost.toStringAsFixed(2)},${costPerUnit.toStringAsFixed(2)},$m3,${iskPerM3.toStringAsFixed(2)}';
   }
 }
 

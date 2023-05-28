@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../platform.dart';
 import '../my_theme.dart';
-import 'get_market_data_button.dart';
 import 'hover_button.dart';
 
 class Header extends StatelessWidget {
@@ -25,12 +24,12 @@ class Header extends StatelessWidget {
     // Add a close button on windows.
     if (!Platform.isWeb()) {
       rowButtons += [
-        SizedBox(width: MyTheme.appBarPadding),
+        const SizedBox(width: MyTheme.appBarPadding),
         HoverButton(
           onTap: Platform.closeWindow,
           builder: (bool hovered) {
             return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: MyTheme.appBarButtonHeight * .1),
               child: Icon(Icons.close, size: MyTheme.appBarButtonHeight * .8, color: hovered ? theme.onPrimary : theme.onSecondaryContainer),
             );
           },

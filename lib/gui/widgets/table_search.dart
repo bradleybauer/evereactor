@@ -16,7 +16,7 @@ class SearchBarFlyoutContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchController = Provider.of<SearchController>(context);
+    final searchController = Provider.of<MySearchController>(context);
     final numSearchResults = searchController.getNumberOfSearchResults();
     final theme = Provider.of<MyTheme>(context);
     Widget listContent;
@@ -58,7 +58,7 @@ class SearchListHeader extends StatelessWidget {
 
   static const double height = 35;
 
-  final SearchController controller;
+  final MySearchController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +107,7 @@ class SearchListItem extends StatelessWidget {
 
   static const double height = 30;
 
-  final SearchController searchController;
+  final MySearchController searchController;
   final int listIndex;
 
   // TODO If I use MyTableCell here and do not specify column widths, then the text does not wrap for long lines.

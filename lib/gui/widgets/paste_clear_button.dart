@@ -28,12 +28,12 @@ class _PasteClearButtonState extends State<PasteClearButton> {
               fillColor: theme.surfaceVariant,
               filled: true,
               label: Container(
-                child: Text(Strings.pasteInventory, style: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.onSurfaceVariant)),
                 padding: const EdgeInsets.fromLTRB(3, 3, 3, 0),
                 decoration: BoxDecoration(
                   color: theme.surfaceVariant,
                   borderRadius: BorderRadius.circular(2),
                 ),
+                child: Text(Strings.pasteInventory, style: TextStyle(fontFamily: 'NotoSans', fontSize: 12, color: theme.onSurfaceVariant)),
               ),
               alignLabelWithHint: true,
               contentPadding: const EdgeInsets.fromLTRB(9, 0, 0, 0),

@@ -192,14 +192,14 @@ class ProductsTableController with ChangeNotifier {
         totalvalue += data.value;
       }
       if (totalm3 > 0.0 && totalvalue > 0.0) {
-        result += ['', Strings.get(SDE.region2name[region]!) + ',Num Units,Isk,Isk/Unit,m3'];
+        result += ['', '${Strings.get(SDE.region2name[region]!)},Num Units,Isk,Isk/Unit,m3'];
         for (var data in datas) {
           final name = Strings.get(SDE.items[data.tid]!.nameLocalizations);
           result.add([name, data.numUnits, data.value.toStringAsFixed(2), data.sellPerUnit.toStringAsFixed(2), data.outM3]
               .map((e) => e.toString())
               .join(','));
         }
-        result += [',,,,,Total m3,' + totalm3.toInt().toString() + ',Total value,' + totalvalue.toStringAsFixed(2)];
+        result += [',,,,,Total m3,${totalm3.toInt()},Total value,${totalvalue.toStringAsFixed(2)}'];
       }
     });
 

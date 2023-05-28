@@ -16,13 +16,13 @@ class Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Provider.of<MyTheme>(context);
     final stackWidgets = <Widget>[
-      Align(
+      const Align(
         alignment: Alignment.centerRight,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               GetMarketDataButton(),
               SizedBox(width:10),
               FooterFlyoutGroup(),
@@ -30,11 +30,11 @@ class Footer extends StatelessWidget {
           ),
         ),
       ),
-      Align(
+      const Align(
         alignment: Alignment.centerLeft,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: MyTheme.appBarPadding),
-          child: const SearchBar(),
+          child: MySearchBar(),
         ),
       ),
     ];

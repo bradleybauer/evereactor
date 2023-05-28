@@ -21,7 +21,7 @@ enum _SortColumn {
   PROFIT,
 }
 
-class SearchController with ChangeNotifier {
+class MySearchController with ChangeNotifier {
   final BuildItemsController _buildItems; // for adding items to the build
   final MarketController _market;
   final OptionsController _options;
@@ -39,7 +39,7 @@ class SearchController with ChangeNotifier {
   var _sortColumn = _SortColumn.DEFAULT;
   var _sortDir = _SortDir.DESC;
 
-  SearchController(this._market, this._buildItems, this._basicBuild, this._options, Strings strings) {
+  MySearchController(this._market, this._buildItems, this._basicBuild, this._options, Strings strings) {
     _initSearchCandidates();
 
     _basicBuild.addListener(_handleModelChange);

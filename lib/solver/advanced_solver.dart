@@ -179,12 +179,7 @@ class AdvancedSolver extends ChangeNotifier {
       if (noExcess) {
         int numBuiltForSale = (_problem!.runsExcess[cid] ?? 0) * SD.numProducedPerRun(cid);
         if (numProduced - numBuiltForSale - numConsumed >= SD.numProducedPerRun(cid)) {
-          print(' Too much excess: ' +
-              SD.enName(cid) +
-              ' : ' +
-              (numProduced - numBuiltForSale - numConsumed).toString() +
-              ' >= ' +
-              SD.numProducedPerRun(cid).toString());
+          print(' Too much excess: ${SD.enName(cid)} : ${numProduced - numBuiltForSale - numConsumed} >= ${SD.numProducedPerRun(cid)}');
         }
         assert(numProduced - numBuiltForSale - numConsumed < SD.numProducedPerRun(cid)); // we have minimized batch time and excess successfully
       }

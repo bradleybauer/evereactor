@@ -48,15 +48,15 @@ class InputsTableHeader extends StatelessWidget {
       textStyle: TextStyle(fontFamily: 'NotoSans', fontSize: 13, fontWeight: FontWeight.bold, color: theme.onBackground),
       items: [
         TableContainer.getCol(InputsTable.colFlexs[0],
-            child: Text('Inputs'), align: Alignment.centerLeft, padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0)),
+            child: const Text('Inputs'), align: Alignment.centerLeft, padding: const EdgeInsets.fromLTRB(InputsTable.padding, 0, 0, 0)),
         TableContainer.getCol(InputsTable.colFlexs[1],
-            child: Text('Cost'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortTotalCost()),
+            child: const Text('Cost'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortTotalCost()),
         TableContainer.getCol(InputsTable.colFlexs[2],
-            child: Text('Cost/u'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortCostPerUnit()),
+            child: const Text('Cost/u'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortCostPerUnit()),
         TableContainer.getCol(InputsTable.colFlexs[3],
-            child: Text('m3'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortM3()),
+            child: const Text('m3'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortM3()),
         TableContainer.getCol(InputsTable.colFlexs[4],
-            child: Text('isk/m3'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortIskPerM3()),
+            child: const Text('isk/m3'), padding: const EdgeInsets.fromLTRB(0, 0, InputsTable.padding, 0), onTap: ()=>controller.sortIskPerM3()),
       ],
     );
   }

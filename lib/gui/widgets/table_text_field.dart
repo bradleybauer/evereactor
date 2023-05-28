@@ -135,7 +135,7 @@ class _TableTextFieldState extends State<TableTextField> {
         return oldValue;
       }
       if (text == '.') {
-        return TextEditingValue(text: '0.', selection: TextSelection.fromPosition(TextPosition(offset: 2)));
+        return TextEditingValue(text: '0.', selection: TextSelection.fromPosition(const TextPosition(offset: 2)));
       }
       if (text.isNotEmpty) {
         double value = double.parse(text);

@@ -82,7 +82,7 @@ class _FlyoutState extends State<Flyout> {
   void _handleStateChange() {
     if (controller.isOpen && (entry == null || controller.getDidContentChange())) {
       entry = getOverlayEntry();
-      Overlay.of(context)?.insert(entry!);
+      Overlay.of(context).insert(entry!);
     } else if (!controller.isOpen) {
       entry?.remove();
       entry = null;

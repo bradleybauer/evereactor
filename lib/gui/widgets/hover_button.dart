@@ -51,7 +51,6 @@ class _HoverButtonState extends State<HoverButton> {
         onEnter: (e) => onHover(true),
         onExit: (e) => onHover(false),
         child: MyAnimatedContainer(
-          child: widget.builder(_focused),
           color: _focused ? widget.hoveredColor : widget.color,
           elevation: _focused ? widget.hoveredElevation : widget.elevation,
           borderRadius: widget.borderRadius,
@@ -60,6 +59,7 @@ class _HoverButtonState extends State<HoverButton> {
           onTap: widget.onTap,
           splashColor: widget.splashColor,
           mouseCursor: widget.mouseCursor,
+          child: widget.builder(_focused),
         ));
   }
 }

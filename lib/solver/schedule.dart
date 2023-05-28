@@ -12,7 +12,7 @@ class BatchItem {
   final int slots;
   final Fraction time;
 
-  BatchItem(this.runs, this.slots, Fraction time) : this.time = time.reduce();
+  BatchItem(this.runs, this.slots, Fraction time) : time = time.reduce();
 }
 
 class Batch {
@@ -84,13 +84,13 @@ class Schedule {
 
   Map<int, int> getNumBlueprintsNeeded() {
     final result = <int, int>{};
-    machine2batches.values.forEach((batches) {
-      batches.forEach((batch) {
+    for (var batches in machine2batches.values) {
+      for (var batch in batches) {
         batch.items.forEach((tid, item) {
           result.update(tid, (value) => max(item.slots, value), ifAbsent: () => item.slots);
         });
-      });
-    });
+      }
+    }
     return result;
   }
 
@@ -116,29 +116,12 @@ class Schedule {
           return comp;
         });
         Fraction mt = batch.getMaxTime();
-        str += machineStr +
-            ' Batch:' +
-            b.toString() +
-            ' Start:' +
-            (batch.startTime / 3600.0).toStringAsFixed(1) +
-            ' End:' +
-            (batch.startTime / 3600.0 + (mt / 3600.toFraction()).toDouble()).toDouble().toStringAsFixed(1) +
-            '\n';
+        str += '$machineStr Batch:$b Start:${(batch.startTime / 3600.0).toStringAsFixed(1)} End:${(batch.startTime / 3600.0 + (mt / 3600.toFraction()).toDouble()).toDouble().toStringAsFixed(1)}\n';
         for (int tid in tids) {
           int runs = batch[tid].runs;
           int slots = batch[tid].slots;
           String name = Strings.get(SDE.items[tid]!.nameLocalizations);
-          str += ',' +
-              name +
-              ',' +
-              runs.toString() +
-              ',' +
-              slots.toString() +
-              ',' +
-              (runs ~/ slots).toString() +
-              ',' +
-              ((runs % slots) == 0 ? "" : (runs % slots).toString()) +
-              '\n';
+          str += ',$name,$runs,$slots,${runs ~/ slots},${(runs % slots) == 0 ? "" : (runs % slots).toString()}\n';
         }
         str += "\n";
         b += 1;

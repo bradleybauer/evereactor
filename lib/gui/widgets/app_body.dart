@@ -26,26 +26,26 @@ class Body extends StatelessWidget {
                 Container(
                   width: width,
                   color: theme.surfaceVariant.withOpacity(.75),
-                  padding: EdgeInsets.all(MyTheme.appBarPadding * 2),
+                  padding: const EdgeInsets.all(MyTheme.appBarPadding * 2),
                   child: const ProductsTable(),
                 ),
                 Container(
                   width: width,
                   color: theme.surfaceVariant.withOpacity(.25),
-                  padding: EdgeInsets.all(MyTheme.appBarPadding * 2),
-                  child: Row(
+                  padding: const EdgeInsets.all(MyTheme.appBarPadding * 2),
+                  child: const Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Flexible(
+                      Flexible(
                         flex: 7,
                         fit: FlexFit.tight,
-                        child: const IntermediatesTable(),
+                        child: IntermediatesTable(),
                       ),
                       SizedBox(width: MyTheme.appBarPadding * 2),
-                      const Flexible(
+                      Flexible(
                         flex: 5,
                         fit: FlexFit.tight,
-                        child: const InputsTable(),
+                        child: InputsTable(),
                       ),
                     ],
                   ),

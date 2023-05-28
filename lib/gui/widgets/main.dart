@@ -27,8 +27,8 @@ class HomePage extends StatelessWidget {
             elevation: Platform.isWeb() ? 32 : 0,
             child: Container(
               color: theme.background,
-              child: Stack(
-                children: const [
+              child: const Stack(
+                children: [
                   Body(width: MyTheme.appWidth, verticalPadding: MyTheme.appBarHeight),
                   Header(height: MyTheme.appBarHeight, width: MyTheme.appWidth),
                   Align(

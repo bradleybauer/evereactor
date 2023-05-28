@@ -90,6 +90,7 @@ class ScheduleProviderWeb extends ChangeNotifier implements ScheduleProvider {
   Map<int, int> _getBuildDependenciesForItem(int pid) =>
       Map.fromEntries(SD.materials(pid).entries.where((e) => buildItems.getShouldBuildChildOfParent(pid, e.key, excludeItemsSetToBuy: true)));
 
+  @override
   String toCSV() {
     return "";
   }

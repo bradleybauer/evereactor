@@ -58,15 +58,15 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
           child: Center(
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 14, maxHeight: 14),
+                  constraints: const BoxConstraints(maxWidth: 14, maxHeight: 14),
                   child:
                   CircularProgressIndicator(
                     value: _loadingProgress == 0.0 ? null : _loadingProgress,
                     strokeWidth: 3,
                   ),
               ),
-              SizedBox(width: MyTheme.appBarPadding),
-              Text("Downloading", style: TextStyle(fontFamily: 'NotoSans', fontSize: 12)),
+              const SizedBox(width: MyTheme.appBarPadding),
+              const Text("Downloading", style: TextStyle(fontFamily: 'NotoSans', fontSize: 12)),
             ]),
           ),
         );
@@ -88,7 +88,7 @@ class _GetMarketDataButtonState extends State<GetMarketDataButton> {
     }
 
     return ConstrainedBox(
-      constraints: BoxConstraints.tight(Size(130, MyTheme.appBarButtonHeight)),
+      constraints: BoxConstraints.tight(const Size(130, MyTheme.appBarButtonHeight)),
       child: widget,
     );
   }

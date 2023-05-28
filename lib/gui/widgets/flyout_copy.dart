@@ -1,5 +1,4 @@
 import 'package:eve_reactor/controllers/controllers.dart';
-import 'package:eve_reactor/controllers/schedule_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +17,7 @@ class CopyFlyout extends StatelessWidget {
     final theme = Provider.of<MyTheme>(context);
     final color = theme.surface;
     final hoveredColor = theme.primary;
-    const textStyle = const TextStyle(fontFamily: 'NotoSans', fontSize: 12);
+    const textStyle = TextStyle(fontFamily: 'NotoSans', fontSize: 12);
     return PhysicalModel(
       color: Colors.transparent,
       shadowColor: theme.shadow,

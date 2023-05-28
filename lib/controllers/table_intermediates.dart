@@ -124,7 +124,7 @@ class _Data {
 
   String toSpreadSheetString() {
     final name = Strings.get(SDE.items[tid]!.nameLocalizations);
-    return name + ',' + value.toString();
+    return '$name,$value';
   }
 }
 

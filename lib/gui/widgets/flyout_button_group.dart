@@ -42,6 +42,13 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
   Widget button(int i, IconData icon, MyTheme theme) {
     bool selected = current == i && controller.isOpen;
     return MouseRegion(
+      opaque: false,
+      onEnter: (_) {
+        if (selected) {
+          _open(i);
+        }
+      },
+      onExit: (_) => controller.startCloseTimer(),
       child: HoverButton(
         builder: (hovered) {
           return Padding(
@@ -61,13 +68,6 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
         hoveredColor: theme.primary,
         hoveredElevation: 3,
       ),
-      opaque: false,
-      onEnter: (_) {
-        if (selected) {
-          _open(i);
-        }
-      },
-      onExit: (_) => controller.startCloseTimer(),
     );
   }
 
@@ -88,7 +88,6 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
       buttons.add(button(2, icons[2], theme));
     }
     return Flyout(
-      child: Row(mainAxisSize: MainAxisSize.min, children: buttons),
       content: (ctx) {
         if (current == 0) {
           return const CopyFlyout();
@@ -107,6 +106,7 @@ class _FooterFlyoutGroupState extends State<FooterFlyoutGroup> {
       align: FlyoutAlign.childTopRight,
       openMode: FlyoutOpenMode.custom,
       controller: controller,
+      child: Row(mainAxisSize: MainAxisSize.min, children: buttons),
     );
 
     // return Row(mainAxisSize: MainAxisSize.min, children: rowChildren);

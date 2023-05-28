@@ -65,7 +65,7 @@ class LabeledCheckbox extends StatelessWidget {
                     overlayColor: MaterialStateProperty.all(Colors.transparent),
                   ),
                 ),
-                Padding(padding: EdgeInsets.fromLTRB(0, 0, MyTheme.appBarPadding, 0), child: getLabel(hovered)),
+                Padding(padding: const EdgeInsets.fromLTRB(0, 0, MyTheme.appBarPadding, 0), child: getLabel(hovered)),
               ],
             ),
           ),

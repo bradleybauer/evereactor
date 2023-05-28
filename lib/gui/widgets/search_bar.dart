@@ -8,17 +8,17 @@ import 'flyout_controller.dart';
 import 'search_text_field.dart';
 import 'table_search.dart';
 
-class SearchBar extends StatefulWidget {
+class MySearchBar extends StatefulWidget {
   // TODO sad :( not really sure how to organize stuff like this.
   static const double SEARCHBARWIDTH = 275;
 
-  const SearchBar({Key? key}) : super(key: key);
+  const MySearchBar({Key? key}) : super(key: key);
 
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  State<MySearchBar> createState() => _SearchBarState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _SearchBarState extends State<MySearchBar> {
   late final flyoutController;
   final focusNode = FocusNode();
   final textEditController = TextEditingController();
@@ -32,7 +32,7 @@ class _SearchBarState extends State<SearchBar> {
     textEditController.addListener(() {
       final text = textEditController.text.trim();
       if (text != previousText) {
-        Provider.of<SearchController>(context, listen: false).setSearchText(text);
+        Provider.of<MySearchController>(context, listen: false).setSearchText(text);
         setState(() {
           previousText = text;
         });
@@ -65,6 +65,7 @@ class _SearchBarState extends State<SearchBar> {
       content: (ctx) => const SearchBarFlyoutContent(),
       openMode: FlyoutOpenMode.custom,
       sideOffset: MyTheme.appBarPadding * 2,
+      controller: flyoutController,
       // TODO adding this MouseRegion widget made a bug appear in debug mode if I open the search flyout and hover the footer flyout group buttons.
       // do not want to go through the effort of reporting it at flutter github.
       child: MouseRegion(
@@ -74,7 +75,6 @@ class _SearchBarState extends State<SearchBar> {
             textEditController: textEditController,
             focusNode: focusNode,
           )),
-      controller: flyoutController,
     );
   }
 }

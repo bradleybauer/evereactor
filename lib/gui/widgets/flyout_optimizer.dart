@@ -68,7 +68,7 @@ class OptimizerFlyout extends StatelessWidget {
                   ),
                 ],
               ),
-              Text('Time Bonus: ' + (controller.getTimeBonus() * 100).toStringAsFixed(3) + '%',
+              Text('Time Bonus: ${(controller.getTimeBonus() * 100).toStringAsFixed(3)}%',
                   style: TextStyle(fontSize: 12, fontFamily: 'NotoSans', color: theme.on(color))),
             ],
           ),

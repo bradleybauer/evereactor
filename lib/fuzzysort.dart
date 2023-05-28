@@ -31,7 +31,7 @@ import 'pair.dart';
 //     large blaster will sort all large blasters earlier
 
 const int infinity = 9007199254740991;
-final int MaxNumSplits = 5; // TODO cannot make this too large https://github.com/farzher/fuzzysort/issues/80 ? it's just very slow.
+const int MaxNumSplits = 5; // TODO cannot make this too large https://github.com/farzher/fuzzysort/issues/80 ? it's just very slow.
 
 // TODO(no priority) there are definitely improvements to be made here given that I split the input strings and given the particular
 //                    scoring funciton I am using. I think each successive split can work on only the data accepted by the previous split....

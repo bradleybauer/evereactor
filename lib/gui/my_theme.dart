@@ -28,7 +28,7 @@ class MyTheme with ChangeNotifier {
 
   bool isDark() => _inDarkMode;
 
-  late Color _seedColor = Color.fromARGB(255, 184, 91, 91);
+  late Color _seedColor = const Color.fromARGB(255, 184, 91, 91);
 
   Color getColor() => _seedColor;
 

@@ -28,14 +28,14 @@ class SummaryBar extends StatelessWidget {
             alignment: Alignment.center,
             color: theme.tertiary,
             child: Wrap(spacing: 20, children: [
-              Text('IPH  ' + controller.getData().iph),
-              Text('Profit  ' + controller.getData().profit),
-              Text('Cost  ' + controller.getData().cost),
-              Text('Value  ' + controller.getData().sellValue),
-              Text('Jobs  ' + controller.getData().jobCost),
-              Text('In m3  ' + controller.getData().inm3),
-              Text('Out m3  ' + controller.getData().outm3),
-              Text('Time  ' + controller.getData().time)
+              Text('IPH  ${controller.getData().iph}'),
+              Text('Profit  ${controller.getData().profit}'),
+              Text('Cost  ${controller.getData().cost}'),
+              Text('Value  ${controller.getData().sellValue}'),
+              Text('Jobs  ${controller.getData().jobCost}'),
+              Text('In m3  ${controller.getData().inm3}'),
+              Text('Out m3  ${controller.getData().outm3}'),
+              Text('Time  ${controller.getData().time}')
             ])),
       ),
     );

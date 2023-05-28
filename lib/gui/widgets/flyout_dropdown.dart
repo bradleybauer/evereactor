@@ -100,6 +100,10 @@ class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
           ),
         );
       },
+      openMode: FlyoutOpenMode.custom,
+      align: widget.up ? FlyoutAlign.dropup : FlyoutAlign.dropdown,
+      // closeTimeout: theme.buttonFocusDuration,
+      controller: controller,
       child: MouseRegion(
         cursor: MouseCursor.defer,
         onExit: (_) {
@@ -122,10 +126,6 @@ class _DropdownMenuFlyoutState extends State<DropdownMenuFlyout> {
           },
         ),
       ),
-      openMode: FlyoutOpenMode.custom,
-      align: widget.up ? FlyoutAlign.dropup : FlyoutAlign.dropdown,
-      // closeTimeout: theme.buttonFocusDuration,
-      controller: controller,
     );
   }
 }

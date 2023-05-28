@@ -28,7 +28,7 @@ Future<void> main() async {
   final targetsTableController = ProductsTableController(market, build, buildItems, options, strings);
   final intermediatesTableController = IntermediatesTableController(market, buildItems, options, basicBuild, strings);
   final inputsTableController = InputsTableController(market, build, strings);
-  final searchController = SearchController(market, buildItems, basicBuild, options, strings);
+  final searchController = MySearchController(market, buildItems, basicBuild, options, strings);
   final summaryController = SummaryController(market, buildItems, build, options, strings);
 
   await myTheme.loadFromCache();

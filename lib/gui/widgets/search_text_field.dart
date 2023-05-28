@@ -44,7 +44,7 @@ class SearchBarTextField extends StatelessWidget {
         ),
         fillColor: theme.surfaceVariant,
         filled: true,
-        constraints: BoxConstraints.tight(const Size(SearchBar.SEARCHBARWIDTH, MyTheme.appBarButtonHeight)),
+        constraints: BoxConstraints.tight(const Size(MySearchBar.SEARCHBARWIDTH, MyTheme.appBarButtonHeight)),
         contentPadding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
       ),
       style: TextStyle(fontSize: 14, fontFamily: 'NotoSans', color: theme.onSurfaceVariant),

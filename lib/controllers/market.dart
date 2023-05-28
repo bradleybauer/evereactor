@@ -127,10 +127,7 @@ class MarketController with ChangeNotifier {
   }
 
   Uri _getUri(int region, [int? page]) {
-    return Uri.parse('https://esi.evetech.net/latest/markets/' +
-        region.toString() +
-        '/orders/?datasource=tranquility&order_type=all&page=' +
-        (page ?? 1).toString());
+    return Uri.parse('https://esi.evetech.net/latest/markets/$region/orders/?datasource=tranquility&order_type=all&page=${page ?? 1}');
   }
 
   // static int xxx = 0; // there are about 161k orders that I accept
