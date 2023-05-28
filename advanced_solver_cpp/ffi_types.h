@@ -91,5 +91,6 @@ struct FfiProblem {
   struct FfiSchedule* approximation; // pointer since this is optional
 };
 
-// void startWorker(void (*publishSolution)(struct FfiSchedule* x), void (*notifyStopped)(), struct FfiProblem problem);
-// void stopWorker();
+// before running 'flutter pub run ffigen' you need to uncomment these lines. then recomment them to enable building of the dll with visual studio.
+void startWorker(void (*publishSolution)(struct FfiSchedule* x), void (*notifyStopped)(), struct FfiProblem problem);
+void stopWorker();
